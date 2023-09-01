@@ -2,7 +2,7 @@ baseURL: https://rodolfoviana.com.br
 languageCode: pt-br
 defaultContentLanguage: pt
 title: Rodolfo Viana
-theme: cupper-hugo-theme
+theme: 
 googleAnalytics: 
 disqusShortname: 
 enableGitInfo: true
