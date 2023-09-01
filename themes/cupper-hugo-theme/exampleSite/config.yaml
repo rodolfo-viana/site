@@ -1,6 +1,6 @@
-baseURL: https://example.com
-languageCode: en-us
-defaultContentLanguage: en
+baseURL: https://rodolfoviana.com.br
+languageCode: pt-br
+defaultContentLanguage: pt
 title: Cupper
 theme: cupper-hugo-theme
 googleAnalytics: UA-123456789-1
