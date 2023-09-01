@@ -8,7 +8,9 @@
       <span aria-hidden="true"></span>
     </label>
   </div>
+  <small>
   {{ with .Site.Params.footer }}
     {{ . | markdownify }}
   {{ end }}
+</small>
 </footer>
