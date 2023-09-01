@@ -1,16 +1,32 @@
 ---
-date: "2017-06-26T18:27:58+01:00"
+date: "2023-09-01"
 title: ""
 ---
 
-Hugo is the **world’s fastest framework for building websites**. It is written in Go.
+Olá!
 
-It makes use of a variety of open source projects including:
+Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou engenheiro de dados sênior na [Farfetch](http://farfetch.com/). Trabalho no time de [FPS](https://www.farfetchplatformsolutions.com/), que desenvolve e implementa soluções tecnológicas para marcas de luxo como Harrods, Balenciaga, Marc Jacobs e outras dezenas. Na minha equipe, somos responsáveis por projetar, manter e otimizar a infraestrutura de dados, desenvolvendo pipelines que partem da coleção de registros primários até chegar em dashboards que gerem insights de negócio. 
 
-* https://github.com/russross/blackfriday
-* https://github.com/alecthomas/chroma
-* https://github.com/muesli/smartcrop
-* https://github.com/spf13/cobra
-* https://github.com/spf13/viper
+Também sou professor no [MBA em Jornalismo de Dados](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) do [IDP](https://www.idp.edu.br/). Minhas disciplinas são Introdução a Python e Web Scraping com Python. Comigo, repórteres, editores, assessores e demais colegas da imprensa vão desde `print("Hello World")` até o desenvolvimento de scripts de captura de dados que os auxiliem em suas rotinas.
 
-Learn more and contribute on [GitHub](https://github.com/gohugoio).
+Fora isso, estou fazendo especialização em Data Science na Esalq-USP. Meu trabalho, ainda em desenvolvimento, consiste na criação de um algoritmo de clusterização para detecção de anomalias nos gastos da Assembleia Legislativa de São Paulo.
+
+Neste site você vai encontrar publicações sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. Espero que aprecie!
+
+Você pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Se quiser mandar uma mensagem, escreva para eu@rodolfoviana.com.br.
+
+Boa leitura.
+
+<script>
+    const today = new Date();
+    const birthdate = new Date(1981, 3, 17);
+    function age() {
+        const one_or_zero = (today.getMonth() < birthdate.getMonth()) ||
+                            (today.getMonth() === birthdate.getMonth() &&
+                            today.getDate() < birthdate.getDate());
+        let year_difference = today.getFullYear() - birthdate.getFullYear();
+        const age = year_difference - one_or_zero;
+        return age;
+    }
+    document.getElementById("age").innerHTML = age();
+</script>
