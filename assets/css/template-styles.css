@@ -444,18 +444,6 @@ caption {
     margin-top: 0.5rem;
 }
 
-/* Disqus Comments */
-#disqus-container {
-  text-align: center;
-}
-#disqus-button {
-  width: 100%;
-  padding: 0.25em 0.75em;
-}
-#disqus-comments {
-  display: none; 
-}
-
 /* Pattern lists */
 .patterns-list {
     list-style: none;
@@ -710,21 +698,6 @@ p:empty {
     margin-top: 2.25rem;
 }
 
-/* WCAG and principles */
-.wcag li {
-    font-size: 0.85em;
-}
-.principles p {
-    font-size: 0.85rem;
-    margin-top: 0.75rem;
-}
-.principles.with-desc > li + li,
-.wcag.with-desc > li + li {
-    border-top: 1px solid;
-    margin-top: 0.75rem;
-    padding-top: 0.75rem;
-}
-
 /* Site errors */
 .site-error {
     padding: 1.5rem;
@@ -749,9 +722,7 @@ h1 svg {
   width: 0.85em;
   height: 0.85em;
 }
-.wcag-icon {
-  width: 1.25em;
-}
+
 .bookmark-icon {
   vertical-align: middle;
 }

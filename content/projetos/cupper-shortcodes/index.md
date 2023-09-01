@@ -113,14 +113,6 @@ To get syntax highlighting for your code, use markdown code fences, then specify
 </div>
 ```
 
-## codePen
-
-```
-{{</* codePen VpVNKW */>}}
-```
-
-{{< codePen VpVNKW >}}
-
 ## colors
 
 ```
@@ -214,26 +206,6 @@ img="sun.jpg"
 caption="The Sun is the star at the center of the Solar System. It is a nearly perfect sphere of hot plasma, with internal convective motion that generates a magnetic field via a dynamo process. It is by far the most important source of energy for life on Earth. [Credits](https://images.nasa.gov/details-GSFC_20171208_Archive_e000393.html)." 
 command="Resize" 
 options="700x" >}}
-
-## principles
-
-See the [full principles list](https://github.com/zwbetz-gh/cupper-hugo-theme/blob/master/data/principles.json).
-
-```
-{{</* principles include="Add value, Be consistent" descriptions="true" */>}}
-```
-
-{{< principles include="Add value, Be consistent" descriptions="true" >}}
-
-## wcag
-
-See the [full wcag list](https://github.com/zwbetz-gh/cupper-hugo-theme/blob/master/data/wcag.json). 
-
-```
-{{</* wcag include="1.2.1, 1.3.1, 4.1.2" */>}}
-```
-
-{{< wcag include="1.2.1, 1.3.1, 4.1.2" >}}
 
 ## tested
 

@@ -1,0 +1,24 @@
+{{ define "main" }}
+  <main id="main">
+    <h1>
+      {{ .Title }}
+    </h1>
+
+    <div class="date">
+      {{ $dateFormat := $.Site.Params.dateFormat }}
+      {{ $publishDate := .PublishDate }}
+      <strong>{{ T "publish_date" }} </strong>{{ $publishDate | time.Format ":date_long" }}
+      {{ with .Lastmod }}
+        {{ if gt . $publishDate }}
+          <br>
+          <strong>{{ T "last_updated" }} </strong>{{ . | time.Format ":date_long" }}
+        {{ end }}
+      {{ end }}
+    </div>
+
+    {{ partial "toc.html" . }}
+
+    {{ .Content }}
+  </main>
+  {{ partial "utterances.html" . }}
+{{ end }}

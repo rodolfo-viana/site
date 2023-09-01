@@ -1,14 +1,16 @@
 ---
 date: "2017-06-26T18:27:58+01:00"
-title: "Home"
+title: ""
 ---
 
-Welcome to **Cupper**: An accessibility-friendly Hugo theme, ported from the [original Cupper](https://github.com/ThePacielloGroup/cupper) project. Here are some of its features:
+Hugo is the **world’s fastest framework for building websites**. It is written in Go.
 
-{{< ticks >}}
-* Screen reader and keyboard accessible
-* Responsive
-* Numerous shortcodes
-* Toggleable dark theme
-* Toggleable table of contents per blog post
-{{< /ticks >}}
+It makes use of a variety of open source projects including:
+
+* https://github.com/russross/blackfriday
+* https://github.com/alecthomas/chroma
+* https://github.com/muesli/smartcrop
+* https://github.com/spf13/cobra
+* https://github.com/spf13/viper
+
+Learn more and contribute on [GitHub](https://github.com/gohugoio).
