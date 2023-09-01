@@ -1,10 +1,10 @@
-baseURL: https://example.com
-languageCode: en-us
-defaultContentLanguage: en
-title: Cupper
+baseURL: https://rodolfoviana.com.br
+languageCode: pt-br
+defaultContentLanguage: pt
+title: Rodolfo Viana
 theme: cupper-hugo-theme
-googleAnalytics: UA-123456789-1
-disqusShortname: yourdiscussshortname
+googleAnalytics: 
+disqusShortname: 
 enableGitInfo: true
 
 taxonomies:
@@ -17,20 +17,19 @@ imaging:
   quality: 99
 
 params:
-  description: An accessibility-friendly Hugo theme, ported from the [original Cupper](https://github.com/ThePacielloGroup/cupper) project.
-  homeMetaContent: An accessibility-friendly Hugo theme, ported from the original Cupper project.
-  footer: Made with [Hugo](https://gohugo.io/). Themed by [Cupper](https://github.com/zwbetz-gh/cupper-hugo-theme). Deployed to [Netlify](https://www.netlify.com/).
-  # For more date formats see https://gohugo.io/functions/format/
+  description: Publicações e projetos relacionados a ciência de dados
+  homeMetaContent: Publicações e projetos relacionados a ciência de dados
+  footer: 2023 &copy; Rodolfo Viana. Feito com [Hugo](https://gohugo.io/), [Cupper](https://github.com/zwbetz-gh/cupper-hugo-theme)
   dateFormat: Jan 2, 2006
-  codePenUser: someUser
+  codePenUser: 
   katex: true
   hideHeaderLinks: false
   search: true
-  showThemeSwitcher: true
+  showThemeSwitcher: false
   defaultDarkTheme: false
   moveFooterToHeader: false
   # navTitleText: Cupper Theme
-  logoAlt: An alternative text description of the logo
+  logoAlt: Rodolfo Viana
   customCss:
     - css/custom_01.css
     - css/custom_02.css
