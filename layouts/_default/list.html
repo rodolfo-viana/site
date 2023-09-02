@@ -14,10 +14,11 @@
     <li>
       <h2>
         <a href="{{ .RelPermalink }}">
-
           {{ .Title }}
         </a>
       </h2>
+      {{ $publishDate := .PublishDate }}
+      <span><small>{{ $publishDate | time.Format ":date_long" }}</small></span>
     </li>
     {{ end }}
   </ul>
