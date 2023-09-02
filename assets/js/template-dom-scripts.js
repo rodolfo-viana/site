@@ -1,21 +1,27 @@
 /* Expandable sections */
 (function () {
-  function toggle (button, target) {
-    var expanded = button.getAttribute('aria-expanded') === 'true';
-    button.setAttribute('aria-expanded', !expanded);
-    target.hidden = !target.hidden;
-  }
 
   var expanders = document.querySelectorAll('[data-expands]');
+  if (expanders.length > 0) {
+    expanders[0].setAttribute('aria-expanded', true);
+    document.getElementById(expanders[0].getAttribute('data-expands')).hidden = false;
 
-  Array.prototype.forEach.call(expanders, function (expander) {
-    var target = document.getElementById(expander.getAttribute('data-expands'));
+    function toggle (button, target) {
+      var expanded = button.getAttribute('aria-expanded') === 'true';
+      button.setAttribute('aria-expanded', !expanded);
+      target.hidden = !target.hidden;
+    }
 
-    expander.addEventListener('click', function () {
-      toggle(expander, target);
+    Array.prototype.forEach.call(expanders, function (expander) {
+      var target = document.getElementById(expander.getAttribute('data-expands'));
+      expander.addEventListener('click', function () {
+        toggle(expander, target);
+      })
     })
-  })
-}());
+  }
+
+  }
+());
 
 /* Menu button */
 (function () {
