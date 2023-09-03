@@ -37,9 +37,9 @@ params:
 
 menu:
   nav:
-    - name: Publicações
-      url: /publicacoes/
-      weight: 1
+    #- name: Publicações
+    #  url: /publicacoes/
+    #  weight: 1
     - name: Projetos
       url: /projetos/
       weight: 2
