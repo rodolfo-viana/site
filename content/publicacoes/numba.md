@@ -86,7 +86,7 @@ Reparem que, com exceção do decorator, nada mudou no código. E o resultado:
 1.8241732999886153
 ```
 
-Ou seja, Numba tornou a computação quase 139 vezes mais rápida, demandando menos processamento.
+Ou seja, Numba tornou a computação quase 139 vezes mais rápida.
 
 {{< warning >}}
 Numba é recomendado apenas quando há computações pesadas especialmente com NumPy. Em computações simples, ele pode **piorar a performance**. Segundo o site oficial, o funcionamento de Numba "depende de como é o código, se é orientado a cálculos numéricos, usa muito NumPy e/ou tem muitos loops". Pandas, por exemplo, não é compreendido por Numba. Ver mais [aqui](https://numba.readthedocs.io/en/stable/user/5minguide.html#will-numba-work-for-my-code).
