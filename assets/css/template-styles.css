@@ -100,7 +100,7 @@ div:not([tabindex]):focus {
 
 /* Skip link */
 [href="#main"] {
-    display: block;
+    display: none;
     width: 100%;
     padding: 0.75rem;
     color: #fefefe;
@@ -113,6 +113,11 @@ div:not([tabindex]):focus {
 [href="#main"]:focus {
     top: 0;
     outline: none;
+}
+@media screen and (max-width: 45em) {
+    [href="#main"] {
+        display: none;
+    }
 }
 
 /* Text styles */

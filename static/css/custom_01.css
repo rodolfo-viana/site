@@ -1,3 +1,6 @@
-.your-custom-class-01 {
-  display: block;
+.py-elem {
+  width: 100%; 
+  height: auto; 
+  display: flex; 
+  justify-content: center;
 }
