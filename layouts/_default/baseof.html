@@ -8,6 +8,12 @@
     <div class="wrapper">
       {{ partial "header.html" . }}
       <div class="main-and-footer">
+        {{ if in .Params.tags "python"}}
+          <py-config>
+            [splashscreen]
+                enabled = false
+          </py-config>
+        {{ end }}
         <div>
           {{ block "main" . }}{{ end }}
           {{ if ne .Site.Params.moveFooterToHeader true }}
@@ -16,6 +22,9 @@
         </div>
       </div>
     </div>
+    {{ if in .Params.tags "python"}}
+      {{ partial "python.html" . }}
+    {{ end }}
     {{ partial "script.html" . }}
     {{ partial "katex.html" . }}
     {{ partial "google-analytics-async.html" . }}
