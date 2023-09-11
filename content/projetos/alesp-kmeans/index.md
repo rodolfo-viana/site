@@ -37,9 +37,9 @@ Notou-se ainda que a média é superior ao terceiro quartil. Isso indica que o c
 | 2º Quartil (R$) | 115,33 |
 | 3º Quartil (R$) | 253,33 |
 | Máximo (R$) | 10.259,41 |
-| Coeficiente de variação (%) | 232,72154207553792% |
-| Assimetria | 7,040865107241919 |
-| Curtose | 64,79066970927987 |
+| Coeficiente de variação (%) | 232,7215... |
+| Assimetria | 7,0408... |
+| Curtose | 64,7906... |
 
 Em seguida, foi construído um algoritmo de clusterização por K-Means, em que é feita a partição de uma população de \\(n\\) dimensões em \\(k\\) conjuntos com base em sua similaridade. A organização dos conjuntos é feita com a determinação aleatória de um centroide, um ponto que observa a distância euclidiana dos demais dados em relação a ele. 
 
@@ -195,7 +195,7 @@ class KMeans:
         """
         # ajusta a inércia mínima inicial a valor infinito
         min_inertia = float('inf')
-        # atribuiu o valor None ao melhores centroides e labels
+        # atribui o valor None ao melhores centroides e labels
         best_centroids = None
         best_labels = None
         # looping para o número de inicializações
@@ -208,7 +208,7 @@ class KMeans:
                 min_inertia = inertia
                 best_centroids = centroids
                 best_labels = labels
-        # atribuiu novos melhores centroides e labels à classe `KMeans`
+        # atribui novos melhores centroides e labels à classe `KMeans`
         self.centroids = best_centroids
         self.labels = best_labels
 
@@ -244,7 +244,7 @@ class KMeans:
         """
         # calcula a distância de cada ponto de dado em relação aos centroides
         dist = np.linalg.norm(data[:, np.newaxis] - self.centroids, axis=2)
-        # atribuiu cada ponto ao centroide mais próximo
+        # atribui cada ponto ao centroide mais próximo
         labels = np.argmin(dist, axis=1)
         # retorna as labels atribuídas
         return labels
