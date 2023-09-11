@@ -8,20 +8,20 @@ O texto apresentado é uma versão resumida do meu trabalho de conclusão de cur
 {{< /warning >}}
 
 {{< expandable label="Introdução" level="2" >}}
-Cada um dos 94 parlamentares da Assembleia Legislativa do Estado de São Paulo [Alesp] tem direito aos Auxílio-Encargos Gerais de Gabinete de Deputado e Auxílio-Hospedagem, referenciados conjuntamente como "verba de gabinete". Tal direito foi conferido pela resolução 783, artigo 11, de 1º de julho de 19971, e se trata de um valor mensal devido pelo Estado aos deputados a fim de que eles possam cobrir despesas inerentes ao pleno exercício das atividades parlamentares.
-
-Tais gastos são agregados em 11 categorias, dentre as quais materiais e serviços gráficos, consultoria, combustíveis, locação de automóveis, hospedagem. Em 2022, considerando resolução 783, de 1º de julho de 19971, que estipula o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp], e o valor da Ufesp em R$ 31,97, o limite mensal da verba de gabinete que poderia ser ressarcido por deputado no ano passado foi de R$ 39.962,50.
+Cada um dos 94 parlamentares da Assembleia Legislativa do Estado de São Paulo [Alesp] tem direito aos Auxílio-Encargos Gerais de Gabinete de Deputado e Auxílio-Hospedagem, referenciados conjuntamente como "verba de gabinete". Tal direito foi conferido pela resolução 783, artigo 11, de 1º de julho de 1997, e se trata de um valor mensal devido pelo Estado aos deputados a fim de que eles possam cobrir despesas inerentes ao pleno exercício das atividades parlamentares. A resolução estipula o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp]. Em 2022, com o valor da Ufesp em R$ 31,97, o limite mensal da verba de gabinete que poderia ser ressarcido por deputado foi de R$ 39.962,50.
 
 Naquele ano, o valor total empenhado para custeio da verba de gabinete perfez R$ 26.652.243,51. O montante foi 24,43% maior que a soma em 2021, de R$ 21.419.316,88, e menor do que o valor anotado na rubrica para 2023, de R$ 28.607.099,96. Caso este montante se cumpra neste ano, será a primeira vez que o valor ultrapassa R$ 28,5 milhões desde 2018.
 
-Tais somas de recursos públicos podem servir, ainda que parcialmente, para infringir a lei. Um exemplo é o processo investigatório SEI 29.0001.0246360.2021-544, cujo pedido de instauração foi feito pelo Procurador Mario Antonio de Campos Tebet em 5 de maio de 2022. A peça elenca possível malversação no uso da verba de gabinete por parte do deputado estadual Murilo Felix, que a teria empregado para pagar pela locação de imóveis pertencentes a aliados políticos e nunca utilizados.
+Tais somas de recursos públicos podem servir, ainda que parcialmente, para infringir a lei. Um exemplo é o processo investigatório SEI 29.0001.0246360.2021-54, cujo pedido de instauração foi feito pelo Procurador Mario Antonio de Campos Tebet em 5 de maio de 2022. A peça elenca possível malversação no uso da verba de gabinete por parte do deputado estadual Murilo Felix, que a teria empregado para pagar pela locação de imóveis pertencentes a aliados políticos e nunca utilizados.
 
 Com este contexto, este projeto busca ser um instrumento para avaliação de malversação de dinheiro público por meio de *unsupervised machine learning*. Seu objetivo não é afirmar peremptoriamente se determinada despesa é fraudulenta ou não; seu escopo é servir de ferramenta para uma observação inicial dos gastos, que podem ser analisados por meio de clusterização, onde se objetiva encontrar um grupo de despesas cujos valores são anômalos.
 {{< /expandable >}}
 {{< expandable label="Método" level="2" >}}
 A primeira etapa consiste na captura, limpeza e normalização de dados relacionados às despesas dos deputados. Tais registros estão disponíveis no Portal de Dados Abertos da Alesp, e datam desde 2002. 
 
-Inicialmente foram trabalhadas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Dado o contexto temporal dos gastos, realizou-se a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA], conforme divulgado pelo IBGE a partir de dados do Banco Central. Isso permitiu que os valores de todos os anos se mantivessem no mesmo contexto temporal.
+Inicialmente foram trabalhadas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Dado o contexto temporal dos gastos, realizou-se a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA], conforme divulgado pelo IBGE. Isso permitiu que os valores de todos os anos se mantivessem no mesmo contexto temporal.
+
+### Análise exploratória
 
 Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 14.127 registros de despesas em 4.414 números de CNPJ únicos, totalizando R$ 4.135.666,70. Cada despesa apresentou valor médio de R$ 292,75, porém com desvio-padrão elevado (R$ 681,29), indicando significativa dispersão dos dados em relação à média. O coeficiente de variação de 232,72% demonstrou alto grau de variabilidade relativo à média.
 
@@ -40,6 +40,8 @@ Notou-se ainda que a média é superior ao terceiro quartil. Isso indica que o c
 | Coeficiente de variação (%) | 232,7215... |
 | Assimetria | 7,0408... |
 | Curtose | 64,7906... |
+
+### Algoritmo de K-Means
 
 Em seguida, foi construído um algoritmo de clusterização por K-Means, em que é feita a partição de uma população de \\(n\\) dimensões em \\(k\\) conjuntos com base em sua similaridade. A organização dos conjuntos é feita com a determinação aleatória de um centroide, um ponto que observa a distância euclidiana dos demais dados em relação a ele. 
 
@@ -75,6 +77,8 @@ sendo
 
 Novamente os pontos mais próximos são agregados em conjuntos. Isso ocorre repetidas vezes até se obter convergência entre centroide e dados &mdash; isto é, a menor inércia.
 
+### K-Means++
+
 O projeto também se utiliza o método de inicialização K-Means++. Sua tendência é espalhar os centroides iniciais pelos dados, reduzindo as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal — ou seja, sua abordagem garante que os pontos mais distantes dos centroides existentes tenham maior probabilidade de serem escolhidos como novos centroides.
 
 A inicialização por K-Means++ segue as seguintes etapas:
@@ -83,6 +87,8 @@ A inicialização por K-Means++ segue as seguintes etapas:
 2. Cálculo de distâncias \\(D(x)\\) entre pontos de dados e centro mais próximo;
 3. Escolha do novo centroide \\(c_i\\) sendo \\(c_1=x^\prime\in X\\) com probabilidade ponderada \\(P(x^\prime)=\frac{D(x^\prime)^2}{\sum_{x\in X}{D(x)^2}}\\);
 4. Repetição das etapas 2 e 3 até que \\(D(x)\\) seja o menor valor.
+
+### Critérios aprimorados para convergência
 
 Além da inicialização por K-Means++, o algoritmo adota critérios de convergência avançados ao comparar o movimento dos centroides entre iterações. Sendo \\(C_t\\) o conjunto de centroides na iteração \\(t\\), o algoritmo converge se \\(\max_{c\in C_t}\lVert c-c_{t-1} \rVert < tol\\), onde \\(tol\\) é a tolerância especificada, e \\(\lVert c-c_{t-1} \rVert\\) denota a distância euclidiana.
 
