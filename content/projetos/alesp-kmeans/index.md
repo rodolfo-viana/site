@@ -21,9 +21,27 @@ Com este contexto, este projeto busca ser um instrumento para avaliação de mal
 {{< expandable label="Método" level="2" >}}
 A primeira etapa consiste na captura, limpeza e normalização de dados relacionados às despesas dos deputados. Tais registros estão disponíveis no Portal de Dados Abertos da Alesp, e datam desde 2002. 
 
-Inicialmente serão trabalhadas as despesas relacionadas a alimentação e hospedagem a partir de clusterização por meio da classificação por K-Means em conjunto univariado.
+Inicialmente foram trabalhadas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Dado o contexto temporal dos gastos, realizou-se a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA], conforme divulgado pelo IBGE a partir de dados do Banco Central. Isso permitiu que os valores de todos os anos se mantivessem no mesmo contexto temporal.
 
-Na clusterização por K-Means é feita a partição de uma população de \\(n\\) dimensões em \\(k\\) conjuntos com base em sua similaridade. A organização dos conjuntos é feita com a determinação aleatória de um centroide, um ponto que observa a distância euclidiana dos demais dados em relação a ele.
+Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 14.127 registros de despesas em 4.414 números de CNPJ únicos, totalizando R$ 4.135.666,70. Cada despesa apresentou valor médio de R$ 292,75, porém com desvio-padrão elevado (R$ 681,29), indicando significativa dispersão dos dados em relação à média. O coeficiente de variação de 232,72% demonstrou alto grau de variabilidade relativo à média.
+
+Notou-se ainda que a média é superior ao terceiro quartil. Isso indica que o conjunto de dados está inclinado para valores mais baixos, apesar da significante presença de outliers que puxa o terceiro quartil para cima. Graficamente, o valor médio maior que o terceiro quartil sugere assimetria positiva: a cauda do lado direito é mais longa do que do lado esquerdo. Essa indicação é corroborada com a assimetria de 7, enquanto a curtose de 64,8 comprova cauda longa e picos acentuados em comparação à distribuição normal.
+
+| Medida | Valor |
+|--------|-------|
+| Contagem | 14.127 |
+| Média (R$) | 292,749112 |
+| Desvio-padrão (R$) | 681,290247 |
+| Mínimo (R$) | 0 |
+| 1º Quartil (R$) | 54,265 |
+| 2º Quartil (R$) | 115,33 |
+| 3º Quartil (R$) | 253,33 |
+| Máximo (R$) | 10.259,41 |
+| Coeficiente de variação (%) | 232,72154207553792% |
+| Assimetria | 7,040865107241919 |
+| Curtose | 64,79066970927987 |
+
+Em seguida, foi construído um algoritmo de clusterização por K-Means, em que é feita a partição de uma população de \\(n\\) dimensões em \\(k\\) conjuntos com base em sua similaridade. A organização dos conjuntos é feita com a determinação aleatória de um centroide, um ponto que observa a distância euclidiana dos demais dados em relação a ele. 
 
 Enquanto a distância euclidiana para dados de \\(n\\) dimensões segue a fórmula
 
@@ -57,20 +75,20 @@ sendo
 
 Novamente os pontos mais próximos são agregados em conjuntos. Isso ocorre repetidas vezes até se obter convergência entre centroide e dados &mdash; isto é, a menor inércia.
 
-Para a maioria dos usos de K-Means, o algoritmo de Lloyd é escolhido, motivo pelo qual também é utilizado neste trabalho. Sabe-se que este algoritmo pode ser fortemente influenciado pela seleção dos centroides iniciais, levando à convergência a um *optimum local*, o que pode gerar clusters sem critérios rígidos. Para isso, o algoritmo Hartigan-Wong poderia ser um substitutivo. Contudo, análises iniciais mostraram que, neste trabalho, Hartigan-Wong não apresenta resultados diferentes de LLoyd.
-
 O projeto também se utiliza o método de inicialização K-Means++. Sua tendência é espalhar os centroides iniciais pelos dados, reduzindo as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal — ou seja, sua abordagem garante que os pontos mais distantes dos centroides existentes tenham maior probabilidade de serem escolhidos como novos centroides.
 
-A inicialização por K-Means++ segue os seguintes passos:
+A inicialização por K-Means++ segue as seguintes etapas:
 
-1. Seleção aleatória do primeiro centroide;
-2. Cálculo de \\(D(x)\\), as distâncias entre pontos de dados \\(x\\) e centro mais próximo;
-3. Escolha aleatória de um novo ponto de dados como um novo centro, usando uma distribuição de probabilidade ponderada onde um ponto \\(x\\) é escolhido com probabilidade proporcional a \\(D(x)^2\\) — isto é, tendo um conjunto de pontos \\(X\\) e um conjunto de centroides \\(C\\) já inicializados, para qualquer ponto \\(x_i\\) em \\(X\\), a probabilidade \\(P(x_i)\\) de escolher \\(x_i\\) como o próximo centroide é \\(P(x_i)=\frac{D(x_i)^2}{\sum_{x\in X}{D(x)^2}}\\), onde \\(D(x_i)\\) é a distância de \\(x_i\\) a partir do centroide mais próximo em \\(C\\);
-4. Repetição dos passos 2 e 3 até que os centros \\(k\\) sejam escolhidos.
+1. Seleção aleatória do primeiro centroide \\(c_1\\) no conjunto de dados \\(X\\);
+2. Cálculo de distâncias \\(D(x)\\) entre pontos de dados e centro mais próximo;
+3. Escolha do novo centroide \\(c_i\\) sendo \\(c_1=x^\prime\in X\\) com probabilidade ponderada \\(P(x^\prime)=\frac{D(x^\prime)^2}{\sum_{x\in X}{D(x)^2}}\\);
+4. Repetição das etapas 2 e 3 até que \\(D(x)\\) seja o menor valor.
 
-Aplicada aos dados de despesas dos deputados estaduais, esta metodologia permitirá agrupar aquelas que, segundo o valor, requerem investigação mais apurada por parte dos órgãos de controle.
+Além da inicialização por K-Means++, o algoritmo adota critérios de convergência avançados ao comparar o movimento dos centroides entre iterações. Sendo \\(C_t\\) o conjunto de centroides na iteração \\(t\\), o algoritmo converge se \\(\max_{c\in C_t}\lVert c-c_{t-1} \rVert < tol\\), onde \\(tol\\) é a tolerância especificada, e \\(\lVert c-c_{t-1} \rVert\\) denota a distância euclidiana.
+
+Aplicada aos dados de despesas dos deputados estaduais, esta metodologia permitiu agrupar aquelas que, segundo o valor, requerem investigação mais apurada por parte dos órgãos de controle.
 {{< /expandable >}}
-{{< expandable label="Código" level="2" >}}
+{{< expandable label="Código comentado" level="2" >}}
 ```py
 from typing import Tuple
 import numpy as np
@@ -78,15 +96,17 @@ import numpy as np
 
 class KMeans:
     """
-    k-means clustering class with enhanced convergence criteria.
-    Attributes:
-        k (int): Number of clusters.
-        max_iters (int): Maximum number of iterations for k-means.
-        tol (float): Convergence tolerance based on centroid movement.
-        n_init (int): Number of times the algorithm will be run with different centroid seeds.
-        threshold (int): Percentile for anomaly detection.
-        centroids (np.ndarray): Centroids for the clusters.
+    k-means com critérios de convergência aprimorados.
+
+    Atributos:
+        k (int): Número de clusters.
+        max_iters (int): Número máximo de iterações para o k-means.
+        tol (float): Tolerância de convergência baseada no movimento do centroide.
+        n_init (int): Número de vezes que o algoritmo será executado com diferentes seeds de centroides.
+        threshold (int): Percentil para detecção de anomalias.
+        centroids (np.ndarray): Centroides para os clusters.
     """
+
     def __init__(self,
                  k: int = 2,
                  max_iters: int = 100,
@@ -96,7 +116,7 @@ class KMeans:
                  centroids: np.ndarray = None
                  ):
         """
-        Initialize k-means with specified parameters.
+        Inicialização com parâmetros especificados.
         """
         self.k = k
         self.max_iters = max_iters
@@ -108,83 +128,127 @@ class KMeans:
     @staticmethod
     def _kpp_init(data: np.ndarray, k: int) -> np.ndarray:
         """
-        Initialize the centroids using the k-means++ method.
-        Args:
-            data (np.ndarray): Input data.
-            k (int): Number of desired centroids.
-        Returns:
-            centroids (np.ndarray): Initialized centroids.
+        Inicializa os centroides usando o método k-means++.
+
+        Argumentos:
+            data (np.ndarray): Dados de entrada.
+            k (int): Número de centroides desejados.
+
+        Retorna:
+            centroids (np.ndarray): Centroides inicializados.
         """
+        # selciona o primeiro centroide randomicamente
         centroids = [data[np.random.choice(len(data))]]
+        # looping para escolher os k-1 centroides restantes
         for _ in range(1, k):
+            # calcula a distância ao quadrado mínima de cada ponto de dado em relação aos centroides já selecionados
             squared_dist = np.array(
                 [np.min([np.linalg.norm(c - x) ** 2 for c in centroids]) for x in data])
+            # calcula a distribuição de probabilidades
             probs = squared_dist / squared_dist.sum()
+            # seleciona o ponto de dados com maior probabilidade para ser próximo centroide
             centroid = data[np.argmax(probs)]
+            # adiciona à lista de centroides
             centroids.append(centroid)
+        # retorna os centroides inicializados
         return np.array(centroids)
 
     def _single_run(self, data: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float]:
         """
-        Perform a single run of the k-means algorithm.
-        Args:
-            data (np.ndarray): Input data.
-        Returns:
-            centroids (np.ndarray): Best centroids after running k-means.
-            labels (np.ndarray): Cluster assignments for each data point.
-            inertia (float): Total distance of data points from their assigned centroids.
+        Realiza execução única do algoritmo k-means.
+
+        Argumentos:
+            data (np.ndarray): Dados de entrada.
+
+        Retorna:
+            centroids (np.ndarray): Melhores centroides após a execução do k-means.
+            labels (np.ndarray): Atribuições de cluster para cada ponto de dado.
+            inertia (float): Distância total dos pontos de dados a partir de seus centroides atribuídos.
         """
         centroids = self._kpp_init(data, self.k)
+        # looping para o número máximo de iterações
         for _ in range(self.max_iters):
+            # calcula a distância euclidiana entre cada ponto de dado e cada centroide
             dist = np.linalg.norm(data[:, np.newaxis] - centroids, axis=2)
+            # atribui cada ponto de dado ao centroide mais próximo
             labels = np.argmin(dist, axis=1)
+            # recalcula os centroides com base na média dos pontos de dados em cada cluster
             new_centroids = np.array(
                 [data[labels == i].mean(axis=0) for i in range(self.k)])
-
-            # Check for convergence
+            # observa a convergência e encerra o looping se a mudança de centroides estiver abaixo da tolerância
             if np.all(np.abs(new_centroids - centroids) < self.tol):
                 break
-
+            # atualiza os centroides
             centroids = new_centroids
-
-        # Calculate inertia (sum of squared distances to the nearest centroid)
+        # calcula a distância total entre os pontos de dados e os centroides a eles atribuídos
         inertia = np.sum(
             [np.linalg.norm(data[i] - centroids[labels[i]])**2 for i in range(len(data))])
+        # retorna os centroides finais, as labels atribuídas e a inércia
         return centroids, labels, inertia
 
     def fit(self, data: np.ndarray) -> None:
         """
-        Fit the k-means algorithm to the data.
-        Args:
-            data (np.ndarray): Input data.
+        Ajusta o algoritmo k-means aos dados.
+
+        Argumentos:
+            data (np.ndarray): Dados de entrada.
         """
+        # ajusta a inércia mínima inicial a valor infinito
         min_inertia = float('inf')
+        # atribuiu o valor None ao melhores centroides e labels
         best_centroids = None
         best_labels = None
-
+        # looping para o número de inicializações
         for _ in range(self.n_init):
+            # executa `_single_run`
             centroids, labels, inertia = self._single_run(data)
+            # observa se a execução atual tem inércia menor do que a melhor inércia
             if inertia < min_inertia:
+                # em caso positivo, atualiza inércia, centroides e labels
                 min_inertia = inertia
                 best_centroids = centroids
                 best_labels = labels
-
+        # atribuiu novos melhores centroides e labels à classe `KMeans`
         self.centroids = best_centroids
         self.labels = best_labels
 
     def detect(self, data: np.ndarray) -> np.ndarray:
         """
-        Detect anomalies in the data based on the distance to the nearest centroid.
-        Args:
-            data (np.ndarray): Input data.
-        Returns:
-            anomalies (np.ndarray): Detected anomalies.
+        Detecta anomalias nos dados com base na distância ao centroide mais próximo.
+
+        Argumentos:
+            data (np.ndarray): Dados de entrada.
+
+        Retorna:
+            anomalies (np.ndarray): Anomalias detectadas.
         """
+        # calcula a distância mínima de cada ponto de dado em relação a seu centroide
         dist = np.min(np.linalg.norm(
             data[:, np.newaxis] - self.centroids, axis=2), axis=1)
+        # determina o limite da distância com base no percentil de KMeans
         threshold = np.percentile(dist, self.threshold)
+        # identifica pontos de dados com distâncias maiores do que o limite
         anomalies = data[dist > threshold]
+        # retorna os valores anômalos
         return anomalies
+
+    def get_labels(self, data: np.ndarray) -> np.ndarray:
+        """
+        Atribui cada ponto de dado ao centroide mais próximo para determinar seu cluster.
+
+        Argumentos:
+            data (np.ndarray): Conjunto de dados.
+
+        Retorna:
+            np.ndarray: Array de labels de cluster correspondentes a cada ponto de dado.
+        """
+        # calcula a distância de cada ponto de dado em relação aos centroides
+        dist = np.linalg.norm(data[:, np.newaxis] - self.centroids, axis=2)
+        # atribuiu cada ponto ao centroide mais próximo
+        labels = np.argmin(dist, axis=1)
+        # retorna as labels atribuídas
+        return labels
+
 ```
 {{< /expandable >}}
 {{< expandable label="Animação: detecção de anomalias" level="2" >}}
