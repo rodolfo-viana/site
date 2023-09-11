@@ -62,7 +62,7 @@ sendo \\(P\\) e \\(Q\\) pontos individuais no eixo unidimensional e que podem se
 Aqueles mais próximos ao centroide formam um conjunto. Em seguida, a localização do centroide é recalculada considerando o custo da função &mdash; a inércia. Para conjunto univariado,
 
 $$
-J = \sum_{k=1}^{K}\sum_{x \in C_k}d^2(x, c_k)
+J = \sum_{k=1}^{K}\sum_{x \in C_k}d(x, c_k)^2
 $$
 
 sendo
@@ -73,7 +73,7 @@ sendo
 ​
 - \\(c_k\\) o centroide ​do \\(k\\)-ésimo cluster
 
-- \\(d^2(x, c_k)\\) o quadrado da distância euclidiana entre ponto \\(x\\) e centroide \\(c_k\\)
+- \\(d(x, c_k)^2\\) o quadrado da distância euclidiana entre ponto \\(x\\) e centroide \\(c_k\\)
 
 Novamente os pontos mais próximos são agregados em conjuntos. Isso ocorre repetidas vezes até se obter convergência entre centroide e dados &mdash; isto é, a menor inércia.
 
