@@ -98,6 +98,7 @@ Aplicada aos dados de despesas dos deputados estaduais, esta metodologia permiti
 ```py
 from typing import Tuple
 import numpy as np
+import pandas as pd
 
 
 class KMeans:
@@ -107,20 +108,23 @@ class KMeans:
     Atributos:
         k (int): Número de clusters.
         max_iters (int): Número máximo de iterações para o k-means.
-        tol (float): Tolerância de convergência baseada no movimento do centroide.
-        n_init (int): Número de vezes que o algoritmo será executado com diferentes seeds de centroides.
+        tol (float): Tolerância de convergência baseada no movimento do
+            centroide.
+        n_init (int): Número de vezes que o algoritmo será executado com
+            diferentes seeds de centroides.
         threshold (int): Percentil para detecção de anomalias.
         centroids (np.ndarray): Centroides para os clusters.
     """
 
-    def __init__(self,
-                 k: int = 2,
-                 max_iters: int = 100,
-                 tol: float = 1e-4,
-                 n_init: int = 30,
-                 threshold: int = 95,
-                 centroids: np.ndarray = None
-                 ):
+    def __init__(
+        self,
+        k: int = 2,
+        max_iters: int = 100,
+        tol: float = 1e-4,
+        n_init: int = 30,
+        threshold: int = 95,
+        centroids: np.ndarray = None,
+    ):
         """
         Inicialização com parâmetros especificados.
         """
@@ -143,21 +147,72 @@ class KMeans:
         Retorna:
             centroids (np.ndarray): Centroides inicializados.
         """
-        # selciona o primeiro centroide randomicamente
         centroids = [data[np.random.choice(len(data))]]
-        # looping para escolher os k-1 centroides restantes
         for _ in range(1, k):
-            # calcula a distância ao quadrado mínima de cada ponto de dado em relação aos centroides já selecionados
             squared_dist = np.array(
-                [np.min([np.linalg.norm(c - x) ** 2 for c in centroids]) for x in data])
-            # calcula a distribuição de probabilidades
+                [np.min([np.linalg.norm(c - x) ** 2 for c in centroids]) for x in data]
+            )
             probs = squared_dist / squared_dist.sum()
-            # seleciona o ponto de dados com maior probabilidade para ser próximo centroide
             centroid = data[np.argmax(probs)]
-            # adiciona à lista de centroides
             centroids.append(centroid)
-        # retorna os centroides inicializados
         return np.array(centroids)
+
+    def get_optimal_k(self, data: np.ndarray, k_max: int = 10) -> int:
+        """
+        Determina o número ideal de clusters k com o método Silhouette.
+
+        Argumentos:
+            data (np.ndarray): Dados sobre os quais o número ideal de k
+                será determinado.
+            k_max (int, opcional): Valor máximo de k. Valor padrão: 10.
+
+        Retorna:
+            optimal_k (int): Número ideal de clusters.
+        """
+        max_silhouette = -1
+        optimal_k = 2
+
+        def get_score(data, labels):
+            """
+            Calcula a média de Silhouette score dadas as labels de
+            clusterização do conjunto de dados.
+
+            Argumentos:
+                data (np.ndarray): Dados de entrada.
+                labels (np.ndarray): Labels da clusterização para os
+                    pontos de dados.
+
+            Retorna:
+                (float): Silhouette score médio.
+            """
+            unique_labels = np.unique(labels)
+            silhouettes = []
+            for i, label in enumerate(labels):
+                points_within_cluster = data[labels == label]
+                avg_dist_within_cluster = np.mean(
+                    np.linalg.norm(points_within_cluster - data[i], axis=1)
+                )
+                min_avg_dists = [
+                    np.mean(
+                        np.linalg.norm(data[labels == other_label] - data[i], axis=1)
+                    )
+                    for other_label in unique_labels
+                    if other_label != label
+                ]
+                silhouette_value = (
+                    np.min(min_avg_dists) - avg_dist_within_cluster
+                ) / max(avg_dist_within_cluster, np.min(min_avg_dists))
+                silhouettes.append(silhouette_value)
+            return np.mean(silhouettes)
+
+        for k in range(2, k_max + 1):
+            self.k = k
+            self.fit(data)
+            silhouette_avg = get_score(data, self.labels)
+            if silhouette_avg > max_silhouette:
+                max_silhouette = silhouette_avg
+                optimal_k = k
+        return optimal_k
 
     def _single_run(self, data: np.ndarray) -> Tuple[np.ndarray, np.ndarray, float]:
         """
@@ -167,60 +222,54 @@ class KMeans:
             data (np.ndarray): Dados de entrada.
 
         Retorna:
-            centroids (np.ndarray): Melhores centroides após a execução do k-means.
-            labels (np.ndarray): Atribuições de cluster para cada ponto de dado.
-            inertia (float): Distância total dos pontos de dados a partir de seus centroides atribuídos.
+            centroids (np.ndarray): Melhores centroides após a execução
+                do k-means.
+            labels (np.ndarray): Atribuições de cluster para cada ponto
+                de dado.
+            inertia (float): Distância total dos pontos de dados a
+                partir de seus centroides atribuídos.
         """
         centroids = self._kpp_init(data, self.k)
-        # looping para o número máximo de iterações
         for _ in range(self.max_iters):
-            # calcula a distância euclidiana entre cada ponto de dado e cada centroide
             dist = np.linalg.norm(data[:, np.newaxis] - centroids, axis=2)
-            # atribui cada ponto de dado ao centroide mais próximo
             labels = np.argmin(dist, axis=1)
-            # recalcula os centroides com base na média dos pontos de dados em cada cluster
             new_centroids = np.array(
-                [data[labels == i].mean(axis=0) for i in range(self.k)])
-            # observa a convergência e encerra o looping se a mudança de centroides estiver abaixo da tolerância
+                [data[labels == i].mean(axis=0) for i in range(self.k)]
+            )
             if np.all(np.abs(new_centroids - centroids) < self.tol):
                 break
-            # atualiza os centroides
             centroids = new_centroids
-        # calcula a distância total entre os pontos de dados e os centroides a eles atribuídos
         inertia = np.sum(
-            [np.linalg.norm(data[i] - centroids[labels[i]])**2 for i in range(len(data))])
-        # retorna os centroides finais, as labels atribuídas e a inércia
+            [
+                np.linalg.norm(data[i] - centroids[labels[i]]) ** 2
+                for i in range(len(data))
+            ]
+        )
         return centroids, labels, inertia
 
     def fit(self, data: np.ndarray) -> None:
         """
         Ajusta o algoritmo k-means aos dados.
 
-        Argumentos:
+        Argumento:
             data (np.ndarray): Dados de entrada.
         """
-        # ajusta a inércia mínima inicial a valor infinito
-        min_inertia = float('inf')
-        # atribui o valor None ao melhores centroides e labels
+        min_inertia = float("inf")
         best_centroids = None
         best_labels = None
-        # looping para o número de inicializações
         for _ in range(self.n_init):
-            # executa `_single_run`
             centroids, labels, inertia = self._single_run(data)
-            # observa se a execução atual tem inércia menor do que a melhor inércia
             if inertia < min_inertia:
-                # em caso positivo, atualiza inércia, centroides e labels
                 min_inertia = inertia
                 best_centroids = centroids
                 best_labels = labels
-        # atribui novos melhores centroides e labels à classe `KMeans`
         self.centroids = best_centroids
         self.labels = best_labels
 
     def detect(self, data: np.ndarray) -> np.ndarray:
         """
-        Detecta anomalias nos dados com base na distância ao centroide mais próximo.
+        Detecta anomalias nos dados com base na distância ao centroide
+        mais próximo.
 
         Argumentos:
             data (np.ndarray): Dados de entrada.
@@ -228,33 +277,39 @@ class KMeans:
         Retorna:
             anomalies (np.ndarray): Anomalias detectadas.
         """
-        # calcula a distância mínima de cada ponto de dado em relação a seu centroide
-        dist = np.min(np.linalg.norm(
-            data[:, np.newaxis] - self.centroids, axis=2), axis=1)
-        # determina o limite da distância com base no percentil de KMeans
+        dist = np.min(
+            np.linalg.norm(data[:, np.newaxis] - self.centroids, axis=2), axis=1
+        )
         threshold = np.percentile(dist, self.threshold)
-        # identifica pontos de dados com distâncias maiores do que o limite
         anomalies = data[dist > threshold]
-        # retorna os valores anômalos
         return anomalies
 
-    def get_labels(self, data: np.ndarray) -> np.ndarray:
-        """
-        Atribui cada ponto de dado ao centroide mais próximo para determinar seu cluster.
 
-        Argumentos:
-            data (np.ndarray): Conjunto de dados.
+def run_kmeans(group: pd.DataFrame, num_var: str) -> pd.DataFrame:
+    """
+    Executa o algoritmo de K-Means em CNPJ único e adiciona informações
+    sobre quais valores são observados como anomalias e quantos k foram
+    usados para obter tal resultado.
 
-        Retorna:
-            np.ndarray: Array de labels de cluster correspondentes a cada ponto de dado.
-        """
-        # calcula a distância de cada ponto de dado em relação aos centroides
-        dist = np.linalg.norm(data[:, np.newaxis] - self.centroids, axis=2)
-        # atribui cada ponto ao centroide mais próximo
-        labels = np.argmin(dist, axis=1)
-        # retorna as labels atribuídas
-        return labels
+    Argumentos:
+        group (pd.DataFrame): Grupo de CNPJs elegíveis para o algoritmo.
+        num_var (str): Nome da variável numérica sobre a qual o
+            algoritmo será rodado.
 
+    Retorna:
+        (pd.DataFrame): Dataframe com os dados originais e as colunas
+            'Anomalia' (com valor 0 para não anomalia e 1 para anomalia)
+            e 'k' (o número ideal de clusters usados pelo K-Means).
+    """
+    kmeans = KMeans()
+    data = group[num_var].values.reshape(-1, 1)
+    k_optimal = kmeans.get_optimal_k(data)
+    kmeans.k = k_optimal
+    kmeans.fit(data)
+    anomalies = kmeans.detect(data).flatten()
+    group["Anomalia"] = group[num_var].isin(anomalies).astype(int)
+    group["k"] = k_optimal
+    return group
 ```
 {{< /expandable >}}
 {{< expandable label="Animação: detecção de anomalias" level="2" >}}
