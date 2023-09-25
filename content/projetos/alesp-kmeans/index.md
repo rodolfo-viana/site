@@ -5,7 +5,7 @@ toc: true
 ---
 
 {{< warning >}}
-O texto apresentado é uma versão resumida e editada do meu trabalho de conclusão de curso do MBA em Data Science e Analytics na Esalq-USP.
+O texto apresentado é uma versão editada do meu trabalho de conclusão do MBA em Data Science e Analytics na Esalq-USP, com orientação da Profª Drª Ana Julia Righetto.
 {{< /warning >}}
 
 ## Introdução
@@ -26,27 +26,9 @@ A primeira etapa consistiu na captura dos dados a partir do Portal de Dados Aber
 
 Foram inseridas neste estudo apenas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Descartaram-se, ainda, fornecedores com menos de 20 despesas no quinquênio, haja vista a necessidade de se ter número significativo para a realização de clusterização.
 
-Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 4.453 registros de despesas em 86 números de CNPJ únicos, totalizando R$ 1.784.601,08. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado (R$ 967,47), indicando significativa dispersão dos dados em relação à média. O coeficiente de variação de 241,41% demonstrou alto grau de variabilidade relativo à média.
-
-Notou-se ainda que a média é superior ao terceiro quartil. Isso indica que o conjunto de dados está inclinado para valores mais baixos, apesar da significante presença de outliers que puxa o terceiro quartil para cima. Graficamente, o valor médio maior que o terceiro quartil sugere assimetria positiva: a cauda do lado direito é mais longa do que do lado esquerdo. Essa indicação é corroborada com a assimetria de 5,21, enquanto a curtose de 32,67 comprova cauda longa e picos acentuados em comparação à distribuição normal.
-
-| Medida | Valor |
-|---|---|
-| Contagem | 4.453 |
-| Média (R$) | 400,763773 |
-| Desvio-padrão (R$) | 967,469752 | 
-| Mínimo (R$) | 6,49 | 
-| 1º Quartil (R$) | 55,75 | 
-| 2º Quartil (R$) | 123,14 | 
-| 3º Quartil (R$) | 276,18 |
-| Máximo (R$) | 10.250,41 |
-| Coeficiente de variação (%) | 241,40648... |
-| Assimetria | 5,21061... |
-| Curtose | 32,66851... |
-
 ### Algoritmo de K-Means
 
-Em seguida, foi construído um algoritmo de clusterização por K-Means. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide). 
+Foi desenvolvido um algoritmo de clusterização por K-Means. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide). 
 
 Dado um conjunto de observações \\(x = \lbrace x_1, x_2, ..., x_n\rbrace \\), o algoritmo reparte as \\(n\\) observações em \\(k \(\geq n\)\\) conjuntos \\(S = \lbrace S_1, S_2, ..., S_k \rbrace\\) a fim de minimizar a soma dos quadrados dentro do cluster.
 
@@ -177,99 +159,422 @@ sendo,
 
 ## Resultados
 
-O algoritmo desenvolvido processou as informações de 4.453 registros de despesas em 86 números de CNPJ únicos, conforme recorte supracitado conforme os parâmetros a seguir:
+Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 4.453 registros de despesas em 86 números de CNPJ únicos, totalizando R$ 1.784.601,08. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado (R$ 967,47), indicando significativa dispersão dos dados em relação à média. O coeficiente de variação de 241,41% demonstrou alto grau de variabilidade relativo à média.
+
+Notou-se ainda que a média é superior ao terceiro quartil. Isso indica que o conjunto de dados está inclinado para valores mais baixos, apesar da significante presença de outliers que puxa o terceiro quartil para cima. Graficamente, o valor médio maior que o terceiro quartil sugere assimetria positiva: a cauda do lado direito é mais longa do que do lado esquerdo. Essa indicação é corroborada com a assimetria de 5,21, enquanto a curtose de 32,67 comprova cauda longa e picos acentuados em comparação à distribuição normal.
+
+| Medida | Valor |
+|---|---|
+| Contagem | 4.453 |
+| Média (R$) | 400,763773 |
+| Desvio-padrão (R$) | 967,469752 | 
+| Mínimo (R$) | 6,49 | 
+| 1º Quartil (R$) | 55,75 | 
+| 2º Quartil (R$) | 123,14 | 
+| 3º Quartil (R$) | 276,18 |
+| Máximo (R$) | 10.250,41 |
+| Coeficiente de variação (%) | 241,40648... |
+| Assimetria | 5,21061... |
+| Curtose | 32,66851... |
+
+O algoritmo desenvolvido processou as informações dos 4.453 registros conforme os parâmetros a seguir:
 
 | Parâmetro | Valor |
 |---|---|
 | Número mínimo de clusters | 2 |
 | Número de clusters utilizados | 2 a 10, selecionado pelo método do cotovelo |
 | Máximo de iterações | 100 |
-| Tolerância para convergência | 0.0001 |
+| Tolerância para convergência | 0,0001 |
 | Percentil para detecção de anomalia |	95 |
 
 Ele retornou 262 anomalias que somam R$ 197.697,24 — 11,08% do valor total de despesas. 
 
-Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Tal definição é importante aqui porque o intuito do trabalho é fornecer um algoritmo para detecção de possíveis fraudes no uso de verbas públicas. Uma amostra de 12 empresas contendo pouco mais de 10% das anomalias ilustra a lógica de que nem toda anomalia deve ser observada como indício de fraude.
+Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Tal definição é importante aqui porque o intuito do trabalho é fornecer um algoritmo para detecção de possíveis fraudes no uso de verbas públicas. Há anomalias que se encontram no meio de todas as despesas de determinada empresa — estas não são os maiores valores no conjunto de despesas e, portanto, são falsos positivos. 
 
-<img src="Imagem1.svg" width="100%"><br><small>Nota: empresas identificadas de 1 a 12 para melhor visualização</small>
-
-Há anomalias que se encontram no meio de todas as despesas de determinada empresa — estas não são os maiores valores no conjunto de despesas e, portanto, são falsos positivos. Na ilustração, as empresas 3 e 12, cujas despesas são de grandes valores, têm anomalias, mas diluídas no conjunto de outras despesas, não podendo, assim, ser consideradas possíveis indícios de fraude; já as anomalias das empresas 2, 4 e 6, que têm poucas despesas e todas de baixos valores, merecem ser mais bem escrutinadas por órgãos de controle. 
-
-Em K-Means, a determinação de uma anomalia é feita pela distância dos pontos em relação a um centroide, o que forma um cluster. Na amostra de 12 empresas há aquela com 2 clusters (empresa 2) até empresas com 8 clusters (empresas 3, 9, 10 e 11), o que explica por que pode haver anomalias diluídas no meio de despesas menores e maiores. 
-
-<img src="Imagem2.svg" width="100%">
-<small>Nota: empresas identificadas de 1 a 12 para melhor visualização</small>
-
-Já no conjunto de 86 empresas, os clusters vão de 2 a 10.
-
-Validamos os agrupamentos por meio de dois instrumentos conforme supracitado: 
+Em K-Means, a determinação de uma anomalia é feita pela distância dos pontos em relação a um centroide, o que forma um cluster. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos os agrupamentos por meio de dois instrumentos conforme supracitado: 
 
 1. Método da silhueta, cujos resultados aceitáveis devem estar entre 0,5 e 1 de uma escala que vai de -1 a 1;
 2. Índice de Davies-Bouldin, com resultados ideais entre 0 a 0,5, numa escala que vai de 0 a 1. 
 
-Na amostra em questão, conseguimos obter valores ideais. 
-
-<img src="Imagem3.svg" width="100%">
-<small>Nota: empresas identificadas de 1 a 12 para melhor visualização</small>
-
 Do conjunto de 86 empresas, todas apresentam resultados ideias para o método da silhueta (de 0,577 a 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (0,166 a 0,489), enquanto 7 apresentaram resultados abaixo do ideal (0,508 a 0,573). 
 
-Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters. 
+Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters. Como resultado final, foram detectadas 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
 
-<img src="Imagem4.svg" width="100%">
-<small>Nota: empresas identificadas de 1 a 86 para melhor visualização</small>
-
-Como resultado final, foram detectadas 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
-
-{{< expandable label="Empresas e anomalias" level="2" >}}
-| CNPJ | Valor (R$) | 
-|---|---|
-| 02.012.862/0001-60 | 9.584,44 |
-| 03.071.465/0001-21 | 1.658,78 |
-| 03.300.974/0049-23 | 298,95 |
-| 08.402.977/0001-47 | 269,26 |
-| 09.060.964/0106-77 | 448,74 |
-| 09.060.964/0106-77 | 389,17 |
-| 09.399.877/0001-71 | 1.788,63 |
-| 09.438.123/0001-83 | 570,85 |
-| 09.456.178/0001-16 | 285,66 |
-| 09.456.550/0001-94 | 487,44 |
-| 09.456.550/0001-94 | 453,99 |
-| 09.456.704/0001-48 | 405,21 |
-| 09.456.704/0001-48 | 438,34 |
-| 09.456.714/0001-83 | 567,66 |
-| 09.536.662/0001-55 | 407,22 |
-| 11.384.785/0001-60 | 840,34 |
-| 13.232.868/0001-69 | 1.683,45 |
-| 13.232.868/0001-69 | 1.498,23 |
-| 42.591.651/0612-82 | 134,45 |
-| 42.591.651/0612-82 | 119,93 |
-| 43.386.903/0001-65 | 308,69 |
-| 43.386.903/0001-65 | 1.036,99 |
-| 43.386.903/0001-65 | 1.361,20 |
-| 44.993.632/0001-79 | 1.887,10 |
-| 44.993.632/0001-79 | 2.621,23 |
-| 44.993.632/0001-79 | 2.218,63 |
-| 45.007.937/0001-27 | 1.556,45 |
-| 47.079.637/0001-89 | 1.805,09 |
-| 49.967.557/0001-95 | 1.777,74 |
-| 50.244.235/0001-05 | 108,86 |
-| 51.483.956/0001-22 | 184,01 |
-| 54.867.247/0001-39 | 216,09 |
-| 54.867.247/0001-39 | 447,56 |
-| 54.867.247/0001-39 | 359,06 |
-| 54.951.561/0001-03 | 239,37 |
-| 56.007.859/0001-87 | 593,48 |
-| 58.699.232/0001-60 | 218,54 |
-| 61.084.018/0001-03 | 1.372,78 |
-| 61.359.691/0001-09 | 181,82 |
-| 61.563.557/0001-25 | 242,33 |
-| 61.980.272/0012-42 | 219,43 |
-| 65.684.037/0003-93 | 525,07 |
-| 65.684.037/0003-93 | 790,71 |
-| 65.684.037/0003-93 | 495,19 |
-| 65.684.037/0003-93 | 647,51 |
-| 66.728.858/0001-85 | 603,21 |
+{{< expandable label="Veja empresas e anomalias" level="2" >}}
+<table style="font-size:0.9em;border-collapse:collapse;table-layout:auto;width:100%">
+<thead>
+<tr>
+<th>Ano</th>
+<th>Mês</th>
+<th>Matrícula do parlamentar</th>
+<th>Valor real</th>
+<th>Valor corrigido</th>
+<th>CNPJ do estabelecimento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2019</td>
+<td>8</td>
+<td>300584</td>
+<td>1.340,00</td>
+<td>1.658,78</td>
+<td>03.071.465/0001-21</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>4</td>
+<td>300523</td>
+<td>229,12</td>
+<td>298,95</td>
+<td>03.300.974/0049-23</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>10</td>
+<td>300626</td>
+<td>266,51</td>
+<td>269,26</td>
+<td>08.402.977/0001-47</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>4</td>
+<td>300344</td>
+<td>360,91</td>
+<td>448,74</td>
+<td>09.060.964/0106-77</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>10</td>
+<td>300344</td>
+<td>314,57</td>
+<td>389,17</td>
+<td>09.060.964/0106-77</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>7</td>
+<td>300520</td>
+<td>1.398,26</td>
+<td>1.788,63</td>
+<td>09.399.877/0001-71</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>8</td>
+<td>300344</td>
+<td>445,86</td>
+<td>570,85</td>
+<td>09.438.123/0001-83</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>4</td>
+<td>300620</td>
+<td>229,75</td>
+<td>285,66</td>
+<td>09.456.178/0001-16</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>6</td>
+<td>300344</td>
+<td>379,80</td>
+<td>487,44</td>
+<td>09.456.550/0001-94</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>8</td>
+<td>300344</td>
+<td>354,59</td>
+<td>453,99</td>
+<td>09.456.550/0001-94</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>4</td>
+<td>300344</td>
+<td>432,16</td>
+<td>438,34</td>
+<td>09.456.704/0001-48</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>6</td>
+<td>300534</td>
+<td>326,36</td>
+<td>405,21</td>
+<td>09.456.704/0001-48</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>9</td>
+<td>300534</td>
+<td>458,39</td>
+<td>567,66</td>
+<td>09.456.714/0001-83</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>7</td>
+<td>300449</td>
+<td>403,31</td>
+<td>407,22</td>
+<td>09.536.662/0001-55</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>9</td>
+<td>300415</td>
+<td>678,58</td>
+<td>840,34</td>
+<td>11.384.785/0001-60</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>9</td>
+<td>300619</td>
+<td>1.209,82</td>
+<td>1.498,23</td>
+<td>13.232.868/0001-69</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>10</td>
+<td>300619</td>
+<td>1.360,75</td>
+<td>1.683,45</td>
+<td>13.232.868/0001-69</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>5</td>
+<td>300367</td>
+<td>118,80</td>
+<td>119,93</td>
+<td>42.591.651/0612-82</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>6</td>
+<td>300615</td>
+<td>110,60</td>
+<td>134,45</td>
+<td>42.591.651/0612-82</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>9</td>
+<td>300549</td>
+<td>249,27</td>
+<td>308,69</td>
+<td>43.386.903/0001-65</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>11</td>
+<td>300624</td>
+<td>1.030,60</td>
+<td>1.036,99</td>
+<td>43.386.903/0001-65</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>12</td>
+<td>300624</td>
+<td>1.361,20</td>
+<td>1.361,20</td>
+<td>43.386.903/0001-65</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>2</td>
+<td>300260</td>
+<td>1.441,83</td>
+<td>1.887,10</td>
+<td>44.993.632/0001-79</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>3</td>
+<td>300260</td>
+<td>2.004,54</td>
+<td>2.621,23</td>
+<td>44.993.632/0001-79</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>4</td>
+<td>300260</td>
+<td>1.700,39</td>
+<td>2.218,63</td>
+<td>44.993.632/0001-79</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>2</td>
+<td>300470</td>
+<td>1.189,20</td>
+<td>1.556,45</td>
+<td>45.007.937/0001-27</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>6</td>
+<td>300440</td>
+<td>1.800,00</td>
+<td>1.805,09</td>
+<td>47.079.637/0001-89</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>9</td>
+<td>300209</td>
+<td>1.395,16</td>
+<td>1.777,74</td>
+<td>49.967.557/0001-95</td>
+</tr>
+<tr>
+<td>2020</td>
+<td>12</td>
+<td>300607</td>
+<td>93,50</td>
+<td>108,86</td>
+<td>50.244.235/0001-05</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>2</td>
+<td>300376</td>
+<td>140,59</td>
+<td>184,01</td>
+<td>51.483.956/0001-22</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>6</td>
+<td>300644</td>
+<td>174,04</td>
+<td>216,09</td>
+<td>54.867.247/0001-39</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>7</td>
+<td>300644</td>
+<td>361,15</td>
+<td>447,56</td>
+<td>54.867.247/0001-39</td>
+</tr>
+<tr>
+<td>2021</td>
+<td>11</td>
+<td>300644</td>
+<td>336,96</td>
+<td>359,06</td>
+<td>54.867.247/0001-39</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>4</td>
+<td>300520</td>
+<td>236,00</td>
+<td>239,37</td>
+<td>54.951.561/0001-03</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>3</td>
+<td>300264</td>
+<td>453,85</td>
+<td>593,48</td>
+<td>56.007.859/0001-87</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>5</td>
+<td>300209</td>
+<td>168,16</td>
+<td>218,54</td>
+<td>58.699.232/0001-60</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>7</td>
+<td>300520</td>
+<td>1.073,17</td>
+<td>1.372,78</td>
+<td>61.084.018/0001-03</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>5</td>
+<td>300520</td>
+<td>180,10</td>
+<td>181,82</td>
+<td>61.359.691/0001-09</td>
+</tr>
+<tr>
+<td>2022</td>
+<td>9</td>
+<td>300645</td>
+<td>238,45</td>
+<td>242,33</td>
+<td>61.563.557/0001-25</td>
+</tr>
+<tr>
+<td>2018</td>
+<td>12</td>
+<td>300344</td>
+<td>172,88</td>
+<td>219,43</td>
+<td>61.980.272/0012-42</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>2</td>
+<td>300602</td>
+<td>513,97</td>
+<td>647,51</td>
+<td>65.684.037/0003-93</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>4</td>
+<td>300608</td>
+<td>422,30</td>
+<td>525,07</td>
+<td>65.684.037/0003-93</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>5</td>
+<td>300608</td>
+<td>636,78</td>
+<td>790,71</td>
+<td>65.684.037/0003-93</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>9</td>
+<td>300608</td>
+<td>399,87</td>
+<td>495,19</td>
+<td>65.684.037/0003-93</td>
+</tr>
+<tr>
+<td>2019</td>
+<td>3</td>
+<td>300507</td>
+<td>482,40</td>
+<td>603,21</td>
+<td>66.728.858/0001-85</td>
+</tr>
+</tbody>
+</table>
 {{< /expandable >}}
 
 ## Códigos comentados
