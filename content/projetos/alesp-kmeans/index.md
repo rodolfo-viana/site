@@ -10,11 +10,11 @@ O texto apresentado é uma versão editada do meu trabalho de conclusão do MBA 
 
 ## Introdução
 
-Cada um dos 94 parlamentares da Assembleia Legislativa do Estado de São Paulo [Alesp] tem direito aos Auxílio-Encargos Gerais de Gabinete de Deputado e Auxílio-Hospedagem, referenciados conjuntamente como "verba de gabinete". Tal direito foi conferido pela resolução 783, artigo 11, de 1º de julho de 1997[^1], e se trata de um valor mensal devido pelo Estado aos deputados a fim de que eles possam cobrir despesas inerentes ao pleno exercício das atividades parlamentares. A resolução estipula o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp]. Em 2022, com o valor da Ufesp em R$ 31,97[^2], o limite mensal da verba de gabinete que poderia ser ressarcido por deputado foi de R$ 39.962,50.
+Cada um dos 94 parlamentares da Assembleia Legislativa do Estado de São Paulo [Alesp] tem direito aos Auxílio-Encargos Gerais de Gabinete de Deputado e Auxílio-Hospedagem, referenciados conjuntamente como "verba de gabinete". Tal direito foi conferido pela resolução 783, artigo 11, de 1º de julho de 1997[^1], e se trata de um valor mensal devido pelo Estado aos deputados a fim de que eles possam cobrir despesas inerentes ao pleno exercício das atividades parlamentares. A resolução estipula o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp]. Em 2022, com o valor da Ufesp em R$ 31,97[^2], o limite mensal que poderia ser ressarcido por deputado foi de R$ 39.962,50.
 
 Naquele ano, o valor total empenhado para custeio da verba de gabinete perfez R$ 26.652.243,51[^3]. O montante foi 24,43% maior que a soma em 2021, de R$ 21.419.316,88[^3], e menor do que o valor anotado na rubrica para 2023, de R$ 28.607.099,96[^3]. Caso este montante se cumpra neste ano, será a primeira vez que o valor ultrapassa R$ 28,5 milhões desde 2018.
 
-Tais somas de recursos públicos podem servir, ainda que parcialmente, para infringir a lei. Um exemplo é o processo investigatório SEI 29.0001.0246360.2021-54[^4], que apura o pagamento por locação de imóveis pertencentes a aliados políticos do deputado Murilo Felix e nunca utilizados. Outro exemplo é a ação penal 0037174-14.2021.8.26.0000[^5], que apura, entre outros elementos, o ressarcimento de despesas nunca efetuadas por parte do deputado Rogério Nogueira.
+Tais somas de recursos públicos são escrutinadas por órgãos de controle que, não raro, questionam sua finalidade. Um exemplo é o processo investigatório SEI 29.0001.0246360.2021-54[^4], que apura o pagamento por locação de imóveis pertencentes a aliados políticos do deputado Murilo Felix e nunca utilizados. Outro exemplo é a ação penal 0037174-14.2021.8.26.0000[^5], que aponta, entre outros elementos, o ressarcimento de despesas nunca efetuadas por parte do deputado Rogério Nogueira.
 
 Com este contexto, este projeto busca ser um instrumento para avaliação de malversação de dinheiro público por meio de *unsupervised machine learning*. Seu objetivo não é afirmar peremptoriamente se determinada despesa é fraudulenta ou não; seu escopo é servir de ferramenta para uma observação inicial dos gastos, que podem ser analisados por meio de clusterização, onde se objetiva encontrar um grupo de despesas cujos valores são anômalos.
 
@@ -22,13 +22,13 @@ Com este contexto, este projeto busca ser um instrumento para avaliação de mal
 
 ### Análise exploratória
 
-A primeira etapa consistiu na captura dos dados a partir do Portal de Dados Abertos da Alesp[^6], onde estão disponíveis arquivos no formato `xml` que datam desde 2002 e contêm elementos que indicam o período de referência ("Ano", "Mês"), além de informações tanto do parlamentar ("Matrícula", "Deputado") quanto da despesa ("Fornecedor", "CNPJ", "Tipo", "Valor"). Para este trabalho, foram utilizados apenas "CNPJ" e "Valor", a fim de desconsiderar eventuais vieses ideológicos. Dado o contexto temporal dos gastos, "Ano" e "Mês" foram usados tão somente para realizar a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA], conforme divulgado pelo Instituto Brasileiro de Geografia e Estatística [IBGE][^7]. Com isso, descartou-se a temporalidade das despesas.
+A primeira etapa consistiu na captura dos dados a partir do Portal de Dados Abertos da Alesp[^6], onde estão disponíveis arquivos no formato `xml` que datam desde 2002 e contêm elementos que indicam o período de referência ("Ano", "Mês"), além de informações tanto do parlamentar ("Matrícula", "Deputado") quanto da despesa ("Fornecedor", "CNPJ", "Tipo", "Valor"). Para este trabalho, foram ingorados os nomes dos parlamentares a fim de desconsiderar eventuais vieses ideológicos. Dado o contexto temporal dos gastos, "Ano" e "Mês" foram usados tão somente para realizar a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA], conforme divulgado pelo Instituto Brasileiro de Geografia e Estatística [IBGE][^7]. A temporalidade das despesas, portanto, foi descartada.
 
 Foram inseridas neste estudo apenas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Descartaram-se, ainda, fornecedores com menos de 20 despesas no quinquênio, haja vista a necessidade de se ter número significativo para a realização de clusterização.
 
 ### Algoritmo de K-Means
 
-Foi desenvolvido um algoritmo de clusterização por K-Means. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide). 
+Desenvolveu-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide). 
 
 Dado um conjunto de observações \\(x = \lbrace x_1, x_2, ..., x_n\rbrace \\), o algoritmo reparte as \\(n\\) observações em \\(k \(\geq n\)\\) conjuntos \\(S = \lbrace S_1, S_2, ..., S_k \rbrace\\) a fim de minimizar a soma dos quadrados dentro do cluster.
 
@@ -50,20 +50,13 @@ Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo 
 3. Os pontos próximos aos centroides formam clusters:<br><img src="333.svg" width="100%">.
 4. Os pontos que não se encontram nos clusters são considerados anomalias:<br><img src="444.svg" width="100%">.
 
-A aplicação de K-Means, porém, impõe algumas necessidades a este trabalho:
-
-- Pré-determinação da quantidade de clusters;
-- Inicialização de centroides considerando mínimo global em vez de mínimo local;
-- Critério para convergência ideal dos centroides;
-- Validação dos resultados.
-
-Para aplacar tais limitações, foram utilizados o método do cotovelo, o método K-Means++, a comparação do movimento de centroides entre iterações e validação por meio do método da silhueta e do índice de Davies-Bouldin.
+A aplicação de K-Means, porém, impõe algumas necessidades a este trabalho, tais como determinação prévia da quantidade de clusters, um método de inicialização de centroides que considere mínimo global em vez de mínimo local, critério para convergência ideal dos centroides e validação dos resultados. Para aplacar tais limitações, foram utilizados, respectivamente, o método do cotovelo, o método K-Means++, a comparação do movimento de centroides entre iterações e validação por meio do método da silhueta e do índice de Davies-Bouldin.
 
 #### Método do cotovelo
 
-A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] — *Elbow method* — é uma forma de obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados. 
+A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] — *Elbow method* — é uma forma de se obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados. 
 
-A heurística opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição da soma dos quadrados intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo".
+A heurística opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo".
 
 <img src="666.svg" width="100%">
 
@@ -73,7 +66,7 @@ O ponto em que essa estabilização se torna perceptível representa uma estimat
 
 A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. A alta sensibilidade da técnica de agrupamento pode levar a uma solução de mínimo local em vez de uma global, gerando partições que não sejam ideais[^10]. 
 
-Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização K-Means++[^11], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. 
+Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização K-Means++[^11], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
 
 Dado um conjunto de pontos \\(D\\) e um conjunto de centroides já selecionados \\(C\\), a probabilidade de se escolher o ponto de dado \\(x\\) como próximo centroide é calculada por meio de
 
@@ -83,9 +76,7 @@ $$
 
 sendo, \\(D(x)\\): distância entre o ponto \\(x\\) e o centroide mais próximo em \\(C\\).
 
-A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal. 
-
-Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Tais pontos de dados próximos ao centroide formam clusters ou agrupamentos. Considerando o ponto \\(x\\) e um conjunto de centroides \\(C\\), o rótulo do cluster \\(l\\) ao qual \\(x\\) pertence é computado por
+Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Pontos próximos ao centroide formam clusters. Considerando o ponto \\(x\\) e um conjunto de centroides \\(C\\), o rótulo do cluster \\(l\\) ao qual \\(x\\) pertence é computado por
 
 $$
 l(x) = \arg \min_{c \in C}\Vert x - c \Vert
@@ -98,6 +89,10 @@ c_i = \frac{1}{\vert S_i \vert}\sum_{x \in S_i} x
 $$
 
 onde, \\(S_i\\): conjunto de todos os pontos atribuídos ao centroide \\(i\\).
+
+Na animação a seguir é possível acompanhar a movimentação dos centroides entre iterações para 12 empresas aleatórias e \\(k=2\\).
+
+<img src="anomalies.gif" style="width:100%; height:auto;" >
 
 A cada iteração de atualização de centroides é computada a inércia. Para conjunto univariado, 
 
@@ -129,7 +124,7 @@ $$
 s_i = \frac{{b_i} - {a_i}}{\max({a_i},{b_i})}
 $$
 
-onde:
+onde,
 
 - \\(a_i\\): distância média de \\(i\\) para todos os outros pontos intra-agrupamento
 - \\(b_i\\): a menor distância média de \\(i\\) para todos os pontos em agrupamentos diferentes
@@ -144,7 +139,7 @@ O método da silhueta retorna resultados no intervalo de -1 a 1. Se o valor for:
 
 Enquanto o método da silhueta faz comparação entre um ponto único e os agrupamentos, o índice de Davies-Bouldin[^13], segunda medida usada na validação dos resultados, observa a coesão do cluster, dada a lógica de que um agrupamento adequado é denso em si, ao passo que distante dos demais agrupamentos.
 
-Melhor o agrupamento quanto mais o índice se aproxima de 0, resultado obtido por
+Melhor o agrupamento quanto mais próximo de 0 o índice é, resultado obtido por
 
 $$
 \frac{1}{k}\sum_{i=1}^{k}\max_{i \ne j}\bigg(\frac{{S_i}+{S_j}}{M_{ij}}\bigg)
@@ -159,9 +154,9 @@ sendo,
 
 ## Resultados
 
-Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 4.453 registros de despesas em 86 números de CNPJ únicos, totalizando R$ 1.784.601,08. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado (R$ 967,47), indicando significativa dispersão dos dados em relação à média. O coeficiente de variação de 241,41% demonstrou alto grau de variabilidade relativo à média.
+Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 4.453 registros de despesas em 86 números de CNPJ únicos, totalizando R$ 1.784.601,08. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado (R$ 967,47) e, por conseguinte, elevado coeficiente de variação (241,41%). Isso indica significativa dispersão dos dados em relação à média.
 
-Notou-se ainda que a média é superior ao terceiro quartil. Isso indica que o conjunto de dados está inclinado para valores mais baixos, apesar da significante presença de outliers que puxa o terceiro quartil para cima. Graficamente, o valor médio maior que o terceiro quartil sugere assimetria positiva: a cauda do lado direito é mais longa do que do lado esquerdo. Essa indicação é corroborada com a assimetria de 5,21, enquanto a curtose de 32,67 comprova cauda longa e picos acentuados em comparação à distribuição normal.
+Notou-se ainda que a média é superior ao terceiro quartil. Isso sugere que o conjunto de dados está inclinado para valores mais baixos, apesar da significante presença de outliers, o que puxa o terceiro quartil para cima. Graficamente, o valor médio maior que o terceiro quartil aponta assimetria positiva: a cauda do lado direito é mais longa do que do lado esquerdo. Essa indicação é corroborada com a assimetria de 5,21, enquanto a curtose de 32,67 comprova cauda longa e picos acentuados em comparação à distribuição normal.
 
 | Medida | Valor |
 |---|---|
@@ -189,16 +184,16 @@ O algoritmo desenvolvido processou as informações dos 4.453 registros conforme
 
 Ele retornou 262 anomalias que somam R$ 197.697,24 — 11,08% do valor total de despesas. 
 
-Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Tal definição é importante aqui porque o intuito do trabalho é fornecer um algoritmo para detecção de possíveis fraudes no uso de verbas públicas. Há anomalias que se encontram no meio de todas as despesas de determinada empresa — estas não são os maiores valores no conjunto de despesas e, portanto, são falsos positivos. 
+Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto de despesas. Tais anomalias entre clusters são tratadas aqui como falsos positivos. 
 
-Em K-Means, a determinação de uma anomalia é feita pela distância dos pontos em relação a um centroide, o que forma um cluster. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos os agrupamentos por meio de dois instrumentos conforme supracitado: 
+Dado o papel dos clusters neste algoritmo e a implementação de K-Means++, há grande variabilidade no número de clusters. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos tais valores por meio do dois instrumentos supracitados: 
 
 1. Método da silhueta, cujos resultados aceitáveis devem estar entre 0,5 e 1 de uma escala que vai de -1 a 1;
 2. Índice de Davies-Bouldin, com resultados ideais entre 0 a 0,5, numa escala que vai de 0 a 1. 
 
 Do conjunto de 86 empresas, todas apresentam resultados ideias para o método da silhueta (de 0,577 a 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (0,166 a 0,489), enquanto 7 apresentaram resultados abaixo do ideal (0,508 a 0,573). 
 
-Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters. 
+Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para desconsiderar falsos positivos, isto é, considerar anomalias passíveis de inquirição dos órgãos de controle apenas aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. 
 
 Como resultado final, foram detectadas 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
 {{< expandable label="Veja empresas e anomalias" level="2" >}}
