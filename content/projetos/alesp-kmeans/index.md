@@ -1,6 +1,6 @@
 ---
 title: "Detecção de anomalias em gastos dos deputados estaduais com K-Means"
-date: 2023-09-26
+date: 2023-09-01
 toc: true
 ---
 
