@@ -198,10 +198,12 @@ Em K-Means, a determinação de uma anomalia é feita pela distância dos pontos
 
 Do conjunto de 86 empresas, todas apresentam resultados ideias para o método da silhueta (de 0,577 a 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (0,166 a 0,489), enquanto 7 apresentaram resultados abaixo do ideal (0,508 a 0,573). 
 
-Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters. Como resultado final, foram detectadas 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
+Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters. 
 
+Como resultado final, foram detectadas 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
 {{< expandable label="Veja empresas e anomalias" level="2" >}}
-<table style="font-size:0.9em;border-collapse:collapse;table-layout:auto;width:100%">
+<div style="overflow-x:auto;width:100%;">
+<table style="font-size:0.8em;table-layout:auto;border-color:black;">
 <thead>
 <tr>
 <th>Ano</th>
@@ -575,6 +577,7 @@ Com a clusterização das despesas, a detecção de anomalias segundo o algoritm
 </tr>
 </tbody>
 </table>
+</div>
 {{< /expandable >}}
 
 ## Códigos comentados
