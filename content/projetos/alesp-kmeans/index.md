@@ -68,7 +68,7 @@ A determinação do número de clusters, porém, não garante que o algoritmo en
 
 Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização K-Means++[^11], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
 
-Dado um conjunto de pontos \\(D\\) e um conjunto de centroides já selecionados \\(C\\), a probabilidade de se escolher o ponto de dado \\(x\\) como próximo centroide é calculada por meio de
+Dado um conjunto de pontos \\(D\\) e um conjunto de centroides selecionados \\(C\\), a probabilidade de se escolher o ponto de dado \\(x\\) como próximo centroide é calculada por meio de
 
 $$
 P(x) = \frac{D(x)^2}{\sum_{x^{\prime} \in D}D(x^{\prime})^2}
