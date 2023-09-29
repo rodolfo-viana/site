@@ -22,7 +22,7 @@ Com este contexto, este projeto busca ser um instrumento para avaliação de mal
 
 ### Análise exploratória
 
-A primeira etapa consistiu na captura dos dados a partir do Portal de Dados Abertos da Alesp[^6], onde estão disponíveis arquivos no formato `xml` que datam desde 2002 e contêm elementos que indicam o período de referência ("Ano", "Mês"), além de informações tanto do parlamentar ("Matrícula", "Deputado") quanto da despesa ("Fornecedor", "CNPJ", "Tipo", "Valor"). Para este trabalho, foram ignorados os nomes dos parlamentares a fim de desconsiderar eventuais vieses ideológicos. Dado o contexto temporal dos gastos, "Ano" e "Mês" foram usados tão somente para realizar a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA], conforme divulgado pelo Instituto Brasileiro de Geografia e Estatística [IBGE][^7]. A temporalidade das despesas, portanto, foi descartada.
+A primeira etapa consistiu na captura dos dados a partir do Portal de Dados Abertos da Alesp[^6], onde estão disponíveis arquivos no formato `xml` que datam desde 2002 e contêm elementos que indicam o período de referência ("Ano", "Mês"), além de informações tanto do parlamentar ("Matrícula", "Deputado") quanto da despesa ("Fornecedor", "CNPJ", "Tipo", "Valor"). Para este trabalho, foram ignorados os nomes dos parlamentares a fim de desconsiderar eventuais vieses ideológicos. Dado o contexto temporal dos gastos, "Ano" e "Mês" foram usados tão somente para realizar a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA][^7]. A temporalidade das despesas, portanto, foi descartada.
 
 Foram inseridas neste estudo apenas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Descartaram-se, ainda, fornecedores com menos de 20 despesas no quinquênio, haja vista a necessidade de se ter número significativo para a realização de clusterização.
 
@@ -56,7 +56,7 @@ A aplicação de K-Means, porém, impõe algumas necessidades a este trabalho, t
 
 A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] — *Elbow method* — é uma forma de se obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados. 
 
-A heurística opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo".
+O método opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo".
 
 <img src="666.svg" width="100%">
 
@@ -89,10 +89,6 @@ c_i = \frac{1}{\vert S_i \vert}\sum_{x \in S_i} x
 $$
 
 onde, \\(S_i\\): conjunto de todos os pontos atribuídos ao centroide \\(i\\).
-
-Na animação a seguir é possível acompanhar a movimentação dos centroides entre iterações para 12 empresas aleatórias e \\(k=2\\).
-
-<img src="anomalies.gif" style="width:100%; height:auto;" >
 
 A cada iteração de atualização de centroides é computada a inércia. Para conjunto univariado, 
 
@@ -154,9 +150,9 @@ sendo,
 
 ## Resultados
 
-Uma análise exploratória foi realizada para compreender os dados e sua dispersão no conjunto. No quinquênio observado, foram 4.453 registros de despesas em 86 números de CNPJ únicos, totalizando R$ 1.784.601,08. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado (R$ 967,47) e, por conseguinte, elevado coeficiente de variação (241,41%). Isso indica significativa dispersão dos dados em relação à média.
+Realizou-se uma análise exploratória para compreender os dados e sua dispersão. No quinquênio observado, foram 4.453 registros de despesas em 86 números únicos de CNPJ, totalizando R$ 1.784.601,08 após ajuste inflacionário. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado e coeficiente de variação de 241,41%, indicando significativa dispersão dos dados em relação à média.
 
-Notou-se ainda que a média é superior ao terceiro quartil. Isso sugere que o conjunto de dados está inclinado para valores mais baixos, apesar da significante presença de outliers, o que puxa o terceiro quartil para cima. Graficamente, o valor médio maior que o terceiro quartil aponta assimetria positiva: a cauda do lado direito é mais longa do que do lado esquerdo. Essa indicação é corroborada com a assimetria de 5,21, enquanto a curtose de 32,67 comprova cauda longa e picos acentuados em comparação à distribuição normal.
+Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclinação de dados para valores mais baixos. O conjunto apresenta, assim, cauda à direita mais longa do que à esquerda, e a assimetria de 5,21 corrobora essa observação, enquanto a curtose de 32,67 demonstra picos acentuados em comparação à distribuição normal.
 
 | Medida | Valor |
 |---|---|
@@ -172,7 +168,7 @@ Notou-se ainda que a média é superior ao terceiro quartil. Isso sugere que o c
 | Assimetria | 5,21061... |
 | Curtose | 32,66851... |
 
-O algoritmo desenvolvido processou as informações dos 4.453 registros conforme os parâmetros a seguir:
+As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gastos dentro da variabilidade de valores para cada CNPJ. O algoritmo de K-Means processou as informações para cada estabelecimento de acordo com os seguintes parâmetros:
 
 | Parâmetro | Valor |
 |---|---|
@@ -182,393 +178,400 @@ O algoritmo desenvolvido processou as informações dos 4.453 registros conforme
 | Tolerância para convergência | 0,0001 |
 | Percentil para detecção de anomalia |	95 |
 
-Ele retornou 262 anomalias que somam R$ 197.697,24 — 11,08% do valor total de despesas. 
-
-Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto de despesas. Tais anomalias entre clusters são tratadas aqui como falsos positivos. 
+Como resultado foram obtidas 262 anomalias que somaram R$ 197.697,24 — 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos. 
 
 Dado o papel dos clusters neste algoritmo e a implementação de K-Means++, há grande variabilidade no número de clusters. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos tais valores por meio do dois instrumentos supracitados: 
 
 1. Método da silhueta, cujos resultados aceitáveis devem estar entre 0,5 e 1 de uma escala que vai de -1 a 1;
 2. Índice de Davies-Bouldin, com resultados ideais entre 0 a 0,5, numa escala que vai de 0 a 1. 
 
-Do conjunto de 86 empresas, todas apresentam resultados ideias para o método da silhueta (de 0,577 a 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (0,166 a 0,489), enquanto 7 apresentaram resultados abaixo do ideal (0,508 a 0,573). 
+A quantidade de clusters de cada CNPJ foi validada por meio dos dois instrumentos supracitados: o método da silhueta e o índice de Davies-Bouldin. Um resultado adequado para o primeiro deles estaria entre 0,5 e 1 de uma escala de -1 a 1; o segundo, de 0 a 0,5 na escala de 0 a 1. 
 
-Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo de K-Means e a validação dos métodos aplicados, foi realizada uma análise final para desconsiderar falsos positivos, isto é, considerar anomalias passíveis de inquirição dos órgãos de controle apenas aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. 
+Do conjunto de 86 empresas, todas apresentam resultados ideais para o método da silhueta (valores entre 0,577 e 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (valores entre 0,166 e 0,489), enquanto sete apresentaram resultados abaixo do ideal (valores entre 0,508 e 0,573). 
 
-Como resultado final, foram detectadas 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
+Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters, e o resultado obtido foi de 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
+
 {{< expandable label="Veja empresas e anomalias" level="2" >}}
 <div style="overflow-x:auto;width:100%;">
-<table style="font-size:0.8em;table-layout:auto;border-color:black;">
+<table style="font-size:0.85em;table-layout:auto;border-color:black;">
 <thead>
 <tr>
-<th>Ano</th>
-<th>Mês</th>
-<th>Matrícula do parlamentar</th>
-<th>Valor real</th>
-<th>Valor corrigido</th>
-<th>CNPJ do estabelecimento</th>
+<th>CNPJ</th>
+<th>Valor original (R$)</th>
+<th>Valor corrigido (R$)</th>
+<th>Quantidade de clusters para o CNPJ</th>
+<th>Resultado do método da silhueta</th>
+<th>Resultado do índice de Davies-Bouldin</th>
 </tr>
 </thead>
 <tbody>
 <tr>
-<td>2019</td>
-<td>8</td>
-<td>300584</td>
+<td>02.012.862/0001-60</td>
+<td>9.525,39</td>
+<td>9.584,44</td>
+<td>6</td>
+<td>0,5996</td>
+<td>0,4816</td>
+</tr>
+<tr>
+<td>03.071.465/0001-21</td>
 <td>1.340,00</td>
 <td>1.658,78</td>
-<td>03.071.465/0001-21</td>
+<td>3</td>
+<td>0,6767</td>
+<td>0,4664</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>4</td>
-<td>300523</td>
+<td>03.300.974/0049-23</td>
 <td>229,12</td>
 <td>298,95</td>
-<td>03.300.974/0049-23</td>
+<td>2</td>
+<td>0,6579</td>
+<td>0,4856</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>10</td>
-<td>300626</td>
+<td>08.402.977/0001-47</td>
 <td>266,51</td>
 <td>269,26</td>
-<td>08.402.977/0001-47</td>
+<td>4</td>
+<td>0,7556</td>
+<td>0,3117</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>4</td>
-<td>300344</td>
+<td>09.060.964/0106-77</td>
 <td>360,91</td>
 <td>448,74</td>
-<td>09.060.964/0106-77</td>
+<td>6</td>
+<td>0,6681</td>
+<td>0,5129</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>10</td>
-<td>300344</td>
+<td>09.060.964/0106-77</td>
 <td>314,57</td>
 <td>389,17</td>
-<td>09.060.964/0106-77</td>
+<td>6</td>
+<td>0,6681</td>
+<td>0,5129</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>7</td>
-<td>300520</td>
+<td>09.399.877/0001-71</td>
 <td>1.398,26</td>
 <td>1.788,63</td>
-<td>09.399.877/0001-71</td>
+<td>4</td>
+<td>0,6203</td>
+<td>0,5162</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>8</td>
-<td>300344</td>
+<td>09.438.123/0001-83</td>
 <td>445,86</td>
 <td>570,85</td>
-<td>09.438.123/0001-83</td>
+<td>3</td>
+<td>0,6277</td>
+<td>0,5329</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>4</td>
-<td>300620</td>
+<td>09.456.178/0001-16</td>
 <td>229,75</td>
 <td>285,66</td>
-<td>09.456.178/0001-16</td>
+<td>4</td>
+<td>0,6632</td>
+<td>0,3914</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>6</td>
-<td>300344</td>
+<td>09.456.550/0001-94</td>
 <td>379,80</td>
 <td>487,44</td>
-<td>09.456.550/0001-94</td>
+<td>3</td>
+<td>0,6776</td>
+<td>0,4350</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>8</td>
-<td>300344</td>
+<td>09.456.550/0001-94</td>
 <td>354,59</td>
 <td>453,99</td>
-<td>09.456.550/0001-94</td>
+<td>3</td>
+<td>0,6776</td>
+<td>0,4350</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>4</td>
-<td>300344</td>
+<td>09.456.704/0001-48</td>
 <td>432,16</td>
 <td>438,34</td>
-<td>09.456.704/0001-48</td>
+<td>4</td>
+<td>0,6629</td>
+<td>0,4534</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>6</td>
-<td>300534</td>
+<td>09.456.704/0001-48</td>
 <td>326,36</td>
 <td>405,21</td>
-<td>09.456.704/0001-48</td>
+<td>4</td>
+<td>0,6629</td>
+<td>0,4534</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>9</td>
-<td>300534</td>
+<td>09.456.714/0001-83</td>
 <td>458,39</td>
 <td>567,66</td>
-<td>09.456.714/0001-83</td>
+<td>4</td>
+<td>0,6824</td>
+<td>0,4745</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>7</td>
-<td>300449</td>
+<td>09.536.662/0001-55</td>
 <td>403,31</td>
 <td>407,22</td>
-<td>09.536.662/0001-55</td>
+<td>3</td>
+<td>0,7288</td>
+<td>0,3667</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>9</td>
-<td>300415</td>
+<td>11.384.785/0001-60</td>
 <td>678,58</td>
 <td>840,34</td>
-<td>11.384.785/0001-60</td>
+<td>3</td>
+<td>0,6506</td>
+<td>0,4524</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>9</td>
-<td>300619</td>
-<td>1.209,82</td>
-<td>1.498,23</td>
 <td>13.232.868/0001-69</td>
-</tr>
-<tr>
-<td>2019</td>
-<td>10</td>
-<td>300619</td>
 <td>1.360,75</td>
 <td>1.683,45</td>
+<td>3</td>
+<td>0,6969</td>
+<td>0,4445</td>
+</tr>
+<tr>
 <td>13.232.868/0001-69</td>
+<td>1.209,82</td>
+<td>1.498,23</td>
+<td>3</td>
+<td>0,6969</td>
+<td>0,4445</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>5</td>
-<td>300367</td>
-<td>118,80</td>
-<td>119,93</td>
 <td>42.591.651/0612-82</td>
-</tr>
-<tr>
-<td>2020</td>
-<td>6</td>
-<td>300615</td>
 <td>110,60</td>
 <td>134,45</td>
+<td>6</td>
+<td>0,6872</td>
+<td>0,3487</td>
+</tr>
+<tr>
 <td>42.591.651/0612-82</td>
+<td>118,80</td>
+<td>119,93</td>
+<td>6</td>
+<td>0,6872</td>
+<td>0,3487</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>9</td>
-<td>300549</td>
-<td>249,27</td>
-<td>308,69</td>
 <td>43.386.903/0001-65</td>
+<td>1.361,20</td>
+<td>1.361,20</td>
+<td>2</td>
+<td>0,9177</td>
+<td>0,2157</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>11</td>
-<td>300624</td>
+<td>43.386.903/0001-65</td>
 <td>1.030,60</td>
 <td>1.036,99</td>
-<td>43.386.903/0001-65</td>
-</tr>
-<tr>
-<td>2022</td>
-<td>12</td>
-<td>300624</td>
-<td>1.361,20</td>
-<td>1.361,20</td>
-<td>43.386.903/0001-65</td>
-</tr>
-<tr>
-<td>2018</td>
 <td>2</td>
-<td>300260</td>
-<td>1.441,83</td>
-<td>1.887,10</td>
-<td>44.993.632/0001-79</td>
+<td>0,9177</td>
+<td>0,2157</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>3</td>
-<td>300260</td>
+<td>43.386.903/0001-65</td>
+<td>249,27</td>
+<td>308,69</td>
+<td>2</td>
+<td>0,9177</td>
+<td>0,2157</td>
+</tr>
+<tr>
+<td>44.993.632/0001-79</td>
 <td>2.004,54</td>
 <td>2.621,23</td>
-<td>44.993.632/0001-79</td>
+<td>6</td>
+<td>0,6270</td>
+<td>0,4621</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>4</td>
-<td>300260</td>
+<td>44.993.632/0001-79</td>
 <td>1.700,39</td>
 <td>2.218,63</td>
-<td>44.993.632/0001-79</td>
+<td>6</td>
+<td>0,6270</td>
+<td>0,4621</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>2</td>
-<td>300470</td>
+<td>44.993.632/0001-79</td>
+<td>1.441,83</td>
+<td>1.887,10</td>
+<td>6</td>
+<td>0,6270</td>
+<td>0,4621</td>
+</tr>
+<tr>
+<td>45.007.937/0001-27</td>
 <td>1.189,20</td>
 <td>1.556,45</td>
-<td>45.007.937/0001-27</td>
+<td>5</td>
+<td>0,7601</td>
+<td>0,3129</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>6</td>
-<td>300440</td>
+<td>47.079.637/0001-89</td>
 <td>1.800,00</td>
 <td>1.805,09</td>
-<td>47.079.637/0001-89</td>
+<td>2</td>
+<td>0,7795</td>
+<td>0,4130</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>9</td>
-<td>300209</td>
+<td>49.967.557/0001-95</td>
 <td>1.395,16</td>
 <td>1.777,74</td>
-<td>49.967.557/0001-95</td>
+<td>4</td>
+<td>0,7310</td>
+<td>0,3074</td>
 </tr>
 <tr>
-<td>2020</td>
-<td>12</td>
-<td>300607</td>
+<td>50.244.235/0001-05</td>
 <td>93,50</td>
 <td>108,86</td>
-<td>50.244.235/0001-05</td>
+<td>3</td>
+<td>0,7979</td>
+<td>0,2713</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>2</td>
-<td>300376</td>
+<td>51.483.956/0001-22</td>
 <td>140,59</td>
 <td>184,01</td>
-<td>51.483.956/0001-22</td>
+<td>3</td>
+<td>0,6680</td>
+<td>0,4331</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>6</td>
-<td>300644</td>
-<td>174,04</td>
-<td>216,09</td>
 <td>54.867.247/0001-39</td>
-</tr>
-<tr>
-<td>2019</td>
-<td>7</td>
-<td>300644</td>
 <td>361,15</td>
 <td>447,56</td>
-<td>54.867.247/0001-39</td>
+<td>4</td>
+<td>0,6375</td>
+<td>0,4426</td>
 </tr>
 <tr>
-<td>2021</td>
-<td>11</td>
-<td>300644</td>
+<td>54.867.247/0001-39</td>
 <td>336,96</td>
 <td>359,06</td>
-<td>54.867.247/0001-39</td>
+<td>4</td>
+<td>0,6375</td>
+<td>0,4426</td>
 </tr>
 <tr>
-<td>2022</td>
+<td>54.867.247/0001-39</td>
+<td>174,04</td>
+<td>216,09</td>
 <td>4</td>
-<td>300520</td>
+<td>0,6375</td>
+<td>0,4426</td>
+</tr>
+<tr>
+<td>54.951.561/0001-03</td>
 <td>236,00</td>
 <td>239,37</td>
-<td>54.951.561/0001-03</td>
+<td>8</td>
+<td>0,6219</td>
+<td>0,4354</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>3</td>
-<td>300264</td>
+<td>56.007.859/0001-87</td>
 <td>453,85</td>
 <td>593,48</td>
-<td>56.007.859/0001-87</td>
+<td>3</td>
+<td>0,8057</td>
+<td>0,3859</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>5</td>
-<td>300209</td>
+<td>58.699.232/0001-60</td>
 <td>168,16</td>
 <td>218,54</td>
-<td>58.699.232/0001-60</td>
+<td>5</td>
+<td>0,6550</td>
+<td>0,4581</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>7</td>
-<td>300520</td>
+<td>61.084.018/0001-03</td>
 <td>1.073,17</td>
 <td>1.372,78</td>
-<td>61.084.018/0001-03</td>
+<td>4</td>
+<td>0,6369</td>
+<td>0,4892</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>5</td>
-<td>300520</td>
+<td>61.359.691/0001-09</td>
 <td>180,10</td>
 <td>181,82</td>
-<td>61.359.691/0001-09</td>
+<td>5</td>
+<td>0,5769</td>
+<td>0,5270</td>
 </tr>
 <tr>
-<td>2022</td>
-<td>9</td>
-<td>300645</td>
+<td>61.563.557/0001-25</td>
 <td>238,45</td>
 <td>242,33</td>
-<td>61.563.557/0001-25</td>
+<td>4</td>
+<td>0,7763</td>
+<td>0,3427</td>
 </tr>
 <tr>
-<td>2018</td>
-<td>12</td>
-<td>300344</td>
+<td>61.980.272/0012-42</td>
 <td>172,88</td>
 <td>219,43</td>
-<td>61.980.272/0012-42</td>
+<td>3</td>
+<td>0,7751</td>
+<td>0,4507</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>2</td>
-<td>300602</td>
-<td>513,97</td>
-<td>647,51</td>
 <td>65.684.037/0003-93</td>
-</tr>
-<tr>
-<td>2019</td>
-<td>4</td>
-<td>300608</td>
-<td>422,30</td>
-<td>525,07</td>
-<td>65.684.037/0003-93</td>
-</tr>
-<tr>
-<td>2019</td>
-<td>5</td>
-<td>300608</td>
 <td>636,78</td>
 <td>790,71</td>
-<td>65.684.037/0003-93</td>
+<td>5</td>
+<td>0,6320</td>
+<td>0,4574</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>9</td>
-<td>300608</td>
+<td>65.684.037/0003-93</td>
+<td>513,97</td>
+<td>647,51</td>
+<td>5</td>
+<td>0,6320</td>
+<td>0,4574</td>
+</tr>
+<tr>
+<td>65.684.037/0003-93</td>
+<td>422,30</td>
+<td>525,07</td>
+<td>5</td>
+<td>0,6320</td>
+<td>0,4574</td>
+</tr>
+<tr>
+<td>65.684.037/0003-93</td>
 <td>399,87</td>
 <td>495,19</td>
-<td>65.684.037/0003-93</td>
+<td>5</td>
+<td>0,6320</td>
+<td>0,4574</td>
 </tr>
 <tr>
-<td>2019</td>
-<td>3</td>
-<td>300507</td>
+<td>66.728.858/0001-85</td>
 <td>482,40</td>
 <td>603,21</td>
-<td>66.728.858/0001-85</td>
+<td>7</td>
+<td>0,6492</td>
+<td>0,4156</td>
 </tr>
 </tbody>
 </table>

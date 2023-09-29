@@ -500,10 +500,12 @@ caption {
 /* Figures */
 figure {
     text-align: center;
+    width: 100%;
+    height: auto;
 }
 figcaption {
-    font-size: 0.85rem;
-    font-style: italic;
+    font-size: 0.75rem;
+    font-style: normal;
     margin-top: 0.5rem;
 }
 main {
@@ -513,7 +515,7 @@ main {
 }
 figcaption::before {
     counter-increment: fig;
-    content: 'Figure ' counter(fig) ':\0020';
+    content: 'Figura ' counter(fig) ':\0020';
     font-weight: bold;
 }
 
