@@ -150,9 +150,9 @@ sendo,
 
 ## Resultados
 
-Realizou-se uma análise exploratória para compreender os dados e sua dispersão. No quinquênio observado, foram 4.453 registros de despesas em 86 números únicos de CNPJ, totalizando R$ 1.784.601,08 após ajuste inflacionário. Cada despesa apresentou valor médio de R$ 400,46, porém com desvio-padrão elevado e coeficiente de variação de 241,41%, indicando significativa dispersão dos dados em relação à média.
+Realizou-se uma análise exploratória para compreender os dados e sua dispersão. No quinquênio observado, foram 4.453 registros de despesas em 86 números únicos de CNPJ, totalizando R$ 1.784.601,08 após ajuste inflacionário. Cada despesa apresentou valor médio de R$ 400,76, porém com coeficiente de variação de 241,41%, indicando significativa dispersão dos dados em relação à média.
 
-Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclinação de dados para valores mais baixos. O conjunto apresenta, assim, cauda à direita mais longa do que à esquerda, e a assimetria de 5,21 corrobora essa observação, enquanto a curtose de 32,67 demonstra picos acentuados em comparação à distribuição normal.
+Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclinação de dados para valores mais baixos. O conjunto apresenta, assim, cauda à direita mais longa do que à esquerda, o que é corroborado pela assimetria de 5,21, enquanto a curtose de 32,67 demonstra pico acentuado em comparação à distribuição normal.
 
 | Medida | Valor |
 |---|---|
@@ -164,9 +164,9 @@ Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclina
 | 2º Quartil (R$) | 123,14 | 
 | 3º Quartil (R$) | 276,18 |
 | Máximo (R$) | 10.250,41 |
-| Coeficiente de variação (%) | 241,40648... |
-| Assimetria | 5,21061... |
-| Curtose | 32,66851... |
+| Coeficiente de variação (%) | 241,40648 |
+| Assimetria | 5,21061 |
+| Curtose | 32,66851 |
 
 As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gastos dentro da variabilidade de valores para cada CNPJ. O algoritmo de K-Means processou as informações para cada estabelecimento de acordo com os seguintes parâmetros:
 

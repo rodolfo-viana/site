@@ -8,9 +8,8 @@
       <span aria-hidden="true"></span>
     </label>
   </div>
-  <small>
-  {{ with .Site.Params.footer }}
-    {{ . | markdownify }}
-  {{ end }}
-</small>
+  <small><span id="ano"></span> &copy; Rodolfo Viana. Feito com <a href="https://gohugo.io/">Hugo</a>, <a href="https://github.com/zwbetz-gh/cupper-hugo-theme">Cupper</a></small>
+  <script>
+    document.getElementById("ano").innerHTML = new Date().getFullYear();
+  </script>
 </footer>

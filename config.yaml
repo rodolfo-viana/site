@@ -18,7 +18,6 @@ imaging:
 params:
   description: Publicações e projetos relacionados a ciência de dados
   homeMetaContent: Publicações e projetos relacionados a ciência de dados
-  footer: 2023 &copy; Rodolfo Viana. Feito com [Hugo](https://gohugo.io/), [Cupper](https://github.com/zwbetz-gh/cupper-hugo-theme)
   dateFormat: Jan 2, 2006
   katex: true
   hideHeaderLinks: false
