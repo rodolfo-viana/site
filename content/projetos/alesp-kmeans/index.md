@@ -16,7 +16,7 @@ Naquele ano, o valor total empenhado para custeio da verba de gabinete perfez R$
 
 Tais somas de recursos públicos são escrutinadas por órgãos de controle que, não raro, questionam sua finalidade. Um exemplo é o processo investigatório SEI 29.0001.0246360.2021-54[^4], que apura o pagamento por locação de imóveis pertencentes a aliados políticos do deputado Murilo Felix e nunca utilizados. Outro exemplo é a ação penal 0037174-14.2021.8.26.0000[^5], que aponta, entre outros elementos, o ressarcimento de despesas nunca efetuadas por parte do deputado Rogério Nogueira.
 
-Com este contexto, este projeto busca ser um instrumento para avaliação de malversação de dinheiro público por meio de *unsupervised machine learning*. Seu objetivo não é afirmar peremptoriamente se determinada despesa é fraudulenta ou não; seu escopo é servir de ferramenta para uma observação inicial dos gastos, que podem ser analisados por meio de clusterização, onde se objetiva encontrar um grupo de despesas cujos valores são anômalos.
+Com este contexto, este projeto busca ser um instrumento para avaliação de malversação de dinheiro público por meio de _unsupervised machine learning_. Seu objetivo não é afirmar peremptoriamente se determinada despesa é fraudulenta ou não; seu escopo é servir de ferramenta para uma observação inicial dos gastos, que podem ser analisados por meio de clusterização, onde se objetiva encontrar um grupo de despesas cujos valores são anômalos.
 
 ## Método
 
@@ -28,7 +28,7 @@ Foram inseridas neste estudo apenas as despesas relacionadas a alimentação e h
 
 ### Algoritmo de K-Means
 
-Desenvolveu-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide). 
+Desenvolveu-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide).
 
 Dado um conjunto de observações \\(x = \lbrace x_1, x_2, ..., x_n\rbrace \\), o algoritmo reparte as \\(n\\) observações em \\(k \(\geq n\)\\) conjuntos \\(S = \lbrace S_1, S_2, ..., S_k \rbrace\\) a fim de minimizar a soma dos quadrados dentro do cluster.
 
@@ -41,7 +41,7 @@ onde,
 - \\(k\\): número de clusters
 - \\(𝑆_𝑖\\): cluster \\(i\\)
 - \\(𝑥\\): ponto de dado
-- \\(\mu_i\\): média da distância dos pontos em \\(𝑆_𝑖\\)
+- \\(\mu*i\\): média da distância dos pontos em \\(𝑆*𝑖\\)
 
 Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo aplicado visa encontrar anomalias, visualmente temos:
 
@@ -54,7 +54,7 @@ A aplicação de K-Means, porém, impõe algumas necessidades a este trabalho, t
 
 #### Método do cotovelo
 
-A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] — *Elbow method* — é uma forma de se obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados. 
+A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] — _Elbow method_ — é uma forma de se obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados.
 
 O método opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo".
 
@@ -64,7 +64,7 @@ O ponto em que essa estabilização se torna perceptível representa uma estimat
 
 #### K-Means++
 
-A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. A alta sensibilidade da técnica de agrupamento pode levar a uma solução de mínimo local em vez de uma global, gerando partições que não sejam ideais[^10]. 
+A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. A alta sensibilidade da técnica de agrupamento pode levar a uma solução de mínimo local em vez de uma global, gerando partições que não sejam ideais[^10].
 
 Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização K-Means++[^11], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
 
@@ -90,14 +90,13 @@ $$
 
 onde, \\(S_i\\): conjunto de todos os pontos atribuídos ao centroide \\(i\\).
 
-A cada iteração de atualização de centroides é computada a inércia. Para conjunto univariado, 
+A cada iteração de atualização de centroides é computada a inércia. Para conjunto univariado,
 
 $$
 \sum_{i=1}^{n}{\Vert {x_i} - {c_{l(x_i)}}\Vert}^2
 $$
 
-onde, \\(c_{l(x_i)}\\): centroide do cluster para o qual \\(x_i\\) foi atribuído.
-
+onde, \\(c\_{l(x_i)}\\): centroide do cluster para o qual \\(x_i\\) foi atribuído.
 
 #### Critérios aprimorados para convergência
 
@@ -107,14 +106,14 @@ $$
 \max_{c \in C_t}\Vert c - c_{t - 1} \Vert < tol
 $$
 
-onde, 
+onde,
 
-- \\(\Vert c - c_{t - 1} \Vert\\) distância euclidiana
+- \\(\Vert c - c\_{t - 1} \Vert\\) distância euclidiana
 - \\(tol\\): tolerância especificada
 
 #### Validação pelo método da silhueta
 
-A validação dos resultados obtidos a partir da implementação dessas técnicas foi realizada, primeiro, pelo método da silhueta[^12] — *Silhouette method*. Esta técnica observa a similaridade de um ponto com seu cluster em comparação com outros clusters a partir de
+A validação dos resultados obtidos a partir da implementação dessas técnicas foi realizada, primeiro, pelo método da silhueta[^12] — _Silhouette method_. Esta técnica observa a similaridade de um ponto com seu cluster em comparação com outros clusters a partir de
 
 $$
 s_i = \frac{{b_i} - {a_i}}{\max({a_i},{b_i})}
@@ -127,9 +126,9 @@ onde,
 
 O método da silhueta retorna resultados no intervalo de -1 a 1. Se o valor for:
 
-- próximo de -1: o ponto está agrupado de maneira errada; 
-- próximo de 0: o ponto está entre dois clusters, de forma que o agrupamento pode ser aprimorado; 
-- próximo de 1: o ponto está bem agrupado. 
+- próximo de -1: o ponto está agrupado de maneira errada;
+- próximo de 0: o ponto está entre dois clusters, de forma que o agrupamento pode ser aprimorado;
+- próximo de 1: o ponto está bem agrupado.
 
 #### Validação pelo índice de Davies-Bouldin
 
@@ -141,12 +140,12 @@ $$
 \frac{1}{k}\sum_{i=1}^{k}\max_{i \ne j}\bigg(\frac{{S_i}+{S_j}}{M_{ij}}\bigg)
 $$
 
-sendo, 
+sendo,
 
-- \\(k\\): número de clusters; 
-- \\(i\\),\\(j\\): clusters diferentes; 
-- \\(S_i\\), \\(S_j\\): dispersão interna dos clusters \\(i\\) e \\(j\\), respectivamente; 
-- \\(M_{ij}\\): distância entre clusters \\(i\\) e \\(j\\)
+- \\(k\\): número de clusters;
+- \\(i\\),\\(j\\): clusters diferentes;
+- \\(S_i\\), \\(S_j\\): dispersão interna dos clusters \\(i\\) e \\(j\\), respectivamente;
+- \\(M\_{ij}\\): distância entre clusters \\(i\\) e \\(j\\)
 
 ## Resultados
 
@@ -154,44 +153,45 @@ Realizou-se uma análise exploratória para compreender os dados e sua dispersã
 
 Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclinação de dados para valores mais baixos. O conjunto apresenta, assim, cauda à direita mais longa do que à esquerda, o que é corroborado pela assimetria de 5,21, enquanto a curtose de 32,67 demonstra pico acentuado em comparação à distribuição normal.
 
-| Medida | Valor |
-|---|---|
-| Contagem | 4.453 |
-| Média (R$) | 400,763773 |
-| Desvio-padrão (R$) | 967,469752 | 
-| Mínimo (R$) | 6,49 | 
-| 1º Quartil (R$) | 55,75 | 
-| 2º Quartil (R$) | 123,14 | 
-| 3º Quartil (R$) | 276,18 |
-| Máximo (R$) | 10.250,41 |
-| Coeficiente de variação (%) | 241,40648 |
-| Assimetria | 5,21061 |
-| Curtose | 32,66851 |
+| Medida                      | Valor      |
+| --------------------------- | ---------- |
+| Contagem                    | 4.453      |
+| Média (R$)                  | 400,763773 |
+| Desvio-padrão (R$)          | 967,469752 |
+| Mínimo (R$)                 | 6,49       |
+| 1º Quartil (R$)             | 55,75      |
+| 2º Quartil (R$)             | 123,14     |
+| 3º Quartil (R$)             | 276,18     |
+| Máximo (R$)                 | 10.250,41  |
+| Coeficiente de variação (%) | 241,40648  |
+| Assimetria                  | 5,21061    |
+| Curtose                     | 32,66851   |
 
 As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gastos dentro da variabilidade de valores para cada CNPJ. O algoritmo de K-Means processou as informações para cada estabelecimento de acordo com os seguintes parâmetros:
 
-| Parâmetro | Valor |
-|---|---|
-| Número mínimo de clusters | 2 |
-| Número de clusters utilizados | 2 a 10, selecionado pelo método do cotovelo |
-| Máximo de iterações | 100 |
-| Tolerância para convergência | 0,0001 |
-| Percentil para detecção de anomalia |	95 |
+| Parâmetro                           | Valor                                       |
+| ----------------------------------- | ------------------------------------------- |
+| Número mínimo de clusters           | 2                                           |
+| Número de clusters utilizados       | 2 a 10, selecionado pelo método do cotovelo |
+| Máximo de iterações                 | 100                                         |
+| Tolerância para convergência        | 0,0001                                      |
+| Percentil para detecção de anomalia | 95                                          |
 
-Como resultado foram obtidas 262 anomalias que somaram R$ 197.697,24 — 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos. 
+Como resultado foram obtidas 262 anomalias que somaram R$ 197.697,24 — 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos.
 
-Dado o papel dos clusters neste algoritmo e a implementação de K-Means++, há grande variabilidade no número de clusters. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos tais valores por meio do dois instrumentos supracitados: 
+Dado o papel dos clusters neste algoritmo e a implementação de K-Means++, há grande variabilidade no número de clusters. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos tais valores por meio do dois instrumentos supracitados:
 
 1. Método da silhueta, cujos resultados aceitáveis devem estar entre 0,5 e 1 de uma escala que vai de -1 a 1;
-2. Índice de Davies-Bouldin, com resultados ideais entre 0 a 0,5, numa escala que vai de 0 a 1. 
+2. Índice de Davies-Bouldin, com resultados ideais entre 0 a 0,5, numa escala que vai de 0 a 1.
 
-A quantidade de clusters de cada CNPJ foi validada por meio dos dois instrumentos supracitados: o método da silhueta e o índice de Davies-Bouldin. Um resultado adequado para o primeiro deles estaria entre 0,5 e 1 de uma escala de -1 a 1; o segundo, de 0 a 0,5 na escala de 0 a 1. 
+A quantidade de clusters de cada CNPJ foi validada por meio dos dois instrumentos supracitados: o método da silhueta e o índice de Davies-Bouldin. Um resultado adequado para o primeiro deles estaria entre 0,5 e 1 de uma escala de -1 a 1; o segundo, de 0 a 0,5 na escala de 0 a 1.
 
-Do conjunto de 86 empresas, todas apresentam resultados ideais para o método da silhueta (valores entre 0,577 e 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (valores entre 0,166 e 0,489), enquanto sete apresentaram resultados abaixo do ideal (valores entre 0,508 e 0,573). 
+Do conjunto de 86 empresas, todas apresentam resultados ideais para o método da silhueta (valores entre 0,577 e 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (valores entre 0,166 e 0,489), enquanto sete apresentaram resultados abaixo do ideal (valores entre 0,508 e 0,573).
 
 Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters, e o resultado obtido foi de 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
 
 {{< expandable label="Veja empresas e anomalias" level="2" >}}
+
 <div style="overflow-x:auto;width:100%;">
 <table style="font-size:0.85em;table-layout:auto;border-color:black;">
 <thead>
@@ -927,7 +927,7 @@ async def download_xml(year: int, semaphore: asyncio.Semaphore) -> None:
     limiter = AsyncLimiter(1, 0.125)
     USER_AGENT = ""
     headers = {"User-Agent": USER_AGENT}
-    DATA_DIR = os.path.join(os.getcwd(), "data")
+    DATA_DIR = os.path.join(os.getcwd(), "../data")
     if not os.path.exists(DATA_DIR):
         os.mkdir(DATA_DIR)
     url = f"https://www.al.sp.gov.br/repositorioDados/deputados/despesas_gabinetes_{str(year)}.xml"
@@ -982,15 +982,15 @@ def parse_data(list_files: List[str]) -> List[Dict[str, Union[str, None]]]:
 # executa `fetch_expenses` no período de 2013 a 2022
 asyncio.run(fetch_expenses(2013, 2022))
 # observa se há o diretório `data`
-if os.path.exists(os.path.join(os.getcwd(), "data")):
+if os.path.exists(os.path.join(os.getcwd(), "../data")):
     # acessa diretório
-    os.chdir("data")
+    os.chdir("../data")
     # lista arquivos xml
     files = glob.glob("*.xml")
     # interpreta os arquivos
     load = parse_data(files)
     # armazena os dados na variável `despesas`
-    despesas = pd.DataFrame.from_dict(load, dtype={"Matricula": str, "CNPJ": str})
+    despesas = pd.DataFrame.from_dict(load)
 # leitura dos data de IPCA
 ipca = pd.read_csv("../data/ipca.csv")
 # conversão da variável Data para datetime
@@ -1013,7 +1013,9 @@ data = pd.merge(left=despesas, right=ipca, on="Data", how="inner")
 data["Valor_ref"] = ipca[ipca["Data"] == "2022-12-01"]["Valor"].values[0]
 # cálculo da deflação
 data["Valor_corrigido"] = round(
-    (data["Valor_ref"] / data["Valor_y"]) * data["Valor_x"], 2
+    (data["Valor_ref"].astype(float) / data["Valor_y"].astype(float))
+    * data["Valor_x"].astype(float),
+    2,
 )
 # remoção de variáveis desnecessárias
 data = data[["CNPJ", "Valor_corrigido"]]
@@ -1077,39 +1079,26 @@ for cnpj, grupo in groupby(selecao_dados, key=lambda x: x[0]):
         )
         # incremento do contador
         centroid_idx += 1
-
+        
 # conversão dos resultados em dataframe
 resultados = pd.DataFrame(resultados_lista)
 # salvamento como csv
 resultados.to_csv("../prd/resultado.csv", index=False, encoding="utf-8")
-
 ```
+
 ## Referências
 
 [^1]: Assembleia Legislativa do Estado de São Paulo [Alesp]. 1997. Resolução n. 783, de 1° de julho de 1997. Altera a Resolução n° 776, de 14/10/1996, que implantou a nova estrutura administrativa, cria o Núcleo de Qualidade e institui a verba de gabinete. Disponível em: https://www.al.sp.gov.br/repositorio/legislacao/resolucao.alesp/1997/original-resolucao.alesp-783-01.07.1997.html. Acesso em: 19 março 2023.
-
 [^2]: Secretaria da Fazenda e Planejamento do Governo do Estado de São Paulo. 2023. Índices. Disponível em: https://portal.fazenda.sp.gov.br/Paginas/Indices.aspx. Acesso em: 26 março 2023.
-
 [^3]: Secretaria da Fazenda e Planejamento do Governo do Estado de São Paulo. 2023. Execução orçamentária e financeira. Disponível em: https://www.fazenda.sp.gov.br/sigeolei131/paginas/flexconsdespesa.aspx. Acesso em: 19 março 2023.
-
 [^4]: Ministério Público de São Paulo. 2022. Sistema Eletrônico de Informações. Disponível em: https://www.mpsp.mp.br/sei-sistema-eletronico-de-informacoes Acesso em: 26 março 2023.
-
 [^5]: Tribunal de Justiça do Estado de São Paulo. 2023. E-SAJ. Disponível em: https://esaj.tjsp.jus.br/esaj/portal.do?servico=190090 Acesso em: 24 setembro 2023.
-
 [^6]: Assembleia Legislativa do Estado de São Paulo. 2023. Portal de Dados Abertos. Disponível em: https://www.al.sp.gov.br/dados-abertos/recurso/21 Acesso em: 26 março 2023.
-
 [^7]: Instituto Brasileiro de Geografia e Estatística. IPCA. Disponível em: https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html?=&t=series-historicas Acesso em: 26 março 2023.
-
 [^8]: MacQueen, J. 1967. Some methods for classification and analysis of multivariate observations. In: 5th Berkeley Symposium on Mathematical Statistics and Probability, 1967, Los Angeles, LA, Estados Unidos, Anais… p. 281-297.
-
 [^9]: Joshi, K.D.; Nalwade, P.S. 2012. Modified K-Means for better initial cluster centres. International Journal of Computer Science and Mobile Computing 7: 219-223.
-
 [^10]: Morissette, L.; Chartier, S. 2013. The K-Means clustering technique: General considerations and implementation in Mathematica. Tutorials in Quantitative Methods for Psychology 9: 15-24.
-
 [^11]: Arthur, D.; Vassilvitskii, S. 2007. K-Means++: The advantages of careful seeding. Proceedings of Annual ACM-SIAM Symposium on Discrete Algorithms: 1027-1035.
-
 [^12]: Rousseeuw, P.J. 1987. Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. Journal of Computational and Applied Mathematics 20: 53-65.
-
 [^13]: Davies, D.L.; Bouldin, D.W. 1979. A cluster separation measure. IEEE Transactions on Pattern Analysis and Machine Intelligence 2: 224–227.
-
 [^14]: Chandola, V; Banerjee, A.; Kumar, V. 2009. Anomaly detection: a survey. Association for Computing Machinery Computing Surveys 41: 1-58.
