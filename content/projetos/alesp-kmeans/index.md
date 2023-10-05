@@ -41,7 +41,7 @@ onde,
 - \\(k\\): número de clusters
 - \\(𝑆_𝑖\\): cluster \\(i\\)
 - \\(𝑥\\): ponto de dado
-- \\(\mu*i\\): média da distância dos pontos em \\(𝑆*𝑖\\)
+- \\(\mu_i\\): média da distância dos pontos em \\(S_i\\)
 
 Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo aplicado visa encontrar anomalias, visualmente temos:
 
