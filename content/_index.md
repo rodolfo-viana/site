@@ -5,7 +5,7 @@ title: ""
 
 Olá!
 
-Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou engenheiro de dados sênior na [Farfetch](http://farfetch.com/). Trabalho no time da [Stadium Goods](https://www.stadiumgoods.com/), onde desenvolvo e implemento soluções tecnológicas para o marketplace de sneakers. 
+Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou engenheiro de dados sênior na [Farfetch](http://farfetch.com/). Trabalho no time da [Stadium Goods](https://www.stadiumgoods.com/), onde desenvolvo e implemento soluções tecnológicas para o marketplace nova-iorquino de sneakers. 
 
 Também sou professor no [MBA em Jornalismo de Dados](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) do [IDP](https://www.idp.edu.br/). Minhas disciplinas são Introdução a Python e Web Scraping com Python.
 
