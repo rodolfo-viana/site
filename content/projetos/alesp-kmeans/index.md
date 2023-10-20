@@ -897,7 +897,7 @@ class Score:
         return np.mean(max_cluster_ratios)
 ```
 
-### Excecução
+### Execução
 
 ```py
 import os
