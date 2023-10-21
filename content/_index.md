@@ -13,7 +13,7 @@ Fora isso, estou fazendo especialização em Data Science na Esalq-USP. Meu trab
 
 Neste site você vai encontrar publicações sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. 
 
-Meu currículo é este [aqui](cv_2023.pdf). Você pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Se quiser mandar uma mensagem, escreva para eu@rodolfoviana.com.br.
+Meu currículo é este [aqui](cv_2024.pdf). Você pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Se quiser mandar uma mensagem, escreva para eu@rodolfoviana.com.br.
 
 Boa leitura.
 
