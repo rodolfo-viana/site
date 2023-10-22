@@ -47,8 +47,8 @@ Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo 
 
 1. Os pontos são distribuídos conforme seus valores:<br><img src="111.svg" width="100%">
 2. Com a quantidade de clusters pré-determinada, são calculados os centroides a partir da minimização do quadrado das distâncias:<br><img src="222.svg" width="100%">
-3. Os pontos próximos aos centroides formam clusters:<br><img src="333.svg" width="100%">.
-4. Os pontos que não se encontram nos clusters são considerados anomalias:<br><img src="444.svg" width="100%">.
+3. Os pontos próximos aos centroides formam clusters:<br><img src="333.svg" width="100%">
+4. Os pontos que não se encontram nos clusters são considerados anomalias:<br><img src="444.svg" width="100%">
 
 A aplicação de K-Means, porém, impõe algumas necessidades a este trabalho, tais como determinação prévia da quantidade de clusters, um método de inicialização de centroides que considere mínimo global em vez de mínimo local, critério para convergência ideal dos centroides e validação dos resultados. Para aplacar tais limitações, foram utilizados, respectivamente, o método do cotovelo, o método K-Means++, a comparação do movimento de centroides entre iterações e validação por meio do método da silhueta e do índice de Davies-Bouldin.
 
