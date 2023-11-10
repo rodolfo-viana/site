@@ -5,7 +5,7 @@ toc: true
 ---
 
 {{< warning >}}
-O texto apresentado é uma versão editada do meu trabalho de conclusão do MBA em Data Science e Analytics na Esalq-USP, com orientação da Profª Drª Ana Julia Righetto.
+O texto apresentado é uma versão editada do meu trabalho de conclusão do MBA em Data Science e Analytics na USP-Esalq, sob orientação da Profª Drª Ana Julia Righetto.
 {{< /warning >}}
 
 ## Introdução
@@ -28,7 +28,7 @@ Foram inseridas neste estudo apenas as despesas relacionadas a alimentação e h
 
 ### Algoritmo de K-Means
 
-Desenvolveu-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide).
+Implementou-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide).
 
 Dado um conjunto de observações \\(x = \lbrace x_1, x_2, ..., x_n\rbrace \\), o algoritmo reparte as \\(n\\) observações em \\(k \(\geq n\)\\) conjuntos \\(S = \lbrace S_1, S_2, ..., S_k \rbrace\\) a fim de minimizar a soma dos quadrados dentro do cluster.
 
@@ -62,11 +62,21 @@ O método opera sob a lógica de que, ao aumentar o número de agrupamentos, oco
 
 O ponto em que essa estabilização se torna perceptível representa uma estimativa do número ideal de clusters.
 
+Considerando-se a mera observação de um gráfico para aferição de resultado sobre o número ideal de clusters, abdica-se de suporte estatístico para assegurar a robustez do
+método do cotovelo. Schubert [^10] apresenta o método aplicado a conjuntos de dados com
+clusters mais ou menos coesos visualmente, em que os resultados se mostram semelhantes
+mesmo nos conjuntos uniformes ou quando os dados contêm uma única distribuição normal.
+Entre os problemas associados ao gráfico do cotovelo estão a ausência de medição
+significativa de ângulo e mudança de escala dos eixos, o que pode alterar a interpretação
+humana de um "cotovelo".
+
+Para mitigar tais problemas poder-se-ia utilizar um método menos subjetivo, como o critério de razão de variância — __Variance Ratio Criterion__ [VRC]. Enquanto o método do cotovelo se apoia na soma dos quadrados das distâncias entre cada ponto e o centroide do cluster, o VRC mede a razão entre a soma da dispersão entre os clusters e a soma da dispersão dentro dos clusters[^11]. Por termos um conjunto de dados que não aponta para uniformidade ou distribuição normal, optou-se pelo método do cotovelo.
+
 #### K-Means++
 
-A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. A alta sensibilidade da técnica de agrupamento pode levar a uma solução de mínimo local em vez de uma global, gerando partições que não sejam ideais[^10].
+A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. Quando se utiliza a inicialização randômica, em que os centroides iniciais são escolhidos aleatoriamente dentro do cluster, é possível que sejam escolhidos pontos muito próximos uns dos outros. A alta sensibilidade da técnica de agrupamento pode levar a uma solução de mínimo local em vez de uma global, gerando partições que não sejam ideais[^12].
 
-Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização K-Means++[^11], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
+Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização K-Means++[^13], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
 
 Dado um conjunto de pontos \\(D\\) e um conjunto de centroides selecionados \\(C\\), a probabilidade de se escolher o ponto de dado \\(x\\) como próximo centroide é calculada por meio de
 
@@ -113,7 +123,7 @@ onde,
 
 #### Validação pelo método da silhueta
 
-A validação dos resultados obtidos a partir da implementação dessas técnicas foi realizada, primeiro, pelo método da silhueta[^12] — _Silhouette method_. Esta técnica observa a similaridade de um ponto com seu cluster em comparação com outros clusters a partir de
+A validação dos resultados obtidos a partir da implementação dessas técnicas foi realizada, primeiro, pelo método da silhueta[^14] — _Silhouette method_. Esta técnica observa a similaridade de um ponto com seu cluster em comparação com outros clusters a partir de
 
 $$
 s_i = \frac{{b_i} - {a_i}}{\max({a_i},{b_i})}
@@ -132,7 +142,7 @@ O método da silhueta retorna resultados no intervalo de -1 a 1. Se o valor for:
 
 #### Validação pelo índice de Davies-Bouldin
 
-Enquanto o método da silhueta faz comparação entre um ponto único e os agrupamentos, o índice de Davies-Bouldin[^13], segunda medida usada na validação dos resultados, observa a coesão do cluster, dada a lógica de que um agrupamento adequado é denso em si, ao passo que distante dos demais agrupamentos.
+Enquanto o método da silhueta faz comparação entre um ponto único e os agrupamentos, o índice de Davies-Bouldin[^15], segunda medida usada na validação dos resultados, observa a coesão do cluster, dada a lógica de que um agrupamento adequado é denso em si, ao passo que distante dos demais agrupamentos.
 
 Melhor o agrupamento quanto mais próximo de 0 o índice é, resultado obtido por
 
@@ -167,7 +177,7 @@ Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclina
 | Assimetria                  | 5,21061    |
 | Curtose                     | 32,66851   |
 
-As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gastos dentro da variabilidade de valores para cada CNPJ. O algoritmo de K-Means processou as informações para cada estabelecimento de acordo com os seguintes parâmetros:
+As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gastos dentro da variabilidade de valores para cada CNPJ. A presente implementação do algoritmo de K-Means processou as informações para cada estabelecimento seguindo os seguintes parâmetros:
 
 | Parâmetro                           | Valor                                       |
 | ----------------------------------- | ------------------------------------------- |
@@ -177,7 +187,7 @@ As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gas
 | Tolerância para convergência        | 0,0001                                      |
 | Percentil para detecção de anomalia | 95                                          |
 
-Como resultado foram obtidas 262 anomalias que somaram R$ 197.697,24 — 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^14] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos.
+Como resultado foram obtidas 262 anomalias que somaram R$ 197.697,24 — 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^16] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos.
 
 Dado o papel dos clusters neste algoritmo e a implementação de K-Means++, há grande variabilidade no número de clusters. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos tais valores por meio do dois instrumentos supracitados:
 
@@ -1097,8 +1107,10 @@ resultados.to_csv("../prd/resultado.csv", index=False, encoding="utf-8")
 [^7]: Instituto Brasileiro de Geografia e Estatística. IPCA. Disponível em: https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html?=&t=series-historicas Acesso em: 26 março 2023.
 [^8]: MacQueen, J. 1967. Some methods for classification and analysis of multivariate observations. In: 5th Berkeley Symposium on Mathematical Statistics and Probability, 1967, Los Angeles, LA, Estados Unidos, Anais… p. 281-297.
 [^9]: Joshi, K.D.; Nalwade, P.S. 2012. Modified K-Means for better initial cluster centres. International Journal of Computer Science and Mobile Computing 7: 219-223.
-[^10]: Morissette, L.; Chartier, S. 2013. The K-Means clustering technique: General considerations and implementation in Mathematica. Tutorials in Quantitative Methods for Psychology 9: 15-24.
-[^11]: Arthur, D.; Vassilvitskii, S. 2007. K-Means++: The advantages of careful seeding. Proceedings of Annual ACM-SIAM Symposium on Discrete Algorithms: 1027-1035.
-[^12]: Rousseeuw, P.J. 1987. Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. Journal of Computational and Applied Mathematics 20: 53-65.
-[^13]: Davies, D.L.; Bouldin, D.W. 1979. A cluster separation measure. IEEE Transactions on Pattern Analysis and Machine Intelligence 2: 224–227.
-[^14]: Chandola, V; Banerjee, A.; Kumar, V. 2009. Anomaly detection: a survey. Association for Computing Machinery Computing Surveys 41: 1-58.
+[^10]: Schubert, E. 2023. Stop using the elbow criterion for k-means and how to choose the number of clusters instead. SIGKDD Explorations Newsletter 25: 36-42.
+[^11]: Caliński, T.; Harabasz, J. 1974. A dendrite method for cluster analysis. Communications in Statistics 3: 1-27.
+[^12]: Morissette, L.; Chartier, S. 2013. The K-Means clustering technique: General considerations and implementation in Mathematica. Tutorials in Quantitative Methods for Psychology 9: 15-24.
+[^13]: Arthur, D.; Vassilvitskii, S. 2007. K-Means++: The advantages of careful seeding. Proceedings of Annual ACM-SIAM Symposium on Discrete Algorithms: 1027-1035.
+[^14]: Rousseeuw, P.J. 1987. Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. Journal of Computational and Applied Mathematics 20: 53-65.
+[^15]: Davies, D.L.; Bouldin, D.W. 1979. A cluster separation measure. IEEE Transactions on Pattern Analysis and Machine Intelligence 2: 224–227.
+[^16]: Chandola, V; Banerjee, A.; Kumar, V. 2009. Anomaly detection: a survey. Association for Computing Machinery Computing Surveys 41: 1-58.
