@@ -5,11 +5,11 @@ title: ""
 
 Olá!
 
-Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou engenheiro de dados sênior na [Farfetch](http://farfetch.com/). Trabalho no time da [Stadium Goods](https://www.stadiumgoods.com/), onde desenvolvo e implemento soluções tecnológicas para o marketplace nova-iorquino de sneakers. 
+Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou especialista em Data Science e Analytics pela USP.
+
+Trabalho como engenheiro de dados sênior na [Farfetch](http://farfetch.com/). Atuo no time da [Stadium Goods](https://www.stadiumgoods.com/), onde desenvolvo e implemento soluções tecnológicas para o marketplace nova-iorquino de sneakers. 
 
 Também sou professor no [MBA em Jornalismo de Dados](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) do [IDP](https://www.idp.edu.br/). Minhas disciplinas são Introdução a Python e Web Scraping com Python.
-
-Fora isso, estou fazendo especialização em Data Science na Esalq-USP. Meu trabalho consiste na criação de um algoritmo de clusterização para detecção de anomalias nos gastos da Assembleia Legislativa de São Paulo.
 
 Neste site você vai encontrar publicações sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. 
 
