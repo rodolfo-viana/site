@@ -1,3 +1,3 @@
 ---
-title: Aulas
+title: Projetos
 ---
