@@ -1003,3 +1003,16 @@ h1 svg {
 .footnotes > hr {
     display:none;
 }
+
+.output p + p,
+.warning * + * {
+    margin-top: 0;
+}
+
+.code-annotated.numbered + ol {
+    margin: 1rem 0 0 0;
+}
+
+.code-annotated.numbered + ol li {
+    font-size: 0.8em;
+}
