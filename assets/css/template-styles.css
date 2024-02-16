@@ -33,6 +33,9 @@ template {
 * + * {
     margin-top: 2.25rem;
 }
+.code-annotated + .output {
+    margin-top: 0rem;
+}
 br,
 dt,
 dd,
@@ -164,6 +167,26 @@ pre,
 code {
     font-family: Consolas, Monaco, 'Andale Mono', 'Ubuntu Mono', monospace;
     font-size: 0.85em;
+}
+.output {
+    padding: 0.5rem 1rem 0.75rem 1rem;
+    background: #111;
+}
+.output::before {
+    content: '_RESULTADO';
+    font-weight:300;
+    font-size: 0.5rem;
+    color: #fefefe;
+    padding-left: 0.5rem;
+}
+.output code {
+    color: #fefefe;
+    white-space: break-spaces;
+    margin: 0.5rem;
+}
+.output code::selection{
+    background: #fefefe;
+    color: rgba(0,0,0,.8);
 }
 .cmd {
     padding: 0.75rem;
@@ -544,7 +567,7 @@ pre[class*=language-] code * {
     overflow-x: auto;
     padding: 1.5rem;
     border: 1px solid;
-    white-space: pre;
+    white-space: pre-wrap;
     counter-reset: annotation;
 }
 .highlight {
