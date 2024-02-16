@@ -105,12 +105,54 @@ José
 {{< /output >}}
 
 - não pode ser palavra-chave de Python.
-| | | | | | | |
-| :-: | :-: | :-: | :-: | :-: | :-: | :-: | 
-| `and` | `as` | `assert` | `break` | `class` | `continue` | `def` |
-| `del` | `elif` | `else` | `except` | `exec` | `finally` | `for` |
-| `from` | `global` | `if` | `import` | `in` | `is` | `lambda` |
-| `nonlocal` | `not` | `or` | `pass` | `raise` | `return` | `try` |
-| `while` | `with` | `yield` | `True` | `False` | `None` | &nbsp; | 
+
+<table>
+<tbody>
+<tr>
+<td style="text-align:center"><code>and</code></td>
+<td style="text-align:center"><code>as</code></td>
+<td style="text-align:center"><code>assert</code></td>
+<td style="text-align:center"><code>break</code></td>
+<td style="text-align:center"><code>class</code></td>
+<td style="text-align:center"><code>continue</code></td>
+<td style="text-align:center"><code>def</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>del</code></td>
+<td style="text-align:center"><code>elif</code></td>
+<td style="text-align:center"><code>else</code></td>
+<td style="text-align:center"><code>except</code></td>
+<td style="text-align:center"><code>exec</code></td>
+<td style="text-align:center"><code>finally</code></td>
+<td style="text-align:center"><code>for</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>from</code></td>
+<td style="text-align:center"><code>global</code></td>
+<td style="text-align:center"><code>if</code></td>
+<td style="text-align:center"><code>import</code></td>
+<td style="text-align:center"><code>in</code></td>
+<td style="text-align:center"><code>is</code></td>
+<td style="text-align:center"><code>lambda</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>nonlocal</code></td>
+<td style="text-align:center"><code>not</code></td>
+<td style="text-align:center"><code>or</code></td>
+<td style="text-align:center"><code>pass</code></td>
+<td style="text-align:center"><code>raise</code></td>
+<td style="text-align:center"><code>return</code></td>
+<td style="text-align:center"><code>try</code></td>
+</tr>
+<tr>
+<td style="text-align:center"><code>while</code></td>
+<td style="text-align:center"><code>with</code></td>
+<td style="text-align:center"><code>yield</code></td>
+<td style="text-align:center"><code>True</code></td>
+<td style="text-align:center"><code>False</code></td>
+<td style="text-align:center"><code>None</code></td>
+</tr>
+</tbody>
+</table>
 
 {{< /expandable >}}
