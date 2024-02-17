@@ -4,7 +4,6 @@ date: 2024-02-01
 ---
 
 {{< expandable label="Aula 1 - Variáveis" level="2" >}}
-
 Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
 
 A atribuição é simples: `variavel = dado`
@@ -134,9 +133,278 @@ José
 </tr>
 </tbody>
 </table>
-
 {{< /expandable >}}
+{{< expandable label="Aula 1 - Tipos de dados" level="2" >}}
+Repare que, quando usamos variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
 
-{{< expandable label="Aula 2 - Tipos de dados" level="2" >}}
-eeeeeeeeee
+```py
+pi = 3.1416
+linguagem = "Python"
+```
+
+Isso porque os valores são de tipos diferentes: o primeiro pertence ao tipo numérico `float` (ponto flutuante, decimal), enquanto o segundo pertence ao tipo não-numérico `string` (texto). Em Python, cada tipo tem suas particularidades.
+
+### Tipos numéricos
+
+- Integer (`int`)
+  - números inteiros
+  - não usa aspas
+
+```py
+numero = 32
+print(numero)
+print(type(numero)) # a função type() mostra o tipo de dado
+```
+```textfile
+32
+<class 'int'>
+```
+
+- Float (`float`)
+    - números decimais; números com ponto flutuante; notação científica
+    - não usa aspas
+
+```py
+numero = 32.0
+print(numero)
+print(type(numero))
+```
+```textfile
+32.0
+<class 'float'>
+```
+```py
+numero = 0.000000000000000000000000000001
+print(numero)
+print(type(numero))
+```
+```textfile
+1e-30
+<class 'float'>
+```
+
+- Complex (`complex`)
+    - números complexos, com \\(\sqrt{-1}\\) em parte da equação
+    - em Python, número imaginário representado pela letra `j`
+    - não usa aspas
+
+```py
+from cmath import sqrt  # Veremos módulos nas próximas aulas
+
+numero = sqrt(-1)
+print(numero)
+print(type(numero))
+```
+```textfile
+1j
+<class 'complex'>
+```
+
+### Tipo não-numérico
+
+- String (`str`)
+    - texto; sequência de caracteres alfanuméricos; letra
+    - aparecem entre aspas duplas (") ou simples (')
+
+```py
+txt = "Brasil registra 94 mortes por dengue; Belo Horizonte decreta emergência"
+print(txt)
+print(type(txt))
+```
+```textfile
+Brasil registra 94 mortes por dengue; Belo Horizonte decreta emergência
+<class 'str'>
+```
+
+{{< warning >}}
+Fique atento! Se colocamos `"` ou `'` (aspas usadas em `str`) num valor numérico (digamos, `int`), o número deixa de ser número, e se transforma em texto. Uma mudança que parece pequena muda completamente o tipo do dado.
+
+```py
+print(1234)
+print(type(1234))
+print('1234')
+print(type('1234'))
+```
+```textfile
+1234
+<class 'int'>
+1234
+<class 'str'>
+```
+{{< /warning >}}
+
+{{< warning >}}
+Notem que, em linhas acima, eu ora usei aspas duplas, ora usei aspas simples. Os dois tipos de aspas valem, mas cuidado:
+
+```py
+# Aqui, aspas duplas indicam que o dado é `str`, e as aspas simples indicam grifo
+print("Estou usando 'aspas simples' dentro de aspas duplas") 
+```
+```textfile
+Estou usando 'aspas simples' dentro de aspas duplas
+```
+```py
+# Aqui, aspas simples indicam que o dado é `str`, e as aspas duplas indicam grifo
+print('Estou usando "aspas duplas" dentro de aspas simples')
+```
+```textfile
+Estou usando "aspas duplas" dentro de aspas simples
+```
+```py
+print('O que acontece se, dentro de 'aspas simples', eu usar aspas simples?')
+```
+```textfile
+  Cell In[15], line 1
+    print('O que acontece se, dentro de 'aspas simples', eu usar aspas simples?')
+          ^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+```
+```py
+print("O mesmo acontece com "aspas duplas" dentro de aspas duplas?")
+```
+```textfile
+  Cell In[16], line 1
+    print("O mesmo acontece com "aspas duplas" dentro de aspas duplas?")
+          ^
+SyntaxError: invalid syntax. Perhaps you forgot a comma?
+```
+
+Nos dois erros acima, o sistema não entende se as aspas servem para indicar `str` ou se são grifo. temos `SyntaxError`, erro de sintaxe. Isso ocorre porque a máquina entende que os dados se encerram no fechamento de aspas e não sabe o que fazer com o restante da informação:
+
+1. No primeiro erro, a máquina computou `'O que acontece se, dentro de '` e não soube o que fazer com o resto;
+2. No segundo exemplo, a máquina computou `"O mesmo acontece com "` e não soube o que fazer com o resto.
+
+Uma opção é usar escape (`\`) nas aspas internas. Escape funciona para eu avisar a máquina: "interprete de maneira literal, como aspas; não considere como fim de um texto".
+
+```py
+print('E agora? Consigo usar \'aspas simples\' dentro de aspas simples?')
+```
+```textfile
+E agora? Consigo usar 'aspas simples' dentro de aspas simples?
+```
+```py
+print("E \"aspas duplas\" dentro de aspas duplas?")
+```
+```textfile
+E "aspas duplas" dentro de aspas duplas?
+```
+{{< /warning >}}
+
+### Tipo lógico
+
+- Boolean (`bool`)
+    - comporta apenas dois valores: `True` (verdadeiro) e `False` (falso)
+    - nos "bastidores", funciona como número, sendo `0` para `False` e `1` para `True`
+    - assim como números, não usa aspas
+
+```py
+vdd_ou_falso = True
+print(vdd_ou_falso)
+print(type(vdd_ou_falso))
+```
+```textfile
+True
+<class 'bool'>
+```
+```py
+vdd_ou_falso = False
+print(vdd_ou_falso)
+print(type(vdd_ou_falso))
+```
+```textfile
+False
+<class 'bool'>
+```
+```py
+# veremos operações em breve, mas adianto aqui os 
+# operadores `>` e `<` para mostrar um uso de `bool`
+idade_rodolfo = 43
+idade_pedro = 6
+print(idade_pedro > idade_rodolfo) # `>` indica `maior que`
+```
+```textfile
+False
+```
+```py
+print(idade_pedro < idade_rodolfo) # `<` indica `menor que`
+```
+```textfile
+True
+```
+```py
+# Como se comportam como números, sendo True = 1
+print(True + True)
+```
+```textfile
+2
+```
+{{< /expandable >}}
+{{< expandable label="Aula 1 - Operações" level="2" >}}
+Agora que sabemos o que são variáveis e conhecemos os tipos básicos, podemos fazer cálculos ou comparar duas ou mais variáveis. Para isso realizações operações aritméticas, relacionais ou lógicas.
+
+### Aritméticas
+
+Que tal fazer matemática usando variáveis? É para isso que servem as operações aritméticas. Por exemplo, descobrir o salário mínimo por dia útil...
+
+```py
+sal_minimo = 1412
+dias_uteis = 22
+print(sal_minimo / dias_uteis)
+```
+```textfile
+64.18181818181818
+```
+
+...ou então, calcular a área de um círculo de 12,5 metros de raio, cuja fórmula é \\(A=\pi r^2\\).
+
+```py
+raio = 12.5
+pi = 3.14159
+area = pi * (raio**2)
+print(area)
+```
+```textfile
+490.87343749999997
+```
+
+No primeiro exemplo, eu dividi o salário mínimo (`sal_minimo`) pela quantidade de dias úteis (`dias_uteis`) em um mês. Para isso, usei o símbolo de divisão (`/`).
+
+No segundo exemplo, elevei o raio (`raio`) ao quadrado usando o símbolo de exponenciação (`**`) e, a ele, multipliquei o valor de pi (`pi`) com o símbolo de multiplicação (`*`).
+
+Abaixo estão os operadores aritméticos em Python (e nos exemplos, considere `x = 5` e `y = 2`):
+
+| operador | significado | entrada | saída |
+| :-: | :-: | :-: | :-: |
+| `+` | adição | `x + y` | `7` |
+| `-` | subtração | `x - y` | `3` |
+| `*` | multiplicação | `x * y` | `10` |
+| `/` | divisão | `x / y` | `2.5` |
+| `**` | exponenciação | `x ** y` | `25` |
+| `//` | parte inteira da divisão (descarta decimais) | `x // y` | `2` |
+| `%` | módulo (resto da divisão) | `x % y` | `1` |
+
+{{< warning >}}
+Cabe ressaltar: a ordem de execução de operações segue a ordem convencional na matemática:
+
+1. exponenciação
+2. multiplicação e divisão
+3. soma e subtração
+
+Podemos sobrescrever essa ordem usando parênteses:
+
+```py
+print(2 + 3 * 4) # Multiplica 3 e 4, e depois adiciona 2
+```
+```textfile
+14
+```
+```py
+print((2 + 3) * 4) # Soma 2 e 3, e depois multiplica por 4
+```
+```textfile
+20
+```
+{{< /warning >}}
+
+
 {{< /expandable >}}

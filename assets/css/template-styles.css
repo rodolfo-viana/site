@@ -1004,8 +1004,7 @@ h1 svg {
     display:none;
 }
 
-.output p + p,
-.warning * + * {
+.warning svg + br + p {
     margin-top: 0;
 }
 
