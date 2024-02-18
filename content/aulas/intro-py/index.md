@@ -1,7 +1,11 @@
 ---
-title: "[MBA em Jornalismo de Dados, IDP] Introdução à linguagem Python"
+title: "Introdução à linguagem Python"
 date: 2024-02-18
 ---
+
+{{< warning >}}
+As aulas aqui apresentadas intregam o módulo "Introdução à linguagem Python" do MBA em Jornalismo de Dados, do IDP. Mais informações [aqui](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/).
+{{< /warning >}}
 
 {{< expandable label="Aula 1 - Variáveis" level="2" >}}
 Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
