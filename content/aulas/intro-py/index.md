@@ -407,4 +407,126 @@ print((2 + 3) * 4) # Soma 2 e 3, e depois multiplica por 4
 {{< /warning >}}
 
 
+### Relacionais
+
+Dados lógicos (`True`, `False`), como vimos um pouco antes, aparecem com mais frequência junto a operadores relacionais ou de comparação. São operações que checam se uma equivalência entre dados (sejam eles `int`, `float`, `str` etc.) é verdadeira ou falsa.
+
+Estes são os operadores de comparação em Python (e nos exemplos, `x = 5` e `y = 2`):
+
+| operador | significado | entrada | output |
+| :-: | :-: | :-: | :-: |
+| `==` | igual à | `x == y` | `False` |
+| `!=` | não-igual a | `x != y` | `True` |
+| `>` | maior que | `x > y` | `True` |
+| `>=` | maior que ou igual a | `x >= y` | `True` |
+| `<` | menor que | `x < y` | `False` |
+| `<=` | menor que ou igual a | `x <= y` | `False` |
+
+Vamos ver como se usa numa conta simples:
+
+```py
+conta = 5 ** 2 / 2 # Faço um cálculo aritmético e salvo na variável `conta`
+print(conta == 12) # Agora vejo se o valor de `conta` é igual a 12
+```
+```textfile
+False
+```
+```py
+print(conta >= 12) # Vejo se o valor de `conta` é maior que ou igual a 12 
+```
+```textfile
+True
+```
+```py
+print(conta)
+```
+```textfile
+12.5
+```
+
+Um outro exemplo: ver se a quantidade de dígitos num número de CPF corresponde à quantidade oficial:
+
+```py
+cpf = "01234567890" # Repare que coloquei aspas no numeral, convertendo-o para `str`
+qtd_elem_cpf = 11 # Estabeleço que a quantidade de elementos num CPF é 11
+print(cpf)
+print(len(cpf) == qtd_elem_cpf) # len() retorna a quantidade número de elementos num objeto
+```
+```textfile
+01234567890
+True
+```
+
+Ou ainda, comparar uma projecao rudimentar da balança comercial com uma meta imaginária:
+
+```py
+# fonte:
+# https://agenciagov.ebc.com.br/rede-nacional-de-radio/programas/e-noticia/08-02-24-e-noticia-filippin-balanca-comercial-ve-ctl.mp3
+exportacoes_jan2024 = 27.02
+importacoes_jan2024 = 20.49
+meta_balanca_2024 = 78
+
+projecao_expo_2024 = exportacoes_jan2024 * 12
+projecao_impo_2024 = importacoes_jan2024 * 12
+
+print((projecao_expo - projecao_impo) > meta_balanca_2024)
+```
+```textfile
+True
+```
+
+### Lógicas
+
+Além dos operadores relacionais, há os operadores lógicos. Eles servem para agregar operadores relacionais. Por exemplo:
+
+```py
+x = 5
+y = 2
+
+print(y > x)
+print(y == x)
+print(y < x)
+
+print(y < x and y > 3)
+print(y < x and y > 1)
+```
+```textfile
+False
+False
+True
+False
+True
+```
+
+No exemplo acima,
+
+- na penúltima linha: `y` é menor do que `x`, dando resultado `True`; mas `y` não é maior do que `3`, levando ao resultado `False`. Como nem todas as relações são `True`, o resultado lógico (com o uso de `and`) é `False`.
+
+- na última linha: `y` é menor do que `x`, dando resultado `True`; também `y` é maior do que `1`, levando ao resultado `True`. Como todas as relações são `True`, o resultado lógico (com o uso de `and`) é `True`.
+
+Os operadores lógicos são os seguintes (considerando `x = 5` e `y = 2`):
+
+| operador | significado | input de exemplo | output |
+| :-: | :-: | :-: | :-: |
+| `and` | `e` lógico (ambas as comparações devem ser `True`) | `x > y and x < 10` | `True` |
+| `or` | `ou` lógico (uma das comparações deve ser `True`) | `x != 5 or x > y` | `True` |
+| `not` | negação lógica (inverte a resposta lógica) | `not x == 5` | `False` |
+
+
+Vamos a um exemplo: observar a percepção da homofobia na região sudeste versus a quantidade de mortes violentas de LGBTQIA+ &mdash;podemos imaginar que, conforme há aumento da percepção, os crimes diminuem, certo?
+
+```py
+# fontes:
+# https://www.poder360.com.br/poderdata/percepcao-sobre-homofobia-no-brasil-cresceu-sob-lula-diz-poderdata/
+# https://g1.globo.com/ba/bahia/noticia/2024/01/20/mortes-violentas-de-pessoas-lgbtqia-na-ba-2023.ghtml
+percepcao_2024 = 72
+percepcao_2022 = 69
+mortes_2023 = 100
+mortes_2022 = 63
+print(percepcao_2024 > percepcao_2022 and mortes_2023 < mortes_2022)
+```
+```textfile
+False
+```
+
 {{< /expandable >}}
