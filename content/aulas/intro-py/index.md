@@ -1,6 +1,6 @@
 ---
 title: "[MBA em Jornalismo de Dados, IDP] Introdução à linguagem Python"
-date: 2024-02-01
+date: 2024-02-18
 ---
 
 {{< expandable label="Aula 1 - Variáveis" level="2" >}}
