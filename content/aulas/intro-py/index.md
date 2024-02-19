@@ -1119,7 +1119,7 @@ A linguagem na primeira posição é Python
 ```
 {{< /warning >}}
 
-A indexação permite, inclusive, realizar cálculos.
+A indexação permite, inclusive, realizar cálculos:
 
 ```py
 lista = [3.14, 2.09, 8.21, -7,55]
@@ -1129,18 +1129,122 @@ print(lista[1] * lista[3]) # Ou seja, 2.09 * -7.55
 -14.629999999999999
 ```
 
-É possível acessar múltiplos elementos passando o índice de começo e de fim (mas preste atenção: o resultado exclui o último item). Funciona assim: [onde começa:onde termina + 1]
+É possível, ainda, acessar múltiplos elementos passando o índice de começo e de fim (mas preste atenção: __o resultado exclui o último item__). Funciona assim: `[onde começa:onde termina + 1]`
 
+```py
 linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
 # índice         0        1          2         3       4      5
 
-print(linguagens[2:5]) # começa no índice 2 e termina no índice 4 (por isso usei 5, pois 4 + 1)
-
+print(linguagens[2:5]) # Começa no índice 2 e termina no índice 4
+```
+```textfile
 ['Javascript', 'C++', 'Java']
+```
 
 "E como funciona essa indexação quanto temos uma lista de listas?" Vamos ver com um exemplo:
 
+```py
 exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
+```
 
 Neste caso, temos duas listas dentro de uma lista. O desenho é assim:
+
+<img style="display: block; margin-left: auto; margin-right: auto; max-width: 361px; max-height: unset;max-height: unset; aspect-ratio:1;" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWkAAAD7CAYAAACoomWyAAAFaXRFWHRteGZpbGUAJTNDbXhmaWxlJTIwaG9zdCUzRCUyMmFwcC5kaWFncmFtcy5uZXQlMjIlMjBtb2RpZmllZCUzRCUyMjIwMjMtMDMtMTdUMDUlM0EyMCUzQTI1LjkxMlolMjIlMjBhZ2VudCUzRCUyMjUuMCUyMChXaW5kb3dzKSUyMiUyMHZlcnNpb24lM0QlMjIyMS4wLjIlMjIlMjBldGFnJTNEJTIyYlhQcjJ4X3loeXEtSDZoMzFjRDMlMjIlMjB0eXBlJTNEJTIyZGV2aWNlJTIyJTNFJTNDZGlhZ3JhbSUyMG5hbWUlM0QlMjJQJUMzJUExZ2luYS0xJTIyJTIwaWQlM0QlMjJXWEpzTWJVZzRiOTZ2dTJsR1BlUyUyMiUzRTVacEJrNW93Rk1jJTJGRFRQdFlXY0lVZFRqU3QzMjBQYmlvZWNzUk1oc0lEUUd3ZjMwRFJBRU51eXNZd0ZaOVNMOGswamVMeSUyRkpld1lET21IMm5hTTQlMkJNVThUQTNMOURJRGZqTXNDNnhtUUg3bHlyRlU1cXRaS2ZpY2VLcFNMV3pKSzFhaXFkU0VlSGpmcWlnWW80TEViZEZsVVlSZDBkSVE1eXh0VjlzeDJuNXFqSHlzQ1ZzWFVWMzlRendSbE9yU1d0VDZEMHo4b0hveXNGZGxTWWlxeXNxU2ZZQThsallrdURHZ3d4a1Q1VldZT1pqbThDb3VaYnVuZDBwUEhlTTRFdWMwc01vR0IwUVRaWnZxbHpoV3huS1dSQjdPNjVzR1hLY0JFWGdiSXpjdlRlWHdTaTBRSVpWM1FGNnFuOE5jNE96ZExvR1RvZEpETUF1eDRFZFpSVFY0cUVZNXJkRkNXMmxCQTZzMVZ5SlN3JTJCbWZmcXUyV0Y0b283c0J3SjRCN0FpbERxT01GMjNoayUyRnc0VGo5Z1pzcmNZJTJGdTJnUWxZSFpqQXFnZE1zJTJCbjV5YktOWTZualdIVFFtUFVBWTY3QmtJYUVtQVpNZ3lMTkUyM0w5NEt6RjF5NVNNUWlySHZOeGxaZWd5anhJNm01a2dtV2hldWNHSkVMMGFNcUNJbm41YyUyRnE1TjBla1UlMkJOM05hUW14cnIlMkY1dW5qdFBYUEoxJTJGU0FrT1JHa3glMkJWa0s0SGclMkJzOVJvb0ZEMm05N1pMQjBUJTJCV3I2RGpqaW9sVUZNazBQZkUzb25ibmZtTUNCQmh4OGxtMmlhNW9PdFU4QVBlenZPJTJCd2RqdE9JJTJCeW5RczRQcGhoMmd6YWtqUGVqQzFFdDJBUHBPRHdiTW9zN2dORndhQmZUVTRlb2I1Qm54Nm1EcnRSN1dTMU04Zk9NNzVEV0o2eW5DZEZlMFU5JTJGR3o2U0FuanhNYnFLT0dkZ0RQYkxuTEx2MVRPcWF4Q3ZmbjdRSGpyaHlXWHBzSDNNczdzNEZ4MFN1cHduVFRhZmViaFpqNWxNZHB3alR6YWMwVUNOdXF4M25DTlAxS1BEbW40d3hNNnFPTTRhZlpDOVFINnVka2lhMjBGMTR1Z1g3Z0sybklUY08lMkI5SWt1QmZhZWdweVFKd1lEalFld2FGNFU4Q3diSnFEM2pGcFRuTUU3TDlKZmpLJTJCZmtidWkxOVFlWEJMMEklMkJ5SHZlZnZ4U0RLZnRnTmklMkIlMkJGdFNxeGxMYmxYaHJ6V0VKSjNKZ0xQTTNUcHRWYlQlMkYlMkZ4aGtPNCUyRnpnb095WE5MSHNXbGw2dTM1eTlsbjhCWTRoYiUyQnYzSElxeXh0c2ljUE1QJTNDJTJGZGlhZ3JhbSUzRSUzQyUyRm14ZmlsZSUzRcp2xMoAAB8tSURBVHhe7Z39i11XucfX/AcSQoMllUCVpCJJEzVQSKFQnQnU0BZ6DTP5xTqh2NbBQEBrk/H2OomtcgOBgb6R0ftLZiiKWlTIBKWBlhRqXjSUNrFaQi3em1BL/4O58+ywTvfs2eectc9+1n72y+dA6UzOWmuv/X0+63u+Z+19zow551ZW/+OBAiiAAihQQwXGxKRXHzWcGlNCARRAgW4rMDY25jDpbjPA2aMACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVp69QuX77sdu3a5ebm5tzRo0fVTvOf//yn2lhWA91xxx1Wh+a4NVUAk65pYdowLW/Gi4uLbnJysndKe/fudXv27BnZoPuNi0m3gRrOIasAJg0TlSsgJrtz586Rj9sUk/7JT37iXnzxRfeZz3zGXblyJeh8SdJBMnWqESbd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">
+
+A variável exemplo tem dois elementos. Cada elemento é uma lista. Então, se eu chamar isso...
+
+```py
+exemplo[1] # o segundo item da variável `exemplo`
+```
+
+...terei como retorno isso:
+
+```
+["verde", "roxo", "preto"] # uma lista
+```
+
+Se eu quero acessar o elemento `"preto"`, preciso então indicar o índice dentro da lista que acesso com `exemplo[1]`. Fica assim:
+
+```py
+exemplo[1][2] # do segundo item, quero o terceiro item, ou seja, "preto"
+```
+
+Vamos ver na prática:
+
+```py
+exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
+print(exemplo[1])
+print(exemplo[1][2])
+```
+```textfile
+['verde', 'roxo', 'preto']
+preto
+```
+
+Como na aula passada vimos `if`-`elif`-`else`, vale a gente ver o uso de controle de fluxo com listas e apresentar dois operadores &mdash;e, para o exemplo abaixo, consideramos `nomes = ["João", "André", "Ana", "Maria"]`:
+
+| operador | significado | entrada | saída |
+| :-: | :-: | :-: | :-: |
+| `in` | está contido em | `"João" in nomes` | `True` |
+| `not in` | não está contido em | `"Pedro" not in nomes` | `True` |
+
+```py
+nomes = ["João", "André", "Ana", "Maria"]
+
+print('Ana' not in nomes)
+print('Maria' in nomes)
+```
+```textfile
+False
+True
+```
+
+```py
+nome = "Claudio"
+lista_nomes = ["Renato", "Ana", "Fernanda"]
+
+if nome not in lista_nomes: # "Se o nome não estiver na lista..."
+    print("O nome {} não está na lista.".format(nome))
+else:
+    print("O nome {} está na lista.".format(nome))
+```
+```textfile
+O nome Claudio não está na lista.
+```
+
+As listas são __mutáveis__: posso adicionar e excluir elementos, mostrar em ordem reversa etc. com algumas funções:
+
+- `.append(x)` para adicionar um elemento `x`
+- `.pop(i)` para tirar da lista um elemento de índice i e mostrar esse elemento
+- `.remove(x)` para excluir um elemento `x`
+- `.reverse()` para inverter a ordem dos elementos
+- `.sort()` para organizar os elementos do menor ao maior (ou do maior ao menor, se usar `reverse=True`)
+- `.count(x)` para contar quantas vezes o elemento `x` aparece na lista
+
+```py
+lista = ["Carlos", "Antonio", "Cesar"]
+print(lista)
+
+lista.append("Rodolfo") # adicionar "Rodolfo"
+print(lista)
+
+lista.remove("Cesar") # remover "Cesar"
+print(lista)
+
+lista.reverse() # colocar em ordem reversa
+print(lista)
+
+lista.sort(reverse=True) # ordenar do maior para o menor
+print(lista)
+
+print(lista.count("Rodolfo")) # contar quantas vezes aparece "Rodolfo"
+```
+```textfile
+['Carlos', 'Antonio', 'Cesar']
+['Carlos', 'Antonio', 'Cesar', 'Rodolfo']
+['Carlos', 'Antonio', 'Rodolfo']
+['Rodolfo', 'Antonio', 'Carlos']
+['Rodolfo', 'Carlos', 'Antonio']
+1
+```
 {{< /expandable >}}
