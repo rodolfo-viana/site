@@ -1002,3 +1002,145 @@ Crie um programa que:
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
 
 {{< /expandable >}}
+{{< expandable label="Aula 4 - Coleções de dados: lista" level="2" >}}
+Em aulas anteriores vimos os tipos primitivos de dados, como:
+
+- integer (`int`): `4`, `-12`, `6745`...
+
+- float (`float`): `4.67`, `-12.01973`, `6745.0`...
+
+- boolean (`bool`): `True`, `False`
+
+- string (`str`): `"Python"`, `"maçã"`, `"jornalismo de dados"`, `"6.0"`...
+
+Também vimos como armazenar dados na memória com o uso de variáveis. Por exemplo:
+
+```py
+idade = 43
+nome = "Rodolfo"
+print("{} tem {} anos.".format(nome, idade))
+```
+
+Muitas vezes, porém, precisamos armazenar mais de um valor numa variável. Por exemplo, as contas do mês:
+
+```py
+# Como eu posso colocar todas as contas distintas numa variável única?
+aluguel = 1400
+luz = 110
+agua = 90
+internet = 100
+gas = 25
+cartao = 800
+```
+
+Para armazenamos múltiplos dados numa variável, há as __coleções de dados__ do Python. Há quatro coleções muito comuns, cada uma com características e funções próprias.
+
+### Lista
+
+A primeira coleção é a __lista__ (classe `list`), feita com valores dentro de colchetes (`[` e `]`) ou simplesmente chamando a função `list()`.
+
+```py
+aluguel = 1400
+luz = 110
+agua = 90
+internet = 100
+gas = 25
+cartao = 800
+
+contas = [aluguel, luz, agua, internet, gas, cartao] # Aqui eu crio uma lista
+
+print(contas)
+print(type(contas))
+```
+```textfile
+[1400, 110, 90, 100, 25, 800]
+<class 'list'>
+```
+```py
+linguagens = ["Python", "SQL", "Javascript", "C++"]
+print(linguagens)
+print(type(linguagens))
+print(len(linguagens))
+```
+```textfile
+['Python', 'SQL', 'Javascript', 'C++']
+<class 'list'>
+4
+```
+
+Posso também misturar tipos de dados dentro de uma lista...
+
+```py
+mix = [12, "Cenoura", 3.72, True]
+print(mix)
+```
+```textfile
+[12, 'Cenoura', 3.72, True]
+```
+
+...fazer lista de listas...
+
+```py
+lista1 = [1, 2, 3] # Uma lista
+lista2 = [4, 5, 6] # Outra lista
+listona = [lista1, lista2] # Uma lista com as duas listas
+print(listona)
+```
+```textfile
+[[1, 2, 3], [4, 5, 6]]
+```
+
+...e juntar várias listas numa só.
+
+```py
+listona2 = lista1 + lista2
+print(listona2)
+```
+```textfile
+[1, 2, 3, 4, 5, 6]
+```
+
+Para acessar cada elemento da lista, é preciso usar a posição do elemento dentro de colchetes (`[` e `]`). 
+
+{{< warning >}}
+Mas lembre-se: __Python começa a contagem no índice 0__ (ou seja, o primeiro elemento é 0, o segundo é 1, o terceiro é 2...).
+
+```py
+linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
+# Índice         0        1          2         3       4      5
+print("A linguagem na terceira posição é {}".format(linguagens[2]))
+print("A linguagem na quarta posição é {}".format(linguagens[3]))
+print("A linguagem na primeira posição é {}".format(linguagens[0]))
+```
+```textfile
+A linguagem na terceira posição é Javascript
+A linguagem na quarta posição é C++
+A linguagem na primeira posição é Python
+```
+{{< /warning >}}
+
+A indexação permite, inclusive, realizar cálculos.
+
+```py
+lista = [3.14, 2.09, 8.21, -7,55]
+print(lista[1] * lista[3]) # Ou seja, 2.09 * -7.55
+```
+```textfile
+-14.629999999999999
+```
+
+É possível acessar múltiplos elementos passando o índice de começo e de fim (mas preste atenção: o resultado exclui o último item). Funciona assim: [onde começa:onde termina + 1]
+
+linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
+# índice         0        1          2         3       4      5
+
+print(linguagens[2:5]) # começa no índice 2 e termina no índice 4 (por isso usei 5, pois 4 + 1)
+
+['Javascript', 'C++', 'Java']
+
+"E como funciona essa indexação quanto temos uma lista de listas?" Vamos ver com um exemplo:
+
+exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
+
+Neste caso, temos duas listas dentro de uma lista. O desenho é assim:
+{{< /expandable >}}
