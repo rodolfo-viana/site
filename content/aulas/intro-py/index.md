@@ -7,7 +7,7 @@ date: 2024-02-18
 As aulas aqui apresentadas intregam o módulo "Introdução à linguagem Python" do MBA em Jornalismo de Dados, do IDP. Mais informações [aqui](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/).
 {{< /warning >}}
 
-{{< expandable label="Aula 1 - Variáveis" level="2" >}}
+{{< expandable label="Variáveis" level="2" >}}
 Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
 
 A atribuição é simples: `variavel = dado`
@@ -138,7 +138,7 @@ José
 </tbody>
 </table>
 {{< /expandable >}}
-{{< expandable label="Aula 1 - Tipos de dados" level="2" >}}
+{{< expandable label="Tipos de dados" level="2" >}}
 Repare que, quando usamos variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
 
 ```py
@@ -343,7 +343,7 @@ print(True + True)
 2
 ```
 {{< /expandable >}}
-{{< expandable label="Aula 1 - Operações" level="2" >}}
+{{< expandable label="Operações" level="2" >}}
 Agora que sabemos o que são variáveis e conhecemos os tipos básicos, podemos fazer cálculos ou comparar duas ou mais variáveis. Para isso realizações operações aritméticas, relacionais ou lógicas.
 
 ### Aritméticas
@@ -534,7 +534,7 @@ False
 ```
 
 {{< /expandable >}}
-{{< expandable label="Aula 2 - Controle de fluxo com `if`" level="2" >}}
+{{< expandable label="Controle de fluxo com `if`" level="2" >}}
 Até o momento, estamos escrevendo códigos que são executados numa estrutura fixa: __de cima para baixo, linha a linha__. Exemplo:
 
 ```py
@@ -784,7 +784,7 @@ else:
 Devo usar uma blusa
 ```
 {{< /expandable >}}
-{{< expandable label="Aula 2 - Controle de fluxo com `while`" level="2" >}}
+{{< expandable label="Controle de fluxo com `while`" level="2" >}}
 Vimos que a execução das linhas pode ser controlada, que o código nem sempre precisa ter todas as suas linhas lidas. E vimos que uma forma de controlar o fluxo é com `if`.
 
 Há outra forma: `while`. Diferentemente de `if`, que checa se a condição é `True` ou `False`, `while` executa a operação enquanto a condição for `True`. Sua sintaxe é assim:
@@ -861,7 +861,7 @@ No exemplo acima, `numero` começa como `1` e, a cada looping no bloco, há adi�
 É preciso, portanto, estabelecer um limite, um ponto em que `True` se tornará `False`.
 {{< /warning >}}
 {{< /expandable >}}
-{{< expandable label="Aula 3 - Laboratório" level="2" >}}
+{{< expandable label="Laboratório" level="2" >}}
 Nas aulas anteriores vimos muita coisa sobre Python:
 
 - variáveis
@@ -1002,7 +1002,7 @@ Crie um programa que:
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
 
 {{< /expandable >}}
-{{< expandable label="Aula 4 - Coleções de dados: lista" level="2" >}}
+{{< expandable label="Coleções de dados: lista" level="2" >}}
 Em aulas anteriores vimos os tipos primitivos de dados, como:
 
 - integer (`int`): `4`, `-12`, `6745`...
@@ -1247,4 +1247,170 @@ print(lista.count("Rodolfo")) # contar quantas vezes aparece "Rodolfo"
 ['Rodolfo', 'Carlos', 'Antonio']
 1
 ```
+{{< /expandable >}}
+{{< expandable label="Coleções de dados: tupla" level="2" >}}
+Outra coleção de dados é a tupla (classe `tuple`), feita com valores dentro de parênteses (`(` e `)`) ou com a função `tuple()`.
+
+```py
+valores = (1, 2, 99)
+print(valores)
+print(type(valores))
+```
+```textfile
+(1, 2, 99)
+<class 'tuple'>
+```
+
+Assim como listas, tuplas podem conter dados de tipos variados, e é possível criar uma tupla de tuplas (ou de listas). Também a forma de localizar elementos por meio da indexação é similar.
+
+```py
+tupla_1 = (4, False, "maçã", 8.91) # tupla com diversos tipos
+print(tupla_1)
+
+tupla_2 = ((1, 2, 3), (9, 8, 7)) # tupla contendo duas tuplas
+print(tupla_2)
+
+tupla_3 = tuple([1, 2, 3]) # tupla a partir de lista
+print(tupla_3)
+
+tupla_4 = (("Ana", "Pedro", "Claudio"), ("José", "Maria", "João"))
+print(tupla_4[0][2]) # indexação para encontrar "Claudio"
+```
+```textfile
+(4, False, 'maçã', 8.91)
+((1, 2, 3), (9, 8, 7))
+(1, 2, 3)
+Claudio
+```
+
+Entretanto, as semelhanças acabam aí. Ao contrário de listas, __tuplas são imutáveis__. Ou seja, elementos não podem ser removidos, adicionados, reordenados etc.
+
+```py
+vegetais = ("acelga", "repolho", "alface")
+vegetais.remove("acelga")
+```
+```textfile
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+Cell In[16], line 1
+----> 1 vegetais.remove("acelga")
+
+AttributeError: 'tuple' object has no attribute 'remove'
+```
+```py
+vegetais.append("rúcula")
+```
+```textfile
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+Cell In[17], line 1
+----> 1 vegetais.append("rúcula")
+
+AttributeError: 'tuple' object has no attribute 'append'
+```
+
+Daí a importância de tuplas: __elas são úteis quando precisamos nos certificar de que os elementos não foram ou não serão alterados__. É comum, inclusive, converter listas em tuplas para que seus dados não sejam modificados.
+
+```py
+cores = ["amarelo", "verde", "azul", "vermelho"] 
+print("Temos {}, o que permite que eu altere seus elementos: {}".format(type(cores), cores))
+
+cores = tuple(cores) # converto a lista para tupla
+print("Agora temos {}, impossibilitando alterações: {}".format(type(cores), cores))
+```
+```textfile
+Temos <class 'list'>, o que permite que eu altere seus elementos: ['amarelo', 'verde', 'azul', 'vermelho']
+Agora temos <class 'tuple'>, impossibilitando alterações: ('amarelo', 'verde', 'azul', 'vermelho')
+```
+{{< /expandable >}}
+{{< expandable label="Coleções de dados: conjunto" level="2" >}}
+A terceira coleção é o conjunto (classe `set`), feita com valores dentro de chaves (`{` e `}`) ou com a função `set()`.
+
+```py
+conjunto = {1, 2, 3, 4, 5}
+print(conjunto)
+print(type(conjunto))
+```
+```textfile
+{1, 2, 3, 4, 5}
+<class 'set'>
+```
+As diferenças mais significativas entre conjuntos e as coleções anteriores são que, ao contrário de listas e tuplas,
+
+1. conjuntos não retornam repetições.
+
+```py
+valores = [1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5] # lista
+print(valores)
+
+valores = tuple(valores) # tupla
+print(valores)
+
+valores = set(valores) # conjunto
+print(valores)
+```
+```textfile
+[1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5]
+(1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5)
+{1, 2, 3, 4, 5}
+```
+
+2. conjuntos não permitem indexação.
+
+```py
+print(valores[1])
+```
+```textfile
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[21], line 1
+----> 1 print(valores[1])
+
+TypeError: 'set' object is not subscriptable
+```
+
+Com essas peculiaridades, é comum haver conversões de listas para conjuntos e, de novo, para listas: imagine que temos uma lista com 30 valores, e queremos (1) reordená-los do maior para o menor, (2) excluindo valores duplicados, e (3) encontrar os valores que estão nas posições 3 a 5.
+
+Sabemos que exclusão de duplicatas pode ser feita com conjuntos, e não com listas; sabemos que reordenação e indexação podem ser executadas com listas, e não com conjuntos. Então...
+
+```py
+nums = [
+    7, 1, 5, 3, 3, 4, 9, 5, 3, 1,
+    8, 9, 1, 1, 8, 5, 5, 7, 2, 6,
+    5, 4, 7, 1, 6, 3, 2, 3, 1, 9,
+]
+print(nums)
+
+nums = set(nums) # com conjunto, excluo duplicatas...
+print(nums)
+
+nums = list(nums) # ...aí converto de volta para lista...
+print(nums)
+
+nums.sort(reverse=True) # ...e, na lista, reordeno do maior para o menor...
+print(nums)
+
+print(nums[3:6]) # ...para buscar valores por indexação
+```
+```textfile
+[7, 1, 5, 3, 3, 4, 9, 5, 3, 1, 8, 9, 1, 1, 8, 5, 5, 7, 2, 6, 5, 4, 7, 1, 6, 3, 2, 3, 1, 9]
+{1, 2, 3, 4, 5, 6, 7, 8, 9}
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+[9, 8, 7, 6, 5, 4, 3, 2, 1]
+[6, 5, 4]
+```
+
+{{< warning >}}
+No exemplo acima, usamos dois comandos para converter a lista em conjunto e, em seguida, em lista novamente:
+
+```py
+nums = set(nums)
+nums = list(nums)
+```
+Podemos fazer isso numa linha só, de maneira encadeada:
+
+```py
+nums = list(set(nums))
+```
+{{< /warning >}}
 {{< /expandable >}}
