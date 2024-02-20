@@ -7,7 +7,7 @@ date: 2024-02-18
 As aulas aqui apresentadas intregam o módulo "Introdução à linguagem Python" do MBA em Jornalismo de Dados, do IDP. Mais informações [aqui](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/).
 {{< /warning >}}
 
-{{< expandable label="Aula 1 - Variáveis" level="2" >}}
+{{< expandable label="Variáveis" level="2" >}}
 Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
 
 A atribuição é simples: `variavel = dado`
@@ -138,7 +138,7 @@ José
 </tbody>
 </table>
 {{< /expandable >}}
-{{< expandable label="Aula 1 - Tipos de dados" level="2" >}}
+{{< expandable label="Tipos de dados" level="2" >}}
 Repare que, quando usamos variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
 
 ```py
@@ -343,7 +343,7 @@ print(True + True)
 2
 ```
 {{< /expandable >}}
-{{< expandable label="Aula 1 - Operações" level="2" >}}
+{{< expandable label="Operações" level="2" >}}
 Agora que sabemos o que são variáveis e conhecemos os tipos básicos, podemos fazer cálculos ou comparar duas ou mais variáveis. Para isso realizações operações aritméticas, relacionais ou lógicas.
 
 ### Aritméticas
@@ -534,7 +534,7 @@ False
 ```
 
 {{< /expandable >}}
-{{< expandable label="Aula 2 - Controle de fluxo com `if`" level="2" >}}
+{{< expandable label="Controle de fluxo com `if`" level="2" >}}
 Até o momento, estamos escrevendo códigos que são executados numa estrutura fixa: __de cima para baixo, linha a linha__. Exemplo:
 
 ```py
@@ -784,7 +784,7 @@ else:
 Devo usar uma blusa
 ```
 {{< /expandable >}}
-{{< expandable label="Aula 2 - Controle de fluxo com `while`" level="2" >}}
+{{< expandable label="Controle de fluxo com `while`" level="2" >}}
 Vimos que a execução das linhas pode ser controlada, que o código nem sempre precisa ter todas as suas linhas lidas. E vimos que uma forma de controlar o fluxo é com `if`.
 
 Há outra forma: `while`. Diferentemente de `if`, que checa se a condição é `True` ou `False`, `while` executa a operação enquanto a condição for `True`. Sua sintaxe é assim:
@@ -861,7 +861,7 @@ No exemplo acima, `numero` começa como `1` e, a cada looping no bloco, há adi�
 É preciso, portanto, estabelecer um limite, um ponto em que `True` se tornará `False`.
 {{< /warning >}}
 {{< /expandable >}}
-{{< expandable label="Aula 3 - Laboratório" level="2" >}}
+{{< expandable label="Laboratório" level="2" >}}
 Nas aulas anteriores vimos muita coisa sobre Python:
 
 - variáveis
@@ -1001,4 +1001,528 @@ Crie um programa que:
 - pede ao usuário se está em Celsius ou Faherenheit,
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
 
+{{< /expandable >}}
+{{< expandable label="Coleções de dados: lista" level="2" >}}
+Em aulas anteriores vimos os tipos primitivos de dados, como:
+
+- integer (`int`): `4`, `-12`, `6745`...
+
+- float (`float`): `4.67`, `-12.01973`, `6745.0`...
+
+- boolean (`bool`): `True`, `False`
+
+- string (`str`): `"Python"`, `"maçã"`, `"jornalismo de dados"`, `"6.0"`...
+
+Também vimos como armazenar dados na memória com o uso de variáveis. Por exemplo:
+
+```py
+idade = 43
+nome = "Rodolfo"
+print("{} tem {} anos.".format(nome, idade))
+```
+
+Muitas vezes, porém, precisamos armazenar mais de um valor numa variável. Por exemplo, as contas do mês:
+
+```py
+# Como eu posso colocar todas as contas distintas numa variável única?
+aluguel = 1400
+luz = 110
+agua = 90
+internet = 100
+gas = 25
+cartao = 800
+```
+
+Para armazenamos múltiplos dados numa variável, há as __coleções de dados__ do Python. Há quatro coleções muito comuns, cada uma com características e funções próprias.
+
+### Lista
+
+A primeira coleção é a __lista__ (classe `list`), feita com valores dentro de colchetes (`[` e `]`) ou simplesmente chamando a função `list()`.
+
+```py
+aluguel = 1400
+luz = 110
+agua = 90
+internet = 100
+gas = 25
+cartao = 800
+
+contas = [aluguel, luz, agua, internet, gas, cartao] # Aqui eu crio uma lista
+
+print(contas)
+print(type(contas))
+```
+```textfile
+[1400, 110, 90, 100, 25, 800]
+<class 'list'>
+```
+```py
+linguagens = ["Python", "SQL", "Javascript", "C++"]
+print(linguagens)
+print(type(linguagens))
+print(len(linguagens))
+```
+```textfile
+['Python', 'SQL', 'Javascript', 'C++']
+<class 'list'>
+4
+```
+
+Posso também misturar tipos de dados dentro de uma lista...
+
+```py
+mix = [12, "Cenoura", 3.72, True]
+print(mix)
+```
+```textfile
+[12, 'Cenoura', 3.72, True]
+```
+
+...fazer lista de listas...
+
+```py
+lista1 = [1, 2, 3] # Uma lista
+lista2 = [4, 5, 6] # Outra lista
+listona = [lista1, lista2] # Uma lista com as duas listas
+print(listona)
+```
+```textfile
+[[1, 2, 3], [4, 5, 6]]
+```
+
+...e juntar várias listas numa só.
+
+```py
+listona2 = lista1 + lista2
+print(listona2)
+```
+```textfile
+[1, 2, 3, 4, 5, 6]
+```
+
+Para acessar cada elemento da lista, é preciso usar a posição do elemento dentro de colchetes (`[` e `]`). 
+
+{{< warning >}}
+Mas lembre-se: __Python começa a contagem no índice 0__ (ou seja, o primeiro elemento é 0, o segundo é 1, o terceiro é 2...).
+
+```py
+linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
+# Índice         0        1          2         3       4      5
+print("A linguagem na terceira posição é {}".format(linguagens[2]))
+print("A linguagem na quarta posição é {}".format(linguagens[3]))
+print("A linguagem na primeira posição é {}".format(linguagens[0]))
+```
+```textfile
+A linguagem na terceira posição é Javascript
+A linguagem na quarta posição é C++
+A linguagem na primeira posição é Python
+```
+{{< /warning >}}
+
+A indexação permite, inclusive, realizar cálculos:
+
+```py
+lista = [3.14, 2.09, 8.21, -7,55]
+print(lista[1] * lista[3]) # Ou seja, 2.09 * -7.55
+```
+```textfile
+-14.629999999999999
+```
+
+É possível, ainda, acessar múltiplos elementos passando o índice de começo e de fim (mas preste atenção: __o resultado exclui o último item__). Funciona assim: `[onde começa:onde termina + 1]`
+
+```py
+linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
+# índice         0        1          2         3       4      5
+
+print(linguagens[2:5]) # Começa no índice 2 e termina no índice 4
+```
+```textfile
+['Javascript', 'C++', 'Java']
+```
+
+"E como funciona essa indexação quanto temos uma lista de listas?" Vamos ver com um exemplo:
+
+```py
+exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
+```
+
+Neste caso, temos duas listas dentro de uma lista. O desenho é assim:
+
+<img style="display: block; margin-left: auto; margin-right: auto; max-width: 361px; max-height: unset;max-height: unset; aspect-ratio:1;" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWkAAAD7CAYAAACoomWyAAAFaXRFWHRteGZpbGUAJTNDbXhmaWxlJTIwaG9zdCUzRCUyMmFwcC5kaWFncmFtcy5uZXQlMjIlMjBtb2RpZmllZCUzRCUyMjIwMjMtMDMtMTdUMDUlM0EyMCUzQTI1LjkxMlolMjIlMjBhZ2VudCUzRCUyMjUuMCUyMChXaW5kb3dzKSUyMiUyMHZlcnNpb24lM0QlMjIyMS4wLjIlMjIlMjBldGFnJTNEJTIyYlhQcjJ4X3loeXEtSDZoMzFjRDMlMjIlMjB0eXBlJTNEJTIyZGV2aWNlJTIyJTNFJTNDZGlhZ3JhbSUyMG5hbWUlM0QlMjJQJUMzJUExZ2luYS0xJTIyJTIwaWQlM0QlMjJXWEpzTWJVZzRiOTZ2dTJsR1BlUyUyMiUzRTVacEJrNW93Rk1jJTJGRFRQdFlXY0lVZFRqU3QzMjBQYmlvZWNzUk1oc0lEUUd3ZjMwRFJBRU51eXNZd0ZaOVNMOGswamVMeSUyRkpld1lET21IMm5hTTQlMkJNVThUQTNMOURJRGZqTXNDNnhtUUg3bHlyRlU1cXRaS2ZpY2VLcFNMV3pKSzFhaXFkU0VlSGpmcWlnWW80TEViZEZsVVlSZDBkSVE1eXh0VjlzeDJuNXFqSHlzQ1ZzWFVWMzlRendSbE9yU1d0VDZEMHo4b0hveXNGZGxTWWlxeXNxU2ZZQThsallrdURHZ3d4a1Q1VldZT1pqbThDb3VaYnVuZDBwUEhlTTRFdWMwc01vR0IwUVRaWnZxbHpoV3huS1dSQjdPNjVzR1hLY0JFWGdiSXpjdlRlWHdTaTBRSVpWM1FGNnFuOE5jNE96ZExvR1RvZEpETUF1eDRFZFpSVFY0cUVZNXJkRkNXMmxCQTZzMVZ5SlN3JTJCbWZmcXUyV0Y0b283c0J3SjRCN0FpbERxT01GMjNoayUyRnc0VGo5Z1pzcmNZJTJGdTJnUWxZSFpqQXFnZE1zJTJCbjV5YktOWTZualdIVFFtUFVBWTY3QmtJYUVtQVpNZ3lMTkUyM0w5NEt6RjF5NVNNUWlySHZOeGxaZWd5anhJNm01a2dtV2hldWNHSkVMMGFNcUNJbm41YyUyRnE1TjBla1UlMkJOM05hUW14cnIlMkY1dW5qdFBYUEoxJTJGU0FrT1JHa3glMkJWa0s0SGclMkJzOVJvb0ZEMm05N1pMQjBUJTJCV3I2RGpqaW9sVUZNazBQZkUzb25ibmZtTUNCQmh4OGxtMmlhNW9PdFU4QVBlenZPJTJCd2RqdE9JJTJCeW5RczRQcGhoMmd6YWtqUGVqQzFFdDJBUHBPRHdiTW9zN2dORndhQmZUVTRlb2I1Qm54Nm1EcnRSN1dTMU04Zk9NNzVEV0o2eW5DZEZlMFU5JTJGR3o2U0FuanhNYnFLT0dkZ0RQYkxuTEx2MVRPcWF4Q3ZmbjdRSGpyaHlXWHBzSDNNczdzNEZ4MFN1cHduVFRhZmViaFpqNWxNZHB3alR6YWMwVUNOdXF4M25DTlAxS1BEbW40d3hNNnFPTTRhZlpDOVFINnVka2lhMjBGMTR1Z1g3Z0sybklUY08lMkI5SWt1QmZhZWdweVFKd1lEalFld2FGNFU4Q3diSnFEM2pGcFRuTUU3TDlKZmpLJTJCZmtidWkxOVFlWEJMMEklMkJ5SHZlZnZ4U0RLZnRnTmklMkIlMkJGdFNxeGxMYmxYaHJ6V0VKSjNKZ0xQTTNUcHRWYlQlMkYlMkZ4aGtPNCUyRnpnb095WE5MSHNXbGw2dTM1eTlsbjhCWTRoYiUyQnYzSElxeXh0c2ljUE1QJTNDJTJGZGlhZ3JhbSUzRSUzQyUyRm14ZmlsZSUzRcp2xMoAAB8tSURBVHhe7Z39i11XucfX/AcSQoMllUCVpCJJEzVQSKFQnQnU0BZ6DTP5xTqh2NbBQEBrk/H2OomtcgOBgb6R0ftLZiiKWlTIBKWBlhRqXjSUNrFaQi3em1BL/4O58+ywTvfs2eectc9+1n72y+dA6UzOWmuv/X0+63u+Z+19zow551ZW/+OBAiiAAihQQwXGxKRXHzWcGlNCARRAgW4rMDY25jDpbjPA2aMACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVp69QuX77sdu3a5ebm5tzRo0fVTvOf//yn2lhWA91xxx1Wh+a4NVUAk65pYdowLW/Gi4uLbnJysndKe/fudXv27BnZoPuNi0m3gRrOIasAJg0TlSsgJrtz586Rj9sUk/7JT37iXnzxRfeZz3zGXblyJeh8SdJBMnWqESbd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">
+
+A variável exemplo tem dois elementos. Cada elemento é uma lista. Então, se eu chamar isso...
+
+```py
+exemplo[1] # o segundo item da variável `exemplo`
+```
+
+...terei como retorno isso:
+
+```
+["verde", "roxo", "preto"] # uma lista
+```
+
+Se eu quero acessar o elemento `"preto"`, preciso então indicar o índice dentro da lista que acesso com `exemplo[1]`. Fica assim:
+
+```py
+exemplo[1][2] # do segundo item, quero o terceiro item, ou seja, "preto"
+```
+
+Vamos ver na prática:
+
+```py
+exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
+print(exemplo[1])
+print(exemplo[1][2])
+```
+```textfile
+['verde', 'roxo', 'preto']
+preto
+```
+
+Como na aula passada vimos `if`-`elif`-`else`, vale a gente ver o uso de controle de fluxo com listas e apresentar dois operadores &mdash;e, para o exemplo abaixo, consideramos `nomes = ["João", "André", "Ana", "Maria"]`:
+
+| operador | significado | entrada | saída |
+| :-: | :-: | :-: | :-: |
+| `in` | está contido em | `"João" in nomes` | `True` |
+| `not in` | não está contido em | `"Pedro" not in nomes` | `True` |
+
+```py
+nomes = ["João", "André", "Ana", "Maria"]
+
+print('Ana' not in nomes)
+print('Maria' in nomes)
+```
+```textfile
+False
+True
+```
+
+```py
+nome = "Claudio"
+lista_nomes = ["Renato", "Ana", "Fernanda"]
+
+if nome not in lista_nomes: # "Se o nome não estiver na lista..."
+    print("O nome {} não está na lista.".format(nome))
+else:
+    print("O nome {} está na lista.".format(nome))
+```
+```textfile
+O nome Claudio não está na lista.
+```
+
+As listas são __mutáveis__: posso adicionar e excluir elementos, mostrar em ordem reversa etc. com algumas funções:
+
+- `.append(x)` para adicionar um elemento `x`
+- `.pop(i)` para tirar da lista um elemento de índice i e mostrar esse elemento
+- `.remove(x)` para excluir um elemento `x`
+- `.reverse()` para inverter a ordem dos elementos
+- `.sort()` para organizar os elementos do menor ao maior (ou do maior ao menor, se usar `reverse=True`)
+- `.count(x)` para contar quantas vezes o elemento `x` aparece na lista
+
+```py
+lista = ["Carlos", "Antonio", "Cesar"]
+print(lista)
+
+lista.append("Rodolfo") # adicionar "Rodolfo"
+print(lista)
+
+lista.remove("Cesar") # remover "Cesar"
+print(lista)
+
+lista.reverse() # colocar em ordem reversa
+print(lista)
+
+lista.sort(reverse=True) # ordenar do maior para o menor
+print(lista)
+
+print(lista.count("Rodolfo")) # contar quantas vezes aparece "Rodolfo"
+```
+```textfile
+['Carlos', 'Antonio', 'Cesar']
+['Carlos', 'Antonio', 'Cesar', 'Rodolfo']
+['Carlos', 'Antonio', 'Rodolfo']
+['Rodolfo', 'Antonio', 'Carlos']
+['Rodolfo', 'Carlos', 'Antonio']
+1
+```
+{{< /expandable >}}
+{{< expandable label="Coleções de dados: tupla" level="2" >}}
+Outra coleção de dados é a tupla (classe `tuple`), feita com valores dentro de parênteses (`(` e `)`) ou com a função `tuple()`.
+
+```py
+valores = (1, 2, 99)
+print(valores)
+print(type(valores))
+```
+```textfile
+(1, 2, 99)
+<class 'tuple'>
+```
+
+Assim como listas, tuplas podem conter dados de tipos variados, e é possível criar uma tupla de tuplas (ou de listas). Também a forma de localizar elementos por meio da indexação é similar.
+
+```py
+tupla_1 = (4, False, "maçã", 8.91) # tupla com diversos tipos
+print(tupla_1)
+
+tupla_2 = ((1, 2, 3), (9, 8, 7)) # tupla contendo duas tuplas
+print(tupla_2)
+
+tupla_3 = tuple([1, 2, 3]) # tupla a partir de lista
+print(tupla_3)
+
+tupla_4 = (("Ana", "Pedro", "Claudio"), ("José", "Maria", "João"))
+print(tupla_4[0][2]) # indexação para encontrar "Claudio"
+```
+```textfile
+(4, False, 'maçã', 8.91)
+((1, 2, 3), (9, 8, 7))
+(1, 2, 3)
+Claudio
+```
+
+Entretanto, as semelhanças acabam aí. Ao contrário de listas, __tuplas são imutáveis__. Ou seja, elementos não podem ser removidos, adicionados, reordenados etc.
+
+```py
+vegetais = ("acelga", "repolho", "alface")
+vegetais.remove("acelga")
+```
+```textfile
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+Cell In[16], line 1
+----> 1 vegetais.remove("acelga")
+
+AttributeError: 'tuple' object has no attribute 'remove'
+```
+```py
+vegetais.append("rúcula")
+```
+```textfile
+---------------------------------------------------------------------------
+AttributeError                            Traceback (most recent call last)
+Cell In[17], line 1
+----> 1 vegetais.append("rúcula")
+
+AttributeError: 'tuple' object has no attribute 'append'
+```
+
+Daí a importância de tuplas: __elas são úteis quando precisamos nos certificar de que os elementos não foram ou não serão alterados__. É comum, inclusive, converter listas em tuplas para que seus dados não sejam modificados.
+
+```py
+cores = ["amarelo", "verde", "azul", "vermelho"] 
+print("Temos {}, o que permite que eu altere seus elementos: {}".format(type(cores), cores))
+
+cores = tuple(cores) # converto a lista para tupla
+print("Agora temos {}, impossibilitando alterações: {}".format(type(cores), cores))
+```
+```textfile
+Temos <class 'list'>, o que permite que eu altere seus elementos: ['amarelo', 'verde', 'azul', 'vermelho']
+Agora temos <class 'tuple'>, impossibilitando alterações: ('amarelo', 'verde', 'azul', 'vermelho')
+```
+{{< /expandable >}}
+{{< expandable label="Coleções de dados: conjunto" level="2" >}}
+A terceira coleção é o conjunto (classe `set`), feita com valores dentro de chaves (`{` e `}`) ou com a função `set()`.
+
+```py
+conjunto = {1, 2, 3, 4, 5}
+print(conjunto)
+print(type(conjunto))
+```
+```textfile
+{1, 2, 3, 4, 5}
+<class 'set'>
+```
+As diferenças mais significativas entre conjuntos e as coleções anteriores são que, ao contrário de listas e tuplas,
+
+1. conjuntos não retornam repetições.
+
+```py
+valores = [1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5] # lista
+print(valores)
+
+valores = tuple(valores) # tupla
+print(valores)
+
+valores = set(valores) # conjunto
+print(valores)
+```
+```textfile
+[1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5]
+(1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5)
+{1, 2, 3, 4, 5}
+```
+
+2. conjuntos não permitem indexação.
+
+```py
+print(valores[1])
+```
+```textfile
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[21], line 1
+----> 1 print(valores[1])
+
+TypeError: 'set' object is not subscriptable
+```
+
+Com essas peculiaridades, é comum haver conversões de listas para conjuntos e, de novo, para listas: imagine que temos uma lista com 30 valores, e queremos (1) reordená-los do maior para o menor, (2) excluindo valores duplicados, e (3) encontrar os valores que estão nas posições 3 a 5.
+
+Sabemos que exclusão de duplicatas pode ser feita com conjuntos, e não com listas; sabemos que reordenação e indexação podem ser executadas com listas, e não com conjuntos. Então...
+
+```py
+nums = [
+    7, 1, 5, 3, 3, 4, 9, 5, 3, 1,
+    8, 9, 1, 1, 8, 5, 5, 7, 2, 6,
+    5, 4, 7, 1, 6, 3, 2, 3, 1, 9,
+]
+print(nums)
+
+nums = set(nums) # com conjunto, excluo duplicatas...
+print(nums)
+
+nums = list(nums) # ...aí converto de volta para lista...
+print(nums)
+
+nums.sort(reverse=True) # ...e, na lista, reordeno do maior para o menor...
+print(nums)
+
+print(nums[3:6]) # ...para buscar valores por indexação
+```
+```textfile
+[7, 1, 5, 3, 3, 4, 9, 5, 3, 1, 8, 9, 1, 1, 8, 5, 5, 7, 2, 6, 5, 4, 7, 1, 6, 3, 2, 3, 1, 9]
+{1, 2, 3, 4, 5, 6, 7, 8, 9}
+[1, 2, 3, 4, 5, 6, 7, 8, 9]
+[9, 8, 7, 6, 5, 4, 3, 2, 1]
+[6, 5, 4]
+```
+
+{{< warning >}}
+No exemplo acima, usamos dois comandos para converter a lista em conjunto e, em seguida, em lista novamente:
+
+```py
+nums = set(nums)
+nums = list(nums)
+```
+Podemos fazer isso numa linha só, de maneira encadeada:
+
+```py
+nums = list(set(nums))
+```
+{{< /warning >}}
+{{< /expandable >}}
+{{< expandable label="Coleções de dados: dicionário" level="2" >}}
+anteriormente vimos três coleções de dados: __lista__, __tupla__ e __conjunto__. Apenas para recapitular suas características:
+
+| lista | tupla | conjunto |
+| :-: | :-: | :-: |
+| exemplo: `x = [1, 2, 3, 4]` | exemplo: `y = (1, 2, 3, 4)` | exemplo: `z = {1, 2, 3, 4}` |
+| uso de `[` e `]` | uso de `(` e `)` | uso de `{` e `}` |
+| `list()` para lista vazia ou conversão | `tuple()` para tupla vazia ou conversão | `set()` para conjunto vazio ou conversão |
+| aceita itens repetidos | aceita itens repetidos | aceita itens repetidos, mas retorna itens únicos |
+| é mutável | é imutável | é imutável |
+| aceita métodos para manipulação | não aceita métodos para manipulação | não aceita métodos para manipulação |
+| itens acessados a partir da posição | itens acessados a partir da posição | itens inacessíveis a partir da posição |
+
+Além dessas três coleções, há outra muito importante: dicionário. Ao contrário das demais, um dicionário não tem apenas valor, mas também tem chave. Aliás, os itens de um dicionário são `sempre em pares chave-valor.` Por exemplo:
+
+```py
+prof = {"nome": "Rodolfo"}
+```
+
+Repare na sintaxe de um dicionário: `{chave: valor}`. Portanto, um dicionário é feito de `{` e `}`, além de `:`, que é o que separa a chave &mdash;no exemplo, `"nome"`&mdash; do valor &mdash;`"Rodolfo"`. Para criá-lo eu também posso usar a função `dict()`. Vamos ver um exemplo:
+
+```py
+curso = {"instituicao": "IDP"}
+print(curso)
+print(type(curso))
+```
+```textfile
+{'instituicao': 'IDP'}
+<class 'dict'>
+```
+
+Isso muda bastante a forma de trabalharmos com coleções: se antes o usual era ter listas ou tuplas com dados de um mesmo tipo...
+
+```py
+frutas = ["maçã", "laranja", "banana"]
+precos = [1.45, 2.07, 3.99]
+```
+...agora podemos ter uma coleção com diversos tipos de dados...
+
+```py
+frutas = {"produto": "maçã", "preco": 1.45} # a vírgula separa os pares chave-valor
+```
+...ou até mesmo uma coleção de coleções, como lista de dicionários (algo bem comum, aliás).
+```py
+frutas = [
+    {"produto": "maçã", "preco": 1.45},
+    {"produto": "laranja", "preco": 2.07},
+    {"produto": "banana", "preco": 3.99}
+]
+```
+
+Vou fazer o meu perfil usando dicionário e os mais variados tipos de dados:
+
+```py
+prof = {
+    "nome": "Rodolfo",
+    "sobrenome": "Viana",
+    "idade": 43,
+    "domicilio": "Marília, SP",
+    "tem_pet": True,
+    "qtde_pet": 1,
+    "nome_pet": "Pitoco",
+    "peso_pet": 11.5
+}
+
+print(prof)
+print("Tenho {} elementos numa única variável!". format(len(prof))) 
+```
+```textfile
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
+Tenho 8 elementos numa única variável!
+```
+
+Mas agora que temos a estrutura chave-valor, como localizar um valor? Ou adicionar outro? Simples: basta usar a chave entre `[]`!
+
+```py
+print(prof) # tenho o dicionário todo...
+print(prof["tem_pet"]) #... e aqui, apenas o valor da chave "tem_pet"
+```
+```textfile
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
+True
+```
+```py
+print("{} tem {} anos e mora em {}".format(
+    prof["nome"], prof["idade"], prof["domicilio"]
+))
+```
+```textfile
+Rodolfo tem 43 anos e mora em Marília, SP
+```
+Para adicionar um par chave-valor que não existe, funciona assim:
+
+```
+variavel["novachave"] = "novovalor"
+```
+Vamos ver na prática:
+
+```py
+print(prof) # repare que não tenho chave "signo"...
+prof["signo"] = "Peixes" # ...mas eu a adiciono, e com o valor "Peixes"...
+print(prof) # e o dicionário é atualizado
+```
+```textfile
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 
+'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 
+'nome_pet': 'Pitoco', 'peso_pet': 11.5}
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 
+'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 
+'nome_pet': 'Pitoco', 'peso_pet': 11.5, 'signo': 'Peixes'}
+```
 {{< /expandable >}}
