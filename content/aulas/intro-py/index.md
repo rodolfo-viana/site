@@ -1414,3 +1414,115 @@ nums = list(set(nums))
 ```
 {{< /warning >}}
 {{< /expandable >}}
+{{< expandable label="Coleções de dados: dicionário" level="2" >}}
+anteriormente vimos três coleções de dados: __lista__, __tupla__ e __conjunto__. Apenas para recapitular suas características:
+
+| lista | tupla | conjunto |
+| :-: | :-: | :-: |
+| exemplo: `x = [1, 2, 3, 4]` | exemplo: `y = (1, 2, 3, 4)` | exemplo: `z = {1, 2, 3, 4}` |
+| uso de `[` e `]` | uso de `(` e `)` | uso de `{` e `}` |
+| `list()` para lista vazia ou conversão | `tuple()` para tupla vazia ou conversão | `set()` para conjunto vazio ou conversão |
+| aceita itens repetidos | aceita itens repetidos | aceita itens repetidos, mas retorna itens únicos |
+| é mutável | é imutável | é imutável |
+| aceita métodos para manipulação | não aceita métodos para manipulação | não aceita métodos para manipulação |
+| itens acessados a partir da posição | itens acessados a partir da posição | itens inacessíveis a partir da posição |
+
+Além dessas três coleções, há outra muito importante: dicionário. Ao contrário das demais, um dicionário não tem apenas valor, mas também tem chave. Aliás, os itens de um dicionário são `sempre em pares chave-valor.` Por exemplo:
+
+```py
+prof = {"nome": "Rodolfo"}
+```
+
+Repare na sintaxe de um dicionário: `{chave: valor}`. Portanto, um dicionário é feito de `{` e `}`, além de `:`, que é o que separa a chave &mdash;no exemplo, `"nome"`&mdash; do valor &mdash;`"Rodolfo"`. Para criá-lo eu também posso usar a função `dict()`. Vamos ver um exemplo:
+
+```py
+curso = {"instituicao": "IDP"}
+print(curso)
+print(type(curso))
+```
+```textfile
+{'instituicao': 'IDP'}
+<class 'dict'>
+```
+
+Isso muda bastante a forma de trabalharmos com coleções: se antes o usual era ter listas ou tuplas com dados de um mesmo tipo...
+
+```py
+frutas = ["maçã", "laranja", "banana"]
+precos = [1.45, 2.07, 3.99]
+```
+...agora podemos ter uma coleção com diversos tipos de dados...
+
+```py
+frutas = {"produto": "maçã", "preco": 1.45} # a vírgula separa os pares chave-valor
+```
+...ou até mesmo uma coleção de coleções, como lista de dicionários (algo bem comum, aliás).
+```py
+frutas = [
+    {"produto": "maçã", "preco": 1.45},
+    {"produto": "laranja", "preco": 2.07},
+    {"produto": "banana", "preco": 3.99}
+]
+```
+
+Vou fazer o meu perfil usando dicionário e os mais variados tipos de dados:
+
+```py
+prof = {
+    "nome": "Rodolfo",
+    "sobrenome": "Viana",
+    "idade": 43,
+    "domicilio": "Marília, SP",
+    "tem_pet": True,
+    "qtde_pet": 1,
+    "nome_pet": "Pitoco",
+    "peso_pet": 11.5
+}
+
+print(prof)
+print("Tenho {} elementos numa única variável!". format(len(prof))) 
+```
+```textfile
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
+Tenho 8 elementos numa única variável!
+```
+
+Mas agora que temos a estrutura chave-valor, como localizar um valor? Ou adicionar outro? Simples: basta usar a chave entre `[]`!
+
+```py
+print(prof) # tenho o dicionário todo...
+print(prof["tem_pet"]) #... e aqui, apenas o valor da chave "tem_pet"
+```
+```textfile
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
+True
+```
+```py
+print("{} tem {} anos e mora em {}".format(
+    prof["nome"], prof["idade"], prof["domicilio"]
+))
+```
+```textfile
+Rodolfo tem 43 anos e mora em Marília, SP
+```
+Para adicionar um par chave-valor que não existe, funciona assim:
+
+```
+variavel["novachave"] = "novovalor"
+```
+Vamos ver na prática:
+
+```py
+print(prof) # repare que não tenho chave "signo"...
+prof["signo"] = "Peixes" # ...mas eu a adiciono, e com o valor "Peixes"...
+print(prof) # e o dicionário é atualizado
+```
+```textfile
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 
+'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 
+'nome_pet': 'Pitoco', 'peso_pet': 11.5}
+{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 
+'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 
+'nome_pet': 'Pitoco', 'peso_pet': 11.5, 'signo': 'Peixes'}
+```
+{{< /expandable >}}
