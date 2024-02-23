@@ -417,7 +417,7 @@ Dados lógicos (`True`, `False`), como vimos um pouco antes, aparecem com mais f
 
 Estes são os operadores de comparação em Python (e nos exemplos, `x = 5` e `y = 2`):
 
-| operador | significado | entrada | output |
+| operador | significado | entrada | saída |
 | :-: | :-: | :-: | :-: |
 | `==` | igual à | `x == y` | `False` |
 | `!=` | não-igual a | `x != y` | `True` |
@@ -479,6 +479,56 @@ print((projecao_expo - projecao_impo) > meta_balanca_2024)
 True
 ```
 
+### De atribuição
+
+Por ora, já temos sedimentado o conhecimento de que o sinal `=` serve para atribuir um valor a uma variável, como vimos no item _Variáveis_. Exemplo:
+
+```
+variavel = valor
+```
+
+Mas `=`, junto a outros sinais, serve também para operações de adição, subtração etc., __quando o valor resultante dessa operação aritmética for atribuída à mesma variável__.
+
+Ficou confuso, então vou explicar com um exemplo:
+
+```py
+idade = 43
+print(idade)
+idade = idade + 1
+print(idade)
+```
+```textfile
+43
+44
+```
+
+No exemplo acima, note que, na terceira linha, temos `1` adicionado à variável `idade` (com valor `43`), e o resultado (`44`) será atribuído à mesma variável `idade`. A variável se repete: aparece tanto na operação aritmética (`idade + 1`) quanto no elemento onde o resultado da operação é salvo (`idade =`). 
+
+Para não ter de repetir a variável, usamos operadores de atribuição. O exemplo acima poderia ser escrito assim:
+
+```py
+idade = 43
+print(idade)
+idade += 1 # equivalente a `idade = idade + 1`
+print(idade)
+```
+```textfile
+43
+44
+```
+
+E não é apenas com adição que consigo fazer esse tipo de atribuição (considerando `x = 33`):
+
+| operador | significado | entrada | equivalência | saída |
+| :-: | :-: | :-: | :-: | :-: |
+| `+=` | adição | `x += 3` | `x = x + 3` | `36` |
+| `-=` | subtração | `x -= 3` | `x = x - 3` | `30` |
+| `*=` | multiplicação | `x *= 3` | `x = x * 3` | `99` |
+| `/=` | divisão | `x /= 3` | `x = x / 3` | `11` |
+| `**=` | exponenciação | `x **= 3` | `x = x ** 3` | `35937` |
+| `//=` | parte inteira da divisão (descarta decimais) | `x //= 3` | `x = x // 3` | `11` |
+| `%=` | módulo (resto da divisão) | `x %= 3` | `x = x % 3` | `0` |
+
 ### Lógicas
 
 Além dos operadores relacionais, há os operadores lógicos. Eles servem para agregar operadores relacionais. Por exemplo:
@@ -510,7 +560,7 @@ No exemplo acima,
 
 Os operadores lógicos são os seguintes (considerando `x = 5` e `y = 2`):
 
-| operador | significado | input de exemplo | output |
+| operador | significado | input de exemplo | saída |
 | :-: | :-: | :-: | :-: |
 | `and` | `e` lógico (ambas as comparações devem ser `True`) | `x > y and x < 10` | `True` |
 | `or` | `ou` lógico (uma das comparações deve ser `True`) | `x != 5 or x > y` | `True` |
@@ -804,7 +854,7 @@ Em Python, ficaria assim:
 passageiros = 0
 lotacao = 20
 while passageiros < lotacao:
-    passageiros = passageiros + 1
+    passageiros += 1
     print("Tenho {} passageiro(s) no meu ônibus.".format(passageiros))
 ```
 ```textfile
@@ -843,7 +893,7 @@ Cuidado ao usar `while`! Como dissemos, ele executa uma operação __enquanto__ 
 numero = 1
 while numero > 0:
     print("O número agora é {}.".format(numero))
-    numero = numero + 1
+    numero += 1
 ```
 ```textfile
 O número agora é 1.
@@ -1633,4 +1683,119 @@ No 3º loop, a 'variável temporária' `nome` é Fernanda
 No 4º loop, a 'variável temporária' `nome` é Pedro
 ```
 {{< /warning >}}
+{{< /expandable >}}
+{{< expandable label="Iteração com `for` - parte 2" level="2" >}}
+Anteriormente vimos como `for` loop funciona com listas, tuplas... Recapitulando:
+
+```py
+nums_gerais = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
+nums_pares = list()
+
+for i in nums_gerais: # para cada item de `nums_gerais...
+    if i % 2 = 0: # ...o item dividido por 2 tiver como resto 0...
+        nums_pares.append(i) # ...adicione o item na lista `nums_pares`
+
+print(nums_pares)
+```
+```textfile
+[2, 4, 6, 8, 10]
+```
+
+Outro exemplo:
+
+```py
+cidades = ["São Paulo", "Brasília", "Rio de Janeiro", "Curitiba", "Salvador"]
+trecho = list()
+
+for c in cidades:
+    if c in ["São Paulo", "Rio de Janeiro"]:
+        trecho.append("Eixo Rio-São Paulo")
+    else:
+        trecho.append("Fora do eixo Rio-São Paulo")
+
+print(trecho)
+```
+```textfile
+['Eixo Rio-São Paulo', 'Fora do eixo Rio-São Paulo', 'Eixo Rio-São Paulo', 
+'Fora do eixo Rio-São Paulo', 'Fora do eixo Rio-São Paulo']
+```
+
+O `for` loop &mdash;que permite a iteração (repetição) de determinada operação para cada elemento de uma coleção&mdash; é algo simples de compreender, mas diferente quando trabalhamos com __dicionários__. Isso porque dicionários, como sabemos, é feito de __par chave-valor__. Veja que interessante:
+
+```py
+lista = ["Cachorro", "Gato", "Passarinho"]
+
+for a in lista:
+    print(a)
+```
+```textfile
+Cachorro
+Gato
+Passarinho
+```
+```py
+dicionario = {"animal_1": "Cachorro", "animal_2": "Gato", "animal_3": "Passarinho"}
+
+for a in dicionario:
+    print(a)
+```
+```textfile
+animal_1
+animal_2
+animal_3
+```
+
+Quando fazemos `for` loop "convencional" em dicionário, ele retorna somente as chaves, e não os valores. Isso porque, na construção do `for` loop, eu pedi apenas um elemento, na linha:
+
+```
+for a in dicionario: 
+# pedi apenas `a`
+```
+
+Como dicionário é feito de par chave-valor, eu preciso pedir dois elementos &mdash;um para a chave, outro para o valor. E também usar `.items()`, para indicar ao sistema para procurar dentro dos itens. Algo assim:
+
+```
+for a, b in dicionario.items(): 
+# pedi `a` para chave, `b` para valor dentro dos itens
+```
+
+Vamos testar com o exemplo:
+
+```py
+dicionario = {"animal_1": "Cachorro", "animal_2": "Gato", "animal_3": "Passarinho"}
+
+for a, b in dicionario.items(): # `a` para chave, `b` para valor
+    print("A chave {} tem o valor {}".format(a, b))
+```
+```textfile
+A chave animal_1 tem o valor Cachorro
+A chave animal_2 tem o valor Gato
+A chave animal_3 tem o valor Passarinho
+```
+
+Trabalhar com chaves e valores abre inúmeras possibilidades de análise. Por exemplo:
+
+```py
+precos = {"banana": 1.49, "maçã": 1.79, "mamão": 2.15}
+print('Preços originais:', precos)
+
+# Quero aumentar os preços de todos os produtos em 10%
+for k, v in precos.items():
+    precos[k] = round(v * 1.1, 2) # 1.1 porque 10% é 1 + 0.1
+
+print(precos)
+print('Preços ajustados (10% de aumento):', precos)
+
+# Quero reduzir em 5% o preço do mamão
+for k, v in precos.items():
+    if k == "mamão":
+        precos[k] = round(v * 0.95, 2)
+
+print('Preços ajustados (10% de aumento; -5% se for mamão:', precos)
+```
+```textfile
+Preços originais: {'banana': 1.49, 'maçã': 1.79, 'mamão': 2.15}
+Preços ajustados (10% de aumento): {'banana': 1.64, 'maçã': 1.97, 'mamão': 2.37}
+Preços ajustados (10% de aumento; -5% se for mamão): {'banana': 1.64, 'maçã': 1.97, 'mamão': 2.25}
+```
 {{< /expandable >}}
