@@ -1,5 +1,5 @@
 ---
-title: "Introdução à linguagem Python"
+title: "[IDP] Introdução à linguagem Python"
 date: 2024-02-18
 ---
 
@@ -10,7 +10,11 @@ As aulas aqui apresentadas intregam o módulo "Introdução à linguagem Python"
 {{< expandable label="Variáveis" level="2" >}}
 Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
 
-A atribuição é simples: `variavel = dado`
+A atribuição é simples: 
+
+```
+variavel = dado
+```
 
 Vejamos um uso real:
 
@@ -1683,6 +1687,37 @@ No 3º loop, a 'variável temporária' `nome` é Fernanda
 No 4º loop, a 'variável temporária' `nome` é Pedro
 ```
 {{< /warning >}}
+
+Aqui, um exemplo uso de `for` loop no contexto de jornalismo de dados: numa série de reportagens na TV Globo sobre o retrato da mobilidade em São Paulo &mdash;projeto "Anda SP"&mdash;, tínhamos uma pesquisa com diversas informações sobre os entrevistados, todos ciclistas, como idade. Precisávamos agrupar essas pessoas em categorias de acordo com a faixa etária. A lógica era:
+
+1. do arquivo `csv` a que tínhamos, eu precisava de ver linha a linha o campo `IDADE`;
+   - ou seja, uso de `for` loop
+2. e, dependendo do valor no campo, descrever o grupo ao qual pertencia
+   - ou seja, uso de condicionais com `if`
+
+Então a operação foi esta:
+
+```py
+# Segregação por faixa etária
+fx_et = []
+for row in bike_limpo['IDADE']:
+    if row < 18:
+        fx_et.append('Menor de 18 anos')
+    elif row >= 18 and row < 25:
+        fx_et.append('18 a 24 anos')
+    elif row >= 25 and row < 31:
+        fx_et.append('25 a 30 anos')
+    elif row >= 31 and row < 41:
+        fx_et.append('31 a 40 anos')
+    elif row >= 41 and row < 51:
+        fx_et.append('41 a 50 anos')
+    elif row >= 51 and row < 61:
+        fx_et.append('51 a 60 anos')
+    else:
+        fx_et.append('61 anos ou mais')
+```
+
+Aqui, o estudo na íntegra: [2019-06-28-od_bicicleta](https://github.com/rodolfo-viana/ddj_stuff/blob/main/ipynb/2019-06-28-od_bicicleta.ipynb).
 {{< /expandable >}}
 {{< expandable label="Iteração com `for` - parte 2" level="2" >}}
 Anteriormente vimos como `for` loop funciona com listas, tuplas... Recapitulando:
@@ -1797,5 +1832,263 @@ print('Preços ajustados (10% de aumento; -5% se for mamão:', precos)
 Preços originais: {'banana': 1.49, 'maçã': 1.79, 'mamão': 2.15}
 Preços ajustados (10% de aumento): {'banana': 1.64, 'maçã': 1.97, 'mamão': 2.37}
 Preços ajustados (10% de aumento; -5% se for mamão): {'banana': 1.64, 'maçã': 1.97, 'mamão': 2.25}
+```
+{{< /expandable >}}
+{{< expandable label="Funções" level="2" >}}
+Seja com `for` loop ou `if`-`else`; seja com coleções ou não, estamos sempre fazendo uma ou mais operações em Python. Por exemplo:
+
+```py
+salario = 2500 # operação 1
+despesa = 1875 # operação 2
+
+if salario > despesa: # operação 3
+    calculo = salario - despesa # operação 4
+    print("Sobram-me {} reais.".format(calculo)) # operação 5
+elif salario < despesa: # operação 6
+    calculo = despesa - salario # operação 7
+    print("Faltam-me {} reais.".format(calculo)) # operação 8
+else: # operação 9
+    print("Salário e despesas têm o mesmo valor. Não me sobra nada.") # operação 10
+```
+
+Chamamos essas operações encadeadas de rotinas. Muitas vezes, queremos repetir uma rotina:
+
+```py
+lista_1 = [2.35, 6.78, 12.07]
+lista_2 = [1.15, 9.78, 10.12]
+
+for n in lista_1:
+    calculo = 2 * n
+    print(calculo)
+
+for n in lista_2:
+    calculo = 2 * n
+    print(calculo)
+```
+
+No exemplo acima, repare que tenho duas listas distintas (`lista_1` e `lista_2`), e para cada faço a mesma rotina:
+
+1. faço `for` loop,
+2. faço o cálculo de multiplicação por 2
+3. imprimo o valor do cálculo
+
+__Simplesmente repito o código__, linha a linha!
+
+Para evitar repetições, podemos contar com __funções__. Funções são rotinas que têm um nome e ficam temporariamente salvas na sua máquina. São sequências de operações determinadas pelo programador que podem ser usadas sempre que necessárias.
+
+Python tem várias funções prontas, muitas das quais já vimos nas aulas: `bool()`, `dict()`, `float()`, `format()`, `input()`, `int()`, `len()`, `print()`, `round()`, `set()`, `str()`, `tuple()`, `type()`... E há ainda outras tantas, que podem ser vistas [neste link](https://docs.python.org/pt-br/3.11/library/functions.html). Mas além das funções prontas, podemos criar as nossas próprias! A sintaxe para definir uma função é assim:
+
+```
+def nomedafuncao():
+    operacao
+```
+
+E a sintaxe para chamar (usar) uma função é assim:
+
+```
+nomedafuncao()
+```
+
+Por exemplo, uma função que:
+
+1. pergunta o nome do usuário,
+2. deixa todas as letras em caixa alta,
+3. imprime "Bom dia", acompanhado do nome do usuário.
+
+```py
+def bomdia(): # defino o nome da minha função
+    nome = input("Qual o seu nome? ") # operação 1: pedir o nome
+    nome = nome.upper() # operação 2: deixar o nome em caixa alta
+    print("Bom dia, {}".format(nome)) # operação 3: imprimir a frase
+
+bomdia() # chamo a função...
+```
+```textfile
+Qual o seu nome? Rodolfo
+Bom dia, RODOLFO
+```
+```py
+bomdia() # ...de novo...
+```
+```textfile
+Qual o seu nome? André
+Bom dia, ANDRÉ
+```
+```py
+bomdia() # ...e de novo, sem precisar reescrever as operações definidas
+```
+```textfile
+Qual o seu nome? Ana Maria
+Bom dia, ANA MARIA
+```
+
+Com o exemplos das listas, poderíamos usar uma função. Assim:
+
+```py
+def multiplicar():
+    calculo = 2 * n
+    print(calculo)
+
+lista_1 = [2.35, 6.78, 12.07]
+lista_2 = [1.15, 9.78, 10.12]
+
+for n in lista_1:
+    multiplicar()
+
+for n in lista_2:
+    multiplicar()
+```
+```textfile
+4.7
+13.56
+24.14
+2.3
+19.56
+20.24
+```
+
+### Argumentos
+
+No exemplo acima, criei uma função para multiplicar por 2. Mas e se eu quiser multiplicar por 3 ou por 6 ou por 127? E se o número multiplicador for dinâmico?
+
+Para isso contamos com parâmetros e argumentos.
+
+- __Parâmetro__ é o nome dado ao atributo que uma função pode receber
+
+- __Argumento__ é o valor recebido pela função
+
+A sintaxe para criar uma função com parâmetro é assim:
+
+```
+def nomedafuncao(parametro):
+    bloco de código, rotina que usa o parâmetro
+```
+
+E a sintaxe para chamar a função é:
+
+```
+nomedafuncao(argumento)
+```
+
+Vamos refazer o exemplo de multiplicação, mas com parâmetros e argumentos:
+
+```py
+def multiplicar(n_mult): # `n_mult` é o parâmetro...
+    calculo = n_mult * n # ...que é usado no bloco da rotina
+    print(calculo)
+
+lista_1 = [2.35, 6.78, 12.07]
+lista_2 = [1.15, 9.78, 10.12]
+
+for n in lista_1:
+    multiplicar(6) # o argumento `6` entra no lugar do parâmetro `n_mult`
+
+for n in lista_2:
+    multiplicar(127) # o número 127 é o argumento
+```
+```textfile
+14.100000000000001
+40.68
+72.42
+146.04999999999998
+1242.06
+1285.24
+```
+
+Posso usar quantos parâmetros e argumentos eu quiser, do tipo que eu quiser.
+
+```py
+def multiplicar(lista, multiplicador): # tenho dois parâmetros...
+    for i in lista:
+        calculo = multiplicador * i
+        print(calculo)
+
+lista_1 = [3.89, 0.99, 17.15, 1.89]
+
+multiplicar(lista_1, 7) # ...e uso dois argumentos
+```
+```textfile
+27.23
+6.93
+120.04999999999998
+13.229999999999999
+```
+
+Mas se eu passar um parâmetro e ele não tiver argumento, ou se eu usar um argumento sem parâmetro, encontro erro:
+
+```py
+def multiplicar(lista, multiplicador): # tenho dois parâmetros...
+    for i in lista:
+        calculo = multiplicador * i
+        print(calculo)
+
+lista_1 = [3.89, 0.99, 17.15, 1.89]
+
+multiplicar(lista_1) # ...e uso apenas um argumento
+```
+```textfile
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[10], line 1
+----> 1 multiplicar(lista_1) # ...e uso apenas um argumento
+
+TypeError: multiplicar() missing 1 required positional argument: 'multiplicador'
+```
+
+```py
+multiplicar(lista_1, 7, 9) # ...e uso três argumentos
+```
+```textfile
+---------------------------------------------------------------------------
+TypeError                                 Traceback (most recent call last)
+Cell In[11], line 1
+----> 1 multiplicar(lista_1, 7, 9) # ...e uso três argumentos
+
+TypeError: multiplicar() takes 2 positional arguments but 3 were given
+```
+
+### `return` vs. `print`
+
+Vimos até aqui que `print()` é a função que usamos para imprimir algo na tela. Contudo, nem sempre queremos imprimir algo, mas sim salvar o resultado da função na memória para uso posterior. Nesse caso usamos, dentro da função, `return`. Vamos ver um exemplo:
+
+Preciso calcular o volume de um cilindro (fórmula: \\(V = \pi r^2 h\\), onde \\(r\\) é o raio; \\(h\\) é a altura). Com o volume, preciso calcular o preço, sendo R$ 1,50 para cada unidade de volume. (Repare: eu não quero imprimir o volume; quero usá-lo para operações futuras &mdash;no caso, calcular o valor total.)
+
+```py
+# crio uma função para determinar o volume de um cilindro
+def volume(r, h):
+    pi = 3.14159
+    vol = pi * r**2 * h
+    return vol # uso `return` no final, com o dado que quero obter
+
+# crio outra função, para calcular o valor
+def valor(volume):
+    vlr_unit = 1.5
+    vlr_final = volume * vlr_unit
+    return vlr_final
+
+
+# calculo o volume usando a função que criei
+# o resultado ficará armazenado em `cilindro_1`
+cilindro_1 = volume(16, 3)
+
+# agora uso `cilindro_1` para calcular o valor
+# o resultado ficará armazenado em `valor_1`
+valor_1 = valor(cilindro_1)
+
+# reuso a função
+cilindro_2 = volume(13, 6)
+valor_2 = valor(cilindro_2)
+
+# até aqui, nada é impresso na tela, pois não usei `print()`,
+# mas sim `return`, para devolver o resultado das operações
+# em uma variável
+
+# só aqui imprimo
+print(valor_1)
+print(valor_2)
+```
+```textfile
+3619.1116799999995
+4778.358389999999
 ```
 {{< /expandable >}}
