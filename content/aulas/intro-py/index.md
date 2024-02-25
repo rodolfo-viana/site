@@ -2091,4 +2091,30 @@ print(valor_2)
 3619.1116799999995
 4778.358389999999
 ```
+
+Um exemplo de como funções são usadas no jornalismo de dados é este código escrito pela equipe do FiveThirtyEight para obter dados metereológicos do site Weather Underground. A reportagem em que tais dados foram usados é esta: ["What 12 Months Of Record-Setting Temperatures Looks Like Across The U.S."](https://fivethirtyeight.com/features/what-12-months-of-record-setting-temperatures-looks-like-across-the-u-s/). O código na íntegra está [aqui](https://github.com/fivethirtyeight/data/blob/76c471a9124d690ba92709ca21cbfcdde226b44e/us-weather-history/wunderground_scraper.py), mas abaixo segue uma versão editada e comentada para melhor compreensão:
+
+```py
+# importação de módulos para...
+from datetime import datetime, timedelta # ...trabalhar com datas
+from urllib.request import urlopen # ...abrir sites
+
+
+def scrape_station(station): # parâmetro é `station`
+    current_date = datetime(year=2014, month=7, day=1) # data atual
+    end_date = datetime(year=2015, month=7, day=1) # data final
+    lookup_URL = 'http://www.wunderground.com/history/airport/{}/{}/{}/{}/DailyHistory.html'
+
+    while current_date != end_date: # enquanto a data atual é diferente da data final...
+        formatted_lookup_URL = lookup_URL.format(
+            station, current_date.year, current_date.month, current_date.day
+        ) # ...formate `lookup_URL`
+        html = urlopen(formatted_lookup_URL).read().decode('utf-8') # ...abra e leia o site
+        current_date += timedelta(days=1) # ...adicione `1` dia na data atual
+
+# para cada uma das estações na lista...
+for station in ['KCLT', 'KCQT', 'KHOU', 'KIND', 'KJAX', 'KMDW', 'KNYC', 'KPHL', 'KPHX', 'KSEA']:
+    # ...execute a função
+    scrape_station(station)
+```
 {{< /expandable >}}
