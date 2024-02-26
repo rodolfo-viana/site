@@ -8,7 +8,7 @@ As aulas aqui apresentadas intregam o módulo "Introdução à linguagem Python"
 {{< /warning >}}
 
 {{< expandable label="Variáveis" level="2" >}}
-Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
+__Variável__ é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
 
 A atribuição é simples: 
 
@@ -35,7 +35,7 @@ Uma variável serve, entre outros, para que não precisemos repetir a digitaçã
 
 > É feia. Mas é uma flor. Furou o asfalto, o tédio, o nojo e o ódio.
 
-Essa frase (um tanto extensa) não precisa mais ser digitada se for atribuída à uma variável:
+Essa frase não precisa mais ser digitada se for atribuída à uma variável:
 
 ```py
 frase = "É feia. Mas é uma flor. Furou o asfalto, o tédio, o nojo e o ódio."
@@ -55,9 +55,9 @@ Mas lembre-se: a variável perde seu valor quando:
 Sim, alterado. É possível mudar o valor de uma variável já existente &mdash;afinal, ela chama "variável". Para isso, basta atribuir novo valor:
 
 ```py
-print(vlr_dolar) # Até aqui, o valor de `vlr_dolar` é 4.95...
+print(vlr_dolar) # até aqui, o valor de `vlr_dolar` é 4.95...
 vlr_dolar = 4.91 # ...e aqui, altero o valor da variável para 4.91
-print(vlr_dolar) # Agora a variável apresenta o novo valor
+print(vlr_dolar) # agora a variável apresenta o novo valor
 ```
 ```textfile
 4.95
@@ -69,22 +69,22 @@ Há algumas regras para criar variáveis:
 - não pode começar com número ou símbolo, mas pode ter número e underscore (`_`) no meio ou no fim;
 
 ```py
-idade1 = 42 # Correto, pois números são permitidos tanto no meio quanto no fim
-1idade = 42 # Incorreto, pois números não podem estar no início da variável
+idade1 = 42 # correto, pois números são permitidos tanto no meio quanto no fim
+1idade = 42 # incorreto, pois números não podem estar no início da variável
 ```
 
 - não pode conter pontos e demais sinais gráficos, e acentos são desaconselháveis;
 
 ```py
-idade_1 = 42 # Correto, pois underscore é permitido
-idade.1 = 42 # Incorreto, pois não se pode usar ponto na variável
+idade_1 = 42 # correto, pois underscore é permitido
+idade.1 = 42 # incorreto, pois não se pode usar ponto na variável
 ```
 
 - maiúsculas e minúsculas são diferentes;
 
 ```py
-nome = "Pedro" # Variável com `n` minúsculo
-Nome = "José" # Variável com `n` maiúsculo
+nome = "Pedro" # variável com `n` minúsculo
+Nome = "José" # variável com `n` maiúsculo
 print(Nome)
 ```
 ```textfile
@@ -141,6 +141,13 @@ José
 </tr>
 </tbody>
 </table>
+
+---
+Neste capítulo vimos:
+
+- função `print(x)`
+  - imprime em tela o valor de `x`
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#print](https://docs.python.org/pt-br/3/library/functions.html#print)
 {{< /expandable >}}
 {{< expandable label="Tipos de dados" level="2" >}}
 Repare que, quando usamos variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
@@ -157,6 +164,7 @@ Isso porque os valores são de tipos diferentes: o primeiro pertence ao tipo num
 - Integer (`int`)
   - números inteiros
   - não usa aspas
+  - conversão com `int()`
 
 ```py
 numero = 32
@@ -168,9 +176,25 @@ print(type(numero)) # a função type() mostra o tipo de dado
 <class 'int'>
 ```
 
+```py
+numero = "123"
+print(numero)
+print(type(numero))
+numero = int(numero) # conversão para `int`
+print(numero)
+print(type(numero))
+```
+```textfile
+123
+<class 'str'>
+123
+<class 'int'>
+```
+
 - Float (`float`)
     - números decimais; números com ponto flutuante; notação científica
     - não usa aspas
+    - conversão com `float()`
 
 ```py
 numero = 32.0
@@ -197,7 +221,7 @@ print(type(numero))
     - não usa aspas
 
 ```py
-from cmath import sqrt  # Veremos módulos nas próximas aulas
+from cmath import sqrt # veremos módulos nas próximas aulas
 
 numero = sqrt(-1)
 print(numero)
@@ -213,6 +237,7 @@ print(type(numero))
 - String (`str`)
     - texto; sequência de caracteres alfanuméricos; letra
     - aparecem entre aspas duplas (") ou simples (')
+    - conversão com `str()`
 
 ```py
 txt = "Brasil registra 94 mortes por dengue; Belo Horizonte decreta emergência"
@@ -221,6 +246,21 @@ print(type(txt))
 ```
 ```textfile
 Brasil registra 94 mortes por dengue; Belo Horizonte decreta emergência
+<class 'str'>
+```
+
+```py
+txt = 65.1
+print(txt)
+print(type(txt))
+txt = float(txt) # conversão para `str`
+print(txt)
+print(type(txt))
+```
+```textfile
+65.1
+<class 'float'>
+65.1
 <class 'str'>
 ```
 
@@ -346,6 +386,28 @@ print(True + True)
 ```textfile
 2
 ```
+
+---
+Neste capítulo vimos:
+
+- a função `int(x)`
+  - converte o valor de `x` para `int`
+  - se não há como converter (exemplo: `int("palavra")`), retorna erro
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#int](https://docs.python.org/pt-br/3/library/functions.html#int)
+
+- a função `float(x)`
+  - converte o valor de `x` para `float`
+  - se não há como converter (exemplo: `float("palavra")`), retorna erro
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#float](https://docs.python.org/pt-br/3/library/functions.html#float)
+  
+- a função `str(x)`
+  - converte o valor de `x` para `str`
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#func-str](https://docs.python.org/pt-br/3/library/functions.html#func-str)
+
+- a função `type(x)`
+  - mostra o tipo de dado do objeto `x`
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#type](https://docs.python.org/pt-br/3/library/functions.html#type)
+  
 {{< /expandable >}}
 {{< expandable label="Operações" level="2" >}}
 Agora que sabemos o que são variáveis e conhecemos os tipos básicos, podemos fazer cálculos ou comparar duas ou mais variáveis. Para isso realizações operações aritméticas, relacionais ou lógicas.
@@ -455,10 +517,10 @@ print(conta)
 Um outro exemplo: ver se a quantidade de dígitos num número de CPF corresponde à quantidade oficial:
 
 ```py
-cpf = "01234567890" # Repare que coloquei aspas no numeral, convertendo-o para `str`
-qtd_elem_cpf = 11 # Estabeleço que a quantidade de elementos num CPF é 11
+cpf = "01234567890" # numeral em `str`
+qtd_elem_cpf = 11 # estabeleço que a quantidade de elementos num CPF é 11
 print(cpf)
-print(len(cpf) == qtd_elem_cpf) # len() retorna a quantidade número de elementos num objeto
+print(len(cpf) == qtd_elem_cpf)
 ```
 ```textfile
 01234567890
@@ -586,22 +648,46 @@ print(percepcao_2024 > percepcao_2022 and mortes_2023 < mortes_2022)
 ```textfile
 False
 ```
+---
+Neste capítulo vimos:
 
+- a função `len(x)`
+  - retorna a quantidade de elementos no objeto `x`
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#len](https://docs.python.org/pt-br/3/library/functions.html#len)
 {{< /expandable >}}
 {{< expandable label="Controle de fluxo com `if`" level="2" >}}
 Até o momento, estamos escrevendo códigos que são executados numa estrutura fixa: __de cima para baixo, linha a linha__. Exemplo:
 
 ```py
-nome = "Rodolfo"
-ano = 1981
-idade = 2024 - ano
-print("Bom dia, {}. Você tem ou terá {} anos em 2024.".format(nome, str(idade)))
+nome = input("Qual é o seu nome? ")
+ano = input("Em que ano você nasceu? ")
+idade = 2024 - int(ano)
+print("Bom dia, {}. Você tem ou terá {} anos em 2024.".format(nome, idade))
 # A função `format()` substititui `{}` pelo valor da variável
-# A função `str()` converte o dado para string
 ```
 ```textfile
+Qual é o seu nome? Rodolfo
+Em que ano você nasceu? 1981
 Bom dia, Rodolfo. Você tem ou terá 43 anos em 2024.
 ```
+
+{{< warning >}}
+Usamos a função `format(x)` que, como vimos, substititui `{}` pelo valor da variável `x`.
+
+Uma outra forma de fazer isso (de maneira mais concisa e sem precisar de `format()`) é com __f-strings__. Em vez de...
+
+```py
+print("Bom dia, {}. Você tem ou terá {} anos em 2024.".format(nome, idade))
+```
+
+...pode fazer assim: 
+
+```py
+print(f"Bom dia, {nome}. Você tem ou terá {idade} anos em 2024.")
+```
+
+Repare que eu uso `f` antes das aspas da frase, e em vez de `{}` eu uso `{variavel}`.
+{{< /warning >}}
 
 Até aqui, nosso script processa a linha 1, depois a linha 2, depois a linha 3 e, por fim, a linha 4. Uma após a outra, sem nunca pular uma linha. É um fluxo fixo.
 
@@ -659,7 +745,7 @@ print("Começou o fluxo.")
 
 if salario >= contas: # se o salário for maior ou igual ao valor das contas...
     restos = salario - contas # ...calcule quanto sobra
-    print("Consigo pagar as contas e me sobram {} reais.".format(restos))
+    print(f"Consigo pagar as contas e me sobram {restos} reais.")
     
 print("Acabou o fluxo.")
 ```
@@ -684,7 +770,7 @@ print("Começou o fluxo.")
 
 if salario >= contas: # se o salário for maior ou igual ao valor das contas...
     restos = salario - contas # ...calcule quanto sobra
-    print("Consigo pagar as contas e me sobram {} reais.".format(restos))
+    print(f"Consigo pagar as contas e me sobram {restos} reais.")
     
 print("Acabou o fluxo.")
 ```
@@ -727,10 +813,10 @@ print("Começou o fluxo.")
 
 if salario >= contas: # se o salário for maior ou igual ao valor das contas...
     restos = salario - contas # ...calcule quanto sobra
-    print("Consigo pagar as contas e me sobram {} reais.".format(restos))
+    print(f"Consigo pagar as contas e me sobram {restos} reais.")
 else: # se não...
     divida = contas - salario # calcule a diferença...
-    print("Não consigo pagar as contas. Minha dívida é de {} reais.".format(divida))
+    print(f"Não consigo pagar as contas. Minha dívida é de {divida} reais.")
    
 print("Acabou o fluxo.")
 ```
@@ -752,10 +838,10 @@ print("Começou o fluxo.")
 
 if salario >= contas: # se o salário for maior ou igual ao valor das contas...
     restos = salario - contas # ...calcule quanto sobra
-    print("Consigo pagar as contas e me sobram {} reais.".format(restos))
+    print(f"Consigo pagar as contas e me sobram {restos} reais.")
 else: # se não...
     divida = contas - salario # calcule a diferença...
-    print("Não consigo pagar as contas. Minha dívida é de {} reais.".format(divida))
+    print(f"Não consigo pagar as contas. Minha dívida é de {divida} reais.")
     
 print("Acabou o fluxo.")
 ```
@@ -859,7 +945,7 @@ passageiros = 0
 lotacao = 20
 while passageiros < lotacao:
     passageiros += 1
-    print("Tenho {} passageiro(s) no meu ônibus.".format(passageiros))
+    print(f"Tenho {passageiros} passageiro(s) no meu ônibus.")
 ```
 ```textfile
 Tenho 1 passageiro(s) no meu ônibus.
@@ -896,7 +982,7 @@ Cuidado ao usar `while`! Como dissemos, ele executa uma operação __enquanto__ 
 ```py
 numero = 1
 while numero > 0:
-    print("O número agora é {}.".format(numero))
+    print(f"O número agora é {numero}.")
     numero += 1
 ```
 ```textfile
@@ -930,15 +1016,6 @@ Nas aulas anteriores vimos muita coisa sobre Python:
 É muita coisa num tempo bastante curto. Portanto, a aula de hoje será um encontro voltado para a prática e o experimento, e para tirar eventuais dúvidas sobre os temais supracitados.
 
 Há cinco atividades abaixo. Elas enfocam um ou mais itens já vistos em aula. Em duplas, resolvam as atividades; em seguida, vamos conversar sobre as soluções, o que funcionou, o que não funcionou, e quais dúvidas ainda existem.
-
-Em algumas atividades vocês verão ou terão de usar a função `input()`. Trata-se de uma função que pede ao usuário para inserir um dado e o salva numa variável. Assim:
-
-```py
-nome = input("Qual o seu nome? ")
-print("Boa tarde, {}!".format(nome))
-```
-
-Repare que `nome` não tem um valor. O dado será informado pelo usuário.
 
 ### Atividade 1
 
@@ -997,7 +1074,7 @@ for i in estados: # ...e para cada elemento na lista `estados`...
     total += i["doses"] # ...adicionamos o valor de `doses` ao `total`
     
 # Esta linha imprime o resultado
-print("A região sudeste aplicou {}% do total de {} doses consumidas no Brasil".format(calculo, total))
+print(f"A região sudeste aplicou {calculo}% do total de {total} doses consumidas no Brasil")
 
 # Este bloco é a coleção de dados de todos os estados
 estados = [
@@ -1072,7 +1149,7 @@ Também vimos como armazenar dados na memória com o uso de variáveis. Por exem
 ```py
 idade = 43
 nome = "Rodolfo"
-print("{} tem {} anos.".format(nome, idade))
+print(f"{nome} tem {idade} anos.")
 ```
 
 Muitas vezes, porém, precisamos armazenar mais de um valor numa variável. Por exemplo, as contas do mês:
@@ -1162,9 +1239,9 @@ Mas lembre-se: __Python começa a contagem no índice 0__ (ou seja, o primeiro e
 ```py
 linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
 # Índice         0        1          2         3       4      5
-print("A linguagem na terceira posição é {}".format(linguagens[2]))
-print("A linguagem na quarta posição é {}".format(linguagens[3]))
-print("A linguagem na primeira posição é {}".format(linguagens[0]))
+print(f"A linguagem na terceira posição é {linguagens[2]}")
+print(f"A linguagem na quarta posição é {linguagens[3]}")
+print(f"A linguagem na primeira posição é {linguagens[0]}")
 ```
 ```textfile
 A linguagem na terceira posição é Javascript
@@ -1258,9 +1335,9 @@ nome = "Claudio"
 lista_nomes = ["Renato", "Ana", "Fernanda"]
 
 if nome not in lista_nomes: # "Se o nome não estiver na lista..."
-    print("O nome {} não está na lista.".format(nome))
+    print(f"O nome {nome} não está na lista.")
 else:
-    print("O nome {} está na lista.".format(nome))
+    print(f"O nome {nome} está na lista.")
 ```
 ```textfile
 O nome Claudio não está na lista.
@@ -1367,10 +1444,10 @@ Daí a importância de tuplas: __elas são úteis quando precisamos nos certific
 
 ```py
 cores = ["amarelo", "verde", "azul", "vermelho"] 
-print("Temos {}, o que permite que eu altere seus elementos: {}".format(type(cores), cores))
+print(f"Temos {type(cores)}, o que permite que eu altere seus elementos: {cores}")
 
 cores = tuple(cores) # converto a lista para tupla
-print("Agora temos {}, impossibilitando alterações: {}".format(type(cores), cores))
+print(f"Agora temos {type(cores)}, impossibilitando alterações: {cores}")
 ```
 ```textfile
 Temos <class 'list'>, o que permite que eu altere seus elementos: ['amarelo', 'verde', 'azul', 'vermelho']
@@ -1534,7 +1611,7 @@ prof = {
 }
 
 print(prof)
-print("Tenho {} elementos numa única variável!". format(len(prof))) 
+print(f"Tenho {len(prof)} elementos numa única variável!") 
 ```
 ```textfile
 {'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
@@ -1552,9 +1629,7 @@ print(prof["tem_pet"]) #... e aqui, apenas o valor da chave "tem_pet"
 True
 ```
 ```py
-print("{} tem {} anos e mora em {}".format(
-    prof["nome"], prof["idade"], prof["domicilio"]
-))
+print(f'{prof["nome"]} tem {prof["idade"]} anos e mora em {prof["domicilio"]}')
 ```
 ```textfile
 Rodolfo tem 43 anos e mora em Marília, SP
@@ -1678,7 +1753,7 @@ contador = 0
 for nome in lista_exemplo: 
     contador += 1
     # ...e faço operação com essa variável temporária
-    print("No {}º loop, a 'variável temporária' `nome` é {}".format(contador, nome))
+    print(f"No {contador}º loop, a 'variável temporária' `nome` é {nome}")
 ```
 ```textfile
 No 1º loop, a 'variável temporária' `nome` é André
@@ -1800,7 +1875,7 @@ Vamos testar com o exemplo:
 dicionario = {"animal_1": "Cachorro", "animal_2": "Gato", "animal_3": "Passarinho"}
 
 for a, b in dicionario.items(): # `a` para chave, `b` para valor
-    print("A chave {} tem o valor {}".format(a, b))
+    print(f"A chave {a} tem o valor {b}")
 ```
 ```textfile
 A chave animal_1 tem o valor Cachorro
@@ -1843,10 +1918,10 @@ despesa = 1875 # operação 2
 
 if salario > despesa: # operação 3
     calculo = salario - despesa # operação 4
-    print("Sobram-me {} reais.".format(calculo)) # operação 5
+    print(f"Sobram-me {calculo} reais.") # operação 5
 elif salario < despesa: # operação 6
     calculo = despesa - salario # operação 7
-    print("Faltam-me {} reais.".format(calculo)) # operação 8
+    print(f"Faltam-me {calculo} reais.") # operação 8
 else: # operação 9
     print("Salário e despesas têm o mesmo valor. Não me sobra nada.") # operação 10
 ```
@@ -1899,7 +1974,7 @@ Por exemplo, uma função que:
 def bomdia(): # defino o nome da minha função
     nome = input("Qual o seu nome? ") # operação 1: pedir o nome
     nome = nome.upper() # operação 2: deixar o nome em caixa alta
-    print("Bom dia, {}".format(nome)) # operação 3: imprimir a frase
+    print(f"Bom dia, {nome}") # operação 3: imprimir a frase
 
 bomdia() # chamo a função...
 ```
