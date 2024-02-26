@@ -2114,7 +2114,7 @@ def scrape_station(station): # parâmetro é `station`
 
 # para cada uma das estações na lista...
 for station in ['KCLT', 'KCQT', 'KHOU', 'KIND', 'KJAX', 'KMDW', 'KNYC', 'KPHL', 'KPHX', 'KSEA']:
-    # ...execute a função
+    # ...execute a função para cada estação
     scrape_station(station)
 ```
 {{< /expandable >}}
