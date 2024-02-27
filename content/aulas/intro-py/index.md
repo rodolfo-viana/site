@@ -25,13 +25,13 @@ vlr_dolar = 4.95
 O valor `4.95` está agora salvo na memória do meu computador. Para obter o valor, eu chamo `vlr_dolar`. Assim:
 
 ```py
-print(vlr_dolar) # A função `print()` é usada para imprimir em tela
+print(vlr_dolar)
 ```
 ```textfile 
 4.95
 ```
 
-Uma variável serve, entre outros, para que não precisemos repetir a digitação ou operação sempre que precisamos do valor. Vamos pegar como exemplo o último verso de "A flor e a náusea", de Carlos Drummond de Andrade:
+Uma variável serve, entre outros, para que não precisemos repetir a digitação ou operação para obter o valor. Vamos pegar como exemplo este verso de "A flor e a náusea", de Carlos Drummond de Andrade:
 
 > É feia. Mas é uma flor. Furou o asfalto, o tédio, o nojo e o ódio.
 
@@ -150,7 +150,7 @@ Neste capítulo vimos:
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#print](https://docs.python.org/pt-br/3/library/functions.html#print)
 {{< /expandable >}}
 {{< expandable label="Tipos de dados" level="2" >}}
-Repare que, quando usamos variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
+Repare que, quando trabalhamos com variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
 
 ```py
 pi = 3.1416
@@ -169,7 +169,7 @@ Isso porque os valores são de tipos diferentes: o primeiro pertence ao tipo num
 ```py
 numero = 32
 print(numero)
-print(type(numero)) # a função type() mostra o tipo de dado
+print(type(numero))
 ```
 ```textfile
 32
@@ -253,7 +253,7 @@ Brasil registra 94 mortes por dengue; Belo Horizonte decreta emergência
 txt = 65.1
 print(txt)
 print(type(txt))
-txt = float(txt) # conversão para `str`
+txt = str(txt) # conversão para `str`
 print(txt)
 print(type(txt))
 ```
@@ -265,7 +265,7 @@ print(type(txt))
 ```
 
 {{< warning >}}
-Fique atento! Se colocamos `"` ou `'` (aspas usadas em `str`) num valor numérico (digamos, `int`), o número deixa de ser número, e se transforma em texto. Uma mudança que parece pequena muda completamente o tipo do dado.
+Fique atento! Se colocamos `"` ou `'` (aspas usadas em `str`) num valor numérico (digamos, `int`), o número deixa de ser número e se transforma em texto. Uma mudança que parece pequena muda completamente o tipo do dado.
 
 ```py
 print(1234)
@@ -279,6 +279,16 @@ print(type('1234'))
 1234
 <class 'str'>
 ```
+
+```py
+print(12 + 34)
+print('12' + '34')
+```
+```textfile
+46
+1234
+```
+
 {{< /warning >}}
 
 {{< warning >}}
@@ -317,7 +327,7 @@ print("O mesmo acontece com "aspas duplas" dentro de aspas duplas?")
 SyntaxError: invalid syntax. Perhaps you forgot a comma?
 ```
 
-Nos dois erros acima, o sistema não entende se as aspas servem para indicar `str` ou se são grifo. temos `SyntaxError`, erro de sintaxe. Isso ocorre porque a máquina entende que os dados se encerram no fechamento de aspas e não sabe o que fazer com o restante da informação:
+Nos dois erros acima, o sistema não entende se as aspas servem para indicar `str` ou se são grifo. Temos `SyntaxError`, erro de sintaxe. Isso ocorre porque a máquina entende que os dados se encerram no fechamento de aspas e não sabe o que fazer com o restante da informação:
 
 1. No primeiro erro, a máquina computou `'O que acontece se, dentro de '` e não soube o que fazer com o resto;
 2. No segundo exemplo, a máquina computou `"O mesmo acontece com "` e não soube o que fazer com o resto.
@@ -425,21 +435,22 @@ print(sal_minimo / dias_uteis)
 64.18181818181818
 ```
 
-...ou então, calcular a área de um círculo de 12,5 metros de raio, cuja fórmula é \\(A=\pi r^2\\).
+...ou então, calcular a área de um círculo de \\(n\\) metros de raio, cuja fórmula é \\(A=\pi r^2\\).
 
 ```py
-raio = 12.5
+raio = input("Digite o valor do raio: ")
 pi = 3.14159
-area = pi * (raio**2)
+area = pi * (float(raio)**2)
 print(area)
 ```
 ```textfile
+Digite o valor do raio: 12.5
 490.87343749999997
 ```
 
 No primeiro exemplo, eu dividi o salário mínimo (`sal_minimo`) pela quantidade de dias úteis (`dias_uteis`) em um mês. Para isso, usei o símbolo de divisão (`/`).
 
-No segundo exemplo, elevei o raio (`raio`) ao quadrado usando o símbolo de exponenciação (`**`) e, a ele, multipliquei o valor de pi (`pi`) com o símbolo de multiplicação (`*`).
+No segundo exemplo, elevei ao quadrado o raio (`raio`) convertido para `float` (`float()`) usando o símbolo de exponenciação (`**`) e, a ele, multipliquei o valor de pi (`pi`) com o símbolo de multiplicação (`*`).
 
 Abaixo estão os operadores aritméticos em Python (e nos exemplos, considere `x = 5` e `y = 2`):
 
@@ -527,7 +538,7 @@ print(len(cpf) == qtd_elem_cpf)
 True
 ```
 
-Ou ainda, comparar uma projecao rudimentar da balança comercial com uma meta imaginária:
+Ou ainda, comparar uma projeção rudimentar da balança comercial com uma meta imaginária:
 
 ```py
 # fonte:
@@ -651,9 +662,23 @@ False
 ---
 Neste capítulo vimos:
 
+- a função `input()`
+  - pede ao usuário um valor e salva numa variável
+  - todo valor inserido, seja numérico ou não, é tratado como `str`
+  - documentação: [https://docs.python.org/pt-br/3/library/functions.html#input](https://docs.python.org/pt-br/3/library/functions.html#input)
+
 - a função `len(x)`
   - retorna a quantidade de elementos no objeto `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#len](https://docs.python.org/pt-br/3/library/functions.html#len)
+{{< /expandable >}}
+{{< expandable label="Exercícios - parte 1" level="2" >}}
+1. No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Como ele divulgava o "jogo do tigrinho" e a PF bateu na porta dele, o influencer teve uma queda significativa de seguidores: 4.567.093 neste mês. Calcule a queda percentual.
+2. Uma certa empresa teve lucro de US$ 12.095.187,05 em dezembro de 2023, com o dólar a R$ 4,8526. Em janeiro de 2024, com o dólar a R$ 4,9163, a empresa teve lucro de US$ 11.567.011,87. Qual é a diferença percentual entre os valores em reais?
+3. A fórmula para calcular IMC é: 
+    $$
+    IMC = \frac{peso em kg}{altura em metro^{2}}
+    $$
+Crie um código que peça ao usuário seu peso, sua altura, e retorne o IMC.
 {{< /expandable >}}
 {{< expandable label="Controle de fluxo com `if`" level="2" >}}
 Até o momento, estamos escrevendo códigos que são executados numa estrutura fixa: __de cima para baixo, linha a linha__. Exemplo:
@@ -1132,1064 +1157,4 @@ Crie um programa que:
 - pede ao usuário se está em Celsius ou Faherenheit,
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
 
-{{< /expandable >}}
-{{< expandable label="Coleções de dados: lista" level="2" >}}
-Em aulas anteriores vimos os tipos primitivos de dados, como:
-
-- integer (`int`): `4`, `-12`, `6745`...
-
-- float (`float`): `4.67`, `-12.01973`, `6745.0`...
-
-- boolean (`bool`): `True`, `False`
-
-- string (`str`): `"Python"`, `"maçã"`, `"jornalismo de dados"`, `"6.0"`...
-
-Também vimos como armazenar dados na memória com o uso de variáveis. Por exemplo:
-
-```py
-idade = 43
-nome = "Rodolfo"
-print(f"{nome} tem {idade} anos.")
-```
-
-Muitas vezes, porém, precisamos armazenar mais de um valor numa variável. Por exemplo, as contas do mês:
-
-```py
-# Como eu posso colocar todas as contas distintas numa variável única?
-aluguel = 1400
-luz = 110
-agua = 90
-internet = 100
-gas = 25
-cartao = 800
-```
-
-Para armazenamos múltiplos dados numa variável, há as __coleções de dados__ do Python. Há quatro coleções muito comuns, cada uma com características e funções próprias.
-
-### Lista
-
-A primeira coleção é a __lista__ (classe `list`), feita com valores dentro de colchetes (`[` e `]`) ou simplesmente chamando a função `list()`.
-
-```py
-aluguel = 1400
-luz = 110
-agua = 90
-internet = 100
-gas = 25
-cartao = 800
-
-contas = [aluguel, luz, agua, internet, gas, cartao] # Aqui eu crio uma lista
-
-print(contas)
-print(type(contas))
-```
-```textfile
-[1400, 110, 90, 100, 25, 800]
-<class 'list'>
-```
-```py
-linguagens = ["Python", "SQL", "Javascript", "C++"]
-print(linguagens)
-print(type(linguagens))
-print(len(linguagens))
-```
-```textfile
-['Python', 'SQL', 'Javascript', 'C++']
-<class 'list'>
-4
-```
-
-Posso também misturar tipos de dados dentro de uma lista...
-
-```py
-mix = [12, "Cenoura", 3.72, True]
-print(mix)
-```
-```textfile
-[12, 'Cenoura', 3.72, True]
-```
-
-...fazer lista de listas...
-
-```py
-lista1 = [1, 2, 3] # Uma lista
-lista2 = [4, 5, 6] # Outra lista
-listona = [lista1, lista2] # Uma lista com as duas listas
-print(listona)
-```
-```textfile
-[[1, 2, 3], [4, 5, 6]]
-```
-
-...e juntar várias listas numa só.
-
-```py
-listona2 = lista1 + lista2
-print(listona2)
-```
-```textfile
-[1, 2, 3, 4, 5, 6]
-```
-
-Para acessar cada elemento da lista, é preciso usar a posição do elemento dentro de colchetes (`[` e `]`). 
-
-{{< warning >}}
-Mas lembre-se: __Python começa a contagem no índice 0__ (ou seja, o primeiro elemento é 0, o segundo é 1, o terceiro é 2...).
-
-```py
-linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
-# Índice         0        1          2         3       4      5
-print(f"A linguagem na terceira posição é {linguagens[2]}")
-print(f"A linguagem na quarta posição é {linguagens[3]}")
-print(f"A linguagem na primeira posição é {linguagens[0]}")
-```
-```textfile
-A linguagem na terceira posição é Javascript
-A linguagem na quarta posição é C++
-A linguagem na primeira posição é Python
-```
-{{< /warning >}}
-
-A indexação permite, inclusive, realizar cálculos:
-
-```py
-lista = [3.14, 2.09, 8.21, -7,55]
-print(lista[1] * lista[3]) # Ou seja, 2.09 * -7.55
-```
-```textfile
--14.629999999999999
-```
-
-É possível, ainda, acessar múltiplos elementos passando o índice de começo e de fim (mas preste atenção: __o resultado exclui o último item__). Funciona assim: `[onde começa:onde termina + 1]`
-
-```py
-linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
-# índice         0        1          2         3       4      5
-
-print(linguagens[2:5]) # Começa no índice 2 e termina no índice 4
-```
-```textfile
-['Javascript', 'C++', 'Java']
-```
-
-"E como funciona essa indexação quanto temos uma lista de listas?" Vamos ver com um exemplo:
-
-```py
-exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
-```
-
-Neste caso, temos duas listas dentro de uma lista. O desenho é assim:
-
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 361px; max-height: unset;max-height: unset; aspect-ratio:1;" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWkAAAD7CAYAAACoomWyAAAFaXRFWHRteGZpbGUAJTNDbXhmaWxlJTIwaG9zdCUzRCUyMmFwcC5kaWFncmFtcy5uZXQlMjIlMjBtb2RpZmllZCUzRCUyMjIwMjMtMDMtMTdUMDUlM0EyMCUzQTI1LjkxMlolMjIlMjBhZ2VudCUzRCUyMjUuMCUyMChXaW5kb3dzKSUyMiUyMHZlcnNpb24lM0QlMjIyMS4wLjIlMjIlMjBldGFnJTNEJTIyYlhQcjJ4X3loeXEtSDZoMzFjRDMlMjIlMjB0eXBlJTNEJTIyZGV2aWNlJTIyJTNFJTNDZGlhZ3JhbSUyMG5hbWUlM0QlMjJQJUMzJUExZ2luYS0xJTIyJTIwaWQlM0QlMjJXWEpzTWJVZzRiOTZ2dTJsR1BlUyUyMiUzRTVacEJrNW93Rk1jJTJGRFRQdFlXY0lVZFRqU3QzMjBQYmlvZWNzUk1oc0lEUUd3ZjMwRFJBRU51eXNZd0ZaOVNMOGswamVMeSUyRkpld1lET21IMm5hTTQlMkJNVThUQTNMOURJRGZqTXNDNnhtUUg3bHlyRlU1cXRaS2ZpY2VLcFNMV3pKSzFhaXFkU0VlSGpmcWlnWW80TEViZEZsVVlSZDBkSVE1eXh0VjlzeDJuNXFqSHlzQ1ZzWFVWMzlRendSbE9yU1d0VDZEMHo4b0hveXNGZGxTWWlxeXNxU2ZZQThsallrdURHZ3d4a1Q1VldZT1pqbThDb3VaYnVuZDBwUEhlTTRFdWMwc01vR0IwUVRaWnZxbHpoV3huS1dSQjdPNjVzR1hLY0JFWGdiSXpjdlRlWHdTaTBRSVpWM1FGNnFuOE5jNE96ZExvR1RvZEpETUF1eDRFZFpSVFY0cUVZNXJkRkNXMmxCQTZzMVZ5SlN3JTJCbWZmcXUyV0Y0b283c0J3SjRCN0FpbERxT01GMjNoayUyRnc0VGo5Z1pzcmNZJTJGdTJnUWxZSFpqQXFnZE1zJTJCbjV5YktOWTZualdIVFFtUFVBWTY3QmtJYUVtQVpNZ3lMTkUyM0w5NEt6RjF5NVNNUWlySHZOeGxaZWd5anhJNm01a2dtV2hldWNHSkVMMGFNcUNJbm41YyUyRnE1TjBla1UlMkJOM05hUW14cnIlMkY1dW5qdFBYUEoxJTJGU0FrT1JHa3glMkJWa0s0SGclMkJzOVJvb0ZEMm05N1pMQjBUJTJCV3I2RGpqaW9sVUZNazBQZkUzb25ibmZtTUNCQmh4OGxtMmlhNW9PdFU4QVBlenZPJTJCd2RqdE9JJTJCeW5RczRQcGhoMmd6YWtqUGVqQzFFdDJBUHBPRHdiTW9zN2dORndhQmZUVTRlb2I1Qm54Nm1EcnRSN1dTMU04Zk9NNzVEV0o2eW5DZEZlMFU5JTJGR3o2U0FuanhNYnFLT0dkZ0RQYkxuTEx2MVRPcWF4Q3ZmbjdRSGpyaHlXWHBzSDNNczdzNEZ4MFN1cHduVFRhZmViaFpqNWxNZHB3alR6YWMwVUNOdXF4M25DTlAxS1BEbW40d3hNNnFPTTRhZlpDOVFINnVka2lhMjBGMTR1Z1g3Z0sybklUY08lMkI5SWt1QmZhZWdweVFKd1lEalFld2FGNFU4Q3diSnFEM2pGcFRuTUU3TDlKZmpLJTJCZmtidWkxOVFlWEJMMEklMkJ5SHZlZnZ4U0RLZnRnTmklMkIlMkJGdFNxeGxMYmxYaHJ6V0VKSjNKZ0xQTTNUcHRWYlQlMkYlMkZ4aGtPNCUyRnpnb095WE5MSHNXbGw2dTM1eTlsbjhCWTRoYiUyQnYzSElxeXh0c2ljUE1QJTNDJTJGZGlhZ3JhbSUzRSUzQyUyRm14ZmlsZSUzRcp2xMoAAB8tSURBVHhe7Z39i11XucfX/AcSQoMllUCVpCJJEzVQSKFQnQnU0BZ6DTP5xTqh2NbBQEBrk/H2OomtcgOBgb6R0ftLZiiKWlTIBKWBlhRqXjSUNrFaQi3em1BL/4O58+ywTvfs2eectc9+1n72y+dA6UzOWmuv/X0+63u+Z+19zow551ZW/+OBAiiAAihQQwXGxKRXHzWcGlNCARRAgW4rMDY25jDpbjPA2aMACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVhaiiAAiiAScMACqAACtRYAUy6xsVp69QuX77sdu3a5ebm5tzRo0fVTvOf//yn2lhWA91xxx1Wh+a4NVUAk65pYdowLW/Gi4uLbnJysndKe/fudXv27BnZoPuNi0m3gRrOIasAJg0TlSsgJrtz586Rj9sUk/7JT37iXnzxRfeZz3zGXblyJeh8SdJBMnWqESbdqXIXO9lNmza5mZmZJPEeO3bMzc7OyvcH9H72o01MTLgzZ864paUlNzU15bZv356Y0qVLl5JtDZ+k/RjZfv2OI+0EUP+Q8cTcm2LSft6PPPKI+9WvfhUkPiYdJFOnGmHSnSp3sZOVbYnNmze7U6dOOflZHmLGAk3WeMVAr169mpi032vOmmm/fj/84Q9zjyPmvW/fvuT46ReJQSbt06s/0w8++CD58eLFi+7hhx9OfpZ/u++++9z777/vnnvuuWTO/frJC86GDRuStrt373YfffRR8vNvfvMb9+yzz7q//e1vydbN73//+2Ts73znO+7pp59eI3Q/k/7c5z7XayfjffnLX3aYdDFGu9Aak+5ClUc8RzHGN954IzFmMcyTJ0+6bdu2rdmq8IaZNum8xDuo3x/+8Id1x5Epi3mmv/jLJ+4HHnhgTUL3pyd70mK+586d6xnzo48+2ttqkBeWl19+OXn+iSeeSF4YvKEO6idm6o19fHzcbdmyJZnv888/nxxv48aNvaQsv584cSIx3EFJWsz/F7/4Ra+dPwYmPSKsLe6GSbe4uGVPTQxYErSYtPz/xo0byZAHDx50CwsLa4YfZtJy4bBfPxkoexy/dZI9h+npaffkk0/mmvRPf/pT99RTT607bZ9S5QmfmCUV+y0IMe9B/XwS9v+XVC7n703avyjI+DLW9evX16TpbJKW/svLy2vayLzE/H/wgx+ULRv9W6YAJt2ygmqfjgAixvjhhx+u2XfOpuVhJu2TcV4/2WfOO86hQ4d6Lwzp8+q33SEmnTXIrB6SoN95553kn7255hlrut8gk84aMCatTSDjYdIwMFCBHTt2JNsFfg/aJ1y/DeGfDzXpvH5i0tnjyKTSFxT9cWUesnWSviDpT0C2O/xFy7yTEoO+efNmkqAlucqcfZoe1G9YkpYtEL9tIseQF7Vh2x1Zc/fbLWx3sCCzCmDSMDFQAb9Fkd4b9oYqHeUi4fz8fHIXyJ133pnsI/e7C6NfP7l7JO84Mn767o5+FyTTJp2+QOj/XfaT0xcG0xcOv/GNbyTbFv36iXl/8sknTtqJwcuFQtlLlouQctHx17/+de9iohwvvY3i+6YF9lsv2QuV/oIjJs2CxKRhoLUKWHyYpcjtdSHCY9IhKnWrDUm6W/Vu9dlWbdJi0G+99Vaiqb+Vr6zAmHRZBdvXH5NuX007e0ZVm3QMoTHpGKo2e0xMutn1Y/YpBTBpcGijAph0G6vKOaEACrRGAUy6NaXkRFAABdqoACbdxqpyTiiAAq1RAJNuTSk5ERRAgTYqgEm3saqcEwqgQGsUwKRbU0pOBAVQoI0KYNJtrCrnhAIo0BoFMOnWlJITQQEUaKMCmHQbq8o5oQAKtEYBTLo1peREUAAF2qgAJt3GqnJOKIACrVEAk25NKTkRFECBNiqASbexqpwTCqBAaxTApFtTSk4EBVCgjQpg0m2sKueEAijQGgUw6daUkhNBARRoowKYdBuryjmhAAq0RoEoJp3+C8+tUYoTqYUC6b9aXnZCcFpWQfr3U0Cb07HVA62OuaKmuMC/cuGC2nihA4195SurJ1L9cUPnR7tyCoyNSX3htJyK9I6tQAxOMenYVWN8FQViwE+YUCkNg6QUiMEpJg1ijVAgBvyYdCNK36hJxuAUk24UAt2dbAz4Menu8hTrzGNwiknHqhbjqioQA35MWrVEDLaqQAxOMWnQaoQCMeDHpBtR+kZNMganmHSjEOjuZGPAj0l3l6dYZx6DU0w6VrUYV1WBGPBj0qolYjC2OwYzwH3S7V4jmHS769uWs4vBKUm6LXS0/DxiwE+Sbjk0BqcXg1NM2qCQeYfctGnczczsd0ePTq95+vLla27XrgNucfG4m5yc6DvbpaVlNzV1pLWfuowBPyZdHH44HfKOPsInYzHp4pxG6dEP/tCDYdKhSt1qx9cXFNPLt4ZTTHo0cmTRNfy7O0ITysGDc25h4dWeTnNzjyfpW5KmPG67bYO7ceOsO3Zswc3OvtBrNzFxjztzZn5kfa07kqStK3Dr+HCKSY9MYhdMetu2LcnWh/8iKb8VIr9nk7SYmt8i8YZ96dJpt3Pn1pE1tuyISVuq/+mxQ0waTnW/CIztjnqwH5RQPPx5Zps2aTHvtBl7M8ekPy022x2jgV/EpOF0NI3TvaJ9nzQXZIoXJwR+uXDozdgfwW93ZJN0dltE2mPSmHRxMtf2gFO2O0ZmqAvbHdm7O9IJ+erV6727O7xhe1MmSa/HiiQ92lILNen06HA6mtbSiyQ9unbqPUPg/8c/PnTz868kFwbl0W9POpuqd+yYdFeuvEeSTlUNkx4NYTglSY9GjrzitODujps3P15z/nJHxrPPfnfNfdJ798645eU3e+3S90/7OzzkQqI3ZmkoWyJi7nn3YY8seMUduXBYseB9DicmDaf9axGDUy4c1oN9ZjFEgRjwc+0E7LQViMEpJq1dJcaLokAM+DHpKKXq9KAxOMWkO41Uc04+BvyYdHPq35SZxuAUk25K9Ts+zxjwY9IdhyrC6cfgFJOOUCiG1FcgBvyYtH6duj5iDE4x6a5T1ZDzjwE/Jt2Q4jdomjE4xaQbBECXpxoDfky6y0TFOfcYnGLScWrFqMoKxIAfk1YuEsPx18IHMdD0D7PA92AFMGkIaYICMTglSTeh8swxSkIhSQOWtgKY9ABFSdLauNVrvBjwY9L1qnEbZhODU5J0G8jowDnEgB+T7gA4FZ9iDE4x6YqLyOFGUyAG/Jj0aLWgV38FYnCKSUNcIxSIAT8m3YjSN2qSMTjFpBuFQHcnGwN+TLq7PMU68xicYtKxqsW4qgrEgB+TVi0Rg60qEINTTBq0GqFADPgx6UaUvlGTjMEpJt0oBLo72RjwY9Ld5SnWmcfgFJOOVS3GVVUgBvyYtGqJGIztjsEM8GGWdq8RTLrd9W3L2cXgtHNJWkS0ehx+5jGrQ9f2uOfPXXTnX3tp6PxiwF/nJA2nQ5GotIElp500aavF+a/Vv+LNY60CJ/7rZfff/zn8xauLJg2n9Vktlpxi0hVxINsxmPR6sS3htzLBlYAX6+RF6UL1L+pwmm8Ilpxi0ph0RQrUD34rE8SkTZEb6eCY9Eiyre0UeuGQhKIgtuIQlvBj0usLSZKuX5ggSSsazqChgL9+8GPSmHTo8rcME5h0aJVKtsOkMWlRgHd8JReSUXdMWkF44FcQ0WAIS/hJ0iTpUOQtOSVJh1apZDuSNEmaJF1yERl2x6QVxCdJK4hoMIQl/CRpknQo8packqRDq1SyHUmaJE2SLrmIDLtj0grik6QVRDQYwhJ+kjRJOhR5S05J0qFVKtmOJE2SJkmXXESG3TFpBfFJ0goiGgxhCT9JmiQdirwlpyTp0CqVbEeSJkmTpEsuIsPumLSC+CRpBRENhrCEnyRNkg5F3pJTknRglTaNj7ubH3+ctL50+rTbuXVrYM9bzZqWpN++fM2N7zrgnl887j6/bUvy89lLp92XdhY772EiWcLfRpPuAqe3r35DoHD50OTEMLzUnrfkFJMOKOPemZmk1Zn5eXdwbs797vXX3Y2zZwN6ftoEk2a7I/Z2R1c4xaQLWU/O26WxMbPvwY31FZBisIvHj7vJiVuv3NnfQyQLNentm8bdt2f2u0NHp93JYwvuZ7Mv9L6HWuD0D59qf7u07J6YOuLu2v4F9+6V95K20m5y+kG3tPBq0vy+iXvc7j13J2PJQ547cWq2N1beuHlJOj3moDGKpBzLhNK2JF0lpyHMSxsNnj2LnuVzy2+uSdJ5/IbOL7SdJack6SFVunztmtt14MCaLQ55Szmzf787Oj0dWuPg7Y6pvTPus5tvS0xUfpbH4pn5BPav77s3+fe0eXuT/v7c44mxy0OgFWOWfv55/3vW+PuNm2fSRcYI3RqxhL9NJl01p6Hga/Ccx6gPAv34DZ1faDtLTjHpIVVaWl52U0eOVGbSYqJvvfGXnjH/+OThZIaSltN/2cUnlC13bk6eS5ti9u1g+ndvvtL+71ev9x33aw/s6bsnnR5D5pbdr06np2GLwBL+Npl01ZwOq6t/vizPadb89RDP86B14QNL6DyHtbPkFJOuWZIWKCV9SAqW/1+5cbaXhrNTlS2He+/fXdqk88Z99MlvBpl0ntHfv2PS3f3VL67ZUuknsyX8bTLpuibpsjz7d4LZgJIOL3n8prfzhhlwyPOWnGLSARWqeq/P7yn/74c3e1sWPzp0IjHs7MNDPGqS7jfuoLs7SNIB0PRpEvNW0ao5DVWhDM/DknQ/fkPnFtoOkw5VakC7mPDvmJx0n924sbK7OySJykXA9AW49BaCN2Z53r/lG8Wk5e1jv3H9bXd5t+BlF07eviB70vmwtonT0GVblmfhS1iVd5f+mkp6T9pfaE+vC+3b8zDp0GobmbQcVhaXf8S+T/rwwbnkzozsXxdPX8X2FwrLJOn0Hp8/Nz9uaJLOG4O7O/qDGtOkq+Y0dNmW5VmO49mXu5jkMfPUt3r3Seeti9C5hbbDpEOVMjTpslMMvQWv7HGa1t8S/jbtSWvVHU7zlbTklD1pLbqHjAP89YMfk15fEzitH6eYNCZdkQL1gx+TxqRD4SdJhyrFdoeCUvUawhJ+TBqTDl0NlpySpEOrVLIdbyNJ0qJA7AuHJTEN/mRs2eM0rT8mrVAx4FcQ0WAIS/hJ0iTpUOQtOSVJh1apZDuSNEmaJF1yERl2x6QVxCdJK4hoMIQl/CRpknQo8packqRDq1SyHUmaJE2SLrmIDLtj0grik6QVRDQYwhJ+kjRJOhR5S05J0qFVKtmOJE2SJkmXXESG3TFpBfFJ0goiGgxhCT9JmiQdirwlpyTp0CqVbEeSJkmTpEsuIsPumLSC+CRpBRENhrCEnyRNkg5F3pJTknRolUq2I0mTpEnSJReRYXdMWkH8Ikla4XAjDXH4mcdG6tfmTufPXXTnX3tp6CmOrf5x3ZWVlaHtQhuMNeCv2oeei3Y7OF2vqCWnnUvS2kAzXjUKdM2kq1GVo2grEINTTFq7SowXRYEY8Nd5TzqKiAwaXYEYnGLS0cvGATQUiAE/Jq1RGcZIKxCDU0waxhqhQAz4MelGlL5Rk4zBKSbdKAS6O9kY8GPS3eUp1pnH4BSTjlUtxlVVIAb8mLRqiRhsVYEYnGLSoNUIBWLAj0k3ovSNmmQMTjHpRiHQ3cnGgB+T7i5Psc48BqeYdKxqMa6qAjHgx6RVS8RgbHcMZoBPHDZzjVh+kqvOJi0vSlYPPnG4XnlLTmuTpDeNj7ubH3+cqHPp9Gm3c+vWQowWMWmrxfmvlQuFzqkLjS2/E2FUDo4tLLj5V15xN86eLVwiOC0sWS06WHJaC5PeOzOTFOLM/Lw7ODfnfvf664UXAPDXguXCk7CEfxSTFoOefeEFd9uGDYUZFXHgtDAitehgyWktTFrAXTx+3E1OTCQFyf4eUiXgD1Gpfm0s4S9q0jsmJ93//fvfbmb/fpJ0/VCKOiNLTs1N+vK1a27XgQNrtjhk60MWwtHp6WDhMelgqWrV0BL+oibthWO7o1YIVTIZS07NTXppedlNHTmCSVeCWv0OYgk/Jr2eB773PH+NWHJqbtIk6foZZ5UzsoQfk8akQ1m35NTcpPP2oNmTDkWn+e0s4cekMenQFWTJaS1MWi7IfHbjRu7uCCWmRe0s4cekMenQpWTJaS1M2qdpLxj3SYei0/x2lvBj0ph06Aqy5LQ2Jh0qVr923N1RVkGb/pbwj2rSZZSC0zLq2fW15BSTrqjuXDWv31VzTJokHbr8MelQpQa0I6EoiGgwhCX8mDQmHYq8Jack6dAqlWxHkiZJ+2svKwHf4ZJ869+F6r/rBU7rxykmXdJ8Q7sDf/3gtzJBTDp01dSnHUlaoRZsdyiIaDCEJfyYNNsdochbckqSDq3Saruy39nQ5K8qffvyNTe+64B7fvG4e2jy1hdhaTws4W+rSXeZUw0m88aw5BSTDqyqxldUYtLrxbaEv40m3XVOA5dz4WaWnGLSAeXS+orKoiZ98tiC+9nsC70Z3jdxj1s8M5/8fvvqhaXJ6Qfd0sKrye/y3O49d/fay3MnTs0mz/Ub57dLy+6JqSPuru1fcO9eec/5+cnY/nH20mn3pZ1bXV6STrcbNWFbwt82k7biNGAJ9ZqEMOdZun/HpNv3H19zh45Ou8MH59xf/vyO+9Nfl3r8+0FHZa/IvC05xaQLVKrqt5Figh5Ab7TeNOU5b9oefP+7b5s23bxx/n71emLS3597PFkI8ti+adx9fd+9icGnx8madF47P7cCkjpL+Ntm0l73qjktUm/P6jDmhCV5yBabcCy8e5612Csyb0tOMekClaoSfjFFSbD+4U0ybdLpBJE29HRb6d9vHG/Sfky/gNKJXxbEt2f2u689sKe3J/35bVuSn9Om7Nt5sw+V1RJ+THp9lWLfheQZy75D68eSJGh5t+jfGWbXgQ8WwmhR9kIZlXaWnGLSBSpVpUnLtDyg6SkWNWkx6H7j9DPprCSyQB598ps9k5bnJYGnzVzemt791S/2tlhCZbWEH5O2N+m8YJBmyZuyZ21Y+1Duiraz5BSTLlCtKk16WOJIJ2c5hX5JOmvE6SSSZ9I/OnTCXbmx/g+sprc7SNIFoMk0reJW0So5LarEMK6zyXhq762/fyoPuR5Dki6qeE77sbExs09Kxf6QQJXwZxODpAu5uFc0SXsj9kkkPU7WpLMLxM9BtlW8MfstFq19QcuEQpK2T9Keuex1EOFc+Jx/7n+Si4XCm5i0vDPUYq+I3VlySpIuUKkqTVqm5Q1VfpYLLT+ffyXZH5a9t9AkLVD3G2fLnZuTbYvsBb/0XRv+Ag93dxQAZUBTkvStO4oGMZcOAj8+eTi5L18uYv/ul3/k7g4NDNucpMvoE/uCTJm5Wfa1TChtTdJl6gmn+epZckqSLkN0gb7AXz/4MenqtzsKLJlaNcWkFcpRxdvIMtPEpDFpUQBOy6wiu76YtIL2wK8gosEQlvCTpEnSochbcsp2R2iVSrYjSZOkSdIlF5Fhd0xaQXyStIKIBkNYwk+SJkmHIm/JKUk6tEol25GkSdIk6ZKLyLA7Jq0gPklaQUSDISzhJ0mTpEORt+SUJB1apZLtSNIkaZJ0yUVk2B2TVhCfJK0gosEQlvCTpEnSochbckqSDq1SyXYkaZI0SbrkIjLsjkkriE+SVhDRYAhL+EnSJOlQ5C05JUmHVqlkO5I0SZokXXIRGXbHpBXEJ0kriGgwhCX8JGmSdCjylpySpEOrVLIdSZokTZIuuYgMu2PSCuIXSdIKhxtpiMPPPDZSvzZ3On/uojv/2ktDT3Fs9Q+RrqysDG0X2qAJX6kbei7a7eB0vaKWnHYuSWsDzXjVKNA1k65GVY6irUAMTjFp7SoxXhQFYsBf5z3pKCIyaHQFYnCKSUcvGwfQUCAG/Ji0RmUYI61ADE4xaRhrhAIx4MekG1H6Rk0yBqeYdKMQ6O5kY8CPSXeXp1hnHoNTTDpWtRhXVYEY8GPSqiVisFUFYnCKSYNWIxSIAT8m3YjSN2qSMTjFpBuFQHcnGwN+TLq7PMU68xicYtKxqsW4qgrEgB+TVi0Rg7HdMZgBPnHYzDVi+UmuOpu0vChZPfjE4XrlLTntXJJOEtmFC5Xzz3d35Etu+Z0IVhysrAznD04rX6IDD2jJKSZdEQuYNCYtChR5x2f1IvKvgBeRipZNbQ6DSSuUAvgVRDQYwhJ+KxMkSRuAVvKQlpySpEsWL7Q7SZokTZIOXS31a4dJK9SEJK0gosEQlvCTpNcXnDBRvzBBkq7ImIC/fvBj0ph06PK3DBOYdGiVSrbDpDFptjtKLiLD7pi0gvhsdyiIaDCEJfwkaZJ0KPKWnJKkQ6tUsh1JmiRNki65iAy7Y9IK4pOkFUQ0GMISfpI0SToUeUtOSdKhVSrZjiRNkiZJl1xEht0xaQXxSdIKIhoMYQk/SZokHYq8Jack6dAqlWxHkiZJk6RLLiLD7pi0gvgkaQURDYawhJ8kTZIORd6SU5J0aJVKtiNJk6RJ0iUXkWF3TFpB/JhJeu/MjFt+883eLBePH3eTExOFZt0kk3778jU3vuuAe37xuHtosth5FhJltbEl/G1L0m3n9LdLy+6JqSPO4lv6LDklSQ9xlWMLC+6Xf/yj++vSUtLy4NycW3j11cLfSY1Jk6RjJukucIpJF41AfdqPjY0VNjCNQ8dM0tn5ybGKpukqTPrksQX3s9kXetO9b+Iet3hm3k3tnXHnlj99JyD//vSz303S8tlLp92Xdm51Pj3L7/IgSWtQmb/nW9VXldaFU8/W5PSDbmnh1USU78897g4dnXbeeO/a/gX37pX3ein59tRfpvGM+n/beNsGd+XG2WScdLuY7/xI0grroSqTXlpedlNHjhR+IarCpAVYD6o3bA+4l/j+HZPu7q9+0T365DcxaaO/0FOFSdeJU2/SYsR/+utSz5iFzb9fvZ5sYXjTFk63bxp3X993rztxatZ5jmWLI5uk89pleVewlmQITFpByapMWo4z/eCD7tTsbKFZxzZpWQiSiP0jnYz9vx8+OOf+8ud3koWSfZ4kXaicIzfuIqd51zh8WLj3/t2JSXtzzdvSEDP+9sx+t+XOzb096Ty+fTtJ6NoPTFpB0SrgH9Wg5fRim7QcQ0zYv530kvaDH5Nu77Zc3TjNM9RhJp21BNkq8Yael6qlvR9TErj2A5NWUDSmSV++ds3tOnDAzT3+uDs6PdqrdGyT9gkkb49ZknR6K0TkxqTbZ9J15TQvSWfTcTpM/OjQid6ec9oa0imbJF3CNNt24dCDX/RCYVbCqkza354kqUIuxAj83/vWM8k+dDZhiHH7vUCfwrlwWAL+gK6xwkSdOfWG6i9kpwOF35NO7yWnty18W7nWIo/0LXjsSQcAl9ekbSadvffUn3PRVB3bpP3bPTFmeYj5/nz+lWQvT/7/0c2P15RL3j7eseX23t0g/so7Jj0i+IHdYpl0nTlNm7S/y8hf4M6+A/Qypu/aSF9U9P/uwwh3dwSCl27WNpMeQYLcLlWYtNZcqxzHcq+vbR9m0ahbDE7ztiY05lrlGJac8mGWiiodA/6Kph71MJbwY9LrSxuDU0x69CUkoReTHl2/Qj1jwF9oAjVtjEnnF2Zs9XqB1YuIxceua4pnb1qWnGLSFdGBSecLbQm/lQlW8WGWUbGG0/pxikmPSnPBfsBfP/gx6Wq2OwoulVo2twwTmHRFSGDSmLQoEOvuDi2M4bR+nGLSWnQPGQf46wc/SZokHbr8SdKhSg1oR0JRENFgCEv4MWlMOhR5S05J0qFVKtmOJE2SZruj5CIy7I5JK4hPklYQ0WAIS/hJ0iTpUOQtOSVJh1apZDuSNEmaJF1yERl2x6QVxCdJK4hoMIQl/CRpknQo8packqRDq1SyHUmaJE2SLrmIDLtj0grik6QVRDQYwhJ+kjRJOhR5S05J0qFVKtmOJE2SJkmXXESG3TFpBfGLJGmFw400xOFnHhupX5s7nT930Z1/7aWhp5h84dDKytB2oQ2a8JW6oeei3Q5O1ytqyWnnkrQ20IxXjQJdM+lqVOUo2grE4BST1q4S40VRIAb8dd6TjiIig0ZXIAanmHT0snEADQViwI9Ja1SGMdIKxOAUk4axRigQA35MuhGlb9QkY3CKSTcKge5ONgb8mHR3eYp15jE4xaRjVYtxVRWIAT8mrVoiBltVIAanmDRoNUKBGPBj0o0ofaMmGYNTTLpRCHR3sjHgx6S7y1OsM4/BKSYdq1qMq6pADPgxadUSMViTtjuoFgrEUED7E4cx5siYKKDNqXqSpkQogAIogAI6CsjXF2DSOloyCgqgAAqoK4BJq0vKgCiAAiigpwAmraclI6EACqCAugKYtLqkDIgCKIACegpg0npaMhIKoAAKqCuASatLyoAogAIooKcAJq2nJSOhAAqggLoCmLS6pAyIAiiAAnoKYNJ6WjISCqAACqgrgEmrS8qAKIACKKCnACatpyUjoQAKoIC6Api0uqQMiAIogAJ6CmDSeloyEgqgAAqoK4BJq0vKgCiAAiigpwAmraclI6EACqCAugKYtLqkDIgCKIACegpg0npaMhIKoAAKqCuASatLyoAogAIooKdAz6T1hmQkFEABFEABTQX+H9iZ6Tt0fAKSAAAAAElFTkSuQmCC">
-
-A variável exemplo tem dois elementos. Cada elemento é uma lista. Então, se eu chamar isso...
-
-```py
-exemplo[1] # o segundo item da variável `exemplo`
-```
-
-...terei como retorno isso:
-
-```
-["verde", "roxo", "preto"] # uma lista
-```
-
-Se eu quero acessar o elemento `"preto"`, preciso então indicar o índice dentro da lista que acesso com `exemplo[1]`. Fica assim:
-
-```py
-exemplo[1][2] # do segundo item, quero o terceiro item, ou seja, "preto"
-```
-
-Vamos ver na prática:
-
-```py
-exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
-print(exemplo[1])
-print(exemplo[1][2])
-```
-```textfile
-['verde', 'roxo', 'preto']
-preto
-```
-
-Como na aula passada vimos `if`-`elif`-`else`, vale a gente ver o uso de controle de fluxo com listas e apresentar dois operadores &mdash;e, para o exemplo abaixo, consideramos `nomes = ["João", "André", "Ana", "Maria"]`:
-
-| operador | significado | entrada | saída |
-| :-: | :-: | :-: | :-: |
-| `in` | está contido em | `"João" in nomes` | `True` |
-| `not in` | não está contido em | `"Pedro" not in nomes` | `True` |
-
-```py
-nomes = ["João", "André", "Ana", "Maria"]
-
-print('Ana' not in nomes)
-print('Maria' in nomes)
-```
-```textfile
-False
-True
-```
-
-```py
-nome = "Claudio"
-lista_nomes = ["Renato", "Ana", "Fernanda"]
-
-if nome not in lista_nomes: # "Se o nome não estiver na lista..."
-    print(f"O nome {nome} não está na lista.")
-else:
-    print(f"O nome {nome} está na lista.")
-```
-```textfile
-O nome Claudio não está na lista.
-```
-
-As listas são __mutáveis__: posso adicionar e excluir elementos, mostrar em ordem reversa etc. com algumas funções:
-
-- `.append(x)` para adicionar um elemento `x`
-- `.pop(i)` para tirar da lista um elemento de índice i e mostrar esse elemento
-- `.remove(x)` para excluir um elemento `x`
-- `.reverse()` para inverter a ordem dos elementos
-- `.sort()` para organizar os elementos do menor ao maior (ou do maior ao menor, se usar `reverse=True`)
-- `.count(x)` para contar quantas vezes o elemento `x` aparece na lista
-
-```py
-lista = ["Carlos", "Antonio", "Cesar"]
-print(lista)
-
-lista.append("Rodolfo") # adicionar "Rodolfo"
-print(lista)
-
-lista.remove("Cesar") # remover "Cesar"
-print(lista)
-
-lista.reverse() # colocar em ordem reversa
-print(lista)
-
-lista.sort(reverse=True) # ordenar do maior para o menor
-print(lista)
-
-print(lista.count("Rodolfo")) # contar quantas vezes aparece "Rodolfo"
-```
-```textfile
-['Carlos', 'Antonio', 'Cesar']
-['Carlos', 'Antonio', 'Cesar', 'Rodolfo']
-['Carlos', 'Antonio', 'Rodolfo']
-['Rodolfo', 'Antonio', 'Carlos']
-['Rodolfo', 'Carlos', 'Antonio']
-1
-```
-{{< /expandable >}}
-{{< expandable label="Coleções de dados: tupla" level="2" >}}
-Outra coleção de dados é a tupla (classe `tuple`), feita com valores dentro de parênteses (`(` e `)`) ou com a função `tuple()`.
-
-```py
-valores = (1, 2, 99)
-print(valores)
-print(type(valores))
-```
-```textfile
-(1, 2, 99)
-<class 'tuple'>
-```
-
-Assim como listas, tuplas podem conter dados de tipos variados, e é possível criar uma tupla de tuplas (ou de listas). Também a forma de localizar elementos por meio da indexação é similar.
-
-```py
-tupla_1 = (4, False, "maçã", 8.91) # tupla com diversos tipos
-print(tupla_1)
-
-tupla_2 = ((1, 2, 3), (9, 8, 7)) # tupla contendo duas tuplas
-print(tupla_2)
-
-tupla_3 = tuple([1, 2, 3]) # tupla a partir de lista
-print(tupla_3)
-
-tupla_4 = (("Ana", "Pedro", "Claudio"), ("José", "Maria", "João"))
-print(tupla_4[0][2]) # indexação para encontrar "Claudio"
-```
-```textfile
-(4, False, 'maçã', 8.91)
-((1, 2, 3), (9, 8, 7))
-(1, 2, 3)
-Claudio
-```
-
-Entretanto, as semelhanças acabam aí. Ao contrário de listas, __tuplas são imutáveis__. Ou seja, elementos não podem ser removidos, adicionados, reordenados etc.
-
-```py
-vegetais = ("acelga", "repolho", "alface")
-vegetais.remove("acelga")
-```
-```textfile
----------------------------------------------------------------------------
-AttributeError                            Traceback (most recent call last)
-Cell In[16], line 1
-----> 1 vegetais.remove("acelga")
-
-AttributeError: 'tuple' object has no attribute 'remove'
-```
-```py
-vegetais.append("rúcula")
-```
-```textfile
----------------------------------------------------------------------------
-AttributeError                            Traceback (most recent call last)
-Cell In[17], line 1
-----> 1 vegetais.append("rúcula")
-
-AttributeError: 'tuple' object has no attribute 'append'
-```
-
-Daí a importância de tuplas: __elas são úteis quando precisamos nos certificar de que os elementos não foram ou não serão alterados__. É comum, inclusive, converter listas em tuplas para que seus dados não sejam modificados.
-
-```py
-cores = ["amarelo", "verde", "azul", "vermelho"] 
-print(f"Temos {type(cores)}, o que permite que eu altere seus elementos: {cores}")
-
-cores = tuple(cores) # converto a lista para tupla
-print(f"Agora temos {type(cores)}, impossibilitando alterações: {cores}")
-```
-```textfile
-Temos <class 'list'>, o que permite que eu altere seus elementos: ['amarelo', 'verde', 'azul', 'vermelho']
-Agora temos <class 'tuple'>, impossibilitando alterações: ('amarelo', 'verde', 'azul', 'vermelho')
-```
-{{< /expandable >}}
-{{< expandable label="Coleções de dados: conjunto" level="2" >}}
-A terceira coleção é o conjunto (classe `set`), feita com valores dentro de chaves (`{` e `}`) ou com a função `set()`.
-
-```py
-conjunto = {1, 2, 3, 4, 5}
-print(conjunto)
-print(type(conjunto))
-```
-```textfile
-{1, 2, 3, 4, 5}
-<class 'set'>
-```
-As diferenças mais significativas entre conjuntos e as coleções anteriores são que, ao contrário de listas e tuplas,
-
-1. conjuntos não retornam repetições.
-
-```py
-valores = [1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5] # lista
-print(valores)
-
-valores = tuple(valores) # tupla
-print(valores)
-
-valores = set(valores) # conjunto
-print(valores)
-```
-```textfile
-[1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5]
-(1, 1, 1, 2, 2, 3, 4, 4, 5, 5, 5)
-{1, 2, 3, 4, 5}
-```
-
-2. conjuntos não permitem indexação.
-
-```py
-print(valores[1])
-```
-```textfile
----------------------------------------------------------------------------
-TypeError                                 Traceback (most recent call last)
-Cell In[21], line 1
-----> 1 print(valores[1])
-
-TypeError: 'set' object is not subscriptable
-```
-
-Com essas peculiaridades, é comum haver conversões de listas para conjuntos e, de novo, para listas: imagine que temos uma lista com 30 valores, e queremos (1) reordená-los do maior para o menor, (2) excluindo valores duplicados, e (3) encontrar os valores que estão nas posições 3 a 5.
-
-Sabemos que exclusão de duplicatas pode ser feita com conjuntos, e não com listas; sabemos que reordenação e indexação podem ser executadas com listas, e não com conjuntos. Então...
-
-```py
-nums = [
-    7, 1, 5, 3, 3, 4, 9, 5, 3, 1,
-    8, 9, 1, 1, 8, 5, 5, 7, 2, 6,
-    5, 4, 7, 1, 6, 3, 2, 3, 1, 9,
-]
-print(nums)
-
-nums = set(nums) # com conjunto, excluo duplicatas...
-print(nums)
-
-nums = list(nums) # ...aí converto de volta para lista...
-print(nums)
-
-nums.sort(reverse=True) # ...e, na lista, reordeno do maior para o menor...
-print(nums)
-
-print(nums[3:6]) # ...para buscar valores por indexação
-```
-```textfile
-[7, 1, 5, 3, 3, 4, 9, 5, 3, 1, 8, 9, 1, 1, 8, 5, 5, 7, 2, 6, 5, 4, 7, 1, 6, 3, 2, 3, 1, 9]
-{1, 2, 3, 4, 5, 6, 7, 8, 9}
-[1, 2, 3, 4, 5, 6, 7, 8, 9]
-[9, 8, 7, 6, 5, 4, 3, 2, 1]
-[6, 5, 4]
-```
-
-{{< warning >}}
-No exemplo acima, usamos dois comandos para converter a lista em conjunto e, em seguida, em lista novamente:
-
-```py
-nums = set(nums)
-nums = list(nums)
-```
-Podemos fazer isso numa linha só, de maneira encadeada:
-
-```py
-nums = list(set(nums))
-```
-{{< /warning >}}
-{{< /expandable >}}
-{{< expandable label="Coleções de dados: dicionário" level="2" >}}
-anteriormente vimos três coleções de dados: __lista__, __tupla__ e __conjunto__. Apenas para recapitular suas características:
-
-| lista | tupla | conjunto |
-| :-: | :-: | :-: |
-| exemplo: `x = [1, 2, 3, 4]` | exemplo: `y = (1, 2, 3, 4)` | exemplo: `z = {1, 2, 3, 4}` |
-| uso de `[` e `]` | uso de `(` e `)` | uso de `{` e `}` |
-| `list()` para lista vazia ou conversão | `tuple()` para tupla vazia ou conversão | `set()` para conjunto vazio ou conversão |
-| aceita itens repetidos | aceita itens repetidos | aceita itens repetidos, mas retorna itens únicos |
-| é mutável | é imutável | é imutável |
-| aceita métodos para manipulação | não aceita métodos para manipulação | não aceita métodos para manipulação |
-| itens acessados a partir da posição | itens acessados a partir da posição | itens inacessíveis a partir da posição |
-
-Além dessas três coleções, há outra muito importante: dicionário. Ao contrário das demais, um dicionário não tem apenas valor, mas também tem chave. Aliás, os itens de um dicionário são `sempre em pares chave-valor.` Por exemplo:
-
-```py
-prof = {"nome": "Rodolfo"}
-```
-
-Repare na sintaxe de um dicionário: `{chave: valor}`. Portanto, um dicionário é feito de `{` e `}`, além de `:`, que é o que separa a chave &mdash;no exemplo, `"nome"`&mdash; do valor &mdash;`"Rodolfo"`. Para criá-lo eu também posso usar a função `dict()`. Vamos ver um exemplo:
-
-```py
-curso = {"instituicao": "IDP"}
-print(curso)
-print(type(curso))
-```
-```textfile
-{'instituicao': 'IDP'}
-<class 'dict'>
-```
-
-Isso muda bastante a forma de trabalharmos com coleções: se antes o usual era ter listas ou tuplas com dados de um mesmo tipo...
-
-```py
-frutas = ["maçã", "laranja", "banana"]
-precos = [1.45, 2.07, 3.99]
-```
-...agora podemos ter uma coleção com diversos tipos de dados...
-
-```py
-frutas = {"produto": "maçã", "preco": 1.45} # a vírgula separa os pares chave-valor
-```
-...ou até mesmo uma coleção de coleções, como lista de dicionários (algo bem comum, aliás).
-```py
-frutas = [
-    {"produto": "maçã", "preco": 1.45},
-    {"produto": "laranja", "preco": 2.07},
-    {"produto": "banana", "preco": 3.99}
-]
-```
-
-Vou fazer o meu perfil usando dicionário e os mais variados tipos de dados:
-
-```py
-prof = {
-    "nome": "Rodolfo",
-    "sobrenome": "Viana",
-    "idade": 43,
-    "domicilio": "Marília, SP",
-    "tem_pet": True,
-    "qtde_pet": 1,
-    "nome_pet": "Pitoco",
-    "peso_pet": 11.5
-}
-
-print(prof)
-print(f"Tenho {len(prof)} elementos numa única variável!") 
-```
-```textfile
-{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
-Tenho 8 elementos numa única variável!
-```
-
-Mas agora que temos a estrutura chave-valor, como localizar um valor? Ou adicionar outro? Simples: basta usar a chave entre `[]`!
-
-```py
-print(prof) # tenho o dicionário todo...
-print(prof["tem_pet"]) #... e aqui, apenas o valor da chave "tem_pet"
-```
-```textfile
-{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5}
-True
-```
-```py
-print(f'{prof["nome"]} tem {prof["idade"]} anos e mora em {prof["domicilio"]}')
-```
-```textfile
-Rodolfo tem 43 anos e mora em Marília, SP
-```
-Para adicionar um par chave-valor que não existe, funciona assim:
-
-```
-variavel["novachave"] = "novovalor"
-```
-Vamos ver na prática:
-
-```py
-print(prof) # repare que não tenho chave "signo"...
-prof["signo"] = "Peixes" # ...mas eu a adiciono, e com o valor "Peixes"...
-print(prof) # e o dicionário é atualizado
-```
-```textfile
-{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 
-'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 
-'nome_pet': 'Pitoco', 'peso_pet': 11.5}
-{'nome': 'Rodolfo', 'sobrenome': 'Viana', 'idade': 43, 
-'domicilio': 'Marília, SP', 'tem_pet': True, 'qtde_pet': 1, 
-'nome_pet': 'Pitoco', 'peso_pet': 11.5, 'signo': 'Peixes'}
-```
-{{< /expandable >}}
-{{< expandable label="Iteração com `for` - parte 1" level="2" >}}
-Agora que conhecemos coleções de dados, podemos imaginar:
-
-> E se o programador quiser realizar a mesma operação para cada item da coleção? Deve escrever tudo de novo?
-
-A resposta é: não. Podemos usar controle de fluxo com `for` (ou `for` loop, como é conhecido).
-
-O `for` loop itera (ou seja, repete) a operação ou o comando para cada item da coleção. Sua sintaxe é assim:
-
-```
-for elemento in colecao:
-    operacao
-```
-Seria como dizer em português: "para cada elemento de `colecao`, faça determinada `operacao`". Em desenho,
-
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 360px; max-height: unset;max-height: unset; aspect-ratio:1;" src=" data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAWgAAAGsCAYAAADwnD13AAAGxXRFWHRteGZpbGUAJTNDbXhmaWxlJTIwaG9zdCUzRCUyMmFwcC5kaWFncmFtcy5uZXQlMjIlMjBtb2RpZmllZCUzRCUyMjIwMjMtMDMtMThUMDQlM0E1NCUzQTIwLjAzMlolMjIlMjBhZ2VudCUzRCUyMjUuMCUyMChXaW5kb3dzKSUyMiUyMHZlcnNpb24lM0QlMjIyMS4wLjclMjIlMjBldGFnJTNEJTIySE00d1d4ZVAyV2lqV1N0TmM2VDQlMjIlMjB0eXBlJTNEJTIyZGV2aWNlJTIyJTNFJTNDZGlhZ3JhbSUyMG5hbWUlM0QlMjJQJUMzJUExZ2luYS0xJTIyJTIwaWQlM0QlMjJua3ZCRlVYOTlSSEkxdFJBX050cSUyMiUzRTVacExjOW93RU1jJTJGRGNka3NJVU5QaVlrYmklMkJkZHByT3REa3FXR0JQQkhKbEVhQ2Z2bXNzWWV1UmhwZkhKT1ZBck5WYWolMkYzJTJGdEpZY2VtZzhYMyUyRmlPRSUyQiUyRnNJVFFudDlQMWoxMDElMkZOOXolMkZNRzhLZTBiQ3BMRUVuRGpHZUpkS29ORDlrZklvMTlhVjFtQ1NrMFI4RVlGVm11R3lkc3NTQVRvZGt3NTJ5bHUwMFoxWHZOOFl4WWhvY0pwcmIxWjVhSXRMS08lMkZHRnQlMkYweXlXYXA2OXNLb3FwbGo1U3huVXFRNFlhdUdDZDMzMEpnekpxcXIlMkJYcE1hQms4RlpmcXZ2aVYydDNBT0ZtSWZXN3dxeHRlTUYzS3VjbHhpWTJhN0l5elpTN2RDQmRrN1FveGZsTHVmWHNJM201aVFBUmhjeUw0Qmx6V3VxZ2J2YmlxQTRzQ2FVc2JRUjBvUnl6Rm5PMWFydWNMRjNMSzd1a2p4JTJGUkRDajNjVGhtTXZobUg4UGVTcVlxcllvdmtEVGg0VVE3enVLM3I0V3BXJTJGaDNEYUhwajFMc1pzcEwwOGt1MW5Ua2J0cHVZTWc2ZWxMRmMzUW56eVZTdHNqMXgwd0plMWZDVjJWQVVCRjBrcEF4Qkg2cFhhU2JJUTQ0blplMEtGaXpZVWpHSGtOMTVjRmtJenA1M21DT3dnT1FDWnd2Q1pRT3ZzdEZrd1A4bkEwT2RnYUhOZ0Q5d01YQUdCQWJ0SWZDZEZBS0RBNkZrRG9Fb0VWamc3WnFoRW8zdE4ySTlGSDhrTlQxelNRZTJubDdvMERNOGc1NUJlM3IlMkI0TkJrVnpwTk0wb2ZaR3NwRnBOVTJzYU1Ncjd0QVlWaEhJZGhPNW9pWFZMZkphbmYwaElOMjVNMHhyVG9UdFBLMGxBd2l2cndzWldONHdnJTJCcjFEUWd0cWR5ajFzVCUyQjZ2T2VGWVQ3MWxPcDdETjlNUzlRVXM4b0xSTWlJMkNuS1JXJTJGQ0U4Tm5DMHdZUU9nOElPWGh3UGFIUGtkRkhMUzclMkZiSzQyWjgxdDFrZDRDSnRMMkNsWlcwczRja2htUkl3c2twdnlLQWFsSjhvbXozcUk5SGpDbFBubVYxbTREbFR4c1ZsM3Q5WktHMWxLY0pGdUczRkhIWVlRWiUyQlVjR2pFbmlYWDBNeUlPWjAzTVowUTBUaEMyQ0kwZ3V3NHZ5c1lKeFNKNzBYdDBCVjcyOEkxbFclMkJJVkZKR2hWY0dXZkVLa1YlMkZQWVo5eUl6QjJhYnpSVVRkRnFhS3Y3YnBwN29hQjY2cHFGdCUyQlFuNjB3MG1vWFNvJTJCeSUyRnZLNGJMUXViZzVHcGhHa2dvMU0wNkpJaXYlMkI4JTJCZ1I4S2xkbk9hRCUyQm1RSG04YWJqbHBVTnhLblhlTzZPdXdWeE40RG1wRzlqVUJSZEZuWm1DanNYT00lMkZjY0IzUG43aWN5dWhscGI5YmdvbXJ3YUdMOTkwV3Mxd1d4WWFkUFc5OU53TUhFZWdheDFwYnJUTVMyanF6cjlla0ZJOXYlMkJvejJ3a1IxZVZKSTFTVHM2eVhiNmNIZTlzJTJGMnZ1UXR0N2thZHBrb0RGOVElMkZVNnBFSjZmS1U3aHp2VnMlMkJnYnRXanFlZHBacFJkQjNvV2cyUFRUYkdjOHY2Vjk4WlQ2ZXVkOHNuU05yR2ZyOU9UMXB5dXZhRE4lMkZMVGNibGthT2VTVG8lMkJuVjhhN0NtVHU3JTJGZkZ5bXpvN0FjRlk0RFdPSGI5QmdhMUIyM0RvRmolMkZQcUJ5cjM5bGdlNyUyRkFnJTNEJTNEJTNDJTJGZGlhZ3JhbSUzRSUzQyUyRm14ZmlsZSUzRV09jRgAACAASURBVHhe7Z0L2FVVue/HZ6V1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">
-
-Por exemplo, quero aumentar os preços da minha loja em 15% &mdash;e aqui, vamos usar também a função `round(x, quantidade_de_casas_decimais)`, que arredonda o valor de `x` estabelecendo determinada quantidade de casas decimais:
-
-```py
-precos_atuais = [8.77, 9.12, 10.09, 6.71] # lista de preços atuais
-precos_novos = list() # lista vazia que conterá os preços novos
-percentual_aumento = 0.15 # percentual de aumento
-
-for i in precos_atuais: # para cada item (apelidado de i) na lista `precos_atuais`...
-    novo_valor = round(i + (i * percentual_aumento), 2) # ...calculo o novo valor...
-    precos_novos.append(novo_valor) # ...e adiciono o novo valor na lista `precos_novos`
-    
-print(precos_novos)
-```
-```textfile
-[10.09, 10.49, 11.6, 7.72]
-```
-
-É possível ordenar ao sistema que realize qualquer operação, como passar uma lista de nomes, pedir as primeiras duas letras de cada nome e converter para letra minúscula com `lower()`...
-
-```py
-nomes = ["José", "Manuel", "Carlos"]
-
-for x in nomes:
-    primeiras_letras = x[0:2]
-    print(primeiras_letras.lower())
-```
-```textfile
-jo
-ma
-ca
-```
-
-...ou pedir ao usuário três números, salvá-los numa lista e pedir ao sistema que, para cada número, imprima se é par ou ímpar.
-
-```py
-lista_nums = list()
-
-while len(lista_nums) < 3:
-    num = int(input("Digite um número inteiro: "))
-    lista_nums.append(num)
-
-for x in lista_nums:
-    if x % 2 == 0:
-        print("É par")
-    else:
-        print("É ímpar")
-```
-```textfile
-Digite um número inteiro: 786
-Digite um número inteiro: 955
-Digite um número inteiro: 1205
-É par
-É ímpar
-É ímpar
-```
-
-{{< warning >}}
-Nos exemplos acima, `x` aparece duas vezes: primeiro em...
-
-```
-for x in nomes:
-```
-
-...e depois, em...
-```
-for x in lista_nums:
-```
-
-Afinal, o que é esse `x`?
-
-É, digamos, uma "variável temporária". É o nome que damos para o item da coleção que está sendo processado no momento &mdash;ou seja, as operações serão feitas em cima da "variável temporária". Quando o item termina de ser processado, a "variável temporária" é atribuída ao próximo item da coleção, e assim sucessivamente.
-
-E não precisa ser `x`! Pode ser qualquer letra, nome etc. Vamos ver um exemplo:
-
-```py
-lista_exemplo = ["André", "Regina", "Fernanda", "Pedro"]
-contador = 0
-# eu uso `nome` como variável temporária para o item...
-for nome in lista_exemplo: 
-    contador += 1
-    # ...e faço operação com essa variável temporária
-    print(f"No {contador}º loop, a 'variável temporária' `nome` é {nome}")
-```
-```textfile
-No 1º loop, a 'variável temporária' `nome` é André
-No 2º loop, a 'variável temporária' `nome` é Regina
-No 3º loop, a 'variável temporária' `nome` é Fernanda
-No 4º loop, a 'variável temporária' `nome` é Pedro
-```
-{{< /warning >}}
-
-Aqui, um exemplo uso de `for` loop no contexto de jornalismo de dados: numa série de reportagens na TV Globo sobre o retrato da mobilidade em São Paulo &mdash;projeto "Anda SP"&mdash;, tínhamos uma pesquisa com diversas informações sobre os entrevistados, todos ciclistas, como idade. Precisávamos agrupar essas pessoas em categorias de acordo com a faixa etária. A lógica era:
-
-1. do arquivo `csv` a que tínhamos, eu precisava de ver linha a linha o campo `IDADE`;
-   - ou seja, uso de `for` loop
-2. e, dependendo do valor no campo, descrever o grupo ao qual pertencia
-   - ou seja, uso de condicionais com `if`
-
-Então a operação foi esta:
-
-```py
-# Segregação por faixa etária
-fx_et = []
-for row in bike_limpo['IDADE']:
-    if row < 18:
-        fx_et.append('Menor de 18 anos')
-    elif row >= 18 and row < 25:
-        fx_et.append('18 a 24 anos')
-    elif row >= 25 and row < 31:
-        fx_et.append('25 a 30 anos')
-    elif row >= 31 and row < 41:
-        fx_et.append('31 a 40 anos')
-    elif row >= 41 and row < 51:
-        fx_et.append('41 a 50 anos')
-    elif row >= 51 and row < 61:
-        fx_et.append('51 a 60 anos')
-    else:
-        fx_et.append('61 anos ou mais')
-```
-
-Aqui, o estudo na íntegra: [2019-06-28-od_bicicleta](https://github.com/rodolfo-viana/ddj_stuff/blob/main/ipynb/2019-06-28-od_bicicleta.ipynb).
-{{< /expandable >}}
-{{< expandable label="Iteração com `for` - parte 2" level="2" >}}
-Anteriormente vimos como `for` loop funciona com listas, tuplas... Recapitulando:
-
-```py
-nums_gerais = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10]
-nums_pares = list()
-
-for i in nums_gerais: # para cada item de `nums_gerais...
-    if i % 2 = 0: # ...o item dividido por 2 tiver como resto 0...
-        nums_pares.append(i) # ...adicione o item na lista `nums_pares`
-
-print(nums_pares)
-```
-```textfile
-[2, 4, 6, 8, 10]
-```
-
-Outro exemplo:
-
-```py
-cidades = ["São Paulo", "Brasília", "Rio de Janeiro", "Curitiba", "Salvador"]
-trecho = list()
-
-for c in cidades:
-    if c in ["São Paulo", "Rio de Janeiro"]:
-        trecho.append("Eixo Rio-São Paulo")
-    else:
-        trecho.append("Fora do eixo Rio-São Paulo")
-
-print(trecho)
-```
-```textfile
-['Eixo Rio-São Paulo', 'Fora do eixo Rio-São Paulo', 'Eixo Rio-São Paulo', 
-'Fora do eixo Rio-São Paulo', 'Fora do eixo Rio-São Paulo']
-```
-
-O `for` loop &mdash;que permite a iteração (repetição) de determinada operação para cada elemento de uma coleção&mdash; é algo simples de compreender, mas diferente quando trabalhamos com __dicionários__. Isso porque dicionários, como sabemos, é feito de __par chave-valor__. Veja que interessante:
-
-```py
-lista = ["Cachorro", "Gato", "Passarinho"]
-
-for a in lista:
-    print(a)
-```
-```textfile
-Cachorro
-Gato
-Passarinho
-```
-```py
-dicionario = {"animal_1": "Cachorro", "animal_2": "Gato", "animal_3": "Passarinho"}
-
-for a in dicionario:
-    print(a)
-```
-```textfile
-animal_1
-animal_2
-animal_3
-```
-
-Quando fazemos `for` loop "convencional" em dicionário, ele retorna somente as chaves, e não os valores. Isso porque, na construção do `for` loop, eu pedi apenas um elemento, na linha:
-
-```
-for a in dicionario: 
-# pedi apenas `a`
-```
-
-Como dicionário é feito de par chave-valor, eu preciso pedir dois elementos &mdash;um para a chave, outro para o valor. E também usar `.items()`, para indicar ao sistema para procurar dentro dos itens. Algo assim:
-
-```
-for a, b in dicionario.items(): 
-# pedi `a` para chave, `b` para valor dentro dos itens
-```
-
-Vamos testar com o exemplo:
-
-```py
-dicionario = {"animal_1": "Cachorro", "animal_2": "Gato", "animal_3": "Passarinho"}
-
-for a, b in dicionario.items(): # `a` para chave, `b` para valor
-    print(f"A chave {a} tem o valor {b}")
-```
-```textfile
-A chave animal_1 tem o valor Cachorro
-A chave animal_2 tem o valor Gato
-A chave animal_3 tem o valor Passarinho
-```
-
-Trabalhar com chaves e valores abre inúmeras possibilidades de análise. Por exemplo:
-
-```py
-precos = {"banana": 1.49, "maçã": 1.79, "mamão": 2.15}
-print('Preços originais:', precos)
-
-# Quero aumentar os preços de todos os produtos em 10%
-for k, v in precos.items():
-    precos[k] = round(v * 1.1, 2) # 1.1 porque 10% é 1 + 0.1
-
-print(precos)
-print('Preços ajustados (10% de aumento):', precos)
-
-# Quero reduzir em 5% o preço do mamão
-for k, v in precos.items():
-    if k == "mamão":
-        precos[k] = round(v * 0.95, 2)
-
-print('Preços ajustados (10% de aumento; -5% se for mamão:', precos)
-```
-```textfile
-Preços originais: {'banana': 1.49, 'maçã': 1.79, 'mamão': 2.15}
-Preços ajustados (10% de aumento): {'banana': 1.64, 'maçã': 1.97, 'mamão': 2.37}
-Preços ajustados (10% de aumento; -5% se for mamão): {'banana': 1.64, 'maçã': 1.97, 'mamão': 2.25}
-```
-{{< /expandable >}}
-{{< expandable label="Funções" level="2" >}}
-Seja com `for` loop ou `if`-`else`; seja com coleções ou não, estamos sempre fazendo uma ou mais operações em Python. Por exemplo:
-
-```py
-salario = 2500 # operação 1
-despesa = 1875 # operação 2
-
-if salario > despesa: # operação 3
-    calculo = salario - despesa # operação 4
-    print(f"Sobram-me {calculo} reais.") # operação 5
-elif salario < despesa: # operação 6
-    calculo = despesa - salario # operação 7
-    print(f"Faltam-me {calculo} reais.") # operação 8
-else: # operação 9
-    print("Salário e despesas têm o mesmo valor. Não me sobra nada.") # operação 10
-```
-
-Chamamos essas operações encadeadas de rotinas. Muitas vezes, queremos repetir uma rotina:
-
-```py
-lista_1 = [2.35, 6.78, 12.07]
-lista_2 = [1.15, 9.78, 10.12]
-
-for n in lista_1:
-    calculo = 2 * n
-    print(calculo)
-
-for n in lista_2:
-    calculo = 2 * n
-    print(calculo)
-```
-
-No exemplo acima, repare que tenho duas listas distintas (`lista_1` e `lista_2`), e para cada faço a mesma rotina:
-
-1. faço `for` loop,
-2. faço o cálculo de multiplicação por 2
-3. imprimo o valor do cálculo
-
-__Simplesmente repito o código__, linha a linha!
-
-Para evitar repetições, podemos contar com __funções__. Funções são rotinas que têm um nome e ficam temporariamente salvas na sua máquina. São sequências de operações determinadas pelo programador que podem ser usadas sempre que necessárias.
-
-Python tem várias funções prontas, muitas das quais já vimos nas aulas: `bool()`, `dict()`, `float()`, `format()`, `input()`, `int()`, `len()`, `print()`, `round()`, `set()`, `str()`, `tuple()`, `type()`... E há ainda outras tantas, que podem ser vistas [neste link](https://docs.python.org/pt-br/3.11/library/functions.html). Mas além das funções prontas, podemos criar as nossas próprias! A sintaxe para definir uma função é assim:
-
-```
-def nomedafuncao():
-    operacao
-```
-
-E a sintaxe para chamar (usar) uma função é assim:
-
-```
-nomedafuncao()
-```
-
-Por exemplo, uma função que:
-
-1. pergunta o nome do usuário,
-2. deixa todas as letras em caixa alta,
-3. imprime "Bom dia", acompanhado do nome do usuário.
-
-```py
-def bomdia(): # defino o nome da minha função
-    nome = input("Qual o seu nome? ") # operação 1: pedir o nome
-    nome = nome.upper() # operação 2: deixar o nome em caixa alta
-    print(f"Bom dia, {nome}") # operação 3: imprimir a frase
-
-bomdia() # chamo a função...
-```
-```textfile
-Qual o seu nome? Rodolfo
-Bom dia, RODOLFO
-```
-```py
-bomdia() # ...de novo...
-```
-```textfile
-Qual o seu nome? André
-Bom dia, ANDRÉ
-```
-```py
-bomdia() # ...e de novo, sem precisar reescrever as operações definidas
-```
-```textfile
-Qual o seu nome? Ana Maria
-Bom dia, ANA MARIA
-```
-
-Com o exemplos das listas, poderíamos usar uma função. Assim:
-
-```py
-def multiplicar():
-    calculo = 2 * n
-    print(calculo)
-
-lista_1 = [2.35, 6.78, 12.07]
-lista_2 = [1.15, 9.78, 10.12]
-
-for n in lista_1:
-    multiplicar()
-
-for n in lista_2:
-    multiplicar()
-```
-```textfile
-4.7
-13.56
-24.14
-2.3
-19.56
-20.24
-```
-
-### Argumentos
-
-No exemplo acima, criei uma função para multiplicar por 2. Mas e se eu quiser multiplicar por 3 ou por 6 ou por 127? E se o número multiplicador for dinâmico?
-
-Para isso contamos com parâmetros e argumentos.
-
-- __Parâmetro__ é o nome dado ao atributo que uma função pode receber
-
-- __Argumento__ é o valor recebido pela função
-
-A sintaxe para criar uma função com parâmetro é assim:
-
-```
-def nomedafuncao(parametro):
-    bloco de código, rotina que usa o parâmetro
-```
-
-E a sintaxe para chamar a função é:
-
-```
-nomedafuncao(argumento)
-```
-
-Vamos refazer o exemplo de multiplicação, mas com parâmetros e argumentos:
-
-```py
-def multiplicar(n_mult): # `n_mult` é o parâmetro...
-    calculo = n_mult * n # ...que é usado no bloco da rotina
-    print(calculo)
-
-lista_1 = [2.35, 6.78, 12.07]
-lista_2 = [1.15, 9.78, 10.12]
-
-for n in lista_1:
-    multiplicar(6) # o argumento `6` entra no lugar do parâmetro `n_mult`
-
-for n in lista_2:
-    multiplicar(127) # o número 127 é o argumento
-```
-```textfile
-14.100000000000001
-40.68
-72.42
-146.04999999999998
-1242.06
-1285.24
-```
-
-Posso usar quantos parâmetros e argumentos eu quiser, do tipo que eu quiser.
-
-```py
-def multiplicar(lista, multiplicador): # tenho dois parâmetros...
-    for i in lista:
-        calculo = multiplicador * i
-        print(calculo)
-
-lista_1 = [3.89, 0.99, 17.15, 1.89]
-
-multiplicar(lista_1, 7) # ...e uso dois argumentos
-```
-```textfile
-27.23
-6.93
-120.04999999999998
-13.229999999999999
-```
-
-Mas se eu passar um parâmetro e ele não tiver argumento, ou se eu usar um argumento sem parâmetro, encontro erro:
-
-```py
-def multiplicar(lista, multiplicador): # tenho dois parâmetros...
-    for i in lista:
-        calculo = multiplicador * i
-        print(calculo)
-
-lista_1 = [3.89, 0.99, 17.15, 1.89]
-
-multiplicar(lista_1) # ...e uso apenas um argumento
-```
-```textfile
----------------------------------------------------------------------------
-TypeError                                 Traceback (most recent call last)
-Cell In[10], line 1
-----> 1 multiplicar(lista_1) # ...e uso apenas um argumento
-
-TypeError: multiplicar() missing 1 required positional argument: 'multiplicador'
-```
-
-```py
-multiplicar(lista_1, 7, 9) # ...e uso três argumentos
-```
-```textfile
----------------------------------------------------------------------------
-TypeError                                 Traceback (most recent call last)
-Cell In[11], line 1
-----> 1 multiplicar(lista_1, 7, 9) # ...e uso três argumentos
-
-TypeError: multiplicar() takes 2 positional arguments but 3 were given
-```
-
-### `return` vs. `print`
-
-Vimos até aqui que `print()` é a função que usamos para imprimir algo na tela. Contudo, nem sempre queremos imprimir algo, mas sim salvar o resultado da função na memória para uso posterior. Nesse caso usamos, dentro da função, `return`. Vamos ver um exemplo:
-
-Preciso calcular o volume de um cilindro (fórmula: \\(V = \pi r^2 h\\), onde \\(r\\) é o raio; \\(h\\) é a altura). Com o volume, preciso calcular o preço, sendo R$ 1,50 para cada unidade de volume. (Repare: eu não quero imprimir o volume; quero usá-lo para operações futuras &mdash;no caso, calcular o valor total.)
-
-```py
-# crio uma função para determinar o volume de um cilindro
-def volume(r, h):
-    pi = 3.14159
-    vol = pi * r**2 * h
-    return vol # uso `return` no final, com o dado que quero obter
-
-# crio outra função, para calcular o valor
-def valor(volume):
-    vlr_unit = 1.5
-    vlr_final = volume * vlr_unit
-    return vlr_final
-
-
-# calculo o volume usando a função que criei
-# o resultado ficará armazenado em `cilindro_1`
-cilindro_1 = volume(16, 3)
-
-# agora uso `cilindro_1` para calcular o valor
-# o resultado ficará armazenado em `valor_1`
-valor_1 = valor(cilindro_1)
-
-# reuso a função
-cilindro_2 = volume(13, 6)
-valor_2 = valor(cilindro_2)
-
-# até aqui, nada é impresso na tela, pois não usei `print()`,
-# mas sim `return`, para devolver o resultado das operações
-# em uma variável
-
-# só aqui imprimo
-print(valor_1)
-print(valor_2)
-```
-```textfile
-3619.1116799999995
-4778.358389999999
-```
-
-Um exemplo de como funções são usadas no jornalismo de dados é este código escrito pela equipe do FiveThirtyEight para obter dados metereológicos do site Weather Underground. A reportagem em que tais dados foram usados é esta: ["What 12 Months Of Record-Setting Temperatures Looks Like Across The U.S."](https://fivethirtyeight.com/features/what-12-months-of-record-setting-temperatures-looks-like-across-the-u-s/). O código na íntegra está [aqui](https://github.com/fivethirtyeight/data/blob/76c471a9124d690ba92709ca21cbfcdde226b44e/us-weather-history/wunderground_scraper.py), mas abaixo segue uma versão editada e comentada para melhor compreensão:
-
-```py
-# importação de módulos para...
-from datetime import datetime, timedelta # ...trabalhar com datas
-from urllib.request import urlopen # ...abrir sites
-
-
-def scrape_station(station): # parâmetro é `station`
-    current_date = datetime(year=2014, month=7, day=1) # data atual
-    end_date = datetime(year=2015, month=7, day=1) # data final
-    lookup_URL = 'http://www.wunderground.com/history/airport/{}/{}/{}/{}/DailyHistory.html'
-
-    while current_date != end_date: # enquanto a data atual é diferente da data final...
-        formatted_lookup_URL = lookup_URL.format(
-            station, current_date.year, current_date.month, current_date.day
-        ) # ...formate `lookup_URL`
-        html = urlopen(formatted_lookup_URL).read().decode('utf-8') # ...abra e leia o site
-        current_date += timedelta(days=1) # ...adicione `1` dia na data atual
-
-# para cada uma das estações na lista...
-for station in ['KCLT', 'KCQT', 'KHOU', 'KIND', 'KJAX', 'KMDW', 'KNYC', 'KPHL', 'KPHX', 'KSEA']:
-    # ...execute a função para cada estação
-    scrape_station(station)
-```
 {{< /expandable >}}
