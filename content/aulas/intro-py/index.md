@@ -143,13 +143,13 @@ José
 </table>
 
 ---
-Neste capítulo vimos:
+__Neste capítulo vimos:__
 
 - função `print(x)`
   - imprime em tela o valor de `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#print](https://docs.python.org/pt-br/3/library/functions.html#print)
 
-Mais sobre os tópicos da aula:
+__Mais sobre os tópicos da aula:__
 
 - [txt; inglês] [Variables in Python](https://realpython.com/python-variables/), em Real Python
 {{< /expandable >}}
@@ -402,7 +402,7 @@ print(True + True)
 ```
 
 ---
-Neste capítulo vimos:
+__Neste capítulo vimos:__
 
 - a função `int(x)`
   - converte o valor de `x` para `int`
@@ -422,7 +422,7 @@ Neste capítulo vimos:
   - mostra o tipo de dado do objeto `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#type](https://docs.python.org/pt-br/3/library/functions.html#type)
 
-Mais sobre os tópicos da aula:
+__Mais sobre os tópicos da aula:__
 
 - [vid] [Conhecendo tipos de dados](https://www.youtube.com/watch?v=EosATvOIHEs), em Programação Dinâmica
 - [vid] [Tipos de dados](https://www.youtube.com/watch?v=g6QJCal2_7w), em Procópio na Rede
@@ -669,7 +669,7 @@ print(percepcao_2024 > percepcao_2022 and mortes_2023 < mortes_2022)
 False
 ```
 ---
-Neste capítulo vimos:
+__Neste capítulo vimos:__
 
 - a função `input()`
   - pede ao usuário um valor e salva numa variável
@@ -680,7 +680,7 @@ Neste capítulo vimos:
   - retorna a quantidade de elementos no objeto `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#len](https://docs.python.org/pt-br/3/library/functions.html#len)
 
-Mais sobre os tópicos da aula:
+__Mais sobre os tópicos da aula:__
 
 - [vid] [Operadores e expressões aritméticas](https://www.youtube.com/watch?v=MzT7VHdSEes), em Bóson Treinamentos
 - [txt; inglês] [Python operators](https://www.w3schools.com/python/python_operators.asp), em W3
@@ -688,6 +688,16 @@ Mais sobre os tópicos da aula:
 - [txt] [Variáveis, expressões e comandos](https://panda.ime.usp.br/pensepy/static/pensepy/02-Conceitos/conceitos.html), em Pense Python, IME-USP
 - [txt] [Valores e operadores booleanos](https://panda.ime.usp.br/aulasPython/static/aulasPython/aula05.html), em IME-USP
 - [txt] [Operadores aritméticos e lógicos](https://pythonacademy.com.br/blog/operadores-aritmeticos-e-logicos-em-python), em Python Academy
+
+__Para treinar:__
+
+Segundo o [G1](https://g1.globo.com/bemestar/vacina/noticia/2021/07/09/vacinacao-no-brasil-mais-de-14percent-da-populacao-tomou-as-duas-doses-ou-dose-unica-de-vacinas-contra-a-covid.ghtml) em 9 de julho de 2021, até aquela data 82.908.617 pessoas haviam tomado a primeira dose da vacina contra a covid-19. Especificamente naquele dia, 994.468 pessoas tomaram a primeira dose.
+
+Arredondando, o Brasil tinha, à época, 212 milhões de habitantes, dos quais cerca de 21% tinham menos de 18 anos -- ou seja, não eram elegíveis para a vacinação.
+
+1. Quantos brasileiros estavam elegíveis para a vacinação naquela data?
+
+2. Se o ritmo de vacinação da primeira dose tivesse se mantido como no dia 9 de julho de 2021, em quantos dias (partindo do dia posterior, dia 10) toda a população elegível teria recebido a primeira dose?
 {{< /expandable >}}
 {{< expandable label="Exercícios - parte 1" level="2" >}}
 1. No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Como ele divulgava o "jogo do tigrinho" e a PF bateu na porta dele, o influencer teve uma queda significativa de seguidores: 4.567.093 neste mês. Calcule a queda percentual.
@@ -968,11 +978,27 @@ Devo usar uma blusa
 ```
 
 ---
-Mais sobre os tópicos da aula:
+__Mais sobre os tópicos da aula:__
 
 - [vid] [Estruturas de seleção com if e else](https://www.youtube.com/watch?v=zouf7AkISR4), em Cursos Kane Chan
 - [txt] [Comandos if](https://docs.python.org/pt-br/3.8/tutorial/controlflow.html#if-statements), em Python.org
 - [txt] [Comandos de decisão](https://www.inf.pucrs.br/pinho/PCB/ComandosDeDecisao/Decisao.htm), em Escola Politécnica - PUC-RS
+
+__Para treinar:__
+
+Recentemente tem feito muito calor em algumas regiões do Brasil. Na minha categorização:
+
+- Menos que 0º é congelante,
+- De 0º a 10º é muito frio,
+- De 10,1º a 17º é friozinho,
+- De 17,1º a 24º é ameno,
+- De 24,1º a 30º é calor,
+- Acima de 30º é muito calor.
+
+Escreva um programa que:
+
+- pede ao usuário a temperatura no momento,
+- retorne ao usuário a informação sobre a temperatura de acordo com a tabela acima.
 {{< /expandable >}}
 {{< expandable label="Controle de fluxo com `while`" level="2" >}}
 Vimos que a execução das linhas pode ser controlada, que o código nem sempre precisa ter todas as suas linhas lidas. E vimos que uma forma de controlar o fluxo é com `if`.
@@ -1052,12 +1078,12 @@ No exemplo acima, `numero` começa como `1` e, a cada looping no bloco, há adi�
 {{< /warning >}}
 
 ---
-Mais sobre os tópicos da aula:
+__Mais sobre os tópicos da aula:__
 
 - [vid] [Estrutura de repetição while](https://www.youtube.com/watch?v=VynNy4Ix9Fc), em DevMedia
 - [txt] [Python while: executar código com condição verdadeira](https://blog.betrybe.com/python/python-while/), em Betrybe
 
-Para treinar:
+__Para treinar:__
 
 A brincadeira do "pim" ficou famosa no Programa do Silvio Santos: alguém da plateia é escolhido e deve contar até onde conseguir, mas trocando o número 4 e seus múltiplos pela palavra "pim".
 
