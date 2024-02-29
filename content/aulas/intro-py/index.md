@@ -966,6 +966,13 @@ else:
 ```textfile
 Devo usar uma blusa
 ```
+
+---
+Mais sobre os tópicos da aula:
+
+- [vid] [Estruturas de seleção com if e else](https://www.youtube.com/watch?v=zouf7AkISR4), em Cursos Kane Chan
+- [txt] [Comandos if](https://docs.python.org/pt-br/3.8/tutorial/controlflow.html#if-statements), em Python.org
+- [txt] [Comandos de decisão](https://www.inf.pucrs.br/pinho/PCB/ComandosDeDecisao/Decisao.htm), em Escola Politécnica - PUC-RS
 {{< /expandable >}}
 {{< expandable label="Controle de fluxo com `while`" level="2" >}}
 Vimos que a execução das linhas pode ser controlada, que o código nem sempre precisa ter todas as suas linhas lidas. E vimos que uma forma de controlar o fluxo é com `if`.
@@ -1043,6 +1050,30 @@ No exemplo acima, `numero` começa como `1` e, a cada looping no bloco, há adi�
 
 É preciso, portanto, estabelecer um limite, um ponto em que `True` se tornará `False`.
 {{< /warning >}}
+
+---
+Mais sobre os tópicos da aula:
+
+- [vid] [Estrutura de repetição while](https://www.youtube.com/watch?v=VynNy4Ix9Fc), em DevMedia
+- [txt] [Python while: executar código com condição verdadeira](https://blog.betrybe.com/python/python-while/), em Betrybe
+
+Para treinar:
+
+A brincadeira do "pim" ficou famosa no Programa do Silvio Santos: alguém da plateia é escolhido e deve contar até onde conseguir, mas trocando o número 4 e seus múltiplos pela palavra "pim".
+
+> Um, dois, três, pim, cinco, seis, sete, pim...
+
+Aqui um exemplo: 
+
+<div class="video-container">
+    <iframe src="https://www.youtube.com/embed/s6PCVq_ojto" frameborder="0" allowfullscreen=""></iframe>
+</div>
+
+Escreva um programa que:
+
+- pede ao usuário um número acima de entre 40 e 60,
+- imprima na tela cada número, exceto 4 e seus múltiplos, que devem ser substituídos por "pim".
+
 {{< /expandable >}}
 {{< expandable label="Laboratório" level="2" >}}
 Nas aulas anteriores vimos muita coisa sobre Python:
