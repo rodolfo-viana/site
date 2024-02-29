@@ -148,6 +148,10 @@ Neste capítulo vimos:
 - função `print(x)`
   - imprime em tela o valor de `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#print](https://docs.python.org/pt-br/3/library/functions.html#print)
+
+Mais sobre os tópicos da aula:
+
+- [txt; inglês] [Variables in Python](https://realpython.com/python-variables/), em Real Python
 {{< /expandable >}}
 {{< expandable label="Tipos de dados" level="2" >}}
 Repare que, quando trabalhamos com variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
@@ -417,7 +421,12 @@ Neste capítulo vimos:
 - a função `type(x)`
   - mostra o tipo de dado do objeto `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#type](https://docs.python.org/pt-br/3/library/functions.html#type)
-  
+
+Mais sobre os tópicos da aula:
+
+- [vid] [Conhecendo tipos de dados](https://www.youtube.com/watch?v=EosATvOIHEs), em Programação Dinâmica
+- [vid] [Tipos de dados](https://www.youtube.com/watch?v=g6QJCal2_7w), em Procópio na Rede
+- [txt; inglês] [Basic data types in Python](https://realpython.com/python-data-types/), em Real Python
 {{< /expandable >}}
 {{< expandable label="Operações" level="2" >}}
 Agora que sabemos o que são variáveis e conhecemos os tipos básicos, podemos fazer cálculos ou comparar duas ou mais variáveis. Para isso realizações operações aritméticas, relacionais ou lógicas.
@@ -670,6 +679,15 @@ Neste capítulo vimos:
 - a função `len(x)`
   - retorna a quantidade de elementos no objeto `x`
   - documentação: [https://docs.python.org/pt-br/3/library/functions.html#len](https://docs.python.org/pt-br/3/library/functions.html#len)
+
+Mais sobre os tópicos da aula:
+
+- [vid] [Operadores e expressões aritméticas](https://www.youtube.com/watch?v=MzT7VHdSEes), em Bóson Treinamentos
+- [txt; inglês] [Python operators](https://www.w3schools.com/python/python_operators.asp), em W3
+- [txt] [Operadores e expressões](https://algoritmosempython.com.br/cursos/programacao-python/operadores/), em Algoritmos em Python
+- [txt] [Variáveis, expressões e comandos](https://panda.ime.usp.br/pensepy/static/pensepy/02-Conceitos/conceitos.html), em Pense Python, IME-USP
+- [txt] [Valores e operadores booleanos](https://panda.ime.usp.br/aulasPython/static/aulasPython/aula05.html), em IME-USP
+- [txt] [Operadores aritméticos e lógicos](https://pythonacademy.com.br/blog/operadores-aritmeticos-e-logicos-em-python), em Python Academy
 {{< /expandable >}}
 {{< expandable label="Exercícios - parte 1" level="2" >}}
 1. No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Como ele divulgava o "jogo do tigrinho" e a PF bateu na porta dele, o influencer teve uma queda significativa de seguidores: 4.567.093 neste mês. Calcule a queda percentual.
