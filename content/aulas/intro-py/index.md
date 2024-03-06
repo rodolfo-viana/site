@@ -2025,6 +2025,15 @@ print(prof) # e o dicionário é atualizado
 'tem_pet': True, 'qtde_pet': 1, 'nome_pet': 'Pitoco', 'peso_pet': 11.5, 
 'signo': 'Peixes'}
 ```
+
+---
+
+__Mais sobre os tópicos da aula:__
+
+- [vid] [Quando usar Listas, Tuplas, Conjuntos e Dicionários em Python?](https://www.youtube.com/watch?v=6H0sup1qSsY), em Universo Discreto
+- [txt] [Coleções no Python: Listas, Tuplas e Dicionários](https://www.devmedia.com.br/colecoes-no-python-listas-tuplas-e-dicionarios/40678), em DevMedia
+- [txt] [Principais Estruturas de Dados no Python](https://www.treinaweb.com.br/blog/principais-estruturas-de-dados-no-python/), em TreinaWeb
+
 {{< /expandable >}}
 {{< expandable label="Iteração com `for` - parte 2" level="2" >}}
 Anteriormente vimos como `for` loop funciona com listas, tuplas... Recapitulando:
@@ -2142,6 +2151,12 @@ Preços ajustados (10% de aumento; -5% se for mamão): {'banana': 1.64, 'maçã'
 ```
 
 ---
+
+__Mais sobre os tópicos da aula:__
+
+- [vid] [Loop for](https://www.youtube.com/watch?v=55rOjj6kEck), em Bóson Treinamentos
+- [vid] [Percorrendo listas, tuplas, dicionários e conjuntos](https://www.youtube.com/watch?v=W3juvRbfSk8), em Marcos Castro
+
 __Para treinar:__
 
 O código abaixo lê um arquivo `json` externo, e devolve uma lista de dicionários. Esses dicionários contêm dados reais da CEAP - Cota para Exercício da Atividade Parlamentar referentes a 2023. São 228.144 registros de despesas dos deputadores federais ressarcidas pelos cofres públicos.
