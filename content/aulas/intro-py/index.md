@@ -1384,7 +1384,7 @@ gas = 25
 cartao = 800
 ```
 
-Para armazenamos múltiplos dados numa variável, há as __coleções de dados__ do Python. Há quatro coleções muito comuns, cada uma com características e funções próprias.
+Para armazenarmos múltiplos dados numa variável, há as __coleções de dados__ do Python. Há quatro coleções muito comuns, cada uma com características e funções próprias.
 
 ### Lista
 
@@ -1463,7 +1463,6 @@ Mas lembre-se: __Python começa a contagem no índice 0__ (ou seja, o primeiro e
 ```py
 linguagens = ["Python", "SQL", "Javascript", "C++", "Java", "HTML"]
 # índice         0        1          2         3       4      5
-
 print(f"A linguagem na terceira posição é {linguagens[2]}")
 print(f"A linguagem na quarta posição é {linguagens[3]}")
 print(f"A linguagem na primeira posição é {linguagens[0]}")
@@ -1478,11 +1477,11 @@ A linguagem na primeira posição é Python
 A indexação permite, inclusive, realizar cálculos:
 
 ```py
-lista = [3.14, 2.09, 8.21, -7,55]
+lista = [3.14, 2.09, 8.21, -7.55]
 print(lista[1] * lista[3]) # ou seja, 2.09 * -7.55
 ```
 ```textfile
--14.629999999999999
+-15.779499999999999
 ```
 
 É possível, ainda, acessar múltiplos elementos passando o índice de começo e de fim (mas preste atenção: __o resultado exclui o último item__). Funciona assim: 
@@ -1580,6 +1579,8 @@ As listas são __mutáveis__: posso adicionar e excluir elementos, mostrar em or
 - `.reverse()` para inverter a ordem dos elementos
 - `.sort()` para organizar os elementos do menor ao maior (ou do maior ao menor, se usar `reverse=True`)
 - `.count(x)` para contar quantas vezes o elemento `x` aparece na lista
+- `sum(list)` para somar os valores da lista
+- `max(list)`, `min(list)` para trazer o maior e o menor valor da lista
 
 ```py
 lista = ["Carlos", "Antonio", "Cesar"]
@@ -1607,6 +1608,61 @@ print(lista.count("Rodolfo")) # contar quantas vezes aparece "Rodolfo"
 ['Rodolfo', 'Carlos', 'Antonio']
 1
 ```
+
+```py
+lista = [1, 2, 3, 4, 5]
+print(sum(lista))
+print(max(lista))
+print(min(lista))
+```
+```textfile
+15
+5
+1
+```
+---
+__Neste capítulo vimos:__
+
+- a função `list(x)`
+  - converte `x` em lista
+  - se `x` não for designado, cria uma lista vazia
+  - documentação: https://docs.python.org/pt-br/3/library/stdtypes.html#typesseq-list
+
+- o método `.append(x)` 
+  - adiciona elemento `x` à lista
+  - documentação: https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists
+
+- o método `.pop(i)` 
+  - tirar da lista um elemento de índice `i` e mostrar esse elemento
+  - documentação: https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists
+
+- o método `.remove(x)` 
+  - exclui da lista o elemento `x`
+  - documentação: https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists
+
+- o método `.reverse()` 
+  - inverte a ordem dos elementos
+  - documentação: https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists
+
+- o método `.sort()` 
+  - organiza os elementos do menor ao maior (ou do maior ao menor, se usar `reverse=True`)
+  - documentação: https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists
+
+- o método `.count(x)` 
+  - conta quantas vezes o elemento `x` aparece na lista
+  - documentação: https://docs.python.org/pt-br/3/tutorial/datastructures.html#more-on-lists
+
+- a função `sum(list)`
+  - soma os elementos de `list`
+  - documentação: https://docs.python.org/pt-br/3/library/functions.html#sum
+
+- a função `max(list)`
+  - retorna o valor máximo de `list`
+  - documentação: https://docs.python.org/pt-br/3/library/functions.html#max
+
+- a função `min(list)` 
+  - retorna o valor mínimo de `list`
+  - documentação: https://docs.python.org/pt-br/3/library/functions.html#min
 {{< /expandable >}}
 {{< expandable label="Coleções de dados: tupla" level="2" >}}
 Outra coleção de dados é a tupla (classe `tuple`), feita com valores dentro de parênteses (`(` e `)`) ou com a função `tuple()`.
