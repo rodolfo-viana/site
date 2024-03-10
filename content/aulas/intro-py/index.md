@@ -2252,6 +2252,229 @@ Responda às questões:
 6. Quanto um deputado do PT reembolsou em média na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
 7. Qual categoria teve o maior valor de reembolso em 2023?
 {{< /expandable >}}
+{{< expandable label="Módulos" level="2" >}}
+Ao longo das aulas, vimos e usamos algumas funções que desempenham rotinas distintas. Alguns exemplos:
+
+- `print(x)`, que imprime o valor de `x` em tela
+- `len(x)`, que retorna a quantidade de elementos em `x`
+- `max(x)`, que traz o valor máximo de uma coleção `x`
+
+Todas elas são conhecidas como __funções embutidas__ &mdash;ou seja, funções que já vêm pré-definidas com Python e estão sempre disponíveis para uso. Uma lista das funções embutidas está disponível na [documentação do Python](https://docs.python.org/pt-br/3/library/functions.html).
+
+Há outras funções, porém, que precisam ser importadas. Elas podem vir de módulos da biblioteca padrão do Python (ou seja, vêm com Python, mas precisam ser importadas) ou de bibliotecas externas (criadas por usuários e disponibilizadas para uso geral).
+
+### Biblioteca padrão
+
+Python vem com uma extensa lista de módulos em sua biblioteca. Estes módulos fornecem funcionalidades que vão desde operações de entrada-saída até manipulação de `string`, manipulação de data e hora, comunicação em rede, e muito mais. A lista completa de módulos está disponível na [documentação oficial](https://docs.python.org/pt-br/3/library/).
+
+Por exemplo, se eu quiser criar, ler, modificar um arquivo `csv` no Python, posso importar o módulo `csv` e usar suas funções:
+
+```py
+import csv
+
+arquivo = "dummy_data_1.csv"
+
+data = open(arquivo)
+leitor = csv.reader(data)
+next(leitor) # ignora o header
+dados = list(leitor)
+data.close()
+
+print("Dados originais\n")
+print(dados)
+
+print("\nDados manipulados\n")
+for linha in dados:
+    if int(linha[1]) >= 30:
+        linha.append("30 anos ou mais")
+    else:
+        linha.append("Menos de 30 anos")
+print(dados)
+```
+```textfile
+Dados originais
+
+[['Ana', '28', 'São Paulo', 'Brasil'], ['Bruno', '34', 'Rio de Janeiro', 'Brasil'],
+['Carlos', '45', 'Salvador', 'Brasil'], ['Daniela', '22', 'Curitiba', 'Brasil'],
+['Eduardo', '30', 'Belo Horizonte', 'Brasil'], 
+['Fabiana', '27', 'Porto Alegre', 'Brasil'], ['Gustavo', '33', 'Recife', 'Brasil'],
+['Helena', '40', 'Brasília', 'Brasil'], ['Igor', '29', 'Fortaleza', 'Brasil'],
+['Juliana', '25', 'Manaus', 'Brasil']]
+
+Dados manipulados
+
+[['Ana', '28', 'São Paulo', 'Brasil', 'Menos de 30 anos'], 
+['Bruno', '34', 'Rio de Janeiro', 'Brasil', '30 anos ou mais'], 
+['Carlos', '45', 'Salvador', 'Brasil', '30 anos ou mais'], 
+['Daniela', '22', 'Curitiba', 'Brasil', 'Menos de 30 anos'], 
+['Eduardo', '30', 'Belo Horizonte', 'Brasil', '30 anos ou mais'], 
+['Fabiana', '27', 'Porto Alegre', 'Brasil', 'Menos de 30 anos'], 
+['Gustavo', '33', 'Recife', 'Brasil', '30 anos ou mais'], 
+['Helena', '40', 'Brasília', 'Brasil', '30 anos ou mais'], 
+['Igor', '29', 'Fortaleza', 'Brasil', 'Menos de 30 anos'], 
+['Juliana', '25', 'Manaus', 'Brasil', 'Menos de 30 anos']]
+```
+No exemplo acima, antes de qualquer código, há:
+
+```
+import csv
+```
+
+É a forma de dizer ao Python "me empreste as funções do módulo `csv`". E uma dessas funções é `.reader()`, que lê os dados de um arquivo `csv` e está presente nesta linha:
+
+```
+leitor = csv.reader(data)
+```
+
+Depois que Python leu os dados e salvou na variável `dados`, consigo fazer operações que desejar.
+
+{{< warning >}}
+Repare que, no código acima, para trabalhar o arquivo foi usado isso:
+
+```
+data = open(arquivo)
+[...]
+data.close()
+```
+
+Esta é uma forma em desuso, pois ela exige o uso de `.close()` para que as operações anteriores sejam executadas. Sem `.close()`, não há execução alguma, e o código quebra.
+
+Uma forma de evitar isso é inserindo as operações no bloco `with`. Em vez de...
+
+```
+data = open(arquivo)
+```
+
+...use isto...
+
+```
+with open(arquivo) as data:
+```
+
+...e use indentação nos blocos das operações. Ou seja, troque:
+
+```py
+data = open(arquivo)
+leitor = csv.reader(data)
+next(leitor)
+dados = list(leitor)
+data.close()
+```
+
+...por:
+
+```py
+with open(arquivo) as data:
+    leitor = csv.reader(data)
+    next(leitor)
+    dados = list(leitor)
+```
+
+A documentação da função `open()` pode ser lida [aqui](https://docs.python.org/pt-br/3/library/functions.html#open).
+{{< /warning >}}
+
+No exercício da aula anterior tem a importação de outros módulos: `json` e `urllib`. Repare:
+
+```
+import json
+from urllib.request import urlopen
+
+url = 'https://raw.githubusercontent.com/rodolfo-viana/site/main/content/aulas/intro-py/modified_ceap_2023.json'
+
+with urlopen(url) as response:
+    source = response.read().decode('utf-8')
+
+data = json.loads(source)
+```
+
+Note que foram usadas formas distintas para importar `json` e `urlopen`:
+
+```
+import json
+from urllib.request import urlopen
+```
+
+Existem várias maneiras de importar módulos e funções em Python, cada uma servindo a diferentes propósitos:
+
+- Importar todo o módulo: `import nome_do_modulo`
+    - Isso importa todo o módulo e você precisa usar o nome do módulo para acessar suas funções ou classes.<br>Exemplo: `import json`
+- Importar todo o módulo com um apelido: `import nome_do_modulo as apelido`
+    - Semelhante ao anterior, mas permite renomear o módulo para um nome de sua escolha, geralmente para encurtar o nome.<br>Exemplo: `import json as j`
+- Importar funções específicas do módulo: `from nome_do_modulo import funcao`
+    - Isso permite importar funções ou classes específicas de um módulo diretamente, tornando desnecessário usar o prefixo do módulo ao chamar a função.<br>Exemplo: `from urllib.request import urlopen`
+- Importar múltiplas funções específicas do módulo: `from nome_do_modulo import funcao1, funcao2`
+    - Semelhante ao anterior, mas permite importar várias funções ou classes de um módulo de uma só vez.<br>Exemplo: `from os.path import join, exists`
+- Importar tudo de um módulo: `from nome_do_modulo import *`
+    - Isso importa todas as funções, classes e variáveis definidas no módulo. Embora seja conveniente, não é recomendado, pois pode levar a conflitos de nomes e dificultar a leitura do código.<br>Exemplo: `from math import *`
+
+Cada uma dessas formas tem suas vantagens e desvantagens. A escolha de qual usar geralmente depende da necessidade específica do projeto e da preferência do desenvolvedor. Usar `import nome_do_modulo` ou `import nome_do_modulo as apelido` mantém o código claro e evita conflitos de nomes, já que todas as funções e classes importadas precisam ser prefixadas com o nome (ou apelido) do módulo. É por isso que, nos exemplos acima, nos casos de `csv` e `json`, foi necessário indicar o módulo de onde vem cada função:
+
+```
+import csv
+
+[...]
+csv.reader()
+```
+
+```
+import json
+
+[...]
+json.loads()
+```
+
+`from nome_do_modulo import funcao` e suas variações permitem um acesso mais direto e conciso às funções específicas. Daí o motivo de usarmos essa forma de importação no caso de `urllib.request`: queremos apenas a função `urlopen`, não o módulo inteiro.
+
+```
+from urllib.request import urlopen
+
+[...]
+urlopen()
+```
+
+### Bibliotecas externas
+
+Além da biblioteca padrão de Python, podemos trabalhar com módulos criados por terceiros. São chamadas __bibliotecas externas__, e não vêm com a instalação padrão do Python &mdash;precisam ser instaladas separadamente.
+
+Módulos externos estendem as funcionalidades do Python, permitindo aos usuários realizar tarefas específicas que não são cobertas pela biblioteca padrão. Até o momento da escrita deste texto, há 601.229 módulos no repositório de bibliotecas externas PyPI.
+
+Um exemplo é a biblioteca [Pandas](https://pandas.pydata.org/), amplamente usada para análise de dados.
+
+<img style="display: block; margin-left: auto; margin-right: auto; max-width: 100%; max-height: unset; aspect-ratio:1;" src="pandas.png">
+
+Outro exemplo é a biblioteca [Matplotlib](https://matplotlib.org/), para visualização de dados. 
+
+<img style="display: block; margin-left: auto; margin-right: auto; max-width: 100%; max-height: unset; aspect-ratio:1;" src="matplotlib.png">
+
+A instalação de bibliotecas externas é feita com `pip` (ou package installer for Python). Basta digital no terminal...
+
+```
+python -m pip install nome_da_biblioteca
+```
+
+...e a biblioteca é instalada. Nos exemplos acima, seria:
+
+```
+python -m pip install pandas
+python -m pip install matplotlib
+```
+
+Para importar bibliotecas externas, a forma é exatamente a mesma usada para evocar módulos da biblioteca padrão: `import` e suas variações.
+
+---
+
+__Links úteis desta aula__
+
+- Lista de funções embutidas: https://docs.python.org/pt-br/3/library/functions.html
+- Lista dos módulos da biblioteca padrão: https://docs.python.org/pt-br/3/library/
+- Documentação do módulo `csv`: https://docs.python.org/pt-br/3/library/csv.html#module-csv
+- Documentação do módulo `json`: https://docs.python.org/pt-br/3/library/json.html#module-json
+- Documentação do módulo `urllib.request`: https://docs.python.org/pt-br/3/library/urllib.request.html#module-urllib.request
+- Documentação da função `open()`: https://docs.python.org/pt-br/3/library/functions.html#open
+- Documentação da instrução `import`: https://docs.python.org/pt-br/3/reference/simple_stmts.html#the-import-statement
+- Documentação sobre `pip`: https://docs.python.org/pt-br/3/installing/index.html#basic-usage
+
+{{< /expandable >}}
 {{< expandable label="Funções" level="2" >}}
 Seja com `for` loop ou `if`-`else`; seja com coleções ou não, estamos sempre fazendo uma ou mais operações em Python. Por exemplo:
 
