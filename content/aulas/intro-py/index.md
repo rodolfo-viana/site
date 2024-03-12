@@ -1114,7 +1114,7 @@ Escreva um programa que:
 {{< /expandable >}}
 
 <!-- ++ -->
-{{< expandable label="Laboratório" level="2" >}}
+{{< expandable label="Exercícios - parte 2" level="2" >}}
 Nas aulas anteriores vimos muita coisa sobre Python:
 
 - variáveis
@@ -1244,11 +1244,10 @@ Crie um programa que:
 - pede ao usuário a temperatura,
 - pede ao usuário se está em Celsius ou Faherenheit,
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
-{{< /expandable >}}
 
-<!-- ++ -->
-{{< expandable label="Exercícios - parte 2" level="2" >}}
-1. Peça ao usuário qualquer número de 1 a 100, e retorne sua tabuada. Por exemplo, o número `7` ficaria assim:
+### Atividade 6
+
+Peça ao usuário qualquer número de 1 a 100, e retorne sua tabuada. Por exemplo, o número `7` ficaria assim:
 ```
 7 x 1 = 7
 7 x 2 = 14
@@ -1260,11 +1259,15 @@ Crie um programa que:
 7 x 10 = 70
 ```
 
-2. Segundo [projeções do IBGE](https://www.ibge.gov.br/estatisticas/sociais/populacao/9103-estimativas-de-populacao.html), o estado de São Paulo teria uma população de 47.333.288 habitantes em 2023. Naquele ano, o estado registrou 3.615 tentativas de homicídio, de acordo com a [SSP](https://www.ssp.sp.gov.br/estatistica/dados-mensais). Um ano antes, a população seria de 46.997.428 habitantes, e houve 3.499 tentativas de homicídio. Com base nessas informações,
-    - calcule a taxa de tentativas de homicídio por 1 mil habitantes em cada ano;
+### Atividade 7
+
+Segundo [projeções do IBGE](https://www.ibge.gov.br/estatisticas/sociais/populacao/9103-estimativas-de-populacao.html), o estado de São Paulo teria uma população de 47.333.288 habitantes em 2023. Naquele ano, o estado registrou 3.615 tentativas de homicídio, de acordo com a [SSP](https://www.ssp.sp.gov.br/estatistica/dados-mensais). Um ano antes, a população seria de 46.997.428 habitantes, e houve 3.499 tentativas de homicídio. Com base nessas informações,
+    - calcule a taxa de tentativas de homicídio por 100 mil habitantes em cada ano;
     - calcule a diferença percentual da taxa entre os anos.
 
-3. Segundo a [FGV Social](https://www.cps.fgv.br/cps/bd/docs/CovidEAsClassesEconomicas_FGV_Social_Neri-OUT-2020.pdf), a partir dos microdados da Pnad-C Anual e Pnad Covid, do IBGE, a pirâmide populacional de classes econômicas nos anos de 2019 e 2020 se mostrava da seguinte forma:
+### Atividade 8
+
+Segundo a [FGV Social](https://www.cps.fgv.br/cps/bd/docs/CovidEAsClassesEconomicas_FGV_Social_Neri-OUT-2020.pdf), a partir dos microdados da Pnad-C Anual e Pnad Covid, do IBGE, a pirâmide populacional de classes econômicas nos anos de 2019 e 2020 se mostrava da seguinte forma:
 
 <table>
 <thead>
