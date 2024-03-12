@@ -790,7 +790,7 @@ Aqui, `operacao_1` ainda depende de `condicao_1` ser `True` para ser executada. 
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="if_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto;max-height:100vh;" src="if_01.png">
 
 Vamos ver isso na prática:
 
@@ -858,7 +858,7 @@ Em português seria algo como "se `condicao_1` for `True`, execute `operacao_1`;
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="if_02.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto;max-height:100vh;" src="if_02.png">
 
 Vejamos um exemplo &mdash;primeiro, com dois salários; depois, com um salário:
 
@@ -950,7 +950,7 @@ Ou seja, em português seria algo como "se `condicao_1` for `True`, realize `ope
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="if_03.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto;max-height:100vh;" src="if_03.png">
 
 O exemplo das temperaturas ficaria assim:
 
@@ -1061,7 +1061,7 @@ No código acima, o bloco dentro de `while` (a operação de adição e a impres
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="while_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto;max-height:100vh;" src="while_01.png">
 
 {{< warning >}}
 Cuidado ao usar `while`! Como dissemos, ele executa uma operação __enquanto__ uma condição for `True`. Se a condição for `True` para sempre, o código será executado até o seu computador travar. Um exemplo de condição infinita:
@@ -1528,7 +1528,7 @@ exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
 
 Neste caso, temos duas listas dentro de uma lista. O desenho é assim:
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="list_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto;max-height:100vh;" src="list_01.png">
 
 A variável exemplo tem dois elementos. Cada elemento é uma lista. Então, se eu chamar isso...
 
@@ -1875,7 +1875,7 @@ for elemento in colecao:
 ```
 Seria como dizer em português: "para cada elemento de `colecao`, faça determinada `operacao`". Em desenho,
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="for_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto;max-height:100vh;" src="for_01.png">
 
 Por exemplo, quero aumentar os preços da minha loja em 15% &mdash;e aqui, vamos usar também a função `round(x, quantidade_de_casas_decimais)`, que arredonda o valor de `x` estabelecendo determinada quantidade de casas decimais:
 
@@ -2464,6 +2464,27 @@ from urllib.request import urlopen
 urlopen()
 ```
 
+### Módulos úteis da biblioteca padrão
+
+Aqui estão alguns módulos que são comuns em projetos de jornalismo de dados:
+
+- `csv`
+    - funções para trabalhar com arquivos `csv`
+    - https://docs.python.org/pt-br/3/library/csv.html
+- `json`
+    - módulo para manipular arquivos `json`
+    - https://docs.python.org/pt-br/3/library/json.html
+- `datetime`
+    - coleção de funções para manipular data e hora
+    - https://docs.python.org/pt-br/3/library/datetime.html
+- `re`
+    - módulo para trabalhar com expressões regulares
+    - https://docs.python.org/pt-br/3/library/re.html
+- `sqlite3`
+    - biblioteca para manipular bancos de dados e fazer consultas SQL
+    - https://docs.python.org/pt-br/3/library/sqlite3.html
+
+
 ### Bibliotecas externas
 
 Além da biblioteca padrão de Python, podemos trabalhar com módulos criados por terceiros. São chamadas __bibliotecas externas__, e não vêm com a instalação padrão do Python &mdash;precisam ser instaladas separadamente.
@@ -2472,11 +2493,11 @@ Módulos externos estendem as funcionalidades do Python, permitindo aos usuário
 
 Um exemplo é a biblioteca [Pandas](https://pandas.pydata.org/), amplamente usada para análise de dados.
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="pandas.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="pandas.png">
 
 Outro exemplo é a biblioteca [Matplotlib](https://matplotlib.org/), para visualização de dados. 
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="matplotlib.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="matplotlib.png">
 
 A instalação de bibliotecas externas é feita com `pip` (ou package installer for Python). Basta digital no terminal...
 
@@ -2492,6 +2513,32 @@ python -m pip install matplotlib
 ```
 
 Para importar bibliotecas externas, a forma é exatamente a mesma usada para evocar módulos da biblioteca padrão: `import` e suas variações.
+
+### Bibliotecas externas comuns
+
+Aqui uma lista de bibliotecas externas que são bastante utilizadas por jornalistas de dados:
+
+- Pandas
+  - usado para manipulação e análise de dados. Oferece estruturas de dados e operações para manipular tabelas numéricas e séries temporais
+  - https://pandas.pydata.org/
+- Matplotlib
+  - biblioteca de plotagem para criar visualizações estáticas, interativas e animadas em Python
+  - https://matplotlib.org/
+- Seaborn
+  - baseado em Matplotlib, fornece uma interface de alto nível para desenhar gráficos estatísticos atraentes e informativos
+  - https://seaborn.pydata.org/
+- Requests
+  - usado para enviar solicitações HTTP, algo útil para projetos que precisam interagir com APIs da web para coletar dados
+  - https://requests.readthedocs.io/en/latest/
+- BeautifulSoup
+  - biblioteca para extrair dados de arquivos HTML e XML. É particularmente útil para web scraping
+  - https://beautiful-soup-4.readthedocs.io/en/latest/
+- SQLAlchemy
+  - ferramenta para usar SQL e bancos de dados no Python
+  - https://www.sqlalchemy.org/
+- GeoPandas
+  - espécie de Pandas para dados espaciais, útil para projetos que envolvem dados geográficos ou geolocalizações
+  - https://geopandas.org/en/stable/
 
 ---
 
