@@ -790,7 +790,7 @@ Aqui, `operacao_1` ainda depende de `condicao_1` ser `True` para ser executada. 
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 323px; max-height: unset; aspect-ratio:1;" src="if_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="if_01.png">
 
 Vamos ver isso na prática:
 
@@ -858,7 +858,7 @@ Em português seria algo como "se `condicao_1` for `True`, execute `operacao_1`;
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 342px; max-height: unset; aspect-ratio:1;" src="if_02.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="if_02.png">
 
 Vejamos um exemplo &mdash;primeiro, com dois salários; depois, com um salário:
 
@@ -950,7 +950,7 @@ Ou seja, em português seria algo como "se `condicao_1` for `True`, realize `ope
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 442px; max-height: unset; aspect-ratio:1;" src="if_03.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="if_03.png">
 
 O exemplo das temperaturas ficaria assim:
 
@@ -1061,7 +1061,7 @@ No código acima, o bloco dentro de `while` (a operação de adição e a impres
 
 Desenhando,
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 360px; max-height: unset; aspect-ratio:1;" src="while_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="while_01.png">
 
 {{< warning >}}
 Cuidado ao usar `while`! Como dissemos, ele executa uma operação __enquanto__ uma condição for `True`. Se a condição for `True` para sempre, o código será executado até o seu computador travar. Um exemplo de condição infinita:
@@ -1528,7 +1528,7 @@ exemplo = [["vermelho", "amarelo", "azul"], ["verde", "roxo", "preto"]]
 
 Neste caso, temos duas listas dentro de uma lista. O desenho é assim:
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 361px; max-height: unset; aspect-ratio:1;" src="list_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="list_01.png">
 
 A variável exemplo tem dois elementos. Cada elemento é uma lista. Então, se eu chamar isso...
 
@@ -1875,7 +1875,7 @@ for elemento in colecao:
 ```
 Seria como dizer em português: "para cada elemento de `colecao`, faça determinada `operacao`". Em desenho,
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 360px; max-height: unset; aspect-ratio:1;" src="for_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="for_01.png">
 
 Por exemplo, quero aumentar os preços da minha loja em 15% &mdash;e aqui, vamos usar também a função `round(x, quantidade_de_casas_decimais)`, que arredonda o valor de `x` estabelecendo determinada quantidade de casas decimais:
 
@@ -2472,11 +2472,11 @@ Módulos externos estendem as funcionalidades do Python, permitindo aos usuário
 
 Um exemplo é a biblioteca [Pandas](https://pandas.pydata.org/), amplamente usada para análise de dados.
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 100%; max-height: unset; aspect-ratio:1;" src="pandas.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="pandas.png">
 
 Outro exemplo é a biblioteca [Matplotlib](https://matplotlib.org/), para visualização de dados. 
 
-<img style="display: block; margin-left: auto; margin-right: auto; max-width: 100%; max-height: unset; aspect-ratio:1;" src="matplotlib.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover;" src="matplotlib.png">
 
 A instalação de bibliotecas externas é feita com `pip` (ou package installer for Python). Basta digital no terminal...
 
