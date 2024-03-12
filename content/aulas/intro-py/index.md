@@ -7,6 +7,7 @@ date: 2024-02-18
 As aulas aqui apresentadas intregam o módulo "Introdução à linguagem Python" do MBA em Jornalismo de Dados, do IDP. Mais informações [aqui](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/).
 {{< /warning >}}
 
+<!-- ++ -->
 {{< expandable label="Variáveis" level="2" >}}
 __Variável__ é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido &mdash;a variável&mdash;, o dado será evocado.
 
@@ -153,6 +154,8 @@ __Mais sobre os tópicos da aula:__
 
 - [txt; inglês] [Variables in Python](https://realpython.com/python-variables/), em Real Python
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Tipos de dados" level="2" >}}
 Repare que, quando trabalhamos com variáveis, às vezes usamos valores com aspas, e outras vezes sem aspas. Exemplos:
 
@@ -428,6 +431,8 @@ __Mais sobre os tópicos da aula:__
 - [vid] [Tipos de dados](https://www.youtube.com/watch?v=g6QJCal2_7w), em Procópio na Rede
 - [txt; inglês] [Basic data types in Python](https://realpython.com/python-data-types/), em Real Python
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Operações" level="2" >}}
 Agora que sabemos o que são variáveis e conhecemos os tipos básicos, podemos fazer cálculos ou comparar duas ou mais variáveis. Para isso realizações operações aritméticas, relacionais ou lógicas.
 
@@ -615,7 +620,7 @@ E não é apenas com adição que consigo fazer esse tipo de atribuição (consi
 | `//=` | parte inteira da divisão (descarta decimais) | `x //= 3` | `x = x // 3` | `11` |
 | `%=` | módulo (resto da divisão) | `x %= 3` | `x = x % 3` | `0` |
 
-### Lógicas
+### Lógicos
 
 Além dos operadores relacionais, há os operadores lógicos. Eles servem para agregar operadores relacionais. Por exemplo:
 
@@ -699,6 +704,8 @@ Arredondando, o Brasil tinha, à época, 212 milhões de habitantes, dos quais c
 
 2. Se o ritmo de vacinação da primeira dose tivesse se mantido como no dia 9 de julho de 2021, em quantos dias toda a população elegível teria recebido a primeira dose?
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Exercícios - parte 1" level="2" >}}
 1. No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Como ele divulgava o "jogo do tigrinho" e a PF bateu na porta dele, o influencer teve uma queda significativa de seguidores: ficou com 4.567.093 neste mês. Calcule a queda percentual.
 2. Uma certa empresa teve lucro de US$ 12.095.187,05 em dezembro de 2023, com o dólar a R$ 4,8526. Em janeiro de 2024, com o dólar a R$ 4,9163, a empresa teve lucro de US$ 11.567.011,87. Qual é a diferença percentual entre os valores em reais?
@@ -708,6 +715,8 @@ Arredondando, o Brasil tinha, à época, 212 milhões de habitantes, dos quais c
     $$
 Crie um código que peça ao usuário seu peso, sua altura, e retorne o IMC.
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Controle de fluxo com `if`" level="2" >}}
 Até o momento, estamos escrevendo códigos que são executados numa estrutura fixa: __de cima para baixo, linha a linha__. Exemplo:
 
@@ -1000,6 +1009,8 @@ Escreva um programa que:
 - pede ao usuário a temperatura no momento,
 - retorne ao usuário a informação sobre a temperatura de acordo com a tabela acima.
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Controle de fluxo com `while`" level="2" >}}
 Vimos que a execução das linhas pode ser controlada, que o código nem sempre precisa ter todas as suas linhas lidas. E vimos que uma forma de controlar o fluxo é com `if`.
 
@@ -1101,6 +1112,8 @@ Escreva um programa que:
 - imprima na tela cada número, de 1 até o número digitado pelo usuário, exceto 4 e seus múltiplos, que devem ser substituídos por "pim".
 
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Laboratório" level="2" >}}
 Nas aulas anteriores vimos muita coisa sobre Python:
 
@@ -1232,6 +1245,8 @@ Crie um programa que:
 - pede ao usuário se está em Celsius ou Faherenheit,
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Exercícios - parte 2" level="2" >}}
 1. Peça ao usuário qualquer número de 1 a 100, e retorne sua tabuada. Por exemplo, o número `7` ficaria assim:
 ```
@@ -1353,6 +1368,8 @@ Também segundo o release,
 - Essa informação é verdadeira? Qual foi a queda percentual?
 
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Coleções de dados: lista" level="2" >}}
 Em aulas anteriores vimos os tipos primitivos de dados, como:
 
@@ -1664,6 +1681,8 @@ __Neste capítulo vimos:__
   - retorna o valor mínimo de `list`
   - documentação: https://docs.python.org/pt-br/3/library/functions.html#min
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Coleções de dados: tupla" level="2" >}}
 Outra coleção de dados é a tupla (classe `tuple`), feita com valores dentro de parênteses (`(` e `)`) ou com a função `tuple()`.
 
@@ -1739,6 +1758,8 @@ Temos <class 'list'>, o que permite que eu altere seus elementos: ['amarelo', 'v
 Agora temos <class 'tuple'>, impossibilitando alterações: ('amarelo', 'verde', 'azul', 'vermelho')
 ```
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Coleções de dados: conjunto" level="2" >}}
 A terceira coleção é o conjunto (classe `set`), feita com valores dentro de chaves (`{` e `}`) ou com a função `set()`.
 
@@ -1834,6 +1855,8 @@ nums = list(set(nums))
 ```
 {{< /warning >}}
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Iteração com `for` - parte 1" level="2" >}}
 Agora que conhecemos coleções de dados, podemos imaginar:
 
@@ -1973,6 +1996,8 @@ for row in bike_limpo['IDADE']:
 
 Aqui, o estudo na íntegra: [2019-06-28-od_bicicleta](https://github.com/rodolfo-viana/ddj_stuff/blob/main/ipynb/2019-06-28-od_bicicleta.ipynb).
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Coleções de dados: dicionário" level="2" >}}
 Anteriormente vimos três coleções de dados: __lista__, __tupla__ e __conjunto__. Apenas para recapitular suas características:
 
@@ -2091,6 +2116,8 @@ __Mais sobre os tópicos da aula:__
 - [txt] [Principais Estruturas de Dados no Python](https://www.treinaweb.com.br/blog/principais-estruturas-de-dados-no-python/), em TreinaWeb
 
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Iteração com `for` - parte 2" level="2" >}}
 Anteriormente vimos como `for` loop funciona com listas, tuplas... Recapitulando:
 
@@ -2252,6 +2279,8 @@ Responda às questões:
 6. Quanto um deputado do PT reembolsou em média na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
 7. Qual categoria teve o maior valor de reembolso em 2023?
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Módulos" level="2" >}}
 Ao longo das aulas, vimos e usamos algumas funções que desempenham rotinas distintas. Alguns exemplos:
 
@@ -2475,6 +2504,8 @@ __Links úteis desta aula__
 - Documentação sobre `pip`: https://docs.python.org/pt-br/3/installing/index.html#basic-usage
 
 {{< /expandable >}}
+
+<!-- ++ -->
 {{< expandable label="Funções" level="2" >}}
 Seja com `for` loop ou `if`-`else`; seja com coleções ou não, estamos sempre fazendo uma ou mais operações em Python. Por exemplo:
 
