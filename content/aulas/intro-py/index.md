@@ -693,23 +693,31 @@ __Mais sobre os tópicos da aula:__
 - [txt] [Variáveis, expressões e comandos](https://panda.ime.usp.br/pensepy/static/pensepy/02-Conceitos/conceitos.html), em Pense Python, IME-USP
 - [txt] [Valores e operadores booleanos](https://panda.ime.usp.br/aulasPython/static/aulasPython/aula05.html), em IME-USP
 - [txt] [Operadores aritméticos e lógicos](https://pythonacademy.com.br/blog/operadores-aritmeticos-e-logicos-em-python), em Python Academy
+{{< /expandable >}}
 
-__Para treinar:__
+<!-- ++ -->
+{{< expandable label="Exercícios - parte 1" level="2" >}}
+
+### Atividade 1
 
 Segundo o [G1](https://g1.globo.com/bemestar/vacina/noticia/2021/07/09/vacinacao-no-brasil-mais-de-14percent-da-populacao-tomou-as-duas-doses-ou-dose-unica-de-vacinas-contra-a-covid.ghtml) em 9 de julho de 2021, até aquela data 82.908.617 pessoas haviam tomado a primeira dose da vacina contra a covid-19. Especificamente naquele dia, 994.468 pessoas tomaram a primeira dose.
 
 Arredondando, o Brasil tinha, à época, 212 milhões de habitantes, dos quais cerca de 21% tinham menos de 18 anos -- ou seja, não eram elegíveis para a vacinação.
 
 1. Quantos brasileiros estavam elegíveis para a vacinação em 9 de julho?
-
 2. Se o ritmo de vacinação da primeira dose tivesse se mantido como no dia 9 de julho de 2021, em quantos dias toda a população elegível teria recebido a primeira dose?
-{{< /expandable >}}
 
-<!-- ++ -->
-{{< expandable label="Exercícios - parte 1" level="2" >}}
-1. No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Como ele divulgava o "jogo do tigrinho" e a PF bateu na porta dele, o influencer teve uma queda significativa de seguidores: ficou com 4.567.093 neste mês. Calcule a queda percentual.
-2. Uma certa empresa teve lucro de US$ 12.095.187,05 em dezembro de 2023, com o dólar a R$ 4,8526. Em janeiro de 2024, com o dólar a R$ 4,9163, a empresa teve lucro de US$ 11.567.011,87. Qual é a diferença percentual entre os valores em reais?
-3. A fórmula para calcular IMC é: 
+### Atividade 2
+
+No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Como ele divulgava o "jogo do tigrinho" e a PF bateu na porta dele, o influencer teve uma queda significativa de seguidores: ficou com 4.567.093 neste mês. Calcule a queda percentual.
+
+### Atividade 3
+
+Uma certa empresa teve lucro de US$ 12.095.187,05 em dezembro de 2023, com o dólar a R$ 4,8526. Em janeiro de 2024, com o dólar a R$ 4,9163, a empresa teve lucro de US$ 11.567.011,87. Qual é a diferença percentual entre os valores em reais?
+
+### Atividade 4
+
+A fórmula para calcular IMC é: 
     $$
     IMC = \frac{peso em kg}{altura em metro^{2}}
     $$
@@ -992,22 +1000,6 @@ __Mais sobre os tópicos da aula:__
 - [vid] [Estruturas de seleção com if e else](https://www.youtube.com/watch?v=zouf7AkISR4), em Cursos Kane Chan
 - [txt] [Comandos if](https://docs.python.org/pt-br/3.8/tutorial/controlflow.html#if-statements), em Python.org
 - [txt] [Comandos de decisão](https://www.inf.pucrs.br/pinho/PCB/ComandosDeDecisao/Decisao.htm), em Escola Politécnica - PUC-RS
-
-__Para treinar:__
-
-Recentemente tem feito muito calor em algumas regiões do Brasil. Na minha categorização:
-
-- Menos que 0º é congelante,
-- De 0º a 10º é muito frio,
-- De 10,1º a 17º é friozinho,
-- De 17,1º a 24º é ameno,
-- De 24,1º a 30º é calor,
-- Acima de 30º é muito calor.
-
-Escreva um programa que:
-
-- pede ao usuário a temperatura no momento,
-- retorne ao usuário a informação sobre a temperatura de acordo com a tabela acima.
 {{< /expandable >}}
 
 <!-- ++ -->
@@ -1093,44 +1085,28 @@ __Mais sobre os tópicos da aula:__
 
 - [vid] [Estrutura de repetição while](https://www.youtube.com/watch?v=VynNy4Ix9Fc), em DevMedia
 - [txt] [Python while: executar código com condição verdadeira](https://blog.betrybe.com/python/python-while/), em Betrybe
-
-__Para treinar:__
-
-A brincadeira do "pim" ficou famosa no Programa do Silvio Santos: alguém da plateia é escolhido e deve contar até onde conseguir, mas trocando o número 4 e seus múltiplos pela palavra "pim".
-
-> Um, dois, três, pim, cinco, seis, sete, pim...
-
-Aqui um exemplo: 
-
-<div class="video-container">
-    <iframe src="https://www.youtube.com/embed/s6PCVq_ojto" frameborder="0" allowfullscreen=""></iframe>
-</div>
-
-Escreva um programa que:
-
-- pede ao usuário um número entre 40 e 60,
-- imprima na tela cada número, de 1 até o número digitado pelo usuário, exceto 4 e seus múltiplos, que devem ser substituídos por "pim".
-
 {{< /expandable >}}
 
 <!-- ++ -->
 {{< expandable label="Exercícios - parte 2" level="2" >}}
-Nas aulas anteriores vimos muita coisa sobre Python:
-
-- variáveis
-- tipos
-- operações aritméticas
-- operações relacionais
-- operações lógicas
-- controle de fluxo com `if`
-- as diversas formas de `if`
-- controle de fluxo com `while`
-
-É muita coisa num tempo bastante curto. Portanto, a aula de hoje será um encontro voltado para a prática e o experimento, e para tirar eventuais dúvidas sobre os temais supracitados.
-
-Há cinco atividades abaixo. Elas enfocam um ou mais itens já vistos em aula. Em duplas, resolvam as atividades; em seguida, vamos conversar sobre as soluções, o que funcionou, o que não funcionou, e quais dúvidas ainda existem.
 
 ### Atividade 1
+
+Recentemente tem feito muito calor em algumas regiões do Brasil. Na minha categorização:
+
+- Menos que 0º é congelante,
+- De 0º a 10º é muito frio,
+- De 10,1º a 17º é friozinho,
+- De 17,1º a 24º é ameno,
+- De 24,1º a 30º é calor,
+- Acima de 30º é muito calor.
+
+Escreva um programa que:
+
+- pede ao usuário a temperatura no momento,
+- retorne ao usuário a informação sobre a temperatura de acordo com a tabela acima.
+
+### Atividade 2
 
 O código abaixo contém um ou mais erros, e é preciso corrigi-lo(s). Copie o código no seu editor, encontre o(s) erro(s) e faça a(s) correção(ões) necessária(s).
 
@@ -1146,7 +1122,7 @@ numero = numero - 1
 print('O fatorial é {}.".format('resultado')
 ```
 
-### Atividade 2
+### Atividade 3
 
 Imagine uma loja. Cada vendedor da loja tem um salário fixo de R$ 2.000,00, além de uma comissão variável:
 
@@ -1164,11 +1140,11 @@ Com as informações obtidas, o código deve fazer os cálculos de quanto o vend
 
 > Rodolfo vendeu R$ 18.761,09 em março e deve receber R$ 2.750.44.
 
-### Atividade 3
+### Atividade 4
 
 Escreva um código que diz se o número digitado pelo usuário é par ou ímpar.
 
-### Atividade 4
+### Atividade 5
 
 Na noite de 3 de julho de 2021, o painel de vacinação contra a covid-19 do Ministério da Saúde apontava pouco mais de 97 milhões de doses de vacina aplicadas na população brasileira. ([Fonte fora do ar](https://qsprod.saude.gov.br/extensions/DEMAS_C19Vacina/DEMAS_C19Vacina.html))
 
@@ -1233,7 +1209,7 @@ calculo = (vacinas_sudeste / total) * 100
 sudeste = ["SP", "RJ", "MG", "ES"]
 ```
 
-### Atividade 5
+### Atividade 6
 
 A fórmula para converter Celsius para Fahrenheit é \\(Fahrenheit = (Celsius\times\frac{9}{5})+32\\).
 
@@ -1245,7 +1221,7 @@ Crie um programa que:
 - pede ao usuário se está em Celsius ou Faherenheit,
 - realize a operação de conversão &mdash;se é Celsius, traz resultado em Fahrenheit; se Fahrenheit, em Celsius.
 
-### Atividade 6
+### Atividade 7
 
 Peça ao usuário qualquer número de 1 a 100, e retorne sua tabuada. Por exemplo, o número `7` ficaria assim:
 ```
@@ -1259,13 +1235,13 @@ Peça ao usuário qualquer número de 1 a 100, e retorne sua tabuada. Por exempl
 7 x 10 = 70
 ```
 
-### Atividade 7
+### Atividade 8
 
 Segundo [projeções do IBGE](https://www.ibge.gov.br/estatisticas/sociais/populacao/9103-estimativas-de-populacao.html), o estado de São Paulo teria uma população de 47.333.288 habitantes em 2023. Naquele ano, o estado registrou 3.615 tentativas de homicídio, de acordo com a [SSP](https://www.ssp.sp.gov.br/estatistica/dados-mensais). Um ano antes, a população seria de 46.997.428 habitantes, e houve 3.499 tentativas de homicídio. Com base nessas informações,
     - calcule a taxa de tentativas de homicídio por 100 mil habitantes em cada ano;
     - calcule a diferença percentual da taxa entre os anos.
 
-### Atividade 8
+### Atividade 9
 
 Segundo a [FGV Social](https://www.cps.fgv.br/cps/bd/docs/CovidEAsClassesEconomicas_FGV_Social_Neri-OUT-2020.pdf), a partir dos microdados da Pnad-C Anual e Pnad Covid, do IBGE, a pirâmide populacional de classes econômicas nos anos de 2019 e 2020 se mostrava da seguinte forma:
 
@@ -1369,6 +1345,23 @@ Também segundo o release,
 > Já os estratos mais abastados com renda acima de dois salários mínimos per capita perderam 4,8 milhões de pessoas em plena pandemia.
 
 - Essa informação é verdadeira? Qual foi a queda percentual?
+
+### Atividade 10
+
+A brincadeira do "pim" ficou famosa no Programa do Silvio Santos: alguém da plateia é escolhido e deve contar até onde conseguir, mas trocando o número 4 e seus múltiplos pela palavra "pim".
+
+> Um, dois, três, pim, cinco, seis, sete, pim...
+
+Aqui um exemplo: 
+
+<div class="video-container">
+    <iframe src="https://www.youtube.com/embed/s6PCVq_ojto" frameborder="0" allowfullscreen=""></iframe>
+</div>
+
+Escreva um programa que:
+
+- pede ao usuário um número entre 40 e 60,
+- imprima na tela cada número, de 1 até o número digitado pelo usuário, exceto 4 e seus múltiplos, que devem ser substituídos por "pim".
 
 {{< /expandable >}}
 
@@ -2243,7 +2236,82 @@ __Mais sobre os tópicos da aula:__
 - [vid] [Loop for](https://www.youtube.com/watch?v=55rOjj6kEck), em Bóson Treinamentos
 - [vid] [Percorrendo listas, tuplas, dicionários e conjuntos](https://www.youtube.com/watch?v=W3juvRbfSk8), em Marcos Castro
 
-__Para treinar:__
+{{< /expandable >}}
+
+<!-- ++ -->
+{{< expandable label="Exercícios - parte 3" level="2" >}}
+
+### Atividade 1
+
+Numa escola, para o aluno ser aprovado, ele precisa:
+
+- ter 75% de presença de um total de 15 aulas
+- ter nota média acima de 7,0
+
+Os dados que temos são estes:
+
+```
+alunos = [
+    {"nome": "João", "idade": 25, "bolsista": True, "faltas": 2, "nota": 8.0},
+    {"nome": "Maria", "idade": 23, "bolsista": False, "faltas": 0, "nota": 7.5},
+    {"nome": "Ana", "idade": 22, "bolsista": False, "faltas": 3, "nota": 8.0},
+    {"nome": "Pedro", "idade": 24, "bolsista": False, "faltas": 1, "nota": 5.5},
+    {"nome": "Antonio", "idade": 26, "bolsista": True, "faltas": 0, "nota": 6.5},
+    {"nome": "Ernesto", "idade": 22, "bolsista": False, "faltas": 4, "nota": 7.5},
+    {"nome": "Joana", "idade": 21, "bolsista": True, "faltas": 1, "nota": 9.0},
+    {"nome": "Enzo", "idade": 21, "bolsista": True, "faltas": 3, "nota": 6.5}
+]
+```
+
+Com essas informações:
+
+1. Responda qual é a média de idade da turma
+2. Responda qual é a nota média de bolsistas
+3. Responda qual é a nota média de não bolsistas
+4. Adicione, para cada aluno, um item chamado "aprovado", com valor que pode ser `True` ou `False`
+
+### Atividade 2
+
+Em aulas anteriores, vimos um exercício sobre cálculo de vacinas aplicadas na região sudeste. Havia um dicionário nele:
+
+```
+estados = [
+    {"uf": "AC", "doses": 364906},
+    {"uf": "AL", "doses": 1421213},
+    {"uf": "AM", "doses": 1773255},
+    {"uf": "AP", "doses": 271691},
+    {"uf": "BA", "doses": 6152177},
+    {"uf": "CE", "doses": 3270535},
+    {"uf": "DF", "doses": 1283699},
+    {"uf": "ES", "doses": 2219656},
+    {"uf": "GO", "doses": 3111799},
+    {"uf": "MA", "doses": 3106822},
+    {"uf": "MG", "doses": 9357072},
+    {"uf": "MS", "doses": 1615951},
+    {"uf": "MT", "doses": 1351618},
+    {"uf": "PA", "doses": 2890438},
+    {"uf": "PB", "doses": 1834443},
+    {"uf": "PE", "doses": 3750035},
+    {"uf": "PI", "doses": 1391719},
+    {"uf": "PR", "doses": 5830476},
+    {"uf": "RJ", "doses": 8084518},
+    {"uf": "RN", "doses": 1652963},
+    {"uf": "RO", "doses": 688403},
+    {"uf": "RR", "doses": 222025},
+    {"uf": "RS", "doses": 6832516},
+    {"uf": "SC", "doses": 3225600},
+    {"uf": "SE", "doses": 923887},
+    {"uf": "SP", "doses": 23887012},
+    {"uf": "TO", "doses": 621308}
+]
+```
+
+Calcule:
+
+1. o total de doses aplicadas na região norte
+2. a proporção desse total em relação a todo o Brasil
+
+### Atividade 3
 
 O código abaixo lê um arquivo `json` externo, e devolve uma lista de dicionários. Esses dicionários contêm dados reais da CEAP - Cota para Exercício da Atividade Parlamentar referentes a 2023. São 228.144 registros de despesas dos deputadores federais ressarcidas pelos cofres públicos.
 
@@ -2281,6 +2349,7 @@ Responda às questões:
 5. Quanto esse montante corresponde do total reembolsado por deputados do PT em todas as categorias?
 6. Quanto um deputado do PT reembolsou em média na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
 7. Qual categoria teve o maior valor de reembolso em 2023?
+
 {{< /expandable >}}
 
 <!-- ++ -->
@@ -2839,4 +2908,21 @@ for station in ['KCLT', 'KCQT', 'KHOU', 'KIND', 'KJAX', 'KMDW', 'KNYC', 'KPHL', 
     # ...execute a função para cada estação
     scrape_station(station)
 ```
+{{< /expandable >}}
+
+<!-- ++ -->
+{{< expandable label="Exercícios - parte 4" level="2" >}}
+
+### Atividade 1
+
+O arquivo neste link contém dados da execução orçamentária da prefeitura de São Paulo para o ano de 2024: https://orcamento.prefeitura.sp.gov.br/orcamento/uploads/2024/basedadosexecucao_0324.json
+
+É um arquivo `json` com milhares de registros &mdash;entre eles, o valor orçado no começo do ano e atualizado com emendas, o valor congelado até agora, e o valor que pode ser usado.
+
+Salve o arquivo na sua máquina. Utilizando o módulo `json`, leia os dados e, considerando os campos `Ds_Orgao`, `Vl_Orcado_Atualizado` e `Vl_CongeladoLiquido`, responda:
+
+1. Quanto do valor orçado está congelado, em valores reais e em percentual?
+2. Quantos órgãos não tiveram nenhum valor orçado em 2024?
+3. Quais órgãos não tiveram congelamento?
+
 {{< /expandable >}}
