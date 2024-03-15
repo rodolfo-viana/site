@@ -2974,3 +2974,93 @@ Salve o arquivo na sua máquina. Utilizando o módulo `json`, leia os dados e, c
 3. Quais órgãos não tiveram congelamento?
 
 {{< /expandable >}}
+
+<!-- ++ -->
+{{< expandable label="Exame" level="2" >}}
+
+O exame do módulo de introdução a Python, que __vale 7 pontos__ na nota final, busca observar o conhecimento da linguagem adquirido no decorrer das 18 horas de estudos. Aqui, pede-se que o aluno use a sintaxe correta, bem como o raciocínio lógico na hora de escrever os blocos de códigos.
+
+### Introdução
+
+Neste exame vamos trabalhar com dados reais da CEAP - Cota para o Exercício Parlamentar da Câmara dos Deputados. Ou, como a imprensa se habitou a chamar, "cota parlamentar" ou "verba de gabinete". Trata-se de um valor mensal devido pelo Estado aos deputados a fim de que eles possam ser ressarcidos de gastos com o funcionamento e manutenção dos gabinetes, com hospedagem e demais despesas inerentes ao pleno exercício das atividades parlamentares.
+
+(Para saber mais sobre a CEAP, [clique aqui](https://www2.camara.leg.br/a-camara/documentos-e-pesquisa/arquivo/sites-tematicos/57a-legislatura/no-exercicio-do-mandato/cota-para-o-exercicio-da-atividade-parlamentar-ceap).)
+
+Os dados originais para este trabalho estão disponíveis no [repositório de Dados Abertos da Câmara](https://dadosabertos.camara.leg.br/swagger/api.html#staticfile). Entretanto, para reduzir o tamanho do arquivo, 
+
+1. filtrei os dados para a competência de fevereiro de 2024,
+2. excluí colunas que não serão úteis ao trabalho,
+3. excluí registros de lideranças do governo, da oposição, e de partidos.
+
+Com isso, temos 11.996 registros de despesas, apenas. Esta versão "enxuta" dos dados está disponível na URL https://raw.githubusercontent.com/rodolfo-viana/site/main/content/aulas/intro-py/ceap_2024_02.json. 
+
+Cada um dos quase 12 mil registros do arquivo `json` é parecido com este:
+
+```
+  {
+    "nomeParlamentar": "Danilo Forte",
+    "cpf": "12133728368",
+    "siglaUF": "CE",
+    "siglaPartido": "UNIÃO",
+    "descricao": "MANUTENÇÃO DE ESCRITÓRIO DE APOIO À ATIVIDADE PARLAMENTAR",
+    "cnpjCPF": "070.401.080/0015-7",
+    "dataEmissao": "2024-02-05T00:00:00",
+    "valorDocumento": 269.94,
+    "valorGlosa": 0.0,
+    "valorLiquido": 269.94,
+    "mes": 2,
+    "ano": 2024
+  }
+```
+
+[Segundo a Câmara](https://dadosabertos.camara.leg.br/howtouse/2023-12-26-dados-ceap.html), os significados dos elementos são estes:
+
+- `nomeParlamentar`: Nome adotado pelo parlamentar no início de seu mandato na legislatura
+- `cpf`: CPF do parlamentar beneficiário da CEAP ao qual o registro de despesa tenha sido vinculado
+- `siglaUF`: Sigla da unidade da federação (estados e Distrito Federal) por qual o respectivo parlamentar foi eleito
+- `siglaPartido`: Sigla do partido ao qual o parlamentar é/era filiado
+- `descricao`: Categoria de despesa à qual seja pertinente o registro
+- `cnpjCPF`: Número de CPF ou CNPJ da pessoa ou empresa fornecedora do serviço ou produto ao qual se refere o registro de despesa
+- `dataEmissao`: Data de emissão do documento comprobatório da despesa a que se refere o registro
+- `valorDocumento`: Valor de face do documento comprobatório da despesa
+- `valorGlosa`: Valor retido, isto é, não coberto pela CEAP, por qualquer razão (impedimento legal, insuficiência de comprovação etc.)
+- `valorLiquido`: Valor da despesa efetivamente debitado da CEAP, correspondente ao `valorDocumento` menos o `valorGlosa`
+- `mes`: Mês de competência financeira do documento comprobatório da despesa
+- `ano`: Ano da competência financeira do documento comprobatório da despesa
+
+### Instruções
+
+__Em dupla__, vocês devem:
+
+1. ler o arquivo disponível na url
+    - dica: vocês vão precisar do módulo `urllib.request`
+2. interpretar os registros, convertendo o arquivo `json` para uma lista de dicionários
+    - dica: vocês vão precisar do módulo `json`
+3. responder às perguntas:
+    - quantas despesas foram feitas na categoria "COMBUSTÍVEIS E LUBRIFICANTES"?
+        - dica: a resposta precisa dar _4959_ 
+    - quanto os deputados ressarciram na categoria?
+        - dica: a resposta precisa dar _1372916.66_
+    - quantos deputados usaram a cota para "COMBUSTÍVEIS E LUBRIFICANTES"?
+        - dica: a resposta precisa dar _446_ 
+    - qual é a média desse valor por deputado?
+        - dica: a resposta precisa dar _3078.29_
+    - quantos deputados gastaram mais que a média?
+        - dica: a resposta precisa dar _188_
+    - quantos deputados gastaram menos que a média?
+        - dica: a resposta precisa dar _258_
+    - quais deputados gastaram mais de 3 vezes a média?
+        - dica: a resposta precisa dar:
+            - _Carlos Veras_
+            - _Defensor Stélio Dener_
+            - _Gerlen Diniz_
+            - _José Medeiros_
+            - _Lázaro Botelho_
+            - _Marangoni_
+            - _Maria Arraes_
+            - _Paulo Magalhães_
+4. enviar o arquivo `py` para mim via DM em até 15 dias.
+
+Bom trabalho a todos!
+
+{{< /expandable >}}
