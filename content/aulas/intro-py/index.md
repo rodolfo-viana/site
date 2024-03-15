@@ -2103,7 +2103,35 @@ print(prof) # e o dicionário é atualizado
 'signo': 'Peixes'}
 ```
 
+Alguns métodos podem ser aplicados a dicionários. Três exemplos são `keys`, `values` e `get`:
+
+```py
+data = {"dia": 15, "mes": 3, "ano": 2024}
+print(data.keys())
+print(data.values())
+print(data.get("mes"))
+```
+```textfile
+dict_keys(['dia', 'mes', 'ano'])
+dict_values([15, 3, 2024])
+3
+```
+
 ---
+
+__Neste capítulo vimos:__
+
+- método `x.keys()`
+    - retorna as chaves do dicionário `x`
+    - documentação: [https://docs.python.org/pt-br/3/library/stdtypes.html#dict.keys](https://docs.python.org/pt-br/3/library/stdtypes.html#dict.keys)
+
+- método `x.values()`
+    - retorna os valores do dicionário `x`
+    - documentação: [https://docs.python.org/pt-br/3/library/stdtypes.html#dict.values](https://docs.python.org/pt-br/3/library/stdtypes.html#dict.values)
+
+- método `x.get(y)`
+    - retorna o valor da chave `y` no dicionário `x`
+    - documentação: [https://docs.python.org/pt-br/3/library/stdtypes.html#dict.get](https://docs.python.org/pt-br/3/library/stdtypes.html#dict.get)
 
 __Mais sobre os tópicos da aula:__
 
@@ -2230,6 +2258,11 @@ Preços ajustados (10% de aumento; -5% se for mamão): {'banana': 1.64, 'maçã'
 ```
 
 ---
+__Neste capítulo vimos:__
+
+- método `x.items()`
+    - "quebra" o dicionário `x` em chaves e valores
+    - documentação: [https://docs.python.org/pt-br/3/library/stdtypes.html#dict.items](https://docs.python.org/pt-br/3/library/stdtypes.html#dict.items)
 
 __Mais sobre os tópicos da aula:__
 
@@ -2908,6 +2941,21 @@ for station in ['KCLT', 'KCQT', 'KHOU', 'KIND', 'KJAX', 'KMDW', 'KNYC', 'KPHL', 
     # ...execute a função para cada estação
     scrape_station(station)
 ```
+
+---
+__Neste capítulo vimos:__
+
+- método `x.upper()`
+  - converte o elemento `x`, do tipo `str`, para letras maiúsculas; seu oposto é `x.lower()`
+  - documentação: [https://docs.python.org/pt-br/3/library/stdtypes.html#str.upper](https://docs.python.org/pt-br/3/library/stdtypes.html#str.upper)
+
+__Mais sobre os tópicos da aula:__
+
+- [vid] [Funções em Python - parte 1](https://www.youtube.com/watch?v=9LcqETqY1kQ), em Otávio Miranda
+- [vid] [Funções em Python - parte 2](https://www.youtube.com/watch?v=T0j68JbeGJg), em Otávio Miranda
+- [txt] [Funções em Python](https://www.devmedia.com.br/funcoes-em-python/37340), em DevMedia
+- [txt] [Funções em Python](https://pythonacademy.com.br/blog/funcoes-em-python), em Python Academy
+- [txt] [Funções em Python](https://algoritmosempython.com.br/cursos/programacao-python/funcoes/), em Algoritmos em Python
 {{< /expandable >}}
 
 <!-- ++ -->
