@@ -2344,45 +2344,6 @@ Calcule:
 1. o total de doses aplicadas na região norte
 2. a proporção desse total em relação a todo o Brasil
 
-### Atividade 3
-
-O código abaixo lê um arquivo `json` externo, e devolve uma lista de dicionários. Esses dicionários contêm dados reais da CEAP - Cota para Exercício da Atividade Parlamentar referentes a 2023. São 228.144 registros de despesas dos deputadores federais ressarcidas pelos cofres públicos.
-
-```py
-# importação das bibliotecas nativas:
-# - json: para trabalhar com json
-# - urllib.request: para se conectar a um site
-import json
-from urllib.request import urlopen
-
-# url do arquivo json
-url = 'https://raw.githubusercontent.com/rodolfo-viana/site/main/content/aulas/intro-py/modified_ceap_2023.json'
-
-# leitura do arquivo externo
-with urlopen(url) as response:
-    source = response.read().decode('utf-8')
-
-# salvamento na memória, como `list` de `dict`, na variável `data`
-data = json.loads(source)
-
-# impressão dos dois primeiros `dict` da lista para ver "a cara"
-print(data[:2])
-
-# seu código começa logo abaixo :)
-```
-
-(Eu editei levemente o arquivo, removendo chaves irrelevantes para nosso estudo, bem como registros de lideranças.)
-
-Responda às questões:
-
-1. Quanto os deputados do PL reembolsaram na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
-2. Quanto esse montante corresponde do total reembolsado por deputados do PL em todas as categorias?
-3. Quanto um deputado do PL reembolsou em média na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
-4. Quanto os deputados do PT reembolsaram na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
-5. Quanto esse montante corresponde do total reembolsado por deputados do PT em todas as categorias?
-6. Quanto um deputado do PT reembolsou em média na categoria `DIVULGAÇÃO DA ATIVIDADE PARLAMENTAR.`?
-7. Qual categoria teve o maior valor de reembolso em 2023?
-
 {{< /expandable >}}
 
 <!-- ++ -->
