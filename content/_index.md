@@ -19,7 +19,7 @@ Boa leitura.
 
 <script>
     const today = new Date();
-    const birthdate = new Date(1981, 3, 17);
+    const birthdate = new Date(1981, 2, 17);
     function age() {
         const one_or_zero = (today.getMonth() < birthdate.getMonth()) ||
                             (today.getMonth() === birthdate.getMonth() &&

@@ -2279,7 +2279,7 @@ __Mais sobre os tópicos da aula:__
 Numa escola, para o aluno ser aprovado, ele precisa:
 
 - ter 75% de presença de um total de 15 aulas
-- ter nota média acima de 7,0
+- ter nota média igual a ou acima de 7,0
 
 Os dados que temos são estes:
 
@@ -2344,6 +2344,30 @@ Calcule:
 1. o total de doses aplicadas na região norte
 2. a proporção desse total em relação a todo o Brasil
 
+### Atividade 3
+
+Os vereadores de São Paulo podem pedir ressarcimento de despesas feitas para o exercício da atividade parlamentar. Os dados oficiais estão disponíveis [aqui](https://sisgvconsulta.saopaulo.sp.leg.br/ws/Servicos.asmx).
+
+O código abaixo visita uma URL com uma cópia desses dados referentes a fevereiro de 2024 e lê o arquivo `json`, transformando-o numa lista de dicionários.
+
+```py
+import json
+from urllib.request import urlopen
+
+url = 'https://raw.githubusercontent.com/rodolfo-viana/site/main/content/aulas/intro-py/ObterDebitoVereadorJSON.json'
+with urlopen(url) as response:
+    source = response.read().decode('utf-8')
+data = json.loads(source)
+
+# seu código começa a partir daqui
+```
+
+Após ler o `json`, responda:
+
+1. Qual o valor total gasto pelos vereadores?
+2. Desse total, qual é a proporção de gastos na categoria "LOCAÇÃO DE MOVEIS E EQUIPAMENTOS"?
+3. Qual é a média de gasto na categoria "LOCAÇÃO DE MOVEIS E EQUIPAMENTOS"?
+
 {{< /expandable >}}
 
 <!-- ++ -->
@@ -2362,7 +2386,7 @@ Há outras funções, porém, que precisam ser importadas. Elas podem vir de mó
 
 Python vem com uma extensa lista de módulos em sua biblioteca. Estes módulos fornecem funcionalidades que vão desde operações de entrada-saída até manipulação de `string`, manipulação de data e hora, comunicação em rede, e muito mais. A lista completa de módulos está disponível na [documentação oficial](https://docs.python.org/pt-br/3/library/).
 
-Por exemplo, se eu quiser criar, ler, modificar um arquivo `csv` no Python, posso importar o módulo `csv` e usar suas funções:
+Por exemplo, se eu quiser criar, ler, modificar um arquivo `csv` no Python &mdash;como [este aqui](dummy_data_1.csv)&mdash;, posso importar o módulo `csv` e usar suas funções:
 
 ```py
 import csv
@@ -2474,7 +2498,7 @@ No exercício da aula anterior tem a importação de outros módulos: `json` e `
 import json
 from urllib.request import urlopen
 
-url = 'https://raw.githubusercontent.com/rodolfo-viana/site/main/content/aulas/intro-py/modified_ceap_2023.json'
+[...]
 
 with urlopen(url) as response:
     source = response.read().decode('utf-8')
