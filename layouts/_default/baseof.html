@@ -19,34 +19,5 @@
     {{ partial "script.html" . }}
     {{ partial "katex.html" . }}
     {{ partial "google-analytics-async.html" . }}
-    <script>
-document.addEventListener('DOMContentLoaded', function() {
-  var preElements = document.querySelectorAll('pre.language-textfile');
-  
-  preElements.forEach(function(pre) {
-    const content = pre.innerText;
-    const preWidth = pre.offsetWidth;
-    const testSpan = document.createElement('span');
-    document.body.appendChild(testSpan);
-    
-    // Style the span to match the pre element (add more styles if necessary)
-    testSpan.style.fontFamily = getComputedStyle(pre).fontFamily;
-    testSpan.style.fontSize = getComputedStyle(pre).fontSize;
-    testSpan.innerText = 'W'; // Using 'W' for width estimation in monospace fonts
-    
-    const charWidth = testSpan.offsetWidth;
-    const charsPerLine = Math.floor(preWidth / charWidth);
-    document.body.removeChild(testSpan);
-    
-    let newContent = '';
-    for (let i = 0; i < content.length; i += charsPerLine) {
-      newContent += content.substring(i, Math.min(i + charsPerLine, content.length)) + '\n';
-    }
-    
-    pre.innerText = newContent;
-  });
-});
-
-  </script>
   </body>
 </html>
