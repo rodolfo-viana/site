@@ -19,5 +19,14 @@
     {{ partial "script.html" . }}
     {{ partial "katex.html" . }}
     {{ partial "google-analytics-async.html" . }}
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      var preElements = document.querySelectorAll('pre.language-textfile');
+      for (var i = 0; i < preElements.length; i++) {
+        preElements[i].style.whiteSpace = 'pre-wrap';
+        preElements[i].style.wordWrap = 'break-word';
+      }
+    });
+  </script>
   </body>
 </html>
