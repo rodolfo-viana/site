@@ -1,7 +1,6 @@
 .env
 /.env
 
-*.py
 *.csv
 
 /public

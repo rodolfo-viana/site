@@ -725,3 +725,34 @@ print(df)
 | 6 | Entrevista à TV Senado               | Sede da TV Senado                     | 12 de maio de 2024 | 18:30   |
 ```
 {{< /expandable >}}
+
+{{< expandable label="Exercícios - parte 1" level="2" >}}
+
+### Atividade 1
+
+A URL http://cnes2.datasus.gov.br/Mod_Ind_Leitos_Listar.asp?VCod_Leito=03&VTipo_Leito=1&VListar=1&VEstado=00&VMun=&VComp= traz dados do Ministério da Saúde acerca de leitos cirúrgicos (cirurgia geral) existentes e dedicados ao SUS para todas as cidades de todos os estados do Brasil.
+
+Raspe esta página e, num dataframe de Pandas, para cada hospital, retorne:
+
+1. código CNES
+2. nome do estabelecimento
+3. total de leitos existentes
+4. total de leitos para SUS
+5. proporção de leitos para SUS &mdash;esta informação não está no site, mas pode ser calculada
+
+### Atividade 2
+
+O site do IMDb traz a lista dos melhores filmes brasileiros, segundo votação popular. A URL é esta: https://www.imdb.com/list/ls060310079/?sort=user_rating,desc&st_dt=&mode=detail&page=1.
+
+Há diversas informações ali, como nome do filme, ano de lançamento, a nota, a sinopse etc. São mais de 90 filmes.
+
+Crie um script para obter:
+
+1. nome do filme
+2. ano de lançamento
+3. duração do filme
+4. nota
+
+Salve os dados num dataframe de Pandas.
+
+{{< /expandable >}}
