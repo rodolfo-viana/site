@@ -2429,7 +2429,7 @@ turtle.exitonclick()
 
 ...gera esta imagem:
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="mona.png">
+<img style="display: block; margin-left: auto; margin-right: auto; object-fit: cover; max-height:100vh;" src="mona.png">
 
 Ou ainda, se eu quiser criar um aplicativo &mdash;digamos, uma calculadora&mdash;, eu posso usar o módulo `tkinter`. Este código...
 
@@ -2537,7 +2537,7 @@ if __name__ == "__main__":
 
 ...gera este app:
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="calc.png">
+<img style="display: block; margin-left: auto; margin-right: auto; object-fit: cover; max-height:100vh;" src="calc.png">
 
 A lista completa de módulos está disponível na [documentação oficial](https://docs.python.org/pt-br/3/library/).
 
