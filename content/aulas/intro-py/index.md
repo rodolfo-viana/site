@@ -2384,7 +2384,162 @@ Há outras funções, porém, que precisam ser importadas. Elas podem vir de mó
 
 ### Biblioteca padrão
 
-Python vem com uma extensa lista de módulos em sua biblioteca. Estes módulos fornecem funcionalidades que vão desde operações de entrada-saída até manipulação de `string`, manipulação de data e hora, comunicação em rede, e muito mais. A lista completa de módulos está disponível na [documentação oficial](https://docs.python.org/pt-br/3/library/).
+Python vem com uma extensa lista de módulos em sua biblioteca. Estes módulos fornecem funcionalidades que vão desde operações de entrada-saída até manipulação de `string`, manipulação de data e hora, comunicação em rede, e muito mais. 
+
+Por exemplo, se eu quiser desenhar _grosseiramente_ a Mona Lisa com Python, posso usar o módulo `turtle`. Este código...
+
+```py
+import turtle
+
+turtle.tracer(400, 0)
+
+mona = '0x54a9554ebaaab5555b776eeb56addebdb5db5b33fd9b6d5d6db55affcaeed576d559dd71576ab7a9a76ee32ceb59b556edd591df6b5aead5b265add256954aa52ad5aa55aa96ab55fd576d569d2b556affea992a955b4aa94effd4dd555496aa57f7feb45554a51534b9dfecb2aa36caa4a627ff14a49c254922d12ffd69345b54552c037f88a951423249a89ffe6905494892bc44bfda6689e74925a22bfd7125432a927800bff9d24bdeac83b5edfef6935fb7757fbbfff6d10adddd4ba9b5ffff4d5eeef37a913ff55255fabaff86aaffff92aafffd59103feafaadfb6fffc99fffe8ab5bff5ffc947ffffbdffd6f7f571ffffeeb6f7bfefe3d57eeffffffff77d9afbf7f5b7bbd7ffe5b7fff7efbff7fbff29fffafbffeffdebf97ffffdfedff6ffffdffffded7feffdd6fffffff7fd5fdb76ffedefffffffffffb7ff77fbb7dbbfef5b7feb57fdd6ddbf5efbdeb5bfffd6feeffdffe9afffdedefbb7fff8227fefafbfdfbefe5116bfcbbb7eeffde048fffe4dddfbbffca027ffbb6ff75f7fa090bf7fdd7bbabdfc0096fbee33ffdf7e2484ffbfbd1ddebff000170dffbef7fcfca910affffe9fb5ffe00897bffffdbdc7ff90017fffffefabffee805ffffeafefefefb757beefffb76ebf7fbfffffbffbf76ffbeedbfffffdffdbdffff7ffffffffffffffbbeff6bfefb76ffffdffffff7fbffb3fbfffffffbbfefd59efffdbefeffffbeafffffffffffffff7f7fefffffffffeedfbeffedfbffffffffeffffffbffeffffff7efdf7ffffffffff7fffefffffffffdfffeffffffbefffffbfbffdffffffff7bffff7ffffffffbfffffffbdfffbbdfffffffbdffebbffffffffffffff7efffffffffffff7feff5ffffff7f7ffbf76f05ffdffdfffff7bf892bffffffdfffffbe4a5fffffffefffffd50affffffffffffdf6a43fffffffffffffbb51f7fdfbfffffffd4baad57ffdfbfffd6b4f7ffffffffffff3ae7affffffffbff5be73f77effffeff7e8bbdffffffddffff5bfcefbf7ffffff7fd8def7fffefffffffeffffbfffffffffffb7fffffffffffffffefb77fffffffffffffffffffffffbffffffbfffffffffffffffffffffffffffffff7fffffffffffffffffffffff7ffffffffffffffffffffffff7ff7ffdfffffffeffffffffffffffffffffffff7fffffffffffffffffffffffffff'
+
+def desenho_dados(img_data, img_larg, img_alt, tamanho_pixel):
+    turtle.penup()
+    inBinary = bin(int(img_data, 16))[2:]
+    inBinary = inBinary.rjust(img_larg * img_alt, '0')
+
+    left = -(img_larg * tamanho_pixel) / 2
+    top = (img_alt * tamanho_pixel) / 2
+
+    for y in range(img_alt):
+        for x in range(img_larg):
+            turtle.goto(left + (x * tamanho_pixel), top - (y * tamanho_pixel))
+            if inBinary[y * img_larg + x] == '1':
+                turtle.begin_fill()
+                for _ in range(4):
+                    turtle.forward(tamanho_pixel)
+                    turtle.right(90)
+                turtle.end_fill()
+
+turtle.bgcolor('#FFF7D0')
+turtle.fillcolor('#FF0C6B')
+
+tela_larg = turtle.Screen().window_width()
+tela_alt = turtle.Screen().window_height()
+img_larg, img_alt = 68, 100
+tamanho_pixel = min(tela_larg / img_larg, tela_alt / img_alt)
+
+desenho_dados(mona, img_larg, img_alt, tamanho_pixel)
+
+turtle.update()
+turtle.exitonclick()
+```
+
+...gera esta imagem:
+
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="mona.png">
+
+Ou ainda, se eu quiser criar um aplicativo &mdash;digamos, uma calculadora&mdash;, eu posso usar o módulo `tkinter`. Este código...
+
+```py
+import tkinter as tk
+
+
+class Calculadora:
+    def __init__(self, master):
+        self.master = master
+        master.title("Calculadora")
+        self.result_var = tk.StringVar()
+        self.result_var.set("0")
+        self.cria_widgets()
+        self.estilizar_widgets()
+
+    def cria_widgets(self):
+        self.display = tk.Entry(
+            self.master,
+            textvariable=self.result_var,
+            justify="right",
+            bd=20,
+            font=("Courier", 20, "bold"),
+        )
+        self.display.grid(row=0, column=0, columnspan=4, sticky="nsew")
+
+        botoes = [
+            "7",
+            "8",
+            "9",
+            "÷",
+            "4",
+            "5",
+            "6",
+            "×",
+            "1",
+            "2",
+            "3",
+            "-",
+            "C",
+            "0",
+            "=",
+            "+",
+        ]
+
+        linha = 1
+        col = 0
+        for b in botoes:
+            tk.Button(
+                self.master,
+                text=b,
+                command=lambda b=b: self.clicar(b),
+                font=("Helvetica", 16, "bold"),
+            ).grid(row=linha, column=col, sticky="nsew", padx=1, pady=1)
+            col += 1
+            if col > 3:
+                col = 0
+                linha += 1
+
+        for i in range(4):
+            self.master.grid_rowconfigure(i, weight=1)
+            self.master.grid_columnconfigure(i, weight=1)
+        self.master.grid_rowconfigure(4, weight=1)
+
+    def estilizar_widgets(self):
+        self.master.configure(background="#333333")
+        self.display.configure(
+            background="white", foreground="#333", borderwidth=0)
+
+        for w in self.master.winfo_children():
+            if isinstance(w, tk.Button):
+                w.configure(
+                    background="#4CAF50",
+                    foreground="white",
+                    borderwidth=0,
+                    highlightthickness=0,
+                    activebackground="#66BB6A",
+                    activeforeground="white",
+                )
+
+    def clicar(self, botao_pressionado):
+        if botao_pressionado == "=":
+            expression = self.result_var.get().replace("×", "*").replace("÷", "/")
+            try:
+                result = eval(expression)
+                self.result_var.set(result)
+            except Exception as e:
+                self.result_var.set("Error")
+        elif botao_pressionado == "C":
+            self.result_var.set("0")
+        else:
+            atual = self.result_var.get()
+            if atual == "0" or atual == "Error":
+                self.result_var.set(botao_pressionado)
+            else:
+                self.result_var.set(atual + botao_pressionado)
+
+
+if __name__ == "__main__":
+    root = tk.Tk()
+    root.geometry("400x500")
+    Calculadora(root)
+    root.mainloop()
+```
+
+...gera este app:
+
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="calc.png">
+
+A lista completa de módulos está disponível na [documentação oficial](https://docs.python.org/pt-br/3/library/).
 
 Por exemplo, se eu quiser criar, ler, modificar um arquivo `csv` no Python &mdash;como [este aqui](dummy_data_1.csv)&mdash;, posso importar o módulo `csv` e usar suas funções:
 
