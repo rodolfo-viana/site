@@ -756,3 +756,983 @@ Crie um script para obter:
 Salve os dados num dataframe de Pandas.
 
 {{< /expandable >}}
+
+{{< expandable label="Raspagem de múltiplas páginas: dados na URL" level="2" >}}
+
+Até o momento, vimos como raspar uma única página. Trata-se de uma raspagem simples, para aprender o contexto, os elementos, os comandos. Na vida prática, porém, raramente _web scraping_ em página única resolve nossos projetos, uma vez que os dados que necessitamos podem estar em mais de uma página.
+
+É preciso, assim, criar estratégias para captura de informações em páginas múltiplas. O primeiro passo é compreender como esses dados estão segregados no site alvo da raspagem.
+
+Tomemos, por exemplo, o site com os nomes e modalidades de todos os atletas do Comitê Olímpico Brasileiro: https://www.cob.org.br/pt/cob/time-brasil/atletas. Reparem que os dados não estão todos numa só página: existem letras na parte de cima, para buscar pela inicial do atleta; também há números na parte inferior, uma paginação &mdash;ou seja, a primeira página é 1, a segunda é 2 etc.
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3 # importo esta biblioteca apenas...
+urllib3.disable_warnings() # ...para tirar o aviso `InsecureRequestWarning`
+
+url = "https://www.cob.org.br/pt/cob/time-brasil/atletas"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+divs = soup.find_all("div", class_="dados")
+print(divs[0:4])
+```
+```textfile
+[<div class="dados">
+<h3>Abner Teixeira</h3>
+</div>, <div class="dados">
+<h3>Abner Vinícius</h3>
+</div>, <div class="dados">
+<h3>Ademir Kaefer</h3>
+</div>, <div class="dados">
+<h3>Adenizia</h3>
+</div>]
+```
+
+Para cada página, precisamos mudar a URL &mdash;o restante do código, porém, permanece igual.
+
+```py
+url = "https://www.cob.org.br/pt/cob/time-brasil/atletas?&page=5"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+divs = soup.find_all("div", class_="dados")
+print(divs[0:4])
+```
+```textfile
+[<div class="dados">
+<h3>Daniela Alves</h3>
+</div>, <div class="dados">
+<h3>Daniela Polzin</h3>
+</div>, <div class="dados">
+<h3>Daniele Hypolito</h3>
+</div>, <div class="dados">
+<h3>Danilo Luiz</h3>
+</div>]
+```
+
+Outro exemplo: a quantidade de leitos no estado do Rio de Janeiro por especialidade e data de competência: http://cnes2.datasus.gov.br/Mod_Ind_Tipo_Leito.asp?VEstado=33&VMun=&VComp=202304. Notem que a URL tem `VComp` para o mês de competência. Com faríamos para raspar todos os meses? Mesmo procedimento: usamos a URL de uma página...
+
+```py
+url = "http://cnes2.datasus.gov.br/Mod_Ind_Tipo_Leito.asp?VEstado=33&VMun=&VComp=202304"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+tables = soup.find_all('table')[5]
+print(tables.find_all('tr')[2])
+```
+```textfile
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202304">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">56</font></td></tr>
+```
+
+...E depois, trocamos a URL para a página seguinte.
+
+```py
+url = "http://cnes2.datasus.gov.br/Mod_Ind_Tipo_Leito.asp?VEstado=33&VMun=&VComp=202303"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+tables = soup.find_all('table')[5]
+print(tables.find_all('tr')[2])
+```
+```textfile
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202303">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">141</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+```
+
+Em ambos os exemplos acima, notem: __a estrutura da primeira página se repete nas demais —a única mudança é na URL__. Tendo isso em mente, podemos usar um código único, mas iterando por diversas páginas (com um _for-loop_, por exemplo).
+
+### Paginação
+
+No exemplo dos atletas do COB, vimos que há uma paginação &mdash;notem que a URL muda a cada página. Mas a estrutura (tags de HTML e atributos de CSS) são os mesmos. Então vamos raspar apenas a primeira página:
+
+```py
+url = "https://www.cob.org.br/pt/cob/time-brasil/atletas?&page=1" # página 1
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+divs = soup.find_all("div", class_="dados")
+print(divs[0:4]) # imprimo 5 elementos apenas para checar
+```
+```textfile
+[<div class="dados">
+<h3>Abner Teixeira</h3>
+</div>, <div class="dados">
+<h3>Abner Vinícius</h3>
+</div>, <div class="dados">
+<h3>Ademir Kaefer</h3>
+</div>, <div class="dados">
+<h3>Adenizia</h3>
+</div>]
+```
+
+Com _for-loop_ e `range()` para substituir o número da página na URL, podemos raspar, por exemplo, as cinco primeiras páginas sem esforço:
+
+```py
+for p in range(1, 6):
+    url = f"https://www.cob.org.br/pt/cob/time-brasil/atletas?&page={p}"
+    req = requests.get(url, verify=False)
+    soup = bs(req.text, 'html.parser')
+    divs = soup.find_all("div", class_="dados")
+    print(divs[0:4])
+```
+```textfile
+[<div class="dados">
+<h3>Abner Teixeira</h3>
+</div>, <div class="dados">
+<h3>Abner Vinícius</h3>
+</div>, <div class="dados">
+<h3>Ademir Kaefer</h3>
+</div>, <div class="dados">
+<h3>Adenizia</h3>
+</div>]
+[<div class="dados">
+<h3>Alison dos Santos </h3>
+</div>, <div class="dados">
+<h3>Allan do Carmo</h3>
+</div>, <div class="dados">
+<h3>Aloísio</h3>
+</div>, <div class="dados">
+<h3>Amaral</h3>
+</div>]
+[<div class="dados">
+<h3>Antony</h3>
+</div>, <div class="dados">
+<h3>Arnaldo Oliveira</h3>
+</div>, <div class="dados">
+<h3>Arthur Nory</h3>
+</div>, <div class="dados">
+<h3>Arthur Zanetti</h3>
+</div>]
+[<div class="dados">
+<h3>Bruno Uvini</h3>
+</div>, <div class="dados">
+<h3>Burkhard Cordes</h3>
+</div>, <div class="dados">
+<h3>Camila Brait</h3>
+</div>, <div class="dados">
+<h3>Carlão</h3>
+</div>]
+[<div class="dados">
+<h3>Daniela Alves</h3>
+</div>, <div class="dados">
+<h3>Daniela Polzin</h3>
+</div>, <div class="dados">
+<h3>Daniele Hypolito</h3>
+</div>, <div class="dados">
+<h3>Danilo Luiz</h3>
+</div>]
+```
+
+Agora, com um pequeno ajuste, o código na íntegra, pegando todas as 18 páginas do site:
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3
+urllib3.disable_warnings()
+
+atletas = list()
+for p in range(1, 19):
+    url = f"https://www.cob.org.br/pt/cob/time-brasil/atletas?&page={p}"
+    req = requests.get(url, verify=False)
+    soup = bs(req.text, 'html.parser')
+    articles = soup.find_all("article", class_="reg-atletas")
+    for i in articles:
+        dicio = {
+            "nome": i.find('div', class_="dados").text.strip(),
+            "modalidade": i.find('div', class_="texto").text.replace("+", "").strip()
+        }
+        atletas.append(dicio)
+print(atletas)
+```
+```textfile
+[{'nome': 'Abner Teixeira', 'modalidade': 'Boxe'},
+{'nome': 'Abner Vinícius', 'modalidade': 'Futebol'},
+{'nome': 'Ademir Kaefer', 'modalidade': 'Futebol'},
+{'nome': 'Adenizia', 'modalidade': 'Vôlei'},
+{'nome': 'Adhemar Ferreira da Silva', 'modalidade': 'Atletismo'},
+{'nome': 'Adriana Aparecida da Silva', 'modalidade': 'Atletismo'},
+{'nome': 'Adriana Araújo', 'modalidade': 'Boxe'},
+{'nome': 'Adriana Behar', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Adriana Samuel', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Adriana Santos', 'modalidade': 'Basquete'},
+{'nome': 'Adrianinha', 'modalidade': 'Basquete'},
+{'nome': 'Affonso Évora', 'modalidade': 'Basquete'},
+{'nome': 'Afrânio Costa', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Ágatha Rippel', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Aída dos Santos', 'modalidade': 'Atletismo'},
+{'nome': 'Alberto Marson', 'modalidade': 'Basquete'},
+{'nome': 'Aldair', 'modalidade': 'Futebol'},
+{'nome': 'Alessandra Oliveira', 'modalidade': 'Basquete'},
+{'nome': 'Alex Garcia', 'modalidade': 'Basquete'},
+{'nome': 'Alex Sandro', 'modalidade': 'Futebol'},
+{'nome': 'Alex Silva', 'modalidade': 'Futebol'},
+{'nome': 'Alex Welter', 'modalidade': 'Vela'},
+{'nome': 'Alexandra Nascimento)', 'modalidade': 'Handebol'},
+{'nome': 'Alexandre Gemignani', 'modalidade': 'Basquete'},
+{'nome': 'Alexandre Pato', 'modalidade': 'Futebol'},
+{'nome': 'Alfredo da Motta', 'modalidade': 'Basquete'},
+{'nome': 'Algodão', 'modalidade': 'Basquete'},
+{'nome': 'Aline Pellegrino', 'modalidade': 'Futebol'},
+{'nome': 'Aline Reis', 'modalidade': 'Futebol'},
+{'nome': 'Alison Cerutti', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Alison dos Santos', 'modalidade': 'Atletismo'},
+{'nome': 'Allan do Carmo', 'modalidade': 'Águas Abertas'},
+{'nome': 'Aloísio', 'modalidade': 'Futebol'},
+{'nome': 'Amaral', 'modalidade': 'Futebol'},
+{'nome': 'Amauri Ribeiro', 'modalidade': 'Vôlei'},
+{'nome': 'Amaury Pasos', 'modalidade': 'Basquete'},
+{'nome': 'Ana Carolina da Silva', 'modalidade': 'Vôlei'},
+{'nome': 'Ana Claudia Lemos', 'modalidade': 'Atletismo'},
+{'nome': 'Ana Cristina', 'modalidade': 'Vôlei'},
+{'nome': 'Ana Flávia', 'modalidade': 'Vôlei'},
+{'nome': 'Ana Luiza Barbachan', 'modalidade': 'Vela'},
+{'nome': 'Ana Marcela Cunha', 'modalidade': 'Águas Abertas'},
+{'nome': 'Ana Moser', 'modalidade': 'Vôlei'},
+{'nome': 'Ana Paula Henkel', 'modalidade': 'Vôlei'},
+{'nome': 'Ana Paula Rodrigues', 'modalidade': 'Handebol'},
+{'nome': 'Ana Sátila', 'modalidade': 'Canoagem Slalom'},
+{'nome': 'Anderson Oliveira', 'modalidade': 'Futebol'},
+{'nome': 'Anderson Rodrigues', 'modalidade': 'Vôlei'},
+{'nome': 'André Cruz', 'modalidade': 'Futebol'},
+{'nome': 'André Domingos', 'modalidade': 'Atletismo'},
+{'nome': 'André Heller', 'modalidade': 'Vôlei'},
+{'nome': 'André Johannpeter', 'modalidade': 'Hipismo'},
+{'nome': 'André Luis Ferreira', 'modalidade': 'Futebol'},
+{'nome': 'André Luiz', 'modalidade': 'Futebol'},
+{'nome': 'André Nascimento', 'modalidade': 'Vôlei'},
+{'nome': 'Andréia Rosa', 'modalidade': 'Futebol'},
+{'nome': 'Andréia Suntaque', 'modalidade': 'Futebol'},
+{'nome': 'Andressa (Andressinha)', 'modalidade': 'Futebol'},
+{'nome': 'Andressa Morais', 'modalidade': 'Atletismo'},
+{'nome': 'Andressa Silva', 'modalidade': 'Futebol'},
+{'nome': 'Antony', 'modalidade': 'Futebol'},
+{'nome': 'Arnaldo Oliveira', 'modalidade': 'Atletismo'},
+{'nome': 'Arthur Nory', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Arthur Zanetti', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Augusto Brito', 'modalidade': 'Basquete'},
+{'nome': 'Aurélio Miguel', 'modalidade': 'Judô'},
+{'nome': 'Babi Arenhart', 'modalidade': 'Handebol'},
+{'nome': 'Baby Futuro', 'modalidade': 'Rugby de 7'},
+{'nome': 'Badalhoca', 'modalidade': 'Vôlei'},
+{'nome': 'Bárbara Micheline', 'modalidade': 'Futebol'},
+{'nome': 'Bárbara Seixas', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Beatriz (Bia)', 'modalidade': 'Futebol'},
+{'nome': 'Beatriz Feres', 'modalidade': 'Nado Artístico'},
+{'nome': 'Beatriz Ferreira', 'modalidade': 'Boxe'},
+{'nome': 'Bebeto', 'modalidade': 'Futebol'},
+{'nome': 'Bernard Rajzman', 'modalidade': 'Vôlei'},
+{'nome': 'Bernardinho', 'modalidade': 'Vôlei'},
+{'nome': 'Branca', 'modalidade': 'Basquete'},
+{'nome': 'Branca Feres', 'modalidade': 'Nado Artístico'},
+{'nome': 'Brenno', 'modalidade': 'Futebol'},
+{'nome': 'Breno Borges', 'modalidade': 'Futebol'},
+{'nome': 'Bruna Takahashi', 'modalidade': 'Tênis de mesa'},
+{'nome': 'Bruninho', 'modalidade': 'Vôlei'},
+{'nome': 'Brunno Mendonça', 'modalidade': 'Hóquei sobre Grama'},
+{'nome': 'Bruno Fratus', 'modalidade': 'Natação'},
+{'nome': 'Bruno Fuchs', 'modalidade': 'Futebol'},
+{'nome': 'Bruno Guimarães', 'modalidade': 'Futebol'},
+{'nome': 'Bruno Lins', 'modalidade': 'Atletismo'},
+{'nome': 'Bruno Prada', 'modalidade': 'Vela'},
+{'nome': 'Bruno Schmidt', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Bruno Uvini', 'modalidade': 'Futebol'},
+{'nome': 'Burkhard Cordes', 'modalidade': 'Vela'},
+{'nome': 'Camila Brait', 'modalidade': 'Vôlei'},
+{'nome': 'Carlão', 'modalidade': 'Vôlei'},
+{'nome': 'Carlos Honorato', 'modalidade': 'Judô'},
+{'nome': 'Carlos Jayme', 'modalidade': 'Natação'},
+{'nome': 'Carol Albuquerque', 'modalidade': 'Vôlei'},
+{'nome': 'Carol Gattaz', 'modalidade': 'Vôlei'},
+{'nome': 'Cassius Duran', 'modalidade': 'Saltos Ornamentais'},
+{'nome': 'Cesar Cielo', 'modalidade': 'Natação'},
+{'nome': 'Chiaki Ishii', 'modalidade': 'Judô'},
+{'nome': 'Chicão Vidal', 'modalidade': 'Futebol'},
+{'nome': 'Chico Barretto', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Cíntia Tuiú', 'modalidade': 'Basquete'},
+{'nome': 'Cláudia Pastor', 'modalidade': 'Basquete'},
+{'nome': 'Claudinei Quirino', 'modalidade': 'Atletismo'},
+{'nome': 'Claudinha', 'modalidade': 'Basquete'},
+{'nome': 'Cláudio Roberto', 'modalidade': 'Atletismo'},
+{'nome': 'Clínio Freitas', 'modalidade': 'Vela'},
+{'nome': 'Clodoaldo do Carmo', 'modalidade': 'Atletismo'},
+{'nome': 'Codó', 'modalidade': 'Atletismo'},
+{'nome': 'Cristiane', 'modalidade': 'Futebol'},
+{'nome': 'Cristiano Felício', 'modalidade': 'Basquete'},
+{'nome': 'Cyro Delgado', 'modalidade': 'Natação'},
+{'nome': 'Daiane dos Santos', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Dani Lins', 'modalidade': 'Vôlei'},
+{'nome': 'Dani Piedade', 'modalidade': 'Handebol'},
+{'nome': 'Daniel Adler', 'modalidade': 'Vela'},
+{'nome': 'Daniel Alves', 'modalidade': 'Futebol'},
+{'nome': 'Daniel Cargnin', 'modalidade': 'Judô'},
+{'nome': 'Daniela Alves', 'modalidade': 'Futebol'},
+{'nome': 'Daniela Polzin', 'modalidade': 'Judô'},
+{'nome': 'Daniele Hypolito', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Danilo Luiz', 'modalidade': 'Futebol'},
+{'nome': 'Danrlei', 'modalidade': 'Futebol'},
+{'nome': 'Dante Amaral', 'modalidade': 'Vôlei'},
+{'nome': 'Dario Barbosa', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Davi Silva', 'modalidade': 'Futebol'},
+{'nome': 'Dayane Rocha', 'modalidade': 'Futebol'},
+{'nome': 'Débora (Debinha)', 'modalidade': 'Futebol'},
+{'nome': 'Deonise', 'modalidade': 'Handebol'},
+{'nome': 'Dida', 'modalidade': 'Futebol'},
+{'nome': 'Diego Alves', 'modalidade': 'Futebol'},
+{'nome': 'Diego Carlos', 'modalidade': 'Futebol'},
+{'nome': 'Diego Hypolito', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Diego Ribas', 'modalidade': 'Futebol'},
+{'nome': 'Diogo Martins', 'modalidade': 'Triatlo'},
+{'nome': 'Diogo Silva', 'modalidade': 'Taekwondo'},
+{'nome': 'Djan Madruga', 'modalidade': 'Natação'},
+{'nome': 'Doda Miranda', 'modalidade': 'Hipismo Saltos'},
+{'nome': 'Domingos Maracanã', 'modalidade': 'Vôlei'},
+{'nome': 'Douglas Chiarotti', 'modalidade': 'Vôlei'},
+{'nome': 'Douglas Luiz', 'modalidade': 'Futebol'},
+{'nome': 'Douglas Santos', 'modalidade': 'Futebol'},
+{'nome': 'Douglas Souza', 'modalidade': 'Vôlei'},
+{'nome': 'Douglas Vieira', 'modalidade': 'Judô'},
+{'nome': 'Duda Amorim', 'modalidade': 'Handebol'},
+{'nome': 'Dunga', 'modalidade': 'Futebol'},
+{'nome': 'Éder Carbonera', 'modalidade': 'Vôlei'},
+{'nome': 'Edmar Bernardes', 'modalidade': 'Futebol'},
+{'nome': 'Edson Bindilatti', 'modalidade': 'Bobsled'},
+{'nome': 'Édson Bispo', 'modalidade': 'Basquete'},
+{'nome': 'Edson Luciano', 'modalidade': 'Atletismo'},
+{'nome': 'Edu Penido', 'modalidade': 'Vela'},
+{'nome': 'Eduard Soghomonyan', 'modalidade': 'Wrestling'},
+{'nome': 'Edvaldo Valério', 'modalidade': 'Natação'},
+{'nome': 'Edvar Simões', 'modalidade': 'Basquete'},
+{'nome': 'Elaine Moura', 'modalidade': 'Futebol'},
+{'nome': 'Elisângela Oliveira', 'modalidade': 'Vôlei'},
+{'nome': 'Emanuel Rego', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Emerson Duarte', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Érika Coimbra', 'modalidade': 'Vôlei'},
+{'nome': 'Érika Cristiano', 'modalidade': 'Futebol'},
+{'nome': 'Erlon Souza', 'modalidade': 'Canoagem Velocidade'},
+{'nome': 'Esquiva Falcão', 'modalidade': 'Boxe'},
+{'nome': 'Ester Santos', 'modalidade': 'Futebol'},
+{'nome': 'Etiene Medeiros', 'modalidade': 'Natação'},
+{'nome': 'Evandro Guerra', 'modalidade': 'Vôlei'},
+{'nome': 'Evandro Júnior', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Fabi Alvim', 'modalidade': 'Vôlei'},
+{'nome': 'Fabiana (Dara)', 'modalidade': 'Handebol'},
+{'nome': 'Fabiana Beltrame', 'modalidade': 'Remo'},
+{'nome': 'Fabiana Claudino', 'modalidade': 'Vôlei'},
+{'nome': 'Fabiana Murer', 'modalidade': 'Atletismo'},
+{'nome': 'Fabiana Simões', 'modalidade': 'Futebol'},
+{'nome': 'Fabiano Peçanha', 'modalidade': 'Atletismo'},
+{'nome': 'Fábio Luiz', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Felipe Anderson', 'modalidade': 'Futebol'},
+{'nome': 'Felipe Kitadai', 'modalidade': 'Judô'},
+{'nome': 'Felipe Wu', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Fernanda Garay', 'modalidade': 'Vôlei'},
+{'nome': 'Fernanda Nunes', 'modalidade': 'Remo'},
+{'nome': 'Fernanda Oliveira', 'modalidade': 'Vela'},
+{'nome': 'Fernanda Venturini', 'modalidade': 'Vôlei'},
+{'nome': 'Fernandão', 'modalidade': 'Vôlei'},
+{'nome': 'Fernandinha Ferreira', 'modalidade': 'Vôlei'},
+{'nome': 'Fernando Brobró', 'modalidade': 'Basquete'},
+{'nome': 'Fernando Reis', 'modalidade': 'Levantamento de Pesos'},
+{'nome': 'Fernando Scheffer', 'modalidade': 'Natação'},
+{'nome': 'Fernando Scherer', 'modalidade': 'Natação'},
+{'nome': 'Fernando Soledade', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Filó', 'modalidade': 'Vôlei'},
+{'nome': 'Flávio Canto', 'modalidade': 'Judô'},
+{'nome': 'Flávio Conceição', 'modalidade': 'Futebol'},
+{'nome': 'Fofão', 'modalidade': 'Vôlei'},
+{'nome': 'Formiga', 'modalidade': 'Futebol'},
+{'nome': 'Francielle Alberto', 'modalidade': 'Futebol'},
+{'nome': 'Fritz Braun', 'modalidade': 'Basquete'},
+{'nome': 'Gabi Guimarães', 'modalidade': 'Vôlei'},
+{'nome': 'Gabigol', 'modalidade': 'Futebol'},
+{'nome': 'Gabriel Jesus', 'modalidade': 'Futebol'},
+{'nome': 'Gabriel Menino', 'modalidade': 'Futebol'},
+{'nome': 'Gabriel Vasconcellos', 'modalidade': 'Futebol'},
+{'nome': 'Geovani Silva', 'modalidade': 'Futebol'},
+{'nome': 'Gerson Victalino', 'modalidade': 'Basquete'},
+{'nome': 'Giba', 'modalidade': 'Vôlei'},
+{'nome': 'Gilmar Popoca', 'modalidade': 'Futebol'},
+{'nome': 'Gilmar Rinaldi', 'modalidade': 'Futebol'},
+{'nome': 'Gilvan Ribeiro', 'modalidade': 'Canoagem Velocidade'},
+{'nome': 'Giovane Gávio', 'modalidade': 'Vôlei'},
+{'nome': 'Grazielle Nascimento', 'modalidade': 'Futebol'},
+{'nome': 'Grummy', 'modalidade': 'Desportos Aquaticos'},
+{'nome': 'Guilherme Arana', 'modalidade': 'Futebol'},
+{'nome': 'Guilherme Giovannoni', 'modalidade': 'Basquete'},
+{'nome': 'Guilherme Guido', 'modalidade': 'Natação'},
+{'nome': 'Guilherme Paraense', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Gustavo Borges', 'modalidade': 'Natação'},
+{'nome': 'Gustavo Endres', 'modalidade': 'Vôlei'},
+{'nome': 'Hamilton Careca', 'modalidade': 'Futebol'},
+{'nome': 'Hebert Conceição', 'modalidade': 'Boxe'},
+{'nome': 'Helen Luz', 'modalidade': 'Basquete'},
+{'nome': 'Henrique Guimarães', 'modalidade': 'Judô'},
+{'nome': 'Hernanes', 'modalidade': 'Futebol'},
+{'nome': 'Hilma Caldeira', 'modalidade': 'Vôlei'},
+{'nome': 'Hortência', 'modalidade': 'Basquete'},
+{'nome': 'Hugo Calderano', 'modalidade': 'Tênis de mesa'},
+{'nome': 'Hugo Hoyama', 'modalidade': 'Tênis de mesa'},
+{'nome': 'Hulk', 'modalidade': 'Futebol'},
+{'nome': 'Ida Álvares', 'modalidade': 'Vôlei'},
+{'nome': 'Ilsinho', 'modalidade': 'Futebol'},
+{'nome': 'Isabel Clark', 'modalidade': 'Snowboard'},
+{'nome': 'Isabel Swan', 'modalidade': 'Vela'},
+{'nome': 'Isadora Williams', 'modalidade': 'Patinação Artística'},
+{'nome': 'Isaquias Queiroz', 'modalidade': 'Canoagem Velocidade'},
+{'nome': 'Italo Ferreira', 'modalidade': 'Surfe'},
+{'nome': 'Iziane', 'modalidade': 'Basquete'},
+{'nome': 'Jackie Silva', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Jade Barbosa', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Janelson Carvalho', 'modalidade': 'Vôlei'},
+{'nome': 'Janeth Arcain', 'modalidade': 'Basquete'},
+{'nome': 'Janina', 'modalidade': 'Vôlei'},
+{'nome': 'Jaqueline Carvalho', 'modalidade': 'Vôlei'},
+{'nome': 'Jaqueline Mourão', 'modalidade': 'Ciclismo Mountain Bike'},
+{'nome': 'Jatyr Schall', 'modalidade': 'Basquete'},
+{'nome': 'Jefferson Sabino', 'modalidade': 'Atletismo'},
+{'nome': 'Jô', 'modalidade': 'Futebol'},
+{'nome': 'Joana Cortez', 'modalidade': 'Tênis'},
+{'nome': 'Joanna Maranhão', 'modalidade': 'Natação'},
+{'nome': 'João Batista', 'modalidade': 'Futebol'},
+{'nome': 'João do Pulo', 'modalidade': 'Atletismo'},
+{'nome': 'João Francisco Bráz', 'modalidade': 'Basquete'},
+{'nome': 'João Kita', 'modalidade': 'Futebol'},
+{'nome': 'João Paulo', 'modalidade': 'Futebol'},
+{'nome': 'Joaquim Cruz', 'modalidade': 'Atletismo'},
+{'nome': 'Jorge Edson', 'modalidade': 'Vôlei'},
+{'nome': 'Jorge Fernandes', 'modalidade': 'Natação'},
+{'nome': 'Jorge Luis Andrade', 'modalidade': 'Futebol'},
+{'nome': 'Jorginho', 'modalidade': 'Futebol'},
+{'nome': 'José Ferreira Neto', 'modalidade': 'Futebol'},
+{'nome': 'José Telles da Conceição', 'modalidade': 'Atletismo'},
+{'nome': 'Juan Jesus', 'modalidade': 'Futebol'},
+{'nome': 'Juan Nogueira', 'modalidade': 'Boxe'},
+{'nome': 'Juliana Cabral', 'modalidade': 'Futebol'},
+{'nome': 'Juliana Felisberta', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Juninho Paulista', 'modalidade': 'Futebol'},
+{'nome': 'Kahena Kunze', 'modalidade': 'Vela'},
+{'nome': 'Karin Rodrigues', 'modalidade': 'Vôlei'},
+{'nome': 'Kátia Lopes', 'modalidade': 'Vôlei'},
+{'nome': 'Keila Costa', 'modalidade': 'Atletismo'},
+{'nome': 'Kelly Cristina', 'modalidade': 'Futebol'},
+{'nome': 'Kelly Santos', 'modalidade': 'Basquete'},
+{'nome': 'Kelvin Hoefler', 'modalidade': 'Skate'},
+{'nome': 'Kely Fraga', 'modalidade': 'Vôlei'},
+{'nome': 'Ketleyn Quadros', 'modalidade': 'Judô'},
+{'nome': 'Kiko Pellicano', 'modalidade': 'Vela'},
+{'nome': 'Lara Cianciarulo', 'modalidade': 'Nado Artístico'},
+{'nome': 'Larissa França', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Lars Björkström', 'modalidade': 'Vela'},
+{'nome': 'Lars Grael', 'modalidade': 'Vela'},
+{'nome': 'Laura Pigossi', 'modalidade': 'Tênis'},
+{'nome': 'Leandrinho', 'modalidade': 'Basquete'},
+{'nome': 'Leandro Damião', 'modalidade': 'Futebol'},
+{'nome': 'Leandro Guilheiro', 'modalidade': 'Judô'},
+{'nome': 'Leandro Vissotto', 'modalidade': 'Vôlei'},
+{'nome': 'Leila Barros', 'modalidade': 'Vôlei'},
+{'nome': 'Leila Sobral', 'modalidade': 'Basquete'},
+{'nome': 'Lilian Gonçalves', 'modalidade': 'Basquete'},
+{'nome': 'Lipe Fonteles', 'modalidade': 'Vôlei'},
+{'nome': 'Lorena Molinos', 'modalidade': 'Nado Artístico'},
+{'nome': 'Luan Garcia', 'modalidade': 'Futebol'},
+{'nome': 'Luan Guilherme', 'modalidade': 'Futebol'},
+{'nome': 'Lucão', 'modalidade': 'Vôlei'},
+{'nome': 'Lucas Duque', 'modalidade': 'Rugby de 7'},
+{'nome': 'Lucas Leiva', 'modalidade': 'Futebol'},
+{'nome': 'Lucas Moura', 'modalidade': 'Futebol'},
+{'nome': 'Lucimar Moura', 'modalidade': 'Atletismo'},
+{'nome': 'Luís Henrique', 'modalidade': 'Futebol'},
+{'nome': 'Luisa Borges', 'modalidade': 'Nado Artístico'},
+{'nome': 'Luísa Stefani', 'modalidade': 'Tênis'},
+{'nome': 'Luiz Carlos Winck', 'modalidade': 'Futebol'},
+{'nome': 'Luiz Felipe Azevedo', 'modalidade': 'Hipismo'},
+{'nome': 'Luiz Onmura', 'modalidade': 'Judô'},
+{'nome': 'Luizão', 'modalidade': 'Futebol'},
+{'nome': 'Macris', 'modalidade': 'Vôlei'},
+{'nome': 'Magic Paula', 'modalidade': 'Basquete'},
+{'nome': 'Maicon Andrade', 'modalidade': 'Taekwondo'},
+{'nome': 'Malcom', 'modalidade': 'Futebol'},
+{'nome': 'Manoel dos Santos', 'modalidade': 'Natação'},
+{'nome': 'Maravilha', 'modalidade': 'Futebol'},
+{'nome': 'Marcelinho Elgarten', 'modalidade': 'Vôlei'},
+{'nome': 'Marcelinho Machado', 'modalidade': 'Basquete'},
+{'nome': 'Marcelinho Paulista', 'modalidade': 'Futebol'},
+{'nome': 'Marcelo Chierighini', 'modalidade': 'Natação'},
+{'nome': 'Marcelo Ferreira', 'modalidade': 'Vela'},
+{'nome': 'Marcelo Huertas)', 'modalidade': 'Basquete'},
+{'nome': 'Marcelo Negrão', 'modalidade': 'Vôlei'},
+{'nome': 'Marcelo Vieira', 'modalidade': 'Futebol'},
+{'nome': 'Márcia Fu', 'modalidade': 'Vôlei'},
+{'nome': 'Márcio Araújo', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Marcos Soares', 'modalidade': 'Vela'},
+{'nome': 'Marcus (Marquinhos)', 'modalidade': 'Basquete'},
+{'nome': "Marcus D'Almeida", 'modalidade': 'Tiro com arco'},
+{'nome': 'Marcus Mattioli', 'modalidade': 'Natação'},
+{'nome': 'Marcus Vinícius Dias', 'modalidade': 'Basquete'},
+{'nome': 'Marcus Vinícius Freire', 'modalidade': 'Vôlei'},
+{'nome': 'Mari Steinbrecher', 'modalidade': 'Vôlei'},
+{'nome': 'Maria Bruno', 'modalidade': 'Nado Artístico'},
+{'nome': 'Maria Coutinho', 'modalidade': 'Nado Artístico'},
+{'nome': 'Maria Lenk', 'modalidade': 'Natação'},
+{'nome': 'Maria Miccuci', 'modalidade': 'Desportos Aquaticos'},
+{'nome': 'Mariany Nonaka', 'modalidade': 'Tênis de mesa'},
+{'nome': 'Marquinhos', 'modalidade': 'Futebol'},
+{'nome': 'Marta', 'modalidade': 'Futebol'},
+{'nome': 'Marta Sobral', 'modalidade': 'Basquete'},
+{'nome': 'Martine Grael', 'modalidade': 'Vela'},
+{'nome': 'Massinet Sorcinelli', 'modalidade': 'Basquete'},
+{'nome': 'Matheus Cunha', 'modalidade': 'Futebol'},
+{'nome': 'Matheus Henrique', 'modalidade': 'Futebol'},
+{'nome': 'Maurício Borges', 'modalidade': 'Vôlei'},
+{'nome': 'Maurício Lima', 'modalidade': 'Vôlei'},
+{'nome': 'Maurício Souza', 'modalidade': 'Vôlei'},
+{'nome': 'Maurine', 'modalidade': 'Futebol'},
+{'nome': 'Mauro Galvão', 'modalidade': 'Futebol'},
+{'nome': 'Maurren Maggi', 'modalidade': 'Atletismo'},
+{'nome': 'Maycon', 'modalidade': 'Futebol'},
+{'nome': 'Mayra Aguiar', 'modalidade': 'Judô'},
+{'nome': 'Mazinho', 'modalidade': 'Futebol'},
+{'nome': 'Melânia Luz', 'modalidade': 'Atletismo'},
+{'nome': 'Milton Cruz', 'modalidade': 'Futebol'},
+{'nome': 'Milton Luiz', 'modalidade': 'Futebol'},
+{'nome': "Miriam D'Agostini", 'modalidade': 'Tênis'},
+{'nome': 'Mônica de Paula', 'modalidade': 'Futebol'},
+{'nome': 'Mônica Rodrigues', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Montanaro', 'modalidade': 'Vôlei'},
+{'nome': 'Mosquito', 'modalidade': 'Basquete'},
+{'nome': 'Moysés Blás', 'modalidade': 'Basquete'},
+{'nome': 'Murilo Endres', 'modalidade': 'Vôlei'},
+{'nome': 'Nalbert', 'modalidade': 'Vôlei'},
+{'nome': 'Narciso', 'modalidade': 'Futebol'},
+{'nome': 'Natália Falavigna', 'modalidade': 'Taekwondo'},
+{'nome': 'Natália Gaudio', 'modalidade': 'Ginástica Rítmica'},
+{'nome': 'Natalia Zilio', 'modalidade': 'Vôlei'},
+{'nome': 'Nelson Falcão', 'modalidade': 'Vela'},
+{'nome': 'Nelson Pessoa', 'modalidade': 'Hipismo Saltos'},
+{'nome': 'Nelson Prudêncio', 'modalidade': 'Atletismo'},
+{'nome': 'Nenê Hilário', 'modalidade': 'Basquete'},
+{'nome': 'Neymar', 'modalidade': 'Futebol'},
+{'nome': 'Nilton Pacheco', 'modalidade': 'Basquete'},
+{'nome': 'Nino', 'modalidade': 'Futebol'},
+{'nome': 'Norberto Murara Neto', 'modalidade': 'Futebol'},
+{'nome': 'Oscar dos Santos', 'modalidade': 'Futebol'},
+{'nome': 'Pâmela Nogueira', 'modalidade': 'Nado Artístico'},
+{'nome': 'Pâmella Oliveira', 'modalidade': 'Triatlo'},
+{'nome': 'Pampa', 'modalidade': 'Vôlei'},
+{'nome': 'Paula Pequeno', 'modalidade': 'Vôlei'},
+{'nome': 'Paulão', 'modalidade': 'Vôlei'},
+{'nome': 'Paulinho', 'modalidade': 'Futebol'},
+{'nome': 'Paulo André', 'modalidade': 'Atletismo'},
+{'nome': 'Paulo Henrique Ganso', 'modalidade': 'Futebol'},
+{'nome': 'Paulo Santos', 'modalidade': 'Futebol'},
+{'nome': 'Pedro Barros', 'modalidade': 'Skate'},
+{'nome': 'Pepê Gonçalves', 'modalidade': 'Canoagem Slalom'},
+{'nome': 'Peter Ficker', 'modalidade': 'Vela'},
+{'nome': 'Pinga', 'modalidade': 'Futebol'},
+{'nome': 'Poliana Medeiros', 'modalidade': 'Futebol'},
+{'nome': 'Poliana Okimoto', 'modalidade': 'Águas Abertas'},
+{'nome': 'Pretinha', 'modalidade': 'Futebol'},
+{'nome': 'Rafael Andrade', 'modalidade': 'Ginástica de Trampolim'},
+{'nome': 'Rafael Hettsheimeir', 'modalidade': 'Basquete'},
+{'nome': 'Rafael Luz', 'modalidade': 'Basquete'},
+{'nome': 'Rafael Pereira da Silva', 'modalidade': 'Futebol'},
+{'nome': 'Rafael Silva', 'modalidade': 'Judô'},
+{'nome': 'Rafael Sóbis', 'modalidade': 'Futebol'},
+{'nome': 'Rafaela Silva', 'modalidade': 'Judô'},
+{'nome': 'Rafaelle Souza', 'modalidade': 'Futebol'},
+{'nome': 'Rafinha', 'modalidade': 'Futebol'},
+{'nome': 'Rafinha Alcântara', 'modalidade': 'Futebol'},
+{'nome': 'Ramires', 'modalidade': 'Futebol'},
+{'nome': 'Raquel Peluci', 'modalidade': 'Vôlei'},
+{'nome': 'Raquel Santos', 'modalidade': 'Futebol'},
+{'nome': 'Raul (Raulzinho)', 'modalidade': 'Basquete'},
+{'nome': 'Rayssa Leal', 'modalidade': 'Skate'},
+{'nome': 'Rebeca Andrade', 'modalidade': 'Ginástica Artística'},
+{'nome': 'Reinaldo Conrad', 'modalidade': 'Vela'},
+{'nome': 'Renan Brito Soares', 'modalidade': 'Futebol'},
+{'nome': 'Renan Dal Zotto', 'modalidade': 'Vôlei'},
+{'nome': 'Renata Costa', 'modalidade': 'Futebol'},
+{'nome': 'Renato Augusto', 'modalidade': 'Futebol'},
+{'nome': 'Ricarda', 'modalidade': 'Vôlei'},
+{'nome': 'Ricardinho', 'modalidade': 'Vôlei'},
+{'nome': 'Ricardo Gomes', 'modalidade': 'Futebol'},
+{'nome': 'Ricardo Graça', 'modalidade': 'Futebol'},
+{'nome': 'Ricardo Lucarelli', 'modalidade': 'Vôlei'},
+{'nome': 'Ricardo Prado', 'modalidade': 'Natação'},
+{'nome': 'Ricardo Santos', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Richarlison', 'modalidade': 'Futebol'},
+{'nome': 'Rivaldo', 'modalidade': 'Futebol'},
+{'nome': 'Robert Scheidt', 'modalidade': 'Vela'},
+{'nome': 'Roberta Ratzke', 'modalidade': 'Vôlei'},
+{'nome': 'Roberto Carlos', 'modalidade': 'Futebol'},
+{'nome': 'Robson Caetano', 'modalidade': 'Atletismo'},
+{'nome': 'Robson Conceição', 'modalidade': 'Boxe'},
+{'nome': 'Rodrigão', 'modalidade': 'Vôlei'},
+{'nome': 'Rodrigo Caio', 'modalidade': 'Futebol'},
+{'nome': 'Rodrigo Dourado', 'modalidade': 'Futebol'},
+{'nome': 'Rodrigo Pessoa', 'modalidade': 'Hipismo Saltos'},
+{'nome': 'Rogério Sampaio', 'modalidade': 'Judô'},
+{'nome': 'Romário', 'modalidade': 'Futebol'},
+{'nome': 'Rômulo Monteiro', 'modalidade': 'Futebol'},
+{'nome': 'Ronaldinho Gaúcho', 'modalidade': 'Futebol'},
+{'nome': 'Ronaldo Guiaro', 'modalidade': 'Futebol'},
+{'nome': 'Ronaldo Moraes', 'modalidade': 'Futebol'},
+{'nome': 'Ronaldo Nazário', 'modalidade': 'Futebol'},
+{'nome': 'Ronaldo Senfft', 'modalidade': 'Vela'},
+{'nome': 'Rosa Branca', 'modalidade': 'Basquete'},
+{'nome': 'Rosamaria', 'modalidade': 'Vôlei'},
+{'nome': 'Rosana Augusto', 'modalidade': 'Futebol'},
+{'nome': 'Rosângela Santos', 'modalidade': 'Atletismo'},
+{'nome': 'Roseli de Belo', 'modalidade': 'Futebol'},
+{'nome': 'Roseli Gustavo', 'modalidade': 'Basquete'},
+{'nome': 'Rosemar Coelho Neto', 'modalidade': 'Atletismo'},
+{'nome': 'Rui Campos', 'modalidade': 'Vôlei'},
+{'nome': 'Ruy de Freitas', 'modalidade': 'Basquete'},
+{'nome': 'Samuel Fuchs', 'modalidade': 'Vôlei'},
+{'nome': 'Sandra Pires', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Sandra Suruagy', 'modalidade': 'Vôlei'},
+{'nome': 'Sandro Raniere', 'modalidade': 'Futebol'},
+{'nome': 'Sandro Viana', 'modalidade': 'Atletismo'},
+{'nome': 'Santos', 'modalidade': 'Futebol'},
+{'nome': 'Sarah Menezes', 'modalidade': 'Judô'},
+{'nome': 'Sassá', 'modalidade': 'Vôlei'},
+{'nome': 'Sávio', 'modalidade': 'Futebol'},
+{'nome': 'Sebastián Cuattrin', 'modalidade': 'Canoagem Velocidade'},
+{'nome': 'Sebástian Pereira', 'modalidade': 'Judô'},
+{'nome': 'Sebastião Wolf', 'modalidade': 'Tiro esportivo'},
+{'nome': 'Serginho', 'modalidade': 'Vôlei'},
+{'nome': 'Sérgio Macarrão', 'modalidade': 'Basquete'},
+{'nome': 'Servílio de Oliveira', 'modalidade': 'Boxe'},
+{'nome': 'Sheilla Castro', 'modalidade': 'Vôlei'},
+{'nome': 'Shelda', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Sidão', 'modalidade': 'Vôlei'},
+{'nome': 'Silvinha Luz', 'modalidade': 'Basquete'},
+{'nome': 'Silvinho', 'modalidade': 'Futebol'},
+{'nome': 'Simone Jatobá', 'modalidade': 'Futebol'},
+{'nome': 'Sucar', 'modalidade': 'Basquete'},
+{'nome': 'Sylvio Padilha', 'modalidade': 'Atletismo'},
+{'nome': 'Taffarel', 'modalidade': 'Futebol'},
+{'nome': 'Talmo', 'modalidade': 'Vôlei'},
+{'nome': 'Tamires Gomes', 'modalidade': 'Futebol'},
+{'nome': 'Tandara', 'modalidade': 'Vôlei'},
+{'nome': 'Tande', 'modalidade': 'Vôlei'},
+{'nome': 'Tânia Maranhão', 'modalidade': 'Futebol'},
+{'nome': 'Tetsuo Okamoto', 'modalidade': 'Natação'},
+{'nome': 'Thaisa Daher', 'modalidade': 'Vôlei'},
+{'nome': 'Thaisa Moreno', 'modalidade': 'Futebol'},
+{'nome': 'Thaissa Barbosa Presti', 'modalidade': 'Atletismo'},
+{'nome': 'Thiago Alves', 'modalidade': 'Vôlei'},
+{'nome': 'Thiago Braz', 'modalidade': 'Atletismo'},
+{'nome': 'Thiago Maia', 'modalidade': 'Futebol'},
+{'nome': 'Thiago Neves', 'modalidade': 'Futebol'},
+{'nome': 'Thiago Pereira', 'modalidade': 'Natação'},
+{'nome': 'Thiago Silva', 'modalidade': 'Futebol'},
+{'nome': 'Thiagus Petrus', 'modalidade': 'Handebol'},
+{'nome': 'Tiago Camilo', 'modalidade': 'Judô'},
+{'nome': 'Tonho Gil', 'modalidade': 'Futebol'},
+{'nome': 'Torben Grael', 'modalidade': 'Vela'},
+{'nome': 'Ubiratan', 'modalidade': 'Basquete'},
+{'nome': 'Uilson', 'modalidade': 'Futebol'},
+{'nome': 'Valdo', 'modalidade': 'Futebol'},
+{'nome': 'Valeskinha', 'modalidade': 'Vôlei'},
+{'nome': 'Vanderlei Cordeiro de Lima', 'modalidade': 'Atletismo'},
+{'nome': 'Vicente Lenílson', 'modalidade': 'Atletismo'},
+{'nome': 'Victor Mirshawka', 'modalidade': 'Basquete'},
+{'nome': 'Virna', 'modalidade': 'Vôlei'},
+{'nome': 'Vitor Benite', 'modalidade': 'Basquete'},
+{'nome': 'Walace', 'modalidade': 'Futebol'},
+{'nome': 'Waldemar Blatkauskas', 'modalidade': 'Basquete'},
+{'nome': 'Waldyr Boccardo', 'modalidade': 'Basquete'},
+{'nome': 'Walewska', 'modalidade': 'Vôlei'},
+{'nome': 'Wallace Souza', 'modalidade': 'Vôlei'},
+{'nome': 'Walter Carmona', 'modalidade': 'Judô'},
+{'nome': 'Weverton', 'modalidade': 'Futebol'},
+{'nome': 'William Arjona', 'modalidade': 'Vôlei'},
+{'nome': 'William Carvalho', 'modalidade': 'Vôlei'},
+{'nome': 'William Furtado', 'modalidade': 'Futebol'},
+{'nome': 'Wlamir Marques', 'modalidade': 'Basquete'},
+{'nome': 'Xandó', 'modalidade': 'Vôlei'},
+{'nome': 'Yamaguchi Falcão', 'modalidade': 'Boxe'},
+{'nome': 'Yane Marques', 'modalidade': 'Pentatlo Moderno'},
+{'nome': 'Ygor Coelho', 'modalidade': 'Badminton'},
+{'nome': 'Zagallo', 'modalidade': 'Futebol'},
+{'nome': 'Zaine', 'modalidade': 'Basquete'},
+{'nome': 'Zé Carlos', 'modalidade': 'Futebol'},
+{'nome': 'Zé Elias', 'modalidade': 'Futebol'},
+{'nome': 'Zé Marco', 'modalidade': 'Vôlei de praia'},
+{'nome': 'Zé Maria', 'modalidade': 'Futebol'},
+{'nome': 'Zé Roberto Guimarães', 'modalidade': 'Vôlei'},
+{'nome': 'Zeca', 'modalidade': 'Futebol'}]
+```
+
+### Data
+
+Já no exemplo dos leitos no Rio de Janeiro, não há paginação: o que muda é a data de competência. E tal data fica exposta na URL, no formato `{aaaa}{mm}` (ano com 4 dígitos seguido por mês com 2 dígitos):
+
+- VComp=202304 para dados de abril de 2023
+- VComp=202303 para dados de março de 2023
+- VComp=202302 para dados de fevereiro de 2023
+- etc.
+
+Ou seja, para pegar todas as datas, eu preciso iterar sobre datas e alterar na URL. Para isso podemos usar bibliotecas nativas de Python, como `datetime` e `dateutil`:
+
+```py
+from datetime import date
+from dateutil import rrule
+
+datas = list() # crio uma lista vazia...
+end_date = date(2023, 4, 1) # defino a data final do período (1.4.2023)
+start_date = date(2022, 1, 1) # defino a data inicial do período (1.1.2022)
+
+# rrule lida com regras de recorrência de datas (por exemplo, há meses 
+# com 31 dias e mês com 28 dias); especifico aqui que as datas serão
+# mensais, e indico onde começa e onde termina o período
+for dt in rrule.rrule(rrule.MONTHLY, dtstart=start_date, until=end_date):
+    # strftime() converte data para string, no formato que desejo
+    # aqui, %Y%m representa:
+    # - %Y: ano com quatro dígitos
+    # - %m: mês com dois dígitos
+    # para mais opções, veja: 
+    # https://docs.python.org/3/library/datetime.html#strftime-and-strptime-format-codes
+    datas.append(dt.strftime("%Y%m")) 
+
+print(datas)
+```
+```textfile
+['202201', '202202', '202203', '202204', '202205', 
+'202206', '202207', '202208', '202209', '202210', 
+'202211', '202212', '202301', '202302', '202303', 
+'202304']
+```
+
+Agora que criamos uma lista de datas no exato formato que a URL pede, podemos iterar:
+
+```py
+for dt in datas:
+    url = f"http://cnes2.datasus.gov.br/Mod_Ind_Tipo_Leito.asp?VEstado=33&VMun=&VComp={dt}"
+    req = requests.get(url, verify=False)
+    soup = bs(req.text, 'html.parser')
+    tables = soup.find_all('table')[5]
+    print(tables.find_all('tr')[2])
+```
+```textfile
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202201">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">140</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">58</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202202">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">140</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">58</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202203">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">140</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">58</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202204">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">138</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">58</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202205">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">133</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">60</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202206">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">60</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202207">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">60</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202208">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">60</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202209">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">132</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202210">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202211">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202212">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">143</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202301">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">141</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202302">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">141</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202303">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">141</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">57</font></td></tr>
+<tr bgcolor="#cccccc">
+<td align="center"><font color="#003366" face="verdana,arial" size="1">01</font></td>
+<td>
+<font color="#003366" face="verdana,arial" size="1">
+<a href="Mod_Ind_Leitos_Listar.asp?VCod_Leito=01&amp;VTipo_Leito=1&amp;VListar=1&amp;VEstado=33&amp;VMun=&amp;VComp=202304">BUCO MAXILO FACIAL
+                                                                                        </a>
+</font>
+</td><td align="right"><font color="#003366" face="verdana,arial" size="1">142</font></td><td align="right"><font color="#003366" face="verdana,arial" size="1">56</font></td></tr>
+```
+
+Com pequenos ajustes, o código limpo fica assim:
+
+```py
+from datetime import date
+from dateutil import rrule
+import pandas as pd
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3
+urllib3.disable_warnings()
+
+end_date = date(2023, 4, 1)
+start_date = date(2022, 1, 1)
+
+dados = list()
+for dt in rrule.rrule(rrule.MONTHLY, dtstart=start_date, until=end_date):
+    url = f"http://cnes2.datasus.gov.br/Mod_Ind_Tipo_Leito.asp?VEstado=33&VMun=&VComp={dt.strftime('%Y%m')}"
+    req = requests.get(url, verify=False)
+    soup = bs(req.text, 'html.parser')
+    tables = soup.find_all('table')[5]
+    trs = tables.find_all('tr', {"bgcolor": "#cccccc"})
+    for tr in trs:
+        dicio = {
+            "competencia": dt.strftime('%Y-%m'),
+            "codigo": tr.find_all('td')[0].text.strip(),
+            "descicao": tr.find_all('td')[1].text.strip(),
+            "lt_existente": int(tr.find_all('td')[2].text.strip()),
+            "lt_sus": int(tr.find_all('td')[3].text.strip())
+        }
+        dados.append(dicio)
+df = pd.DataFrame(dados)
+print(df)
+```
+```textfile
+     competencia codigo                                           descicao  lt_existente  lt_sus
+0        2022-01     01                                 BUCO MAXILO FACIAL           140      58
+1        2022-01     02                                        CARDIOLOGIA           543     316
+2        2022-01     03                                     CIRURGIA GERAL          3916    2014
+3        2022-01     04                                     ENDOCRINOLOGIA            49      10
+4        2022-01     05                                  GASTROENTEROLOGIA           143      52
+...          ...    ...                                                ...           ...     ...
+1027     2023-04     86            UTI CORONARIANA TIPO III - UCO TIPO III            63       0
+1028     2023-04     92  UNIDADE DE CUIDADOS INTERMEDIARIOS NEONATAL CO...           395     221
+1029     2023-04     93  UNIDADE DE CUIDADOS INTERMEDIARIOS NEONATAL CA...            84      64
+1030     2023-04     94      UNIDADE DE CUIDADOS INTERMEDIARIOS PEDIATRICO            79      50
+1031     2023-04     95          UNIDADE DE CUIDADOS INTERMEDIARIOS ADULTO           779     416
+```
+
+{{< /expandable >}}
+
+{{< expandable label="Raspagem de múltiplas páginas: URL no código-fonte" level="2" >}}
+
+Em muitos casos, os dados que buscamos não estão numa URL, mas sim em __URLs dentro do código da URL__. Tomemos por exemplo o site Busca de Pedidos e Respostas, da CGU, onde é possível ver todas as solicitações feitas via LAI aos órgãos e entidades do governo federal — para este exemplo, vamos usar a Petrobrás: https://buscalai.cgu.gov.br/?handler=search&ConsultaBasica.TermoPesquisa=&ConsultaBasica.IdOuvidoriaSelecionada=311&ConsultaBasica.OuvidoriaSelecionada=PETROBRAS+%E2%80%93+Petr%C3%B3leo+Brasileiro+S.A.&estados-simples=311&ConsultaBasica.IdTipoDecisaoSelecionada=&ConsultaBasica.TipoDecisaoSelecionada=&numPagina=0&maximoRegistrosPorPagina=30
+
+Notem que, ao entrar no link, temos algumas informações interessantes:
+
+- o título da solicitação
+- as primeiras linhas do pedido
+- o resultado (se o acesso foi concedido, se não foi etc.)
+- a data da solicitação
+
+Apesar de interessantes, não há todas as informações ali: para ler a solicitação na íntegra e ver a resposta também na íntegra, é preciso clicar no link. Aí, sim, é aberta outra página com as informações.
+
+Para raspar essa página, portanto, teríamos de:
+
+- entrar na URL inicial
+- capturar na URL inicial:
+    - título
+    - status
+    - data/hora
+    - URL da página de detalhes
+- entrar na URL da página de detalhes
+- capturar na URL da página de detalhes
+    - pedido na íntegra
+    - resposta na íntegra
+
+Reparem que, em determinado momento, estaremos fazendo __raspagem de uma URL que conseguimos na raspagem de outra URL__.
+
+{{< /expandable >}}
