@@ -1735,4 +1735,621 @@ Para raspar essa página, portanto, teríamos de:
 
 Reparem que, em determinado momento, estaremos fazendo __raspagem de uma URL que conseguimos na raspagem de outra URL__.
 
+### Links
+
+Apesar de parecer coisa do filme _Inception_, em que personagens sonham dentro de sonhos dentro de sonhos, é bastante simples obter a URL de dentro de uma URL. Vejamos um comparativo no exemplo abaixo:
+
+```html
+<html>
+    <head>
+        <title>Site sobre Aleatoriedades</title>
+    </head>
+    <body>
+        <h1>Bem-vindo ao Site sobre Aleatoriedades!</h1>
+        <a href="https://sitesobrealeatoriedades/posts_antigos">Clique aqui para ver posts antigos</a>
+    </body>
+</html>
+```
+
+Para raspar este site, sobretudo a tag a, usamos, até o momento:
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+
+url = "https://sitesobrealeatoriedades"
+req = requests.get(url)
+soup = bs(req.text, 'html.parser')
+link = soup.find('a').text
+```
+
+O código acima retorna como resultado _Clique aqui para ver posts antigos_. Ele retorna o texto do link.
+
+Se eu mudar ligeiramente o código...
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+
+url = "https://sitesobrealeatoriedades"
+req = requests.get(url)
+soup = bs(req.text, 'html.parser')
+link = soup.find('a')['href']
+```
+
+...ele me trará o valor de `href` &mdash;ou seja, a URL https://sitesobrealeatoriedades/posts_antigos.
+
+Consigo, assim, fazer outra requisição de Request para raspar https://sitesobrealeatoriedades/posts_antigos:
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+
+url = "https://sitesobrealeatoriedades"
+req = requests.get(url)
+soup = bs(req.text, 'html.parser')
+link = soup.find('a')['href']
+req_de_novo = requests.get(link)
+soup_de_novo = bs(req_de_novo, 'html.parser')
+[etc.]
+```
+
+Daí a ideia de raspar dados de uma URL que está dentro de outra URL!
+
+No exemplo dos pedidos via LAI à Petrobrás, a raspagem da página inicial seria assim:
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3
+urllib3.disable_warnings()
+
+url = "https://buscalai.cgu.gov.br/?handler=search&ConsultaBasica.TermoPesquisa=&ConsultaBasica.IdOuvidoriaSelecionada=311&ConsultaBasica.OuvidoriaSelecionada=PETROBRAS+%E2%80%93+Petr%C3%B3leo+Brasileiro+S.A.&estados-simples=311&ConsultaBasica.IdTipoDecisaoSelecionada=&ConsultaBasica.TipoDecisaoSelecionada=&numPagina=0&maximoRegistrosPorPagina=30"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+table = soup.find('div', {'id': 'Groups'})
+divs = table.find_all('div', {'id': 'PedidoLai'})
+for i in divs:
+    titulo = i.find('a').text.strip() # estamos raspando o **texto** do link
+    print(titulo)
+```
+```textfile
+Solicitação de Contrato
+Acesso a contratos e edital de pré-qualificação
+Acesso aos documentos contratuais do ICJ 5900.0120767.22.2 - AHTS - Área Submarina
+Solicitação de contrato firmado entre a Petrobras e o consórcio 3T FLEXIVEIS
+Solicitação de arquivos de contrato
+Comite de pessoas
+Solicitação de Minuta contratual
+Solicitação de informações de contrato
+Solicitação de Contrato
+Acesso à informação - contrato n° 4600558214
+Solicito o instrumento contratual numero 4600672816, contrato com a DGC SERVIÇOS PARA MONTAGENS e todos os seus anexos.
+Solicitação de Contrato
+lista das embarcações do tipo AHTS E AHTS-r EM CONTRATO COM a Petrobras
+Incêndio Vila Socó - Cubatão 1984
+acesso a lista das embarcações do tipo sdSV contratadas pela Petrobras desde 2018
+acesso a lista das embarcações do tipo RSV contratadas pela Petrobras desde 2018
+Resultado - Processo Administrativo
+Solicitação de Contrato
+Solicitação de Contrato
+Protocolo CGU Manifestação 48023.000237.2023-53
+Contratação de terceirizados
+INFORMAÇÕES EMPRESA NUTRI SABOR
+cópias dos Aditivos N. 1 e N. 2 do contrato ICJ N. 5900.0114051.20.2
+Acesso aos arquivos do Projeto Memória Petrobras
+Presença de pregoeiros na apólice de seguros de D&O
+cópia do contrato SAP N. 4600665424
+Salários - Força de Trabalho Terceirizada
+Solicitação de Ficha de Registro de Empregado (FRE)
+Solicitação Dados/Informações Detalhadas Processo 7003948897 / Número do ICJ 5900.0123076.22.2
+Número de Engenheiros Mecânicos Terceirizados
+```
+
+Mas se adicionarmos para pegar as informações de `href`, teremos isso:
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3
+urllib3.disable_warnings()
+
+url = "https://buscalai.cgu.gov.br/?handler=search&ConsultaBasica.TermoPesquisa=&ConsultaBasica.IdOuvidoriaSelecionada=311&ConsultaBasica.OuvidoriaSelecionada=PETROBRAS+%E2%80%93+Petr%C3%B3leo+Brasileiro+S.A.&estados-simples=311&ConsultaBasica.IdTipoDecisaoSelecionada=&ConsultaBasica.TipoDecisaoSelecionada=&numPagina=0&maximoRegistrosPorPagina=30"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+table = soup.find('div', {'id': 'Groups'})
+divs = table.find_all('div', {'id': 'PedidoLai'})
+for i in divs:
+    titulo = i.find('a').text.strip() # estamos raspando o **texto** do link
+    link = i.find('a')['href'] # estamos raspando a URL, o dado contido em `href`
+    print(titulo)
+    print(link)
+```
+```textfile
+Solicitação de Contrato
+/PedidosLai/DetalhePedido?id=5517882
+Acesso a contratos e edital de pré-qualificação
+/PedidosLai/DetalhePedido?id=5515575
+Acesso aos documentos contratuais do ICJ 5900.0120767.22.2 - AHTS - Área Submarina
+/PedidosLai/DetalhePedido?id=5445309
+Solicitação de contrato firmado entre a Petrobras e o consórcio 3T FLEXIVEIS
+/PedidosLai/DetalhePedido?id=5449256
+Solicitação de arquivos de contrato
+/PedidosLai/DetalhePedido?id=5475834
+Comite de pessoas
+/PedidosLai/DetalhePedido?id=5454910
+Solicitação de Minuta contratual
+/PedidosLai/DetalhePedido?id=5528990
+Solicitação de informações de contrato
+/PedidosLai/DetalhePedido?id=5532490
+Solicitação de Contrato
+/PedidosLai/DetalhePedido?id=5518039
+Acesso à informação - contrato n° 4600558214
+/PedidosLai/DetalhePedido?id=5438903
+Solicito o instrumento contratual numero 4600672816, contrato com a DGC SERVIÇOS PARA MONTAGENS e todos os seus anexos.
+/PedidosLai/DetalhePedido?id=5513451
+Solicitação de Contrato
+/PedidosLai/DetalhePedido?id=5518027
+lista das embarcações do tipo AHTS E AHTS-r EM CONTRATO COM a Petrobras
+/PedidosLai/DetalhePedido?id=5493665
+Incêndio Vila Socó - Cubatão 1984
+/PedidosLai/DetalhePedido?id=5414676
+acesso a lista das embarcações do tipo sdSV contratadas pela Petrobras desde 2018
+/PedidosLai/DetalhePedido?id=5495607
+acesso a lista das embarcações do tipo RSV contratadas pela Petrobras desde 2018
+/PedidosLai/DetalhePedido?id=5493624
+Resultado - Processo Administrativo
+/PedidosLai/DetalhePedido?id=5399173
+Solicitação de Contrato
+/PedidosLai/DetalhePedido?id=5518006
+Solicitação de Contrato
+/PedidosLai/DetalhePedido?id=5517987
+Protocolo CGU Manifestação 48023.000237.2023-53
+/PedidosLai/DetalhePedido?id=5422449
+Contratação de terceirizados
+/PedidosLai/DetalhePedido?id=5460922
+INFORMAÇÕES EMPRESA NUTRI SABOR
+/PedidosLai/DetalhePedido?id=5536376
+cópias dos Aditivos N. 1 e N. 2 do contrato ICJ N. 5900.0114051.20.2
+/PedidosLai/DetalhePedido?id=5489407
+Acesso aos arquivos do Projeto Memória Petrobras
+/PedidosLai/DetalhePedido?id=5494879
+Presença de pregoeiros na apólice de seguros de D&O
+/PedidosLai/DetalhePedido?id=5440891
+cópia do contrato SAP N. 4600665424
+/PedidosLai/DetalhePedido?id=5375540
+Salários - Força de Trabalho Terceirizada
+/PedidosLai/DetalhePedido?id=5505415
+Solicitação de Ficha de Registro de Empregado (FRE)
+/PedidosLai/DetalhePedido?id=5476472
+Solicitação Dados/Informações Detalhadas Processo 7003948897 / Número do ICJ 5900.0123076.22.2
+/PedidosLai/DetalhePedido?id=5505799
+Número de Engenheiros Mecânicos Terceirizados
+/PedidosLai/DetalhePedido?id=5462255
+```
+
+Notem que temos o final da URL, mas o começo, não. Podemos acrescentar o começo...
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3
+urllib3.disable_warnings()
+
+url = "https://buscalai.cgu.gov.br/?handler=search&ConsultaBasica.TermoPesquisa=&ConsultaBasica.IdOuvidoriaSelecionada=311&ConsultaBasica.OuvidoriaSelecionada=PETROBRAS+%E2%80%93+Petr%C3%B3leo+Brasileiro+S.A.&estados-simples=311&ConsultaBasica.IdTipoDecisaoSelecionada=&ConsultaBasica.TipoDecisaoSelecionada=&numPagina=0&maximoRegistrosPorPagina=30"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+table = soup.find('div', {'id': 'Groups'})
+divs = table.find_all('div', {'id': 'PedidoLai'})
+for i in divs:
+    titulo = i.find('a').text.strip()
+    link = f"https://buscalai.cgu.gov.br{i.find('a')['href']}"
+    print(titulo)
+    print(link)
+```
+```textfile
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5517882
+Acesso a contratos e edital de pré-qualificação
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5515575
+Acesso aos documentos contratuais do ICJ 5900.0120767.22.2 - AHTS - Área Submarina
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5445309
+Solicitação de contrato firmado entre a Petrobras e o consórcio 3T FLEXIVEIS
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5449256
+Solicitação de arquivos de contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5475834
+Comite de pessoas
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5454910
+Solicitação de Minuta contratual
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5528990
+Solicitação de informações de contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5532490
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5518039
+Acesso à informação - contrato n° 4600558214
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5438903
+Solicito o instrumento contratual numero 4600672816, contrato com a DGC SERVIÇOS PARA MONTAGENS e todos os seus anexos.
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5513451
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5518027
+lista das embarcações do tipo AHTS E AHTS-r EM CONTRATO COM a Petrobras
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5493665
+Incêndio Vila Socó - Cubatão 1984
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5414676
+acesso a lista das embarcações do tipo sdSV contratadas pela Petrobras desde 2018
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5495607
+acesso a lista das embarcações do tipo RSV contratadas pela Petrobras desde 2018
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5493624
+Resultado - Processo Administrativo
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5399173
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5518006
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5517987
+Protocolo CGU Manifestação 48023.000237.2023-53
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5422449
+Contratação de terceirizados
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5460922
+INFORMAÇÕES EMPRESA NUTRI SABOR
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5536376
+cópias dos Aditivos N. 1 e N. 2 do contrato ICJ N. 5900.0114051.20.2
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5489407
+Acesso aos arquivos do Projeto Memória Petrobras
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5494879
+Presença de pregoeiros na apólice de seguros de D&O
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5440891
+cópia do contrato SAP N. 4600665424
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5375540
+Salários - Força de Trabalho Terceirizada
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5505415
+Solicitação de Ficha de Registro de Empregado (FRE)
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5476472
+Solicitação Dados/Informações Detalhadas Processo 7003948897 / Número do ICJ 5900.0123076.22.2
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5505799
+Número de Engenheiros Mecânicos Terceirizados
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5462255
+```
+
+...E, por fim, podemos pedir ao código para entrar em cada link e capturar a informação que desejarmos &mdash;via requisição de Request.
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import urllib3
+urllib3.disable_warnings()
+
+url = "https://buscalai.cgu.gov.br/?handler=search&ConsultaBasica.TermoPesquisa=&ConsultaBasica.IdOuvidoriaSelecionada=311&ConsultaBasica.OuvidoriaSelecionada=PETROBRAS+%E2%80%93+Petr%C3%B3leo+Brasileiro+S.A.&estados-simples=311&ConsultaBasica.IdTipoDecisaoSelecionada=&ConsultaBasica.TipoDecisaoSelecionada=&numPagina=0&maximoRegistrosPorPagina=30"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+table = soup.find('div', {'id': 'Groups'})
+divs = table.find_all('div', {'id': 'PedidoLai'})
+for i in divs:
+    titulo = i.find('a').text.strip()
+    link = f"https://buscalai.cgu.gov.br{i.find('a')['href']}" # o script pega a URL...
+    req = requests.get(link, verify=False) # ...entra na URL e começa a raspagem
+    soup = bs(req.text, 'html.parser')
+    rows = soup.find_all('div', {"class": 'row'})[1:3]
+    pedido = rows[0].find('p').text.strip()
+    print(titulo)
+    print(link)
+    print(pedido)    
+```
+```textfile
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5517882
+Prezados Senhores, bom dia.
+
+Solicito a cópia do contrato número 4600627562 firmado entre a Petróleo Brasileiro S.A. – PETROBRAS e a ALFA LAVAL LTDA., inscrita no CNPJ 43.474.212/0003-85 seus respectivos documentos anexos e aditivos.
+
+Solicito que as informações sejam fornecidas em formato digital, quando disponíveis, conforme estabelece o artigo 11, parágrafo 5º da lei 12.527/2011. Na eventualidade de as informações solicitadas não serem fornecidas, requeiro que seja apontada a razão da negativa bem como, se for o caso, eventual grau de classificação de sigilo (ultrassecreto, secreto ou reservado), tudo nos termos do artigo 24, parágrafo 1º da Lei 12.527/2011.
+
+Antecipadamente agradeço.
+
+Atenciosamente,
+
+Nilton Viana
+Acesso a contratos e edital de pré-qualificação
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5515575
+Prezados,
+Solicito a cópia dos contratos 4600645610 e 4600645625 bem como o edital de pré-qualificação que elegeu as licenças da Salesforce como provedor de CRM da Petrobras com vistas a conhecer o processo utilizado e avaliar sua aderência ao processo de compra de licenças de CRM do Banco do Nordeste.
+Acesso aos documentos contratuais do ICJ 5900.0120767.22.2 - AHTS - Área Submarina
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5445309
+Solicitamos gentilmente acesso aos documentos contratuais do ICJ 5900.0120767.22.2 - AHTS - Área Submarina.
+Solicitação de contrato firmado entre a Petrobras e o consórcio 3T FLEXIVEIS
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5449256
+Prezados Srs., 
+
+Venho através desta solicitar o contrato firmado entre as unidades administrativas 910816 - Petróleo Brasileiro S.A. e o consórcio 3T FLEXIVEIS, de CNPJ: 41.537.026/0001-50, cujo o número do contrato celebrado é: 4600662510. Com o ICJ de nº 5900.0119513.21.2. 
+
+Agradeço desde já.
+Solicitação de arquivos de contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5475834
+SOLICITO ENVIO DO CONTRATO N° DO ICJ 5900.0116609.20.2, JUNTAMENTE COM OS RESPECTIVOS ANEXOS E SEUS ADITIVOS PARA FINS DE ESTUDO PARA A LICITAÇÃO QUE ESTÁ OCORRENDO. NO AGUARDO COM BREVIDADE. AGRADEÇO DESDE JÁ.
+Comite de pessoas
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5454910
+Gostaria de saber em que data we reunirá o Comitê de Pessoas da estatal, quais os membros do comitê bem como suas atribuições. Gostaria tambem de ter acesso ao relatório do Comitê a respeito das 2 ultimas nomeações de conselheiros da estatal.
+Solicitação de Minuta contratual
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5528990
+Prezados, poderiam disponibilizar a minuta contratual vigente e PPUs do contrato 4600672163, com obejto de contratação: Serviço Onshore e Offshore de Limpeza Quimica e por Hidrojateamento a ultra pressão de permutadores de calor?
+Solicitação de informações de contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5532490
+Prezados, solicito minuta contratual e/ou PPU do contrato 4600610870 firmado entre a Petrobras e Expander Manutenção Ltda.
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5518039
+Prezados Senhores, bom dia.
+
+Solicito a cópia do contrato número 4600610870 firmado entre a Petróleo Brasileiro S.A. – PETROBRAS e a EXPANDER MANUTENÇÃO LTDA., inscrita no CNPJ 54.240.411/0001-83 seus respectivos documentos anexos e aditivos.
+
+Solicito que as informações sejam fornecidas em formato digital, quando disponíveis, conforme estabelece o artigo 11, parágrafo 5º da lei 12.527/2011. Na eventualidade de as informações solicitadas não serem fornecidas, requeiro que seja apontada a razão da negativa bem como, se for o caso, eventual grau de classificação de sigilo (ultrassecreto, secreto ou reservado), tudo nos termos do artigo 24, parágrafo 1º da Lei 12.527/2011.
+
+Antecipadamente agradeço.
+
+Atenciosamente,
+
+Nilton Viana
+Acesso à informação - contrato n° 4600558214
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5438903
+Prezados,
+
+Gostaria de solicitar planilha com as seguintes informações referentes ao contrato n° 4600558214 (n° contrato jurídico 0804.0106414.17.2), entre a Petrobrás e o fornecedor KERUI METODO CONSTRUCAO E MONTAGEM S.A. (CNPJ 29.479.594/0001-47):
+Valores pagos ao fornecedor, separados por data de pagamento
+Valores futuros a serem pagos ao fornecedor no contrato
+Status do contrato - se ele segue ativo ou não
+Solicito o instrumento contratual numero 4600672816, contrato com a DGC SERVIÇOS PARA MONTAGENS e todos os seus anexos.
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5513451
+Solicito o instrumento contratual numero 4600672816, contrato com a DGC SERVIÇOS PARA MONTAGENS e todos os seus anexos. 
+Número do ICJ:  5900.0122848.22.2
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5518027
+Prezados Senhores, bom dia.
+
+Solicito a cópia do contrato número 4600610554 firmado entre a Petróleo Brasileiro S.A. – PETROBRAS e a EXPANDER MANUTENÇÃO LTDA., inscrita no CNPJ 54.240.411/0001-83 seus respectivos documentos anexos e aditivos.
+
+Solicito que as informações sejam fornecidas em formato digital, quando disponíveis, conforme estabelece o artigo 11, parágrafo 5º da lei 12.527/2011. Na eventualidade de as informações solicitadas não serem fornecidas, requeiro que seja apontada a razão da negativa bem como, se for o caso, eventual grau de classificação de sigilo (ultrassecreto, secreto ou reservado), tudo nos termos do artigo 24, parágrafo 1º da Lei 12.527/2011.
+
+Antecipadamente agradeço.
+
+Atenciosamente,
+
+Nilton Viana
+lista das embarcações do tipo AHTS E AHTS-r EM CONTRATO COM a Petrobras
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5493665
+Solicito lista das embarcações do tipo AHTS E AHTS-r contratadas pela Petrobras, identificando seu nome, empresa contratada, datas de início e término do contrato e valor do contrato. Antecipo que, pela lista pública de contratos da Petrobras, não é possível verificar todos os contratos do tipo, visto que as informações que constam do objeto contratual são, em muitos casos, incompletas e não mantêm um padrão
+Incêndio Vila Socó - Cubatão 1984
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5414676
+Prezados, 
+
+por favor podem me fornecer as seguintes informações sobre o incêndio da Vila Socó, ocorrido nas instalações da empresa em 1984:
+a) o número de vítimas oficiais do incêndio?
+b) a relação com nome e idade das vítimas? 
+c) Os resultados da Sindicância realizada para averiguar as causas e responsabilidades pelo evento?
+d) O número de pessoas e famílias indenizadas?
+e) A forma de indenização e os valores destinados a cada atingido?
+f) Os atingidos que receberam moradias tem a posse dos imóveis ou eles são apenas cedidos pela empresa?
+
+Aguardo retorno
+Atenciosamente,
+acesso a lista das embarcações do tipo sdSV contratadas pela Petrobras desde 2018
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5495607
+Prezados, bom dia! Solicito acesso a lista das embarcações do tipo sdSV contratadas pela Petrobras desde 2018 até a presente data identificando: nome da embarcação, ICJ de afretamento e prestação de serviços, data base dos contratos e/ou taxa de câmbio, empresas contratadas, data de início e término do contrato, valor total dos contratos de afretamento e prestação de serviços. Desde já agradeço muitíssimo a atenção
+acesso a lista das embarcações do tipo RSV contratadas pela Petrobras desde 2018
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5493624
+Prezados, boa tarde! Solicito acesso a lista das embarcações do tipo RSV contratadas pela Petrobras desde 2018 até a presente data identificando: nome da embarcação, ICJ de afretamento e prestação de serviços, data base dos contratos e/ou taxa de câmbio, empresas contratadas, data de início e término do contrato, valor total dos contratos de afretamento e prestação de serviços. Desde já agradeço muitíssimo pela atenção.
+Resultado - Processo Administrativo
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5399173
+Prezados, 
+
+Em 1984 ocorreu o incêndio da Vila Socó, em Cubatão no oleoduto administrado pela Transpetro. Após o incêndio houve a abertura de um PAD para investigar as causas e responsabilizações do incêndio. Quais os resultados do PAD? Por gentileza, poderiam compartilhar o documento?
+
+Outros questionamentos referentes ao PAD: 
+Qual o valor destinado pela empresa para reconstrução da comunidade? 
+Quais as famílias foram contempladas? 
+Quantas casas foram construídas? 
+Houve alguma sanção aos servidores envolvidos?
+Quais as medidas adotadas pela empresa após o incêndio para melhorar a segurança das operações?
+
+Aguardo retorno
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5518006
+Prezados Senhores, bom dia.
+
+Solicito a cópia do contrato número 4600568704 firmado entre a Petróleo Brasileiro S.A. – PETROBRAS e a EXPANDER MANUTENÇÃO LTDA., inscrita no CNPJ 54.240.411/0001-83 seus respectivos documentos anexos e aditivos.
+
+Solicito que as informações sejam fornecidas em formato digital, quando disponíveis, conforme estabelece o artigo 11, parágrafo 5º da lei 12.527/2011. Na eventualidade de as informações solicitadas não serem fornecidas, requeiro que seja apontada a razão da negativa bem como, se for o caso, eventual grau de classificação de sigilo (ultrassecreto, secreto ou reservado), tudo nos termos do artigo 24, parágrafo 1º da Lei 12.527/2011.
+
+Antecipadamente agradeço.
+
+Atenciosamente,
+
+Nilton Viana
+Solicitação de Contrato
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5517987
+Prezados Senhores, bom dia.
+
+Solicito a cópia do contrato número 4600558188 firmado entre a Petróleo Brasileiro S.A. – PETROBRAS e a EXPANDER MANUTENÇÃO LTDA., inscrita no CNPJ 54.240.411/0001-83 seus respectivos documentos anexos e aditivos.
+
+Solicito que as informações sejam fornecidas em formato digital, quando disponíveis, conforme estabelece o artigo 11, parágrafo 5º da lei 12.527/2011. Na eventualidade de as informações solicitadas não serem fornecidas, requeiro que seja apontada a razão da negativa bem como, se for o caso, eventual grau de classificação de sigilo (ultrassecreto, secreto ou reservado), tudo nos termos do artigo 24, parágrafo 1º da Lei 12.527/2011.
+
+Antecipadamente agradeço.
+
+Atenciosamente,
+
+Nilton Viana
+Protocolo CGU Manifestação 48023.000237.2023-53
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5422449
+O Protocolo CGU Manifestação 48023.000237.2023-53  solicitou cópia do DIP SBS/OGBS/AP 005/2017 e seus despachos.
+
+O acesso a informação foi concedido com o envio de 3 despachos (anexos), entretanto deixaram de ser anexados outros despachos existentes no referido DIP, despachos estes relacionados aos atos de gestão do Requerente e os seus desdobramentos em atendimento ao seu Objeto.
+
+Desta forma solicito o complemento das informações com o envio dos demais despachos.
+
+Atenciosamente.
+Contratação de terceirizados
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5460922
+Gostaria de ter informação sobre a quantidade de profissionais contratados por empresas terceirizadas que atuam na PETROBRAS no cargo de Engenheiro de Segurança do Trabalho.
+INFORMAÇÕES EMPRESA NUTRI SABOR
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5536376
+bom dia!
+
+Pedimos acesso a informação conforme abaixo:
+
+RELATORIO DE TODAS AS MULTAS APLICADAS - MARCO TEMPORAL DE JANEIRO/2018 A JANEIRO/2022
+RELATORIO DE TODAS AS RO - REGISTRO DE OCORRÊNCIAS - COMUNICADAS
+
+Caso não seja possivel a Petrobras o envio dos 2 (dois) relatorios, pedimos que seja enviado relatorio com todas as multas aplicadas a referida empresa.
+
+a empresa abaixo:
+
+CNPJ: 02.540.779/0001-63
+RAZÃO SOCIAL: HIPERSERVE S.A.
+cópias dos Aditivos N. 1 e N. 2 do contrato ICJ N. 5900.0114051.20.2
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5489407
+Prezados,
+Solicitamos uma cópias dos Aditivos N. 1 e N. 2 do contrato ICJ N. 5900.0114051.20.2 assinado com a empresa LIDER TAXI AEREO S/A - AIR BRASIL.
+Atenciosamente,
+Acesso aos arquivos do Projeto Memória Petrobras
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5494879
+Este projeto, que teve seu site (memória.petrobras.com.br) sumariamente retirado do ar em 2016, no início do governo Temer, deve ter seu conteúdo novamente disponibilizado ao público . Tanto por representar uma guinada na medida autoritária que foi sonegar à sociedade os resultados de um projeto bem-sucedido, quanto pela necessidade de aprofundar a preservação e conservação do acervo histórico, documental e de memória das entidades sindicais.
+Afinal de contas, estamos tratando também de parte fundamental da história da própria Petrobras, que, ao completar 70 anos em 2023, reforçaria sua homenagem às organizações de seus trabalhadores que, em especial neste passado recente, tanto lutaram pela preservação de seu caráter estatal e em defesa de uma política energética a serviço da maioria do povo brasileiro.
+Presença de pregoeiros na apólice de seguros de D&O
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5440891
+Prezados, 
+bom dia.
+
+Por favor, podem informar se o seguro D&O contratado pela empresa contempla pregoeiros, e a justificativa para a presença ou não dessa função na apólice de seguros? O objetivo da consulta é didático, para aprimoramento dos contratos firmados pela minha empresa. 
+
+Grato desde já.
+cópia do contrato SAP N. 4600665424
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5375540
+Gostaríamos de receber uma cópia do contrato SAP N. 4600665424, juntamente com todos seus Anexos e Aditivos, assinados com a empresa RINA BRASIL SERVIÇOS TECNICOS LTDA., e os nomes do Gerente e do Fiscal deste contrato.
+Salários - Força de Trabalho Terceirizada
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5505415
+Prezados,
+
+Solicito informar: 
+
+- Se o atual Sr. Presidente da Petrobras Jean Paul Prates tem conhecimento dos salários ofertados aos prestadores de serviços desde a última gestão e o seu posicionamento sobre o tema. 
+
+2) Solicito que caso ainda não seja do conhecimento do Sr. Presidente as condições salariais dos terceirizados:
+
+- Seja apurado por esse canal o piso salarial dos terceirizados e dado a conhecer ao Presidente esses valores monetários,
+
+- Parecer do Presidente sobre o tema.
+
+Os terceirizados estão padecendo com a política salarial inadequada oferecida em torno de 4 ou 5 anos (há contratos de até 1 salário mínimo e meio). Os terceirizados compõem a força de trabalho da Petrobras, alguns prestam serviços há 10, 20, 30, 40 anos e encontram dificuldades de recolocação no mercado, tendo em vista a especialização do trabalho voltada exclusivamente para o âmbito Petrobras.
+Esses trabalhadores são desvalorizados pela Petrobras, não há olhar humano ou políticas de sensibilização junto às empresas terceirizadas de valorização desse capital que atua nos processos e projetos da empresa ainda que de forma indireta.
+
+Solicito que a resposta não seja de uma área específica responsável por contratações no sistema Petrobras, que esse pedido chegue ao Sr. Presidente e tenhamos um parecer sobre o tema.
+
+Presidente Jean, ajude os contratados da Cia, são trabalhadores e trabalhadoras vivendo em grandes centros como o Rio de Janeiro com elevado custo de vida que servem à Petrobras e em contrapartida estão sobrevivendo com salário mínimo ou pouco mais que isso, em termos gerais.
+
+Aproveito o ensejo para externar protestos de elevada estima e consideração.
+Solicitação de Ficha de Registro de Empregado (FRE)
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5476472
+Fui advogada da Petrobras no período de abril a julho de 2011 e gostaria de obter a Ficha de Registro de Empregado referente ao período trabalhado na companhia.
+Solicitação Dados/Informações Detalhadas Processo 7003948897 / Número do ICJ 5900.0123076.22.2
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5505799
+Prezados,
+
+Favor enviar toda documentação integrante do processo licitatório (editais, anexos, etc), bem como toda documentação integrante da contratação existente até o momento (resultado, contrato, documentos exigidos pelo Edital e já enviados pelo contratado, etc):
+
+Órgão superior: MINISTÉRIO DE MINAS E ENERGIA
+Órgão subordinado:      PETROBRAS
+Unidade administrativa: 910816 - Petróleo Brasileiro S.A.
+Número do Processo:     7003948897
+Número do ICJ:  5900.0123076.22.2
+Enquadramento do Processo:      LICITAÇÃO
+CNPJ / CPF:     03784680001141
+Objeto: SERVIÇOS PARA O PROGRAMA DE CONTROLE DE EMISSÕES FUGITIVAS UTILIZANDO AS METODOLOGIAS LDAR E SMARTLDAR
+Valor do contrato:      R$ 2.794.706,42
+Saldo bruto do contrato:        R$ 2.794.706,42
+Situação:       Ativo
+Número de Engenheiros Mecânicos Terceirizados
+https://buscalai.cgu.gov.br/PedidosLai/DetalhePedido?id=5462255
+Bom dia,
+
+Eu gostaria de saber quantos engenheiros mecânicos atuam na Petrobras como terceirizados e quanto ainda estarão atuando, nesta condição, até agosto de 2023.
+
+Eu poderia ter essas informação? Ou como obter tal informação?
+
+Atenciosamente,
+Obrigado.
+```
+
+O código limpo, modificado um pouco, para pegar essas e outras informações ficaria assim:
+
+```py
+import requests
+from bs4 import BeautifulSoup as bs
+import pandas as pd
+import urllib3
+urllib3.disable_warnings()
+
+dados = list()
+
+url = "https://buscalai.cgu.gov.br/?handler=search&ConsultaBasica.TermoPesquisa=&ConsultaBasica.IdOuvidoriaSelecionada=311&ConsultaBasica.OuvidoriaSelecionada=PETROBRAS+%E2%80%93+Petr%C3%B3leo+Brasileiro+S.A.&estados-simples=311&ConsultaBasica.IdTipoDecisaoSelecionada=&ConsultaBasica.TipoDecisaoSelecionada=&numPagina=0&maximoRegistrosPorPagina=30"
+req = requests.get(url, verify=False)
+soup = bs(req.text, 'html.parser')
+table = soup.find('div', {'id': 'Groups'})
+divs = table.find_all('div', {'id': 'PedidoLai'})
+for i in divs:
+    titulo = i.find('a').text.strip()
+    div_detalhes = i.find('div', {'id': 'Detalhes'})
+    orgao = div_detalhes.find_all('div')[0].text.strip()
+    status = div_detalhes.find_all('div')[1].text.strip()
+    data_hora = div_detalhes.find_all('div')[2].text.strip()
+    url = f"https://buscalai.cgu.gov.br{i.find('a')['href']}"
+    req = requests.get(url, verify=False)
+    soup = bs(req.text, 'html.parser')
+    rows = soup.find_all('div', {"class": 'row'})[1:3]
+    pedido = rows[0].find('p').text.strip()
+    resposta = rows[1].find('p').text.strip()
+    dicio = {
+        'titulo': titulo,
+        'orgao': orgao,
+        'status': status,
+        'data_hora': data_hora,
+        'pedido': pedido,
+        'resposta': resposta
+    }
+    dados.append(dicio)
+df = pd.DataFrame(dados)
+print(df)
+```
+```textfile
+
+                                               titulo  ...                                           resposta
+0                             Solicitação de Contrato  ...  Prezado (a) Sr, (a),\r\n \r\nA Petrobras, em a...
+1     Acesso a contratos e edital de pré-qualificação  ...  Prezado Senhora,\r\n\r\nO seu pedido de inform...
+2   Acesso aos documentos contratuais do ICJ 5900....  ...  Prezado Senhor,\r\nA Petrobras, em atenção ao ...
+3   Solicitação de contrato firmado entre a Petrob...  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+4                 Solicitação de arquivos de contrato  ...  Prezado(a) Senhor(a),\r\nA Petrobras, em atenç...
+5                                   Comite de pessoas  ...  Prezado(a) Senhor(a), \r\n\r\nA Petrobras, em ...
+6                    Solicitação de Minuta contratual  ...  Prezado(a) Sr,(a),  \r\n\r\nA Petrobras, em at...
+7              Solicitação de informações de contrato  ...  Prezado(a) Sr,(a),  \r\n\r\nA Petrobras, em at...
+8                             Solicitação de Contrato  ...  Prezado(a) Sr,(a),  \r\n\r\nA Petrobras, em at...
+9        Acesso à informação - contrato n° 4600558214  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+10  Solicito o instrumento contratual numero 46006...  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+11                            Solicitação de Contrato  ...  Prezado (a) Sr,(a),\r\n\r\nA Petrobras informa...
+12  lista das embarcações do tipo AHTS E AHTS-r EM...  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+13                  Incêndio Vila Socó - Cubatão 1984  ...  Prezado(a) Senhor(a),\r\n\r\nA Petrobras, em a...
+14  acesso a lista das embarcações do tipo sdSV co...  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+15  acesso a lista das embarcações do tipo RSV con...  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+16                Resultado - Processo Administrativo  ...  Prezado(a) Senhor(a),\r\n\r\nA Petrobras, em a...
+17                            Solicitação de Contrato  ...  Prezado (a) Sr, (a),\r\n\r\nA Petrobras inform...
+18                            Solicitação de Contrato  ...  Prezado (a) Sr, (a),\r\n\r\nA Petrobras inform...
+19    Protocolo CGU Manifestação 48023.000237.2023-53  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+20                       Contratação de terceirizados  ...  Prezada Senhora, \r\n\r\nA Petrobras, em atenç...
+21                    INFORMAÇÕES EMPRESA NUTRI SABOR  ...  Prezada Senhora,\r\n\r\nO seu pedido de inform...
+22  cópias dos Aditivos N. 1 e N. 2 do contrato IC...  ...  Prezado Senhor, \r\n\r\nA Petrobras, em atençã...
+23   Acesso aos arquivos do Projeto Memória Petrobras  ...  Prezado(a) Senhor(a),\r\n\r\nA Petrobras, em a...
+24  Presença de pregoeiros na apólice de seguros d...  ...  Prezado, \r\n\r\nEm atenção à solicitação de I...
+25                cópia do contrato SAP N. 4600665424  ...  Prezado Senhor,\r\n\r\nA Petrobras, em atenção...
+26          Salários - Força de Trabalho Terceirizada  ...  Prezado/a Senhor/a,\r\n\r\nA sua manifestação ...
+27  Solicitação de Ficha de Registro de Empregado ...  ...  Prezada Senhora,\r\n\r\nO seu pedido de inform...
+28  Solicitação Dados/Informações Detalhadas Proce...  ...  Prezado Senhor,\r\n\r\nO seu pedido de informa...
+29      Número de Engenheiros Mecânicos Terceirizados  ...  Prezado(a) Senhor(a), \r\n\r\nA Petrobras, em ...
+```
+
+
 {{< /expandable >}}
