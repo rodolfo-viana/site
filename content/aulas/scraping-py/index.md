@@ -2350,6 +2350,389 @@ print(df)
 28  Solicitação Dados/Informações Detalhadas Proce...  ...  Prezado Senhor,\r\n\r\nO seu pedido de informa...
 29      Número de Engenheiros Mecânicos Terceirizados  ...  Prezado(a) Senhor(a), \r\n\r\nA Petrobras, em ...
 ```
+{{< /expandable >}}
 
+{{< expandable label="Limitações e alternativas" level="2" >}}
+
+Até o momento usamos duas ferramentas para criar nossos scripts de raspagem de dados: __requests__ e __BeautifulSoup__. São ferramentas que resolvem a maioria das raspagens de dados... Mas não todas.
+
+Há sites cujos dados não estão no HTML do código-fonte, requisito para que BeautifulSoup opere. Ou ainda, sites que precisam de interação humana (como clicar num link para abrir uma aba onde estão os dados).
+
+Nesses casos, os dados são entregues via JavaScript, por exemplo.
+
+Tomemos o site da Secretaria de Segurança Pública de São Paulo, na página onde apresentam dados mensais [[link](https://www.ssp.sp.gov.br/estatistica/dados-mensais)]. Notem que, quando abrimos a página, automaticamente caímos na aba _Ocorrências por Mês_
+
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto; max-height:100vh; border: 1px solid black;" src="repo_07.png">
+
+Se quisermos taxas de delitos, temos de clicar em _Taxa Delito_; contudo, __a URL não muda__.
+
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto; max-height:100vh; border: 1px solid black;" src="repo_08.png">
+
+Se quisermos as taxas de delitos de uma única cidade &mdash;digamos, Campinas&mdash;, temos de clicar em _Municípios_ e escolher _Campinas_; e novamente, __a URL não muda__.
+
+<img style="display: block; margin-left: auto; margin-right: auto; width:auto; max-height:100vh; border: 1px solid black;" src="repo_09.png">
+
+E ainda assim, mesmo depois de todo o "esforço", o código-fonte não contém os dados que queremos: o `body` do site é apenas isto:
+
+```html
+  <body>
+    <app-root></app-root>
+    <div vw="" class="enabled">
+      <div vw-access-button="" class="active"></div>
+      <div vw-plugin-wrapper="">
+        <div class="vw-plugin-top-wrapper"></div>
+      </div>
+    </div>
+
+    <script>
+      function loadVLibrasScript() {
+        var script = document.createElement('script');
+        script.src = 'https://vlibras.gov.br/app/vlibras-plugin.js';
+        script.onload = function () {
+          new window.VLibras.Widget('https://vlibras.gov.br/app');
+        };
+        document.head.appendChild(script);
+
+        var scriptFonte = document.createElement('script');
+        scriptFonte.src = 'assets/scripts/tamanhoFonte.js';
+        document.head.appendChild(scriptFonte);
+
+        var scriptContraste = document.createElement('script');
+        scriptContraste.src = 'assets/scripts/contraste.js';
+        document.head.appendChild(scriptContraste);
+
+        // var cssContraste = document.createElement('link')
+        // cssContraste.href = "https://saopaulo.sp.gov.br/barra-govsp/css/barra-contraste-govsp.min.css";
+        // cssContraste.rel = "stylesheet";
+        // document.head.appendChild(cssContraste);
+      }
+
+      document.addEventListener('DOMContentLoaded', loadVLibrasScript);
+    </script>
+  <script src="runtime.a5dc32c1ca8e6772.js" type="module"></script><script src="polyfills.15907b1c3beb54e7.js" type="module"></script><script src="scripts.c91eedceb4883133.js" defer></script><script src="main.655f818c036fdaf0.js" type="module"></script>
+
+</body>
+```
+Ou seja, todo o conteúdo da página é entregue via JavaScript. Neste caso, com tantas ações requisitadas do usuário (como clicar na aba, escolher o município etc.) e mesmo sem dados no código-fonte, é possível fazer uma raspagem? __Sim!__ Mas não com as ferramentas que dispomos.
+
+[Selenium](https://selenium-python.readthedocs.io/) é um framework antigamente usado para realizar testes automatizados em navegadores &mdash;em suma, seu trabalho consiste em automatizar ações em browsers como Chrome e Firefox. Dada sua versatilidade, hoje é usado para outros tipos de automatizações &mdash;como raspagem de dados.
+
+Em outros termos, com Python e Selenium, vamos criar um "robozinho" que emula a atuação humana.
+
+```py
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from bs4 import BeautifulSoup as bs
+import time
+
+url = "https://www.ssp.sp.gov.br/estatistica/dados-mensais"
+
+# abro o navegador Chrome
+driver = webdriver.Chrome()
+
+# passo a URL
+driver.get(url)
+
+# espero 3 segundos para a página carregar
+time.sleep(3)
+
+# clico no XPath referente à aba "Taxa de Delito"
+driver.find_element(
+    By.XPATH, '/html/body/app-root/body/div[1]/div/app-dados-mensais/div[2]/div[1]/ul/li[1]/a').click()
+
+# espero 2 segundos
+time.sleep(2)
+
+# clico no XPath referente ao município de "Campinas"
+driver.find_element(
+    By.XPATH, '/html/body/app-root/body/div[1]/div/app-dados-mensais/div[2]/div[2]/form/div[2]/div[1]/select/option[110]').click()
+
+# espero 2 segundos
+time.sleep(2)
+
+# passo o código-fonte para Beautiful Soup trabalhar
+soup = bs(driver.page_source, "html.parser")
+dados = soup.find(
+    'table', class_='table table-striped table-hover ng-star-inserted')
+with open("ssp_selenium.txt", "w", encoding='utf-8') as f:
+    f.write(str(dados))
+```
+```textfile
+<table
+  _ngcontent-ng-cli-universal-c72=""
+  class="table table-striped table-hover ng-star-inserted"
+>
+  <thead _ngcontent-ng-cli-universal-c72="">
+    <tr _ngcontent-ng-cli-universal-c72="" class="table-primary">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Ano
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Homicídio Doloso por 100 mil habitantes
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Furto por 100 mil habitantes
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Roubo por 100 mil habitantes
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Furto e Roubo de Veículo por 100 mil habitantes
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Furto por 100 mil veículos
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Roubo por 100 mil veículos
+      </th>
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center" scope="col">
+        Furto e Roubo de Veículo por 100 mil veículos
+      </th>
+    </tr>
+  </thead>
+  <tbody _ngcontent-ng-cli-universal-c72="">
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2022</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">9,39</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.397,03</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">450,88</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">434,12</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">370,35</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">195,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">565,66</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2021</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">9,06</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.300,66</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">464,64</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">422,07</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">336,77</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">198,09</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">534,86</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2020</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">10,45</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">960,59</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">421,19</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">372,16</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">293,32</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">186,18</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">479,50</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2019</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">11,56</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.315,70</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">558,58</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">513,51</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">405,16</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">255,05</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">660,21</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2018</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">11,67</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.397,37</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">603,68</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">596,47</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">430,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">346,69</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">777,00</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2017</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">11,91</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.475,56</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">805,82</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">650,79</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">476,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">375,83</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">852,14</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2016</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">10,06</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.526,32</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">827,13</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">643,26</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">465,78</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">384,14</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">849,93</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2015</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">10,67</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.595,44</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">783,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">600,86</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">449,11</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">346,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">795,42</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2014</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">12,91</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.746,73</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">797,51</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">717,39</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">509,69</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">445,01</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">954,70</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2013</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">12,23</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.480,60</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">688,91</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">832,97</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">535,28</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">587,52</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.122,81</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2012</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">13,08</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.706,95</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">791,21</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">905,11</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">675,56</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">588,66</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.264,22</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2011</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">13,39</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.724,50</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">823,94</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">841,28</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">626,28</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">605,33</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.231,62</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2010</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">14,55</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.626,76</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">825,29</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">860,87</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">635,48</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">699,57</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.335,05</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2009</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">14,43</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.590,56</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">988,55</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">853,08</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">674,81</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">731,97</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.406,79</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2008</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">13,35</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.412,70</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">847,13</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">712,69</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">630,54</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">603,98</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.234,52</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2007</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">13,49</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.521,42</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">921,17</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">830,49</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">712,73</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">814,02</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.526,76</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2006</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">15,75</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.609,62</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">942,89</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.026,38</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">949,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.080,81</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">2.030,12</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2005</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">21,87</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.688,33</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">943,56</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">992,08</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.059,82</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.032,84</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">2.092,66</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2004</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">35,73</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.714,24</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">976,30</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">972,45</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.285,84</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">871,38</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">2.157,22</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2003</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">49,38</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.558,07</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">984,34</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.088,09</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.267,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.239,04</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">2.506,35</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2002</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">45,68</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.349,33</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">867,52</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.046,31</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.107,88</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.371,17</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">2.479,05</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2001</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">55,28</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.393,44</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.110,10</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.440,16</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.486,70</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.991,13</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">3.477,82</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">2000</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">50,17</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.134,37</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.136,65</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.838,94</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">-</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">-</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">-</td>
+    </tr>
+    <tr _ngcontent-ng-cli-universal-c72="" class="ng-star-inserted">
+      <th _ngcontent-ng-cli-universal-c72="" class="text-center">1999</th>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">52,69</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.126,10</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">890,68</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">1.571,12</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">-</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">-</td>
+      <td _ngcontent-ng-cli-universal-c72="" class="text-center">-</td>
+    </tr>
+  </tbody>
+</table>
+```
 
 {{< /expandable >}}
