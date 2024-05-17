@@ -2415,9 +2415,22 @@ E ainda assim, mesmo depois de todo o "esforço", o código-fonte não contém o
 ```
 Ou seja, todo o conteúdo da página é entregue via JavaScript. Neste caso, com tantas ações requisitadas do usuário (como clicar na aba, escolher o município etc.) e mesmo sem dados no código-fonte, é possível fazer uma raspagem? __Sim!__ Mas não com as ferramentas que dispomos.
 
-[Selenium](https://selenium-python.readthedocs.io/) é um framework antigamente usado para realizar testes automatizados em navegadores &mdash;em suma, seu trabalho consiste em automatizar ações em browsers como Chrome e Firefox. Dada sua versatilidade, hoje é usado para outros tipos de automatizações &mdash;como raspagem de dados.
+### Selenium
+- Link da ferramenta: https://www.selenium.dev/pt-br/
+- Link da biblioteca: https://pypi.org/project/selenium/
 
-Em outros termos, com Python e Selenium, vamos criar um "robozinho" que emula a atuação humana.
+Selenium é uma ferramenta de automação de navegador. Tomemos uma navegação por humano, passo a passo:
+
+1. Abrir o Chrome, Firefox ou outro navegador
+2. Digitar o endereço do site
+3. Esperar a página carregar
+4. Ir ao link X e clicar
+6. Esperar a página carregar
+7. ...
+
+Com Selenium, você passa os passos que deseja percorrer, e a ferramenta faz isso para você. Ou seja, Selenium imita a navegação humana. No contexto de raspagem de dados, Selenium faz ações que emulam as nossas (como clicar num link para obter os dados, caso da SSP-SP) para depois capturar as informações necessárias.
+
+Em outros termos, com Python e Selenium, vamos criar um "robozinho" que atua como um humano. Um exemplo de código com Selenium:
 
 ```py
 from selenium import webdriver
@@ -2734,5 +2747,33 @@ with open("ssp_selenium.txt", "w", encoding='utf-8') as f:
   </tbody>
 </table>
 ```
+
+{{< /expandable >}}
+
+{{< expandable label="Exercícios - parte 2" level="2" >}}
+
+### Atividade 1
+
+Existe uma lista no IMDb com os 500 melhores filmes na opinião do usuário arto-karhunen. A lista é essa: https://www.imdb.com/list/ls050782187/.
+
+Raspe os 500 filmes, contendo:
+
+- título
+- ano de lançamento
+- duração
+- nota
+- orçamento
+
+Ah, o dado de orçamento está dentro de cada link. E há paginação.
+
+O retorno deve ser um dataframe de Pandas com esses dados.
+
+### Atividade 2
+
+A agenda do presidente da República está em links como https://www.gov.br/planalto/pt-br/acompanhe-o-planalto/agenda-do-presidente-da-republica-lula/agenda-do-presidente-da-republica/2024-05-16.
+
+Raspe a agenda inteira de abril de 2024. Lembre-se: há dias sem compromissos e, portanto, sem dados.
+
+Os dados devem vir em formato de dataframe do Pandas.
 
 {{< /expandable >}}
