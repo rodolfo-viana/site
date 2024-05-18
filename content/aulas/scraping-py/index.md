@@ -2752,24 +2752,6 @@ with open("ssp_selenium.txt", "w", encoding='utf-8') as f:
 
 {{< expandable label="Exercícios - parte 2" level="2" >}}
 
-### Atividade 1
-
-Existe uma lista no IMDb com os 500 melhores filmes na opinião do usuário arto-karhunen. A lista é essa: https://www.imdb.com/list/ls050782187/.
-
-Raspe os 500 filmes, contendo:
-
-- título
-- ano de lançamento
-- duração
-- nota
-- orçamento
-
-Ah, o dado de orçamento está dentro de cada link. E há paginação.
-
-O retorno deve ser um dataframe de Pandas com esses dados.
-
-### Atividade 2
-
 A agenda do presidente da República está em links como https://www.gov.br/planalto/pt-br/acompanhe-o-planalto/agenda-do-presidente-da-republica-lula/agenda-do-presidente-da-republica/2024-05-16.
 
 Raspe a agenda inteira de abril de 2024. Lembre-se: há dias sem compromissos e, portanto, sem dados.
