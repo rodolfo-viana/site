@@ -2803,11 +2803,3 @@ Após a captura, gerar um dataframe de Pandas.
 Envie o código `py` até 1º de junho, via mensagem privada para o professor.
 
 {{< /expandable >}}
-
-
-
-
-
-
-
-{{< /expandable >}}
