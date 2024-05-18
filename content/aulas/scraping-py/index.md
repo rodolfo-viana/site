@@ -2777,3 +2777,37 @@ Raspe a agenda inteira de abril de 2024. Lembre-se: há dias sem compromissos e,
 Os dados devem vir em formato de dataframe do Pandas.
 
 {{< /expandable >}}
+
+{{< expandable label="Exame" level="2" >}}
+
+O exame aqui proposto vale __7 pontos__ na composição da nota final, enquanto as atividades anteriores valem, cada, __1,5 pontos__.
+
+Neste exame, vamos trabalhar projetos de lei da Câmara dos Deputados.
+
+O link https://www.camara.leg.br/busca-portal?contextoBusca=BuscaProposicoes&pagina=1&order=relevancia&abaEspecifica=true&filtros=%5B%7B%22ano%22%3A%222024%22%7D%5D&tipos=PL contém todos os projetos de lei apresentados no ano de 2024. Até o presente momento, são 1.638 documentos.
+
+O trabalho consiste em __capturar os 100 primeiros projetos de lei__ e extrair:
+
+  - número do projeto
+  - autor
+  - ementa
+  - data de apresentação
+  - forma de apreciação
+  - regime de tramitação
+  - URL para o inteiro teor (não o conteúdo, mas o link que leva ao inteiro teor)
+
+Note que algumas dessas informações não estão na URL acima, e sim dentro do link de cada projeto.
+
+Após a captura, gerar um dataframe de Pandas.
+
+Envie o código `py` até 1º de junho, via mensagem privada para o professor.
+
+{{< /expandable >}}
+
+
+
+
+
+
+
+{{< /expandable >}}
