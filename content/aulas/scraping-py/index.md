@@ -2764,23 +2764,37 @@ Os dados devem vir em formato de dataframe do Pandas.
 
 O exame aqui proposto vale __7 pontos__ na composição da nota final, enquanto as atividades anteriores valem, cada, __1,5 pontos__.
 
-Neste exame, vamos trabalhar projetos de lei da Câmara dos Deputados.
+Neste exame, vamos trabalhar vetos a matérias do Congresso Nacional.
 
-O link https://www.camara.leg.br/busca-portal?contextoBusca=BuscaProposicoes&pagina=1&order=relevancia&abaEspecifica=true&filtros=%5B%7B%22ano%22%3A%222024%22%7D%5D&tipos=PL contém todos os projetos de lei apresentados no ano de 2024. Até o presente momento, são 1.638 documentos.
+O link https://www25.senado.leg.br/web/atividade/materias?p_p_id=materia_WAR_atividadeportlet&p_p_lifecycle=0&p_p_state=normal&p_p_mode=view&p_p_col_id=column-1&p_p_col_count=1&_materia_WAR_atividadeportlet_pesquisaAvancada=true&_materia_WAR_atividadeportlet_siglasTipos=DESTPEC%2CDESTVET&_materia_WAR_atividadeportlet_tipoProposicao=VET&_materia_WAR_atividadeportlet_ano=2024&_materia_WAR_atividadeportlet_situacaoTramitacao=TODAS&_materia_WAR_atividadeportlet_tipoAutor=SENADOR&_materia_WAR_atividadeportlet_ordenacao=TIPO_ANO_NUMERO_DESC&_materia_WAR_atividadeportlet_p=1 contém todos os vetos apostos no ano de 2024. Até o presente momento, são 11 vetos.
 
-O trabalho consiste em __capturar os 100 primeiros projetos de lei__ e extrair:
+O trabalho consiste em __capturar todos os vetos__ e extrair:
 
-  - número do projeto
-  - autor
-  - ementa
-  - data de apresentação
-  - forma de apreciação
-  - regime de tramitação
-  - URL para o inteiro teor (não o conteúdo, mas o link que leva ao inteiro teor)
+  - número do veto
+  - assunto
+  - número da mensagem
+  - link para a mensagem
+  - número da matéria vetada
+  - quando a matéria foi recebida pelo Congresso
+  - ementa do veto
 
 Note que algumas dessas informações não estão na URL acima, e sim dentro do link de cada projeto.
 
-Após a captura, gerar um dataframe de Pandas.
+Após a captura, gerar um dataframe de Pandas. O resultado deve ser similar a este:
+
+|index|numero|assunto|mensagem|link_mensagem|materia_vetada|recebido_congresso|ementa|
+|---|---|---|---|---|---|---|---|
+|0|11/2024|Multa por atraso no pagamento do SPVAT|195/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-195-24.htm|233/2023|17/05/2024| Veto Parcial aposto ao Projeto de Lei Complementar nº 233, de 2023, que "Dispõe sobre o Seguro Obrigatório para Proteção de Vítimas de Acidentes de Trânsito (SPVAT); altera o Decreto-Lei nº 73, de 21 de novembro de 1966, as Leis nºs 8.212, de 24 de julho de 1991 (Lei Orgânica da Seguridade Social), 9.503, de 23 de setembro de 1997 (Código de Trânsito Brasileiro), e 14.075, de 22 de outubro de 2020, e a Lei Complementar nº 200, de 30 de agosto de 2023 (Novo Arcabouço Fiscal); e revoga as Leis nºs 6.194, de 19 de dezembro de 1974 (Lei do DPVAT), e 8.441, de 13 de julho de 1992, e dispositivos das Leis nºs 8.374, de 30 de dezembro de 1991, 11.482, de 31 de maio de 2007, e 11.945, de 4 de junho de 2009". |
+|1|10/2024|Incentivo fiscal aos jogos eletrônicos brasileiros independentes|168/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-168-24.htm|2796/2021|06/05/2024| Veto Parcial aposto ao Projeto de Lei nº 2.796, de 2021, que "Cria o marco legal para a indústria de jogos eletrônicos; e altera as Leis nºs 8.313, de 23 de dezembro de 1991, 8.685, de 20 de julho de 1993, e 9.279, de 14 de maio de 1996". |
+|2|9/2024|Política Nacional de Qualidade do Ar|166/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-166-24.htm|10521/2018|03/05/2024| Veto Parcial aposto ao Projeto de Lei nº 3.027, de 2022 (nº 10.521/2018, na Câmara dos Deputados), que "Institui a Política Nacional de Qualidade do Ar". |
+|3|8/2024|Restrição da Saída Temporária de Presos|144/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-144-24.htm|583/2011|12/04/2024| Veto Parcial aposto ao Projeto de Lei nº 2.253, de 2022 (nº 583/2011, na Câmara dos Deputados), que "Altera a Lei nº 7.210, de 11 de julho de 1984 (Lei de Execução Penal), para dispor sobre a monitoração eletrônica do preso, prever a realização de exame criminológico para progressão de regime e restringir o benefício da saída temporária". |
+|4|7/2024|Atividade Profissional de Musicoterapeuta|142/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-142-24.htm|6379/2019|12/04/2024| Veto Parcial aposto ao Projeto de Lei nº 6.379, de 2019, que "Dispõe sobre a atividade profissional de musicoterapeuta". |
+|5|6/2024|Universalização das bibliotecas escolares|125/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-125-24.htm|9484/2018|09/04/2024| Veto Parcial aposto ao Projeto de Lei nº 5.656, de 2019 (nº 9.484/2018, na Câmara dos Deputados), que "Altera a Lei nº 12.244, de 24 de maio de 2010, que 'dispõe sobre a universalização das bibliotecas nas instituições de ensino do País', para modificar a definição de biblioteca escolar e criar o Sistema Nacional de Bibliotecas Escolares (SNBE)". |
+|6|5/2024|Convocação da conferência nacional de cultura|122/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-122-24.htm|9474/2018|08/04/2024| Veto Parcial aposto ao Projeto de Lei nº 5.206, de 2023 (nº 9.474/2018, na Câmara dos Deputados), que "Institui o marco regulatório do Sistema Nacional de Cultura (SNC), para garantia dos direitos culturais, organizado em regime de colaboração entre os entes federativos para gestão conjunta das políticas públicas de cultura". |
+|7|4/2024|PLOA 2024|37/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-0037-24.htm|29/2023|23/01/2024| Veto Parcial aposto ao Projeto de Lei do Congresso Nacional nº 29, de 2023, que "Estima a receita e fixa a despesa da União para o exercício financeiro de 2024". |
+|8|3/2024|Incentivo financeiro a estudantes do ensino médio|31/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-0031-24.htm|54/2021|17/01/2024| Veto Parcial aposto ao Projeto de Lei nº 54, de 2021, que "Institui incentivo financeiro-educacional, na modalidade de poupança, aos estudantes matriculados no ensino médio público; e altera a Lei nº 13.999, de 18 de maio de 2020, e a Lei nº 14.075, de 22 de outubro de 2020". |
+|9|2/2024|Reestruturação de cargos no MPU|22/2024|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2024/Msg/Vep/VEP-0022-24.htm|2402/2023|16/01/2024| Veto Parcial aposto ao Projeto de Lei nº 2.402, de 2023, que "Dispõe sobre a transformação de cargos efetivos em cargos em comissão e funções de confiança no quadro de pessoal do Ministério Público da União; e altera a Lei nº 13.316, de 20 julho de 2016". |
+|10|1/2024|PLDO 2024|754/2023|https://www.planalto.gov.br/ccivil_03/_ato2023-2026/2023/Msg/Vep/VEP-754-23.htm|4/2023|03/01/2024| Veto Parcial aposto ao Projeto de Lei do Congresso Nacional nº 4, de 2023, que "Dispõe sobre as diretrizes para a elaboração e a execução da Lei Orçamentária de 2024 e dá outras providências". |
 
 Envie o código `py` até 1º de junho, via mensagem privada para o professor.
 
