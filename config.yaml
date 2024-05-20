@@ -42,9 +42,9 @@ menu:
     - name: Projetos
       url: /projetos/
       weight: 2
-    # - name: Aulas
-    #   url: /aulas/
-    #   weight: 3
+    - name: Aulas
+      url: /aulas/
+      weight: 3
     - name: RSS
       url: /index.xml
       weight: 4
