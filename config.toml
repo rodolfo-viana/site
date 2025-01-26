@@ -21,7 +21,7 @@ extra_syntaxes_and_themes = ["syntaxes"]
 [extra]
 toc = true
 use_cdn = false
-favicon = "/icon/favicon.png"
+favicon = "/favicon.png"
 theme = "dark"              # light, dark, auto, toggle
 fancy_code = true
 dynamic_note = true           # a note that can be toggled

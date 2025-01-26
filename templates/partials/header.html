@@ -65,6 +65,12 @@
          {% endif %}
     {% endif %}
 
+    {# Open Graph image for social media #}
+    <meta property="og:image" content="{{ config.base_url }}{{ config.extra.favicon | trim_start_matches(pat="/") }}" />
+    <meta property="og:image:type" content="image/png" />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="{{ current_url | default(value=config.base_url) }}" />
+
     {# Favicon #}
     {% if config.extra.favicon %}
         <link rel="icon" type="image/png" href={{ config.extra.favicon }} />
