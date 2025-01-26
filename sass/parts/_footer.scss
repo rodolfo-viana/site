@@ -1,0 +1,28 @@
+.footer {
+    margin-top: 2rem;
+    padding: 1rem 0;
+    border-top: 1px solid var(--border-color);
+    font-family: var(--header-font);
+    font-size: 0.85em;
+    
+    .footer-content {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        
+        @media (max-width: 640px) {
+            flex-direction: column;
+            gap: 0.5rem;
+            text-align: center;
+        }
+    }
+    
+    a {
+        color: var(--text-0);
+        text-decoration: none;
+        
+        &:hover {
+            text-decoration: none;
+        }
+    }
+}

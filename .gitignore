@@ -1,6 +1,2 @@
-.env
-/.env
-
-*.csv
-
-/public
+public/
+rascunhos/

@@ -1,19 +1,19 @@
----
-date: "2023-09-01"
-title: ""
----
++++
+title= ""
+template = "homepage.html"
++++
 
 Olá!
 
 Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou especialista em Data Science e Analytics pela USP.
 
-Trabalho como engenheiro de dados sênior na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers sediado em Nova York. Ali lidero projetos relacionados à infraestrutura de dados: criação, manutenção e otimização de pipelines e rotinas, além de elaboração de testes para garantir alto nível de data quality. 
+Trabalho como engenheiro de dados sênior na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers sediado em Nova York. Ali atuo em projetos relacionados à infraestrutura de dados: criação, manutenção e otimização de pipelines e rotinas, além de elaboração de testes para garantir qualidade, integridade e disponibilidade de dados. 
 
 Também sou professor no [MBA em Jornalismo de Dados](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) do [IDP](https://www.idp.edu.br/). Minhas disciplinas são Introdução a Python e Web Scraping com Python.
 
 Neste site você vai encontrar publicações sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. 
 
-Meu currículo é este [aqui](cv_2024.pdf). Você pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Se quiser mandar uma mensagem, escreva para eu@rodolfoviana.com.br.
+Meu currículo é este [aqui](/curriculo). Você pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Se quiser mandar uma mensagem, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
 Boa leitura.
 

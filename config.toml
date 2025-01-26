@@ -1,0 +1,50 @@
+base_url = "https://rodolfoviana.com.br"
+title = "rodolfo viana"
+description = "aulas, estudos e publicações sobre ciência de dados"
+default_language = "pt"
+build_search_index = true
+generate_feeds = true
+compile_sass = true
+minify_html = true
+ignored_content = ["rascunhos/"]
+feed_filenames = ["rss.xml"]
+taxonomies = [{ name = "tags" }]
+
+[search]
+include_title = true
+include_description = true
+include_path = true
+include_content = true
+index_format = "elasticlunr_json"
+
+[markdown]
+highlight_code = true
+highlight_theme = "monokai"
+external_links_target_blank = true
+smart_punctuation = false
+bottom_footnotes = true
+extra_syntaxes_and_themes = ["syntaxes"]
+
+[extra]
+toc = true
+use_cdn = false
+favicon = "/icon/favicon.png"
+theme = "dark"              # light, dark, auto, toggle
+fancy_code = true
+dynamic_note = true           # a note that can be toggled
+mathjax = true
+mathjax_dollar_inline_enable = true
+comment = false
+
+menu = [
+    { name = "/projetos", url = "/projetos", weight = 1 },
+    { name = "/aulas", url = "/aulas", weight = 2 },
+    { name = "/currículo", url = "/curriculo", weight = 3 },
+    { name = "/tags", url = "/tags", weight = 4 },
+    { name = "/rss", url = "/rss.xml", weight = 5 },
+]
+
+custom_css = []
+
+[extra.analytics]
+enabled = false
