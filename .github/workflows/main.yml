@@ -10,14 +10,9 @@ jobs:
       - name: checkout
         uses: actions/checkout@v4
 
-      - name: Create public directory if not exists
-        run: mkdir -p ./public
-
-      - name: Copy CNAME
-        run: echo "rodolfoviana.com.br" > ./public/CNAME
-
       - name: build_and_deploy
         uses: shalzz/zola-deploy-action@master
         env:
           PAGES_BRANCH: gh-pages
           TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          CNAME: rodolfoviana.com.br
