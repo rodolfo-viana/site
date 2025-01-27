@@ -7,9 +7,6 @@ weight = 1
 [taxonomies]
 tags=["python"]
 
-[extra]
-toc = false
-
 +++
 
 {% note(clickable=true, hidden=true, header="Variáveis") %}

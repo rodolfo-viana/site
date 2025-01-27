@@ -9,6 +9,7 @@ minify_html = true
 ignored_content = ["rascunhos/"]
 feed_filenames = ["rss.xml"]
 taxonomies = [{ name = "tags" }]
+author = "rodolfo viana"
 
 [markdown]
 highlight_code = true
@@ -34,7 +35,7 @@ menu = [
     { name = "/aulas", url = "/aulas", weight = 2 },
     { name = "/currículo", url = "/curriculo", weight = 3 },
     { name = "/tags", url = "/tags", weight = 4 },
-    { name = "/rss", url = "/rss.xml", weight = 5 },
+    { name = "/rss", url = "/atom.xml", weight = 5 },
 ]
 
 custom_css = []
