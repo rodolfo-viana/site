@@ -2332,7 +2332,7 @@ O código abaixo visita uma URL com uma cópia desses dados referentes a feverei
 import json
 from urllib.request import urlopen
 
-url = 'https://raw.githubusercontent.com/rodolfo-viana/site/main/content/aulas/intro-py/ObterDebitoVereadorJSON.json'
+url = 'https://raw.githubusercontent.com/rodolfo-viana/site/refs/heads/main/static/assets/ObterDebitoVereadorJSON.json'
 with urlopen(url) as response:
     source = response.read().decode('utf-8')
 data = json.loads(source)
