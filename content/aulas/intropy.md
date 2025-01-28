@@ -1,6 +1,6 @@
 +++
 title = "Introdução à linguagem Python"
-description = "Aulas ministradas aos alunos do curso de pós-graduação em Jornalismo de Dados do IDP"
+description = "Aulas de programação ministradas aos alunos do curso de pós-graduação em Jornalismo de Dados do IDP"
 date = "2024-02-18"
 weight = 1
 
