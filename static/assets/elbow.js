@@ -1,7 +1,7 @@
 function setup() {
     let canvas = createCanvas(600, 400);
-    canvas.parent('elbow-container'); // Attach the canvas to a specific div
-    background('#1f1f1f');
+    canvas.parent('elbow-container');
+    background('#121212');
     drawElbowGraph();
   }
   
