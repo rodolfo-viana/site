@@ -65,6 +65,9 @@ A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a 
 
 O método opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo". O ponto em que essa estabilização se torna perceptível representa uma estimativa do número ideal de clusters.
 
+<div id="elbow-container" class="p5container"></div>
+<script src="/assets/elbow.js"></script>
+
 Considerando-se a mera observação de um gráfico para aferição de resultado sobre o número ideal de clusters, abdica-se de suporte estatístico para assegurar a robustez do método do cotovelo. Schubert[^10] apresenta o método aplicado a conjuntos de dados com clusters mais ou menos coesos visualmente, em que os resultados se mostram semelhantes mesmo nos conjuntos uniformes ou quando os dados contêm uma única distribuição normal. Entre os problemas associados ao gráfico do cotovelo destacam-se a ausência de medição significativa de ângulo e a mudança de escala dos eixos, o que pode alterar a interpretação humana de um "cotovelo".
 
 Para mitigar tais problemas poder-se-ia utilizar um método menos subjetivo, como o critério de razão de variância, ou _Variance Ratio Criterion_ [VRC]. Enquanto o método do cotovelo se apoia na soma dos quadrados das distâncias entre cada ponto e o centroide do cluster, o VRC mede a razão entre a soma da dispersão entre os clusters e a soma da dispersão dentro dos clusters[^11]. Por termos um conjunto de dados que não aponta para uniformidade ou distribuição normal, optou-se pelo método do cotovelo.
