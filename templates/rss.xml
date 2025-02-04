@@ -25,7 +25,7 @@
           <author>{{ config.author }}</author>
           <link>{{ page.permalink | escape_xml | safe }}</link>
           <guid>{{ page.permalink | escape_xml | safe }}</guid>
-          <description xml:base="{{ page.permalink | escape_xml | safe }}">{% if page.description %}{{ page.description }}{% else %}{{ page.content | striptags | safe }}{% endif %}</description>
+          <description xml:base="{{ page.permalink | escape_xml | safe }}">{{ page.content | safe | striptags | truncate(length=2000, end="...", break_words=false) }}</description>
       </item>
       {%- endfor %}
     </channel>
