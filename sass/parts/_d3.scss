@@ -1,0 +1,22 @@
+.d3js {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  background-color: #121212;
+  font-family: "Jetbrains Mono";
+}
+.d3js svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  font-family: inherit;
+}
+
+.d3js g {
+  font-family: inherit;
+}
+
+.d3js .axis text {
+  font-family: inherit;
+}

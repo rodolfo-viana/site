@@ -65,8 +65,173 @@ A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a 
 
 O método opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo". O ponto em que essa estabilização se torna perceptível representa uma estimativa do número ideal de clusters.
 
-<div id="elbow-container" class="p5container"></div>
-<script src="/assets/elbow.js"></script>
+<div id="elbow-container" class="d3js"></div>
+
+<script>
+    // ------------------------------------------------
+    // 1) Define your data
+    // ------------------------------------------------
+    const points = [
+      { x: 1, y: 9000 },
+      { x: 2, y: 4000 },
+      { x: 3, y: 2000 },
+      { x: 4, y: 1500 },
+      { x: 5, y: 1300 },
+      { x: 6, y: 1200 },
+      { x: 7, y: 1100 }
+    ];
+
+    // ------------------------------------------------
+    // 2) Define your virtual drawing area (viewBox)
+    // ------------------------------------------------
+    const virtualWidth = 600;
+    const virtualHeight = 300;
+
+    // Margins
+    const margin = { top: 20, right: 50, bottom: 60, left: 85 };
+    const width = virtualWidth - margin.left - margin.right;
+    const height = virtualHeight - margin.top - margin.bottom;
+
+    // ------------------------------------------------
+    // 3) Create a responsive SVG
+    // ------------------------------------------------
+    const svg = d3.select("#elbow-container")
+      .append("svg")
+      .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`)
+      .attr("preserveAspectRatio", "xMidYMid meet");
+
+    // ------------------------------------------------
+    // 4) Append a group for the chart area
+    // ------------------------------------------------
+    const chartArea = svg.append("g")
+      .attr("transform", `translate(${margin.left},${margin.top})`);
+
+    // ------------------------------------------------
+    // 5) Scales
+    // ------------------------------------------------
+    const xScale = d3.scaleLinear().domain([1, 7]).range([0, width]);
+    const yScale = d3.scaleLinear().domain([0, 10000]).range([height, 0]);
+
+    // ------------------------------------------------
+    // 6) Axes
+    // ------------------------------------------------
+    const xAxis = d3.axisBottom(xScale)
+      .tickValues([1, 2, 3, 4, 5, 6, 7])
+      .tickFormat(d3.format("d")); 
+
+    const yAxis = d3.axisLeft(yScale)
+      .tickValues([0, 2000, 4000, 6000, 8000, 10000])
+      .tickFormat(d => d === 0 ? "" : d);
+
+    // X-axis group
+    const xAxisGroup = chartArea.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(xAxis);
+
+    // Style the x-axis lines/paths
+    xAxisGroup.selectAll("path, line")
+      .attr("stroke", "#f0f0f0");
+
+    // Style the x-axis text/ticks
+    xAxisGroup.selectAll("text")
+      .attr("fill", "#f0f0f0")
+      .style("font-size", "14px")
+
+    // Y-axis group
+    const yAxisGroup = chartArea.append("g")
+      .call(yAxis);
+
+    // Style the y-axis lines/paths
+    yAxisGroup.selectAll("path, line")
+      .attr("stroke", "#f0f0f0");
+
+    // Style the y-axis text/ticks
+    yAxisGroup.selectAll("text")
+      .attr("fill", "#f0f0f0")
+      .style("font-size", "14px")
+
+    // ------------------------------------------------
+    // 7) Axis labels (inline-styled)
+    // ------------------------------------------------
+    // X label
+    chartArea.append("text")
+      .attr("x", width / 2)
+      .attr("y", height + 50)
+      .attr("text-anchor", "middle")
+      .attr("fill", "#f0f0f0")
+      .style("font-size", "14px")
+      .text("Quantidade de clusters");
+
+    // Y label
+    chartArea.append("text")
+      .attr("text-anchor", "middle")
+      .attr("transform", `translate(${-70}, ${height / 2}) rotate(-90)`)
+      .attr("fill", "#f0f0f0")
+      .style("font-size", "14px")
+      .text("Soma do quadrado das distâncias");
+
+    // ------------------------------------------------
+    // 8) Line generator
+    // ------------------------------------------------
+    const lineGenerator = d3.line()
+      .x(d => xScale(d.x))
+      .y(d => yScale(d.y));
+
+    // ------------------------------------------------
+    // 9) Draw the line (inline-styled)
+    // ------------------------------------------------
+    chartArea.append("path")
+      .datum(points)
+      .attr("fill", "none")
+      .attr("stroke", "#ababab")
+      .attr("stroke-width", 2)
+      .attr("d", lineGenerator);
+
+    // ------------------------------------------------
+    // 10) Circles for each point (inline-styled)
+    // ------------------------------------------------
+    chartArea.selectAll("circle.point")
+      .data(points)
+      .enter()
+      .append("circle")
+      .attr("r", 5)
+      .attr("cx", d => xScale(d.x))
+      .attr("cy", d => yScale(d.y))
+      .attr("fill", "#ababab");
+
+    // ------------------------------------------------
+    // 11) Highlight the elbow (inline-styled)
+    // ------------------------------------------------
+    const elbowPoint = points[2]; // x=3, y=2000
+
+    chartArea.append("circle")
+      .attr("cx", xScale(elbowPoint.x))
+      .attr("cy", yScale(elbowPoint.y))
+      .attr("r", 10)
+      .attr("fill", "none")
+      .attr("stroke", "#ef5350")
+      .attr("stroke-width", 2);
+
+    // ------------------------------------------------
+    // 12) Dashed line & annotation text
+    // ------------------------------------------------
+    chartArea.append("line")
+      .attr("x1", xScale(elbowPoint.x) + 10)
+      .attr("y1", yScale(elbowPoint.y) - 10)
+      .attr("x2", xScale(elbowPoint.x) + 60)
+      .attr("y2", yScale(elbowPoint.y) - 60)
+      .attr("stroke", "#ef5350")
+      .attr("stroke-width", 2)
+      .attr("stroke-dasharray", "5,5");
+
+    chartArea.append("text")
+      .attr("x", xScale(elbowPoint.x) + 70)
+      .attr("y", yScale(elbowPoint.y) - 70)
+      .attr("fill", "#f0f0f0")
+      .style("font-size", "12px")
+      .text("Cotovelo");
+
+</script>
 
 Considerando-se a mera observação de um gráfico para aferição de resultado sobre o número ideal de clusters, abdica-se de suporte estatístico para assegurar a robustez do método do cotovelo. Schubert[^10] apresenta o método aplicado a conjuntos de dados com clusters mais ou menos coesos visualmente, em que os resultados se mostram semelhantes mesmo nos conjuntos uniformes ou quando os dados contêm uma única distribuição normal. Entre os problemas associados ao gráfico do cotovelo destacam-se a ausência de medição significativa de ângulo e a mudança de escala dos eixos, o que pode alterar a interpretação humana de um "cotovelo".
 
