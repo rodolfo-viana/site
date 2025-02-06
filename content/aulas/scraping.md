@@ -9,7 +9,7 @@ tags=["python", "web scraping"]
 
 +++
 
-{% note(clickable=true, hidden=true, header="Exempplo de web scraping em DDJ") %}
+{% note(clickable=true, hidden=true, header="Exemplo de web scraping em DDJ") %}
 
 Começamos aqui o módulo de _web scraping_ (ou, em português, raspagem de dados). Trata-se de uma técnica de extração de informações dispostas em websites ou aplicações. Isso pode ser feito manualmente, por meio de sistemas específicos (como webscraper.io), ou a partir da criação de um script (em Python, R, Java ou outras linguagens) para esta finalidade.
 
