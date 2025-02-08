@@ -15,17 +15,17 @@ Começamos aqui o módulo de _web scraping_ (ou, em português, raspagem de dado
 
 No jornalismo, _web scraping_ tem sido fundamental para a elaboração de reportagens baseadas em dados que estão disponíveis na internet. Como a notícia sobre uso de verba de gabinete da Câmara de São Paulo para envio de cartões de aniversário ([link](https://g1.globo.com/sp/sao-paulo/noticia/tres-vereadores-usam-um-terco-de-toda-a-verba-de-correio-da-camara-de-sp.ghtml)).
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_01.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_01.png">
 
 A reportagem começou com a raspagem de dados de relatórios disponibilizados pela Câmara em [https://www.saopaulo.sp.leg.br/relatorio-por-natureza-de-despesa-partir-de-2015/](https://www.saopaulo.sp.leg.br/relatorio-por-natureza-de-despesa-partir-de-2015/).
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_02.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_02.png">
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_03.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_03.png">
 
 O script para raspar os dados é [este aqui](https://github.com/rodolfo-viana/ddj_stuff/blob/main/py/vereadores_sp_gastos_nfs.py). Com os dados baixados, foi feita uma análise com Pandas que constatou os gastos exorbitantes.
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_04.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_04.png">
 
 A análise na íntegra está [aqui](https://github.com/rodolfo-viana/ddj_stuff/blob/main/ipynb/2018-02-24-vereadores_correios.ipynb).
 
@@ -43,7 +43,7 @@ Este ponto inicial é importante porque, quando falamos em raspagem de dados, es
 
 Quando abrimos um site qualquer temos na tela diversos elementos: textos de diversos tamanhos, estilos e cores; imagens que podem ser fotos ou ilustrações; gráficos de toda sorte; ícones de redes sociais. 
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_06.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_06.png">
 
 Os elementos gráficos que vemos são códigos renderizados. São linhas de código (HTML, CSS, JavaScript etc.) que o navegador (Google Chrome, Firefox, Safari etc.) interpreta para apresentar ao usuário.
 
@@ -2410,15 +2410,15 @@ Nesses casos, os dados são entregues via JavaScript, por exemplo.
 
 Tomemos o site da Secretaria de Segurança Pública de São Paulo, na página onde apresentam dados mensais [[link](https://www.ssp.sp.gov.br/estatistica/dados-mensais)]. Notem que, quando abrimos a página, automaticamente caímos na aba _Ocorrências por Mês_
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_07.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_07.png">
 
 Se quisermos taxas de delitos, temos de clicar em _Taxa Delito_; contudo, __a URL não muda__.
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_08.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_08.png">
 
 Se quisermos as taxas de delitos de uma única cidade &mdash;digamos, Campinas&mdash;, temos de clicar em _Municípios_ e escolher _Campinas_; e novamente, __a URL não muda__.
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_09.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_09.png">
 
 E ainda assim, mesmo depois de todo o "esforço", o código-fonte não contém os dados que queremos: o `body` do site é apenas isto:
 
@@ -2826,6 +2826,6 @@ Note que algumas dessas informações não estão na URL acima, e sim dentro do 
 
 Após a captura, gerar um dataframe de Pandas. O resultado deve ser similar a este:
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/repo_10.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="repo_10.png">
 
 {% end %}

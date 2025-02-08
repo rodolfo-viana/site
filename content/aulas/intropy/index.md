@@ -2407,7 +2407,7 @@ turtle.exitonclick()
 
 ...gera esta imagem:
 
-<img style="display: block; margin-left: auto; margin-right: auto; object-fit: cover; max-height:100vh;" src="/assets/mona.png">
+<img style="display: block; margin-left: auto; margin-right: auto; object-fit: cover; max-height:100vh;" src="mona.png">
 
 Ou ainda, se eu quiser criar um aplicativo &mdash;digamos, uma calculadora&mdash;, eu posso usar o módulo `tkinter`. Este código...
 
@@ -2515,11 +2515,11 @@ if __name__ == "__main__":
 
 ...gera este app:
 
-<img style="display: block; margin-left: auto; margin-right: auto; object-fit: cover; max-height:100vh;" src="/assets/calc.png">
+<img style="display: block; margin-left: auto; margin-right: auto; object-fit: cover; max-height:100vh;" src="calc.png">
 
 A lista completa de módulos está disponível na [documentação oficial](https://docs.python.org/pt-br/3/library/).
 
-Por exemplo, se eu quiser criar, ler, modificar um arquivo `csv` no Python &mdash;como [este aqui](/assets/dummy_data_1.csv)&mdash;, posso importar o módulo `csv` e usar suas funções:
+Por exemplo, se eu quiser criar, ler, modificar um arquivo `csv` no Python &mdash;como [este aqui](dummy_data_1.csv)&mdash;, posso importar o módulo `csv` e usar suas funções:
 
 ```python
 import csv
@@ -2710,11 +2710,11 @@ Módulos externos estendem as funcionalidades do Python, permitindo aos usuário
 
 Um exemplo é a biblioteca [Pandas](https://pandas.pydata.org/), amplamente usada para análise de dados.
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/pandas.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="pandas.png">
 
 Outro exemplo é a biblioteca [Matplotlib](https://matplotlib.org/), para visualização de dados. 
 
-<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="/assets/matplotlib.png">
+<img style="display: block; margin-left: auto; margin-right: auto; width: 100%; object-fit: cover; max-height:100vh;" src="matplotlib.png">
 
 A instalação de bibliotecas externas é feita com `pip` (ou package installer for Python). Basta digital no terminal...
 
@@ -3100,7 +3100,7 @@ Os dados originais para este trabalho estão disponíveis no [repositório de Da
 2. excluí colunas que não serão úteis ao trabalho,
 3. excluí registros de lideranças do governo, da oposição, e de partidos.
 
-Com isso, temos 11.996 registros de despesas, apenas. Esta versão "enxuta" dos dados está disponível [aqui](/assets/ceap_2024_02.json). 
+Com isso, temos 11.996 registros de despesas, apenas. Esta versão "enxuta" dos dados está disponível [aqui](ceap_2024_02.json). 
 
 Cada um dos quase 12 mil registros do arquivo `json` é parecido com este:
 
