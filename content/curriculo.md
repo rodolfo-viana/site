@@ -15,7 +15,7 @@ Marília, São Paulo
 
 # Resumo
 
-Engenheiro de dados com MBA em Data Science, especializado na construção e otimização de infraestruturas de dados. Atualmente trabalho na Stadium Goods, líder global no mercado de sneakers, atuando em projetos relacionados à arquitetura de dados, desenvolvimento de pipelines e data quality. Altamente capacitado em plataformas em nuvem, com um forte histórico de automação de processos para melhorar disponibilidade, integridade e escalabilidade dos dados. Também sou professor de programação para alunos de MBA no IDP.
+Engenheiro de dados com MBA em Data Science e mestrando em Ciência da Computação. Especializado na construção e otimização de infraestruturas de dados. Atualmente trabalho na Stadium Goods, líder global no mercado de sneakers, atuando em projetos relacionados à arquitetura de dados, desenvolvimento de pipelines e data quality. Altamente capacitado em plataformas em nuvem, com um forte histórico de automação de processos para melhorar disponibilidade, integridade e escalabilidade dos dados. Também sou professor de programação para alunos de MBA no IDP.
 
 # Experiência profissional
 
@@ -86,6 +86,9 @@ Engenheiro de dados com MBA em Data Science, especializado na construção e oti
 > - Finalista do Prêmio Abril de Jornalismo 2010 na categoria Perfil
 
 # Educação
+
+Mestrado em Ciência da Computação @ [Ibilce-Unesp](https://www.ibilce.unesp.br/)<br />
+2025 &mdash; em curso
 
 MBA em Data Science e Analytics @ [Esalq-USP](https://www.esalq.usp.br/)<br />
 2022 &mdash; 2023
