@@ -91,9 +91,8 @@ Mestrado em Ciência da Computação @ [Ibilce-Unesp](https://www.ibilce.unesp.b
 2025 &mdash; em curso
 
 MBA em Data Science e Analytics @ [Esalq-USP](https://www.esalq.usp.br/)<br />
-2022 &mdash; 2023
-
-Trabalho: [Detecção de anomalias em despesas dos deputados estaduais de São Paulo por meio de K-Means](/projetos/alesp-kmeans)
+2022 &mdash; 2023<br />
+Trabalho desenvolvido: [Detecção de anomalias em despesas dos deputados estaduais de São Paulo por meio de K-Means](/projetos/alesp-kmeans)
 
 # Habilidades técnicas
 
