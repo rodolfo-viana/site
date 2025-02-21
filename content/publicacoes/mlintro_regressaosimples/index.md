@@ -2,6 +2,7 @@
 title = "Modo de usar: regressão linear simples"
 description = "Explore de forma prática os fundamentos e cálculos deste algoritmo básico de machine learning"
 date = "2025-02-17"
+updated = "2025-02-21"
 
 [taxonomies]
 tags=["aprendizado de máquina", "regressão linear"]
@@ -11,7 +12,11 @@ Recentemente encontrei nas minhas bagunças um caderno com as anotações que fi
 
 Daí me surgiu a ideia de transcrever essas notas &mdash; melhor: passar para este blog explicações de conceitos de aprendizado de máquina. O primeiro texto é este. E é justamente sobre regressão linear.
 
-Em _machine learning_, chamamos de regressão os problemas em que desejamos prever um **valor contínuo** a partir de um conjunto de variáveis de entrada (também chamadas de _features_ ou variáveis independentes). Um exemplo:
+Em estatística, regressão linear é o modelo que estima a relação linear entre uma variável dependente e uma ou mais variáveis explanatórias. Uma ilustração simples:
+
+> Você quer comprar um carro. Você observa a marca, o modelo, o ano de fabricação, se é câmbio manual ou automático etc. Todos esses elementos que você observa são importantes para você analisar se o preço pedido por ele é aceitável. Esses elementos (marca, modelo, ano...) são variáveis explanatórias; o preço é a variável dependente. 
+
+Em _machine learning_ utilizamos regressão linear nos problemas em que desejamos prever um **valor contínuo** a partir de um conjunto de variáveis de entrada (também chamadas de _feature_). Um exemplo:
 
 > Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R\\$ 151 mil e R\\$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200²... A sua casa tem 182m². Quanto você deve pedir por ela?
 
@@ -126,10 +131,7 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
 
 <script>
   (function(){
-  // Hardcoded data: 99 points in three groups
-
-  // Group 1 (33 points): metragem from 100 to 170, valor from 150000 to 800000.
-  const group1 = [
+  const data = [
     { metragem: 100.4, valor: 151001 },
     { metragem: 103.2, valor: 177313 },
     { metragem: 104.9, valor: 194625 },
@@ -162,11 +164,7 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
     { metragem: 162.4, valor: 591643 },
     { metragem: 163.6, valor: 651266 },
     { metragem: 165.8, valor: 662045 },
-    { metragem: 177.0, valor: 671092 }
-  ];
-
-  // Group 2 (33 points): metragem from 171 to 220, valor from 400001 to 1000000.
-  const group2 = [
+    { metragem: 177.0, valor: 671092 },
     { metragem: 171.6, valor: 640001 },
     { metragem: 172.2, valor: 428751 },
     { metragem: 174.2, valor: 597501 },
@@ -199,11 +197,7 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
     { metragem: 213.4, valor: 903751 },
     { metragem: 214.3, valor: 1002501 },
     { metragem: 218.2, valor: 961251 },
-    { metragem: 220.1, valor: 951094 }
-  ];
-
-  // Group 3 (33 points): metragem from 221 to 300, valor from 800001 to 1150000.
-  const group3 = [
+    { metragem: 220.1, valor: 951094 },
     { metragem: 221.0, valor: 840001 },
     { metragem: 223.5, valor: 890939 },
     { metragem: 225.9, valor: 921876 },
@@ -239,17 +233,12 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
     { metragem: 300.0, valor: 1150000 }
   ];
 
-  // Combine all groups into one array
-  const data = group1.concat(group2, group3);
-
-  // --- D3 Visualization ---
   const virtualWidth = 600;
   const virtualHeight = 300;
   const margin = { top: 20, right: 20, bottom: 40, left: 50 };
   const width = virtualWidth - margin.left - margin.right;
   const height = virtualHeight - margin.top - margin.bottom;
 
-  // Create the SVG container
   const svg0 = d3.select("#graph1")
     .append("svg")
       .attr("preserveAspectRatio", "xMidYMid meet")
@@ -260,7 +249,6 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
   const svg = svg0.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Define scales
   const xScale = d3.scaleLinear()
                    .domain([100, 300])
                    .range([0, width])
@@ -271,7 +259,6 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
                    .range([height, 0])
                    .nice();
 
-  // Create axes
   const xAxis = d3.axisBottom(xScale)
                   .tickFormat(d => `${d}m²`)
                   .ticks(5);
@@ -280,7 +267,6 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
                   .tickFormat(d => `R$ ${(d/1000).toFixed(0)}k`)
                   .ticks(5);
 
-  // Draw axes
   svg.append("g")
      .attr("class", "axis")
      .attr("transform", `translate(0, ${height})`)
@@ -290,7 +276,6 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
      .attr("class", "axis")
      .call(yAxis);
 
-  // Draw data points with tooltips
   svg.selectAll(".dot")
      .data(data)
      .enter()
@@ -318,7 +303,7 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
 
 Neste cenário, o **valor contínuo** que queremos prever é o preço da casa que você deve pedir; o **conjunto de _features_** é composto por apenas uma variável: a metragem. (Poderíamos ter mais de uma variável no conjunto de _features_, como quantidade de quartos ou de banheiros, idade do imóvel etc. Mas para ficarmos numa explicação mais simples, vamos trabalhar apenas com uma variável.)
 
-Em termos mais técnicos, buscamos modelar a relação entre as variáveis de entrada ($x$) e a variável alvo ($y$) para determinar o valor previsto ($\hat{y}$) da sua casa. A isso damos o nome de **regressão linear**.
+Em termos mais técnicos, buscamos modelar a relação entre as variáveis de entrada ($x$) e a variável alvo ($y$) para determinar o valor previsto ($\hat{y}$) da sua casa.
 
 Aqui, aliás, temos uma **regressão linear simples**, ou seja, com apenas uma variável preditora. Sua tarefa é tentar encontrar a melhor reta que descreve a relação entre nossos dados &mdash; afinal, cada $x$ tem um $y$ e, portanto, temos um conjunto $(x_1,y_1),(x_2, y_2),...,(z_n,y_n)$. Em termos matemáticos, nosso $\hat{y}$ é encontrado por meio desta fórmula:
 
@@ -377,7 +362,7 @@ Desenhando melhor, para chegar a essa operação precisamos:
 
 6. Calcular o intercepto a partir do _slope_ e das médias: $\beta_0=\bar{y}- \beta_1\bar{x}$
 
-> $\beta_0 \approx -173243.3303$
+> $\beta_0 \approx -173243.3304$
 
   - Representa que, quando a metragem é 0 (ou seja, $x=0$), o valor da casa é de aproximadamente R\\$ -173.243,33. (Obviamente não faz sentido uma casa com metragem 0 e valor negativo no mundo real, mas em regressão o intercepto é matematicamente necessário para ajustar a reta aos dados.)
 
@@ -388,10 +373,7 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
 
 <script>
   (function(){
-  // Hardcoded data: 99 points in three groups
-
-  // Group 1 (33 points): metragem from 100 to 170, valor from 150000 to 800000.
-  const group4 = [
+  const data = [
     { metragem: 100.4, valor: 151001 },
     { metragem: 103.2, valor: 177313 },
     { metragem: 104.9, valor: 194625 },
@@ -424,11 +406,7 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
     { metragem: 162.4, valor: 591643 },
     { metragem: 163.6, valor: 651266 },
     { metragem: 165.8, valor: 662045 },
-    { metragem: 177.0, valor: 671092 }
-  ];
-
-  // Group 2 (33 points): metragem from 171 to 220, valor from 400001 to 1000000.
-  const group5 = [
+    { metragem: 177.0, valor: 671092 },
     { metragem: 171.6, valor: 640001 },
     { metragem: 172.2, valor: 428751 },
     { metragem: 174.2, valor: 597501 },
@@ -461,11 +439,7 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
     { metragem: 213.4, valor: 903751 },
     { metragem: 214.3, valor: 1002501 },
     { metragem: 218.2, valor: 961251 },
-    { metragem: 220.1, valor: 951094 }
-  ];
-
-  // Group 3 (33 points): metragem from 221 to 300, valor from 800001 to 1150000.
-  const group6 = [
+    { metragem: 220.1, valor: 951094 }, 
     { metragem: 221.0, valor: 840001 },
     { metragem: 223.5, valor: 890939 },
     { metragem: 225.9, valor: 921876 },
@@ -501,17 +475,12 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
     { metragem: 300.0, valor: 1150000 }
   ];
 
-  // Combine all groups into one array
-  const data = group4.concat(group5, group6);
-
-  // --- D3 Visualization ---
   const virtualWidth = 600;
   const virtualHeight = 300;
   const margin = { top: 20, right: 20, bottom: 40, left: 50 };
   const width = virtualWidth - margin.left - margin.right;
   const height = virtualHeight - margin.top - margin.bottom;
 
-  // Create the SVG container
   const svg0 = d3.select("#graph2")
     .append("svg")
       .attr("preserveAspectRatio", "xMidYMid meet")
@@ -522,7 +491,6 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
   const svg = svg0.append("g")
     .attr("transform", `translate(${margin.left},${margin.top})`);
 
-  // Define scales
   const xScale = d3.scaleLinear()
                    .domain([100, 300])
                    .range([0, width])
@@ -533,7 +501,6 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
                    .range([height, 0])
                    .nice();
 
-  // Create axes
   const xAxis = d3.axisBottom(xScale)
                   .tickFormat(d => `${d}m²`)
                   .ticks(5);
@@ -542,7 +509,6 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
                   .tickFormat(d => `R$ ${(d/1000).toFixed(0)}k`)
                   .ticks(5);
 
-  // Draw axes
   svg.append("g")
      .attr("class", "axis")
      .attr("transform", `translate(0, ${height})`)
@@ -552,7 +518,6 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
      .attr("class", "axis")
      .call(yAxis);
 
-  // Draw data points with tooltips
   svg.selectAll(".dot")
      .data(data)
      .enter()
@@ -576,8 +541,6 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
           d3.select("#tooltip").style("display", "none");
        });
 
-  // --- Simple Linear Regression ---
-  // Calculate regression coefficients
   const n = data.length;
   let sumX = 0, sumY = 0;
   data.forEach(d => {
@@ -595,13 +558,11 @@ Com todos esses cálculos, conseguimos desenhar uma reta:
   const slope = num / den;
   const intercept = meanY - slope * meanX;
 
-  // Define endpoints for the regression line using the x-domain
   const x1 = 100;
   const x2 = 300;
   const y1 = slope * x1 + intercept;
   const y2 = slope * x2 + intercept;
 
-  // Draw the regression line
   svg.append("line")
      .attr("class", "regression-line")
      .attr("x1", xScale(x1))
@@ -620,11 +581,64 @@ $$
 $$
 
 $$
-= -173243.33 + 4553.1120 \times 182
+= -173243.33037111675 + 4553.112047771215 \times 182
 $$
 
 $$
-= 655423.05
+\approx 655423.06
 $$
 
-E obtemos o resultado: a casa vale R\\$ 655.423,05.
+E obtemos o resultado: a casa vale R\\$ 655.423,06.
+
+{% note(clickable=true, hidden=true, header="Implemetação em Python") %}
+
+```python
+import pandas as pd
+
+# Dados
+data = {
+    "x": [100.4, 103.2, 104.9, 105.6, 109.8, 111.0, 112.9, 116.3, 117.5, 117.7,
+          117.9, 122.1, 124.3, 124.4, 128.6, 131.8, 132.0, 134.2, 139.4, 141.6,
+          143.8, 146.0, 147.1, 149.3, 149.5, 154.7, 154.9, 156.1, 158.3, 162.4,
+          163.6, 165.8, 177.0, 171.6, 172.2, 174.2, 175.7, 176.1, 178.6, 178.9,
+          181.6, 183.1, 184.9, 186.1, 186.6, 189.8, 190.6, 192.0, 193.5, 193.9,
+          196.3, 198.1, 199.6, 200.1, 200.7, 205.5, 205.8, 207.0, 208.1, 209.6,
+          211.6, 211.8, 213.4, 214.3, 218.2, 220.1, 221.0, 223.5, 225.9, 228.4,
+          230.4, 233.3, 235.8, 238.3, 240.8, 243.2, 245.7, 248.2, 250.6, 253.1,
+          255.6, 258.0, 260.5, 263.0, 265.4, 267.9, 270.4, 272.8, 275.3, 277.8,
+          280.3, 282.7, 285.2, 287.7, 290.1, 292.6, 295.1, 297.5, 300.0],
+    "y": [151001, 177313, 194625, 217938, 277250, 210563, 191875, 253188, 413500, 310813,
+          299125, 345438, 362750, 419063, 431375, 454688, 375000, 415313, 485625, 535938,
+          556250, 556563, 596875, 517188, 590199, 664836, 618100, 700892, 610533, 591643,
+          651266, 662045, 671092, 640001, 428751, 597501, 756251, 575001, 593751, 642501,
+          531251, 490001, 568751, 707501, 606251, 625001, 643751, 662501, 701251, 650001,
+          788751, 597501, 776251, 765001, 803751, 822501, 811251, 830001, 868751, 1017501,
+          926251, 855001, 903751, 1002501, 961251, 951094, 840001, 890939, 921876, 1012814,
+          973751, 794689, 925626, 976564, 917501, 998439, 929376, 980314, 951251, 972189,
+          913126, 994064, 925001, 985939, 1006876, 1037814, 1008751, 1019689, 1040626, 1051564,
+          942501, 1123439, 1014376, 1095314, 996251, 1127189, 1148126, 1129064, 1150000]
+}
+
+df = pd.DataFrame(data)
+
+# Parâmetros para regressão
+mean_x, mean_y = df["x"].mean(), df["y"].mean()
+sxy = ((df["x"] - mean_x) * (df["y"] - mean_y)).sum()
+sxx = ((df["x"] - mean_x) ** 2).sum()
+
+beta_1 = sxy / sxx
+beta_0 = mean_y - beta_1 * mean_x
+
+# Previsão para x=182
+x_new = 182
+yhat = beta_0 + beta_1 * x_new
+
+# Resultado
+print(yhat)
+```
+
+```resultado
+655423.0623232443
+```
+{% end %}
+
