@@ -66,7 +66,7 @@
     {% endif %}
 
     {# Open Graph image for social media #}
-    <meta property="og:image" content="{{ config.base_url }}{{ config.extra.favicon | trim_start_matches(pat="/") }}" />
+    <meta property="og:image" content="{{ config.base_url }}/image.png" />
     <meta property="og:image:type" content="image/png" />
     <meta property="og:type" content="website" />
     <meta property="og:url" content="{{ current_url | default(value=config.base_url) }}" />
@@ -94,24 +94,26 @@
         <script src={{ get_url(path="js/note.js") }}></script>
     {% endif %}
 
-    {% if config.extra.mathjax | default(value=false) %}
-        {% if config.extra.mathjax_dollar_inline_enable | default(value=false) %}
-            <script>
-            MathJax = {
-              tex: {
-                inlineMath: [['$', '$'], ['\\(', '\\)']]
-              }
-            };
-            </script>
-        {% endif %}
-        <script type="text/javascript" id="MathJax-script" async
-          src="https://cdn.jsdelivr.net/npm/mathjax@3/es5/tex-mml-chtml.js">
-        </script>
-    {% endif %}
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous">
+    <script src={{ get_url(path="js/katex.min.js") }}></script>
+    <script src={{ get_url(path="js/auto-render.min.js") }}></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+              delimiters: [
+                  {left: '$$', right: '$$', display: true},
+                  {left: '%%', right: '%%', display: false},
+                  //{left: '$', right: '$', display: false},
+                  {left: '\\(', right: '\\)', display: false},
+                  {left: '\\[', right: '\\]', display: true}
+              ],
+              throwOnError : false
+            });
+        });
+    </script>
 
     {# RSS #}
     <link rel="alternate" type="application/rss+xml" title="{{ config.title }}" href="{{ get_url(path="rss.xml", trailing_slash=false) }}">
-
 
     {% set theme = config.extra.theme | default(value="toggle") %}
     {% if theme == "dark" %}
@@ -152,7 +154,6 @@
         {% endfor %}
     {% endif %}
 
-    <script src={{ get_url(path="js/mermaid.min.js") }}></script>
     <script src={{ get_url(path="js/mobile-menu.js") }}></script>
     <script src={{ get_url(path="js/d3.min.js") }}></script>
 

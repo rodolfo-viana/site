@@ -13,31 +13,31 @@ toc = true
 
 +++
 
-## Introdução
+# Introdução
 
 Cada um dos 94 parlamentares da Assembleia Legislativa do Estado de São Paulo [Alesp] tem direito aos Auxílio-Encargos Gerais de Gabinete de Deputado e Auxílio-Hospedagem, referenciados conjuntamente como "verba de gabinete". Tal direito foi conferido pela resolução 783, artigo 11, de 1º de julho de 1997[^1]. Trata-se de um valor mensal devido pelo Estado aos deputados a fim de que eles possam ser ressarcidos de gastos com o funcionamento e manutenção dos gabinetes, com hospedagem e demais despesas inerentes ao pleno exercício das atividades parlamentares.
 
-Esses gastos previstos na legislação são agregados em 11 categorias, dentre as quais materiais e serviços gráficos, consultoria, combustíveis, locação de automóveis, hospedagem e alimentação. Em 2022, considerando o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp][^1] e o valor da Ufesp em R\\$ 31,97[^2], o limite mensal da verba de gabinete que poderia ser ressarcido por deputado no ano passado foi de R\\$ 39.962,50.
+Esses gastos previstos na legislação são agregados em 11 categorias, dentre as quais materiais e serviços gráficos, consultoria, combustíveis, locação de automóveis, hospedagem e alimentação. Em 2022, considerando o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp][^1] e o valor da Ufesp em R$ 31,97[^2], o limite mensal da verba de gabinete que poderia ser ressarcido por deputado no ano passado foi de R$ 39.962,50.
 
-Naquele ano, o valor total empenhado para custeio da verba de gabinete perfez R\\$ 26.652.243,51[^3]. O montante foi 24,43% maior do que a soma em 2021, de R\\$ 21.419.316,88[^3], e menor do que o valor anotado na rubrica para 2023, de R\\$ 28.607.099,96[^3]. Caso este montante se cumpra neste ano, será a primeira vez que o valor ultrapassa R\\$ 28,5 milhões desde 2018.
+Naquele ano, o valor total empenhado para custeio da verba de gabinete perfez R$ 26.652.243,51[^3]. O montante foi 24,43% maior do que a soma em 2021, de R$ 21.419.316,88[^3], e menor do que o valor anotado na rubrica para 2023, de R$ 28.607.099,96[^3]. Caso este montante se cumpra neste ano, será a primeira vez que o valor ultrapassa R$ 28,5 milhões desde 2018.
 
 Tais somas de recursos públicos passam pelo escrutínio de órgãos de controle, como o Tribunal de Contas do Estado e o Ministério Público de São Paulo, que não raro abrem procedimentos para averiguar a lisura do trâmite de ressarcimento aos parlamentares. Um exemplo é o processo investigatório 29.0001.0246360.2021-54[^4], instaurado em 5 de maio 2022, que discorre sobre possível malversação no uso da verba de gabinete por parte do deputado estadual Murilo Felix, que a teria empregado para pagar pela locação de imóveis pertencentes a aliados políticos e nunca utilizados. Outro exemplo é a ação penal 0037174-14.2021.8.26.0000[^5], que aponta, entre outros elementos, o ressarcimento de despesas nunca efetuadas por parte do deputado Rogério Nogueira.
 
 A partir desse contexto, o presente trabalho busca ser um instrumento para avaliação de despesas e detecção de anomalias por meio de aprendizado de máquina não supervisionado. O objetivo desta peça não é afirmar peremptoriamente se determinado gasto é fraudulento ou não; seu escopo é servir de ferramenta para uma observação inicial dos valores por meio de clusterização.
 
-## Método
+# Método
 
-### Análise exploratória
+## Análise exploratória
 
 A primeira etapa consistiu na captura dos dados a partir do Portal de Dados Abertos da Alesp[^6], onde estão disponíveis arquivos no formato `xml` que datam desde 2002 e contêm elementos que indicam o período de referência ("Ano", "Mês"), além de informações tanto do parlamentar ("Matrícula", "Deputado") quanto da despesa ("Fornecedor", "CNPJ", "Tipo", "Valor"). Para este trabalho, foram ignorados os nomes dos parlamentares a fim de desconsiderar eventuais vieses ideológicos. Dado o contexto temporal dos gastos, "Ano" e "Mês" foram usados tão somente para realizar a deflação dos valores até 31 de dezembro de 2022 seguindo o índice de preço ao consumidor amplo [IPCA][^7]. Com isso, descartou-se a temporalidade das despesas.
 
 Foram inseridas no estudo apenas as despesas relacionadas a alimentação e hospedagem compreendidas entre os anos de 2018 e 2022. Descartaram-se, ainda, fornecedores com menos de 20 despesas no quinquênio, haja vista a necessidade de se ter número significativo para a realização de clusterização.
 
-### Algoritmo de K-Means
+## Algoritmo de K-Means
 
 Implementou-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide).
 
-Dado um conjunto de observações $x = \lbrace x_1, x_2, ..., x_n\rbrace$, o algoritmo reparte as $n$ observações em $k \(\geq n\)$ conjuntos $S = \lbrace S_1, S_2, ..., S_k \rbrace$ a fim de minimizar a soma dos quadrados dentro do cluster.
+Dado um conjunto de observações %%x = \lbrace x_1, x_2, ..., x_n\rbrace%%, o algoritmo reparte as %%n%% observações em %%k \(\geq n\)%% conjuntos %%S = \lbrace S_1, S_2, ..., S_k \rbrace%% a fim de minimizar a soma dos quadrados dentro do cluster.
 
 $$
 \sum_{i = 1}^{k}\sum_{x \in S_i}{\Vert x - \mu_i \Vert}^2
@@ -45,10 +45,10 @@ $$
 
 onde,
 
-- $k$: número de clusters
-- $𝑆_𝑖$: cluster $i$
-- $𝑥$: ponto de dado
-- $\mu_i$: média da distância dos pontos em $S_i$
+- %%k%%: número de clusters
+- %%S_i%%: cluster %%i%%
+- %%x%%: ponto de dado
+- %%\mu_i%%: média da distância dos pontos em %%S_i%%
 
 Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo aplicado visa encontrar anomalias,
 
@@ -59,199 +59,158 @@ Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo 
 
 A aplicação de K-Means, porém, impõe algumas necessidades a este trabalho, tais como determinação prévia da quantidade de clusters, um método de inicialização de centroides que considere mínimo global em vez de mínimo local, critério para convergência ideal dos centroides e validação dos resultados. Para aplacar tais limitações, foram utilizados, respectivamente, o método do cotovelo, o método K-Means++, a comparação do movimento de centroides entre iterações e validação por meio do método da silhueta e do índice de Davies-Bouldin.
 
-#### Método do cotovelo
+### Método do cotovelo
 
-A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] — _Elbow method_ — é uma forma de se obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados.
+A quantidade de clusters a serem utilizados pelo algoritmo deve ser conhecida a priori. O método do cotovelo[^9] &mdash; _Elbow method_ &mdash; é uma forma de se obter esse número com base na iteração entre possíveis centros de clusters e a soma dos quadrados das distâncias entre eles e os pontos de dados.
 
-O método opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal — traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo". O ponto em que essa estabilização se torna perceptível representa uma estimativa do número ideal de clusters.
+O método opera sob a lógica de que, ao aumentar o número de agrupamentos, ocorrerá a diminuição das distâncias intracluster, haja vista a maior proximidade dos pontos em relação aos centroides de seus respectivos agrupamentos. Em determinado momento, o valor de tal diminuição se tornará marginal &mdash; traduzido de maneira visual em gráfico, uma linha teria inicialmente quedas acentuadas para, em seguida, se estabilizar na posição horizontal, formando um "cotovelo". O ponto em que essa estabilização se torna perceptível representa uma estimativa do número ideal de clusters.
 
 <div id="elbow-container" class="d3js"></div>
 
 <script>
-    // ------------------------------------------------
-    // 1) Define your data
-    // ------------------------------------------------
-    const points = [
-      { x: 1, y: 9000 },
-      { x: 2, y: 4000 },
-      { x: 3, y: 2000 },
-      { x: 4, y: 1500 },
-      { x: 5, y: 1300 },
-      { x: 6, y: 1200 },
-      { x: 7, y: 1100 }
-    ];
-
-    // ------------------------------------------------
-    // 2) Define your virtual drawing area (viewBox)
-    // ------------------------------------------------
-    const virtualWidth = 600;
-    const virtualHeight = 300;
-
-    // Margins
-    const margin = { top: 20, right: 50, bottom: 60, left: 85 };
-    const width = virtualWidth - margin.left - margin.right;
-    const height = virtualHeight - margin.top - margin.bottom;
-
-    // ------------------------------------------------
-    // 3) Create a responsive SVG
-    // ------------------------------------------------
-    const svg = d3.select("#elbow-container")
-      .append("svg")
-      .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`)
-      .attr("preserveAspectRatio", "xMidYMid meet");
-
-    // ------------------------------------------------
-    // 4) Append a group for the chart area
-    // ------------------------------------------------
-    const chartArea = svg.append("g")
-      .attr("transform", `translate(${margin.left},${margin.top})`);
-
-    // ------------------------------------------------
-    // 5) Scales
-    // ------------------------------------------------
-    const xScale = d3.scaleLinear().domain([1, 7]).range([0, width]);
-    const yScale = d3.scaleLinear().domain([0, 10000]).range([height, 0]);
-
-    // ------------------------------------------------
-    // 6) Axes
-    // ------------------------------------------------
-    const xAxis = d3.axisBottom(xScale)
-      .tickValues([1, 2, 3, 4, 5, 6, 7])
-      .tickFormat(d3.format("d")); 
-
-    const yAxis = d3.axisLeft(yScale)
-      .tickValues([0, 2000, 4000, 6000, 8000, 10000])
-      .tickFormat(d => d === 0 ? "" : d);
-
-    // X-axis group
-    const xAxisGroup = chartArea.append("g")
-      .attr("transform", `translate(0, ${height})`)
-      .call(xAxis);
-
-    // Style the x-axis lines/paths
-    xAxisGroup.selectAll("path, line")
-      .attr("stroke", "#f0f0f0");
-
-    // Style the x-axis text/ticks
-    xAxisGroup.selectAll("text")
-      .attr("fill", "#f0f0f0")
-      .style("font-size", "14px")
-
-    // Y-axis group
-    const yAxisGroup = chartArea.append("g")
-      .call(yAxis);
-
-    // Style the y-axis lines/paths
-    yAxisGroup.selectAll("path, line")
-      .attr("stroke", "#f0f0f0");
-
-    // Style the y-axis text/ticks
-    yAxisGroup.selectAll("text")
-      .attr("fill", "#f0f0f0")
-      .style("font-size", "14px")
-
-    // ------------------------------------------------
-    // 7) Axis labels (inline-styled)
-    // ------------------------------------------------
-    // X label
-    chartArea.append("text")
-      .attr("x", width / 2)
-      .attr("y", height + 50)
-      .attr("text-anchor", "middle")
-      .attr("fill", "#f0f0f0")
-      .style("font-size", "14px")
-      .text("Quantidade de clusters");
-
-    // Y label
-    chartArea.append("text")
-      .attr("text-anchor", "middle")
-      .attr("transform", `translate(${-70}, ${height / 2}) rotate(-90)`)
-      .attr("fill", "#f0f0f0")
-      .style("font-size", "14px")
-      .text("Soma do quadrado das distâncias");
-
-    // ------------------------------------------------
-    // 8) Line generator
-    // ------------------------------------------------
-    const lineGenerator = d3.line()
-      .x(d => xScale(d.x))
-      .y(d => yScale(d.y));
-
-    // ------------------------------------------------
-    // 9) Draw the line (inline-styled)
-    // ------------------------------------------------
-    chartArea.append("path")
-      .datum(points)
-      .attr("fill", "none")
-      .attr("stroke", "#ababab")
-      .attr("stroke-width", 2)
-      .attr("d", lineGenerator);
-
-    // ------------------------------------------------
-    // 10) Circles for each point (inline-styled)
-    // ------------------------------------------------
-    chartArea.selectAll("circle.point")
-      .data(points)
-      .enter()
-      .append("circle")
-      .attr("r", 5)
-      .attr("cx", d => xScale(d.x))
-      .attr("cy", d => yScale(d.y))
-      .attr("fill", "#ababab");
-
-    // ------------------------------------------------
-    // 11) Highlight the elbow (inline-styled)
-    // ------------------------------------------------
-    const elbowPoint = points[2]; // x=3, y=2000
-
-    chartArea.append("circle")
-      .attr("cx", xScale(elbowPoint.x))
-      .attr("cy", yScale(elbowPoint.y))
-      .attr("r", 10)
-      .attr("fill", "none")
-      .attr("stroke", "#ef5350")
-      .attr("stroke-width", 2);
-
-    // ------------------------------------------------
-    // 12) Dashed line & annotation text
-    // ------------------------------------------------
-    chartArea.append("line")
-      .attr("x1", xScale(elbowPoint.x) + 10)
-      .attr("y1", yScale(elbowPoint.y) - 10)
-      .attr("x2", xScale(elbowPoint.x) + 60)
-      .attr("y2", yScale(elbowPoint.y) - 60)
-      .attr("stroke", "#ef5350")
-      .attr("stroke-width", 2)
-      .attr("stroke-dasharray", "5,5");
-
-    chartArea.append("text")
-      .attr("x", xScale(elbowPoint.x) + 70)
-      .attr("y", yScale(elbowPoint.y) - 70)
-      .attr("fill", "#f0f0f0")
-      .style("font-size", "12px")
-      .text("Cotovelo");
-
+  (function() {
+      const points = [{
+              x: 1,
+              y: 9000
+          },
+          {
+              x: 2,
+              y: 4000
+          },
+          {
+              x: 3,
+              y: 2000
+          },
+          {
+              x: 4,
+              y: 1500
+          },
+          {
+              x: 5,
+              y: 1300
+          },
+          {
+              x: 6,
+              y: 1200
+          },
+          {
+              x: 7,
+              y: 1100
+          }
+      ];
+      const virtualWidth = 600;
+      const virtualHeight = 300;
+      const margin = {
+          top: 20,
+          right: 50,
+          bottom: 60,
+          left: 85
+      };
+      const width = virtualWidth - margin.left - margin.right;
+      const height = virtualHeight - margin.top - margin.bottom;
+      const svg = d3.select("#elbow-container")
+          .append("svg")
+          .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+      const chartArea = svg.append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+      const xScale = d3.scaleLinear().domain([1, 7]).range([0, width]);
+      const yScale = d3.scaleLinear().domain([0, 10000]).range([height, 0]);
+      const xAxis = d3.axisBottom(xScale)
+          .tickValues([1, 2, 3, 4, 5, 6, 7])
+          .tickFormat(d3.format("d"));
+      const yAxis = d3.axisLeft(yScale)
+          .tickValues([0, 2000, 4000, 6000, 8000, 10000])
+          .tickFormat(d => d === 0 ? "" : d);
+      const xAxisGroup = chartArea.append("g")
+          .attr("transform", `translate(0, ${height})`)
+          .call(xAxis);
+      xAxisGroup.selectAll("path, line")
+          .attr("stroke", "#f0f0f0");
+      xAxisGroup.selectAll("text")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+      const yAxisGroup = chartArea.append("g")
+          .call(yAxis);
+      yAxisGroup.selectAll("path, line")
+          .attr("stroke", "#f0f0f0");
+      yAxisGroup.selectAll("text")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+      chartArea.append("text")
+          .attr("x", width / 2)
+          .attr("y", height + 50)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+          .text("Quantidade de clusters");
+      chartArea.append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", `translate(${-70}, ${height / 2}) rotate(-90)`)
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+          .text("Soma do quadrado das distâncias");
+      const lineGenerator = d3.line()
+          .x(d => xScale(d.x))
+          .y(d => yScale(d.y));
+      chartArea.append("path")
+          .datum(points)
+          .attr("fill", "none")
+          .attr("stroke", "#ababab")
+          .attr("stroke-width", 2)
+          .attr("d", lineGenerator);
+      chartArea.selectAll("circle.point")
+          .data(points)
+          .enter()
+          .append("circle")
+          .attr("r", 5)
+          .attr("cx", d => xScale(d.x))
+          .attr("cy", d => yScale(d.y))
+          .attr("fill", "#ababab");
+      const elbowPoint = points[2]; // x=3, y=2000
+      chartArea.append("circle")
+          .attr("cx", xScale(elbowPoint.x))
+          .attr("cy", yScale(elbowPoint.y))
+          .attr("r", 10)
+          .attr("fill", "none")
+          .attr("stroke", "#ef5350")
+          .attr("stroke-width", 2);
+      chartArea.append("line")
+          .attr("x1", xScale(elbowPoint.x) + 10)
+          .attr("y1", yScale(elbowPoint.y) - 10)
+          .attr("x2", xScale(elbowPoint.x) + 60)
+          .attr("y2", yScale(elbowPoint.y) - 60)
+          .attr("stroke", "#ef5350")
+          .attr("stroke-width", 2)
+          .attr("stroke-dasharray", "5,5");
+      chartArea.append("text")
+          .attr("x", xScale(elbowPoint.x) + 70)
+          .attr("y", yScale(elbowPoint.y) - 70)
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "12px")
+          .text("Cotovelo");
+  })();
 </script>
 
 Considerando-se a mera observação de um gráfico para aferição de resultado sobre o número ideal de clusters, abdica-se de suporte estatístico para assegurar a robustez do método do cotovelo. Schubert[^10] apresenta o método aplicado a conjuntos de dados com clusters mais ou menos coesos visualmente, em que os resultados se mostram semelhantes mesmo nos conjuntos uniformes ou quando os dados contêm uma única distribuição normal. Entre os problemas associados ao gráfico do cotovelo destacam-se a ausência de medição significativa de ângulo e a mudança de escala dos eixos, o que pode alterar a interpretação humana de um "cotovelo".
 
 Para mitigar tais problemas poder-se-ia utilizar um método menos subjetivo, como o critério de razão de variância, ou _Variance Ratio Criterion_ [VRC]. Enquanto o método do cotovelo se apoia na soma dos quadrados das distâncias entre cada ponto e o centroide do cluster, o VRC mede a razão entre a soma da dispersão entre os clusters e a soma da dispersão dentro dos clusters[^11]. Por termos um conjunto de dados que não aponta para uniformidade ou distribuição normal, optou-se pelo método do cotovelo.
 
-#### K-Means++
+### K-Means++
 
 A determinação do número de clusters, porém, não garante que o algoritmo encontre os melhores pontos para servirem de centroides. Quando se utiliza a inicialização randômica, em que os centroides iniciais são selecionados aleatoriamente dentro do cluster, é possível que sejam escolhidos pontos muito próximos uns dos outros. A alta sensibilidade da técnica de agrupamento pode levar a uma solução de mínimo local em vez de uma global, gerando partições que não sejam ideais[^12].
 
 Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização chamado K-Means++[^13], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
 
-Dado um conjunto de pontos $D$ e um conjunto de centroides selecionados $C$, a probabilidade de se escolher o ponto de dado $x$ como próximo centroide é calculada por meio de
+Dado um conjunto de pontos %%D%% e um conjunto de centroides selecionados %%C%%, a probabilidade de se escolher o ponto %%x%% como próximo centroide é calculada por meio de
 
 $$
 P(x) = \frac{D(x)^2}{\sum_{x^{\prime} \in D}D(x^{\prime})^2}
 $$
 
-sendo $D(x)$: distância entre o ponto $x$ e o centroide mais próximo em $C$.
+sendo %%D(x)%%: distância entre o ponto $x$ e o centroide mais próximo em %%C%%.
 
-Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Esses pontos formam clusters. Considerando o ponto $x$ e um conjunto de centroides $C$, o rótulo do cluster $l$ ao qual $x$ pertence é computado por
+Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Esses pontos formam clusters. Considerando o ponto %%x%% e um conjunto de centroides %%C%%, o rótulo do cluster %%l%% ao qual %%x%% pertence é computado por
 
 $$
 l(x) = \arg \min_{c \in C}\Vert x - c \Vert
@@ -263,7 +222,7 @@ $$
 c_i = \frac{1}{\vert S_i \vert}\sum_{x \in S_i} x
 $$
 
-onde $S_i$: conjunto de todos os pontos atribuídos ao centroide $i$.
+onde %%S_i%%: conjunto de todos os pontos atribuídos ao centroide %%i%%.
 
 A cada iteração de atualização de centroides é computada a inércia. Para conjunto univariado,
 
@@ -271,11 +230,11 @@ $$
 \sum_{i=1}^{n}{\Vert {x_i} - {c_{l(x_i)}}\Vert}^2
 $$
 
-onde $c\_{l(x_i)}$: centroide do cluster para o qual $x_i$ foi atribuído.
+onde %%c\_{l(x_i)}%%: centroide do cluster para o qual %%x_i%% foi atribuído.
 
-#### Critérios aprimorados para convergência
+### Critérios aprimorados para convergência
 
-Além da inicialização por K-Means++, o algoritmo adota critérios de convergência avançados ao comparar o movimento dos centroides entre iterações. Sendo $C_t$ o conjunto de centroides na iteração $t$, o algoritmo converge se
+Além da inicialização por K-Means++, o algoritmo adota critérios de convergência avançados ao comparar o movimento dos centroides entre iterações. Sendo %%C_t%% o conjunto de centroides na iteração %%t%%, o algoritmo converge se
 
 $$
 \max_{c \in C_t}\Vert c - c_{t - 1} \Vert < tol
@@ -283,12 +242,12 @@ $$
 
 onde,
 
-- $\Vert c - c\_{t - 1} \Vert$ distância euclidiana
-- $tol$: tolerância especificada
+- %%\Vert c - c\_{t - 1} \Vert%%: distância euclidiana
+- %%tol%%: tolerância especificada
 
-#### Validação pelo método da silhueta
+### Validação pelo método da silhueta
 
-A validação dos resultados obtidos a partir da implementação dessas técnicas foi realizada, primeiro, pelo método da silhueta[^14] — _Silhouette method_. Esta técnica observa a similaridade de um ponto com seu cluster em comparação com outros clusters a partir de
+A validação dos resultados obtidos a partir da implementação dessas técnicas foi realizada, primeiro, pelo método da silhueta[^14] &mdash; _Silhouette method_. Esta técnica observa a similaridade de um ponto com seu cluster em comparação com outros clusters a partir de
 
 $$
 s_i = \frac{{b_i} - {a_i}}{\max({a_i},{b_i})}
@@ -296,8 +255,8 @@ $$
 
 onde,
 
-- $a_i$: distância média de $i$ para todos os outros pontos intra-agrupamento
-- $b_i$: a menor distância média de $i$ para todos os pontos em agrupamentos diferentes
+- %%a_i%%: distância média de %%i%% para todos os outros pontos intra-agrupamento
+- %%b_i%%: a menor distância média de %%i%% para todos os pontos em agrupamentos diferentes
 
 O método da silhueta retorna resultados no intervalo de -1 a 1. Se o valor for:
 
@@ -305,7 +264,7 @@ O método da silhueta retorna resultados no intervalo de -1 a 1. Se o valor for:
 - próximo de 0: o ponto está entre dois clusters, de forma que o agrupamento pode ser aprimorado;
 - próximo de 1: o ponto está bem agrupado.
 
-#### Validação pelo índice de Davies-Bouldin
+### Validação pelo índice de Davies-Bouldin
 
 Enquanto o método da silhueta faz comparação entre um ponto único e os agrupamentos, o índice de Davies-Bouldin[^15], segunda medida usada na validação dos resultados, observa a coesão do cluster, dada a lógica de que um agrupamento adequado é denso em si, ao passo que distante dos demais agrupamentos.
 
@@ -317,27 +276,27 @@ $$
 
 sendo,
 
-- $k$: número de clusters;
-- $i$,$j$: clusters diferentes;
-- $S_i$, $S_j$: dispersão interna dos clusters $i$ e $j$, respectivamente;
-- $M\_{ij}$: distância entre clusters $i$ e $j$
+- %%k%%: número de clusters
+- %%i%%, %%j%%: clusters diferentes
+- %%S_i%%, %%S_j%%: dispersão interna dos clusters %%i%% e %%j%%, respectivamente
+- %%M\_{ij}%%: distância entre clusters %%i%% e %%j%%
 
-## Resultados
+# Resultados
 
-Realizou-se uma análise exploratória para compreender os dados e sua dispersão. No quinquênio observado, foram 4.453 registros de despesas em 86 números únicos de CNPJ, totalizando R\\$ 1.784.601,08 após ajuste inflacionário. Cada despesa teve um valor médio de R\\$ 400,76, porém com coeficiente de variação de 241,41%, indicando significativa dispersão dos dados em relação à média.
+Realizou-se uma análise exploratória para compreender os dados e sua dispersão. No quinquênio observado, foram 4.453 registros de despesas em 86 números únicos de CNPJ, totalizando R$ 1.784.601,08 após ajuste inflacionário. Cada despesa teve um valor médio de R$ 400,76, porém com coeficiente de variação de 241,41%, indicando significativa dispersão dos dados em relação à média.
 
 Notou-se ainda que a média é superior ao terceiro quartil. Isso denota inclinação de dados para valores mais baixos. O conjunto apresenta, assim, cauda à direita mais longa do que à esquerda, o que é corroborado pela assimetria de 5,21, enquanto a curtose de 32,67 demonstra pico acentuado em comparação à distribuição normal.
 
 | Medida                      | Valor      |
 | --------------------------- | ---------- |
 | Contagem                    | 4.453      |
-| Média (R\\$)                  | 400,763773 |
-| Desvio-padrão (R\\$)          | 967,469752 |
-| Mínimo (R\\$)                 | 6,49       |
-| 1º Quartil (R\\$)             | 55,75      |
-| 2º Quartil (R\\$)             | 123,14     |
-| 3º Quartil (R\\$)             | 276,18     |
-| Máximo (R\\$)                 | 10.250,41  |
+| Média (R$)                  | 400,763773 |
+| Desvio-padrão (R$)          | 967,469752 |
+| Mínimo (R$)                 | 6,49       |
+| 1º Quartil (R$)             | 55,75      |
+| 2º Quartil (R$)             | 123,14     |
+| 3º Quartil (R$)             | 276,18     |
+| Máximo (R$)                 | 10.250,41  |
 | Coeficiente de variação (%) | 241,40648  |
 | Assimetria                  | 5,21061    |
 | Curtose                     | 32,66851   |
@@ -352,7 +311,7 @@ As despesas foram agrupadas por empresa, a fim de manter o comportamento dos gas
 | Tolerância para convergência        | 0,0001                                      |
 | Percentil para detecção de anomalia | 95                                          |
 
-Como resultado foram obtidas 262 anomalias que somaram R\\$ 197.697,24 — 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^16] — no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos.
+Como resultado foram obtidas 262 anomalias que somaram R$ 197.697,24 &mdash; 11,08% do valor total de despesas. Por anomalias entendem-se padrões em dados que não se ajustam à noção bem definida de comportamento normal[^16] &mdash; no contexto deste trabalho, anomalias são valores de despesas que não se enquadram nos agrupamentos criados pelo algoritmo. Por definição, não se pode tratar toda anomalia como fraude: há anomalias que se encontram no meio de todas as despesas de determinada empresa, não sendo os maiores valores no conjunto. Tais anomalias entre clusters são tratadas aqui como falsos positivos.
 
 Dado o papel dos clusters neste algoritmo e a implementação de K-Means++, há grande variabilidade no número de clusters. No conjunto de 86 empresas, o número de clusters vai de 2 a 10. Validamos tais valores por meio do dois instrumentos supracitados:
 
@@ -363,11 +322,11 @@ A quantidade de clusters de cada CNPJ foi validada por meio dos dois instrumento
 
 Do conjunto de 86 empresas, todas registraram resultados ideais para o método da silhueta (valores entre 0,577 e 0,918); 79 apresentaram resultados ideais para o índice de Davies-Bouldin (valores entre 0,166 e 0,489), enquanto sete demonstraram resultados abaixo do ideal (valores entre 0,508 e 0,573).
 
-Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters, e o resultado obtido foi de 46 anomalias em 32 empresas, com valor total de R\\$ 44.348,88.
+Com a clusterização das despesas, a detecção de anomalias segundo o algoritmo e a validação dos métodos aplicados, foi realizada uma análise final para considerar anomalias passíveis de inquirição dos órgãos de controle aquelas cujos valores são maiores que o maior valor de não anomalia do último cluster. Com isso, descartaram-se anomalias posicionadas entre clusters, e o resultado obtido foi de 46 anomalias em 32 empresas, com valor total de R$ 44.348,88.
 
 {% note(clickable=true, hidden=true, header="Veja empresas e anomalias") %}
 
-| CNPJ | Valor original (R\\$) | Valor corrigido (R\\$) | Quantidade de clusters para o CNPJ | Resultado do método da silhueta | Resultado do índice de Davies-Bouldin |
+| CNPJ | Valor original (R$) | Valor corrigido (R$) | Quantidade de clusters para o CNPJ | Resultado do método da silhueta | Resultado do índice de Davies-Bouldin |
 |------|-------------------|-------------------|--------------------------------|--------------------------------|-------------------------------------|
 | 02.012.862/0001-60 | 9.525,39 | 9.584,44 | 6 | 0,5996 | 0,4816 |
 | 03.071.465/0001-21 | 1.340,00 | 1.658,78 | 3 | 0,6767 | 0,4664 |
@@ -418,7 +377,7 @@ Com a clusterização das despesas, a detecção de anomalias segundo o algoritm
 
 {% end %}
 
-## Códigos comentados
+# Códigos comentados
 
 {% note(clickable=true, hidden=true, header="Algoritmo") %}
 

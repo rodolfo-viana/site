@@ -7,7 +7,7 @@ Olá!
 
 Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos. Sou especialista em Data Science e Analytics pela USP e atualmente faço mestrado em Ciência da Computação na Unesp.
 
-Trabalho como engenheiro de dados sênior na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers sediado em Nova York. Ali atuo em projetos relacionados à infraestrutura de dados: criação, manutenção e otimização de pipelines e rotinas, além de elaboração de testes para garantir qualidade, integridade e disponibilidade de dados. 
+Trabalho como engenheiro de dados na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers sediado em Nova York. Ali atuo em projetos relacionados à infraestrutura de dados: criação, manutenção e otimização de pipelines e rotinas, além de elaboração de testes para garantir qualidade, integridade e disponibilidade de dados. 
 
 Também sou professor no [MBA em Jornalismo de Dados](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) do [IDP](https://www.idp.edu.br/). Minhas disciplinas são Introdução a Python e Web Scraping com Python.
 

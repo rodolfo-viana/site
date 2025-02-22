@@ -708,7 +708,7 @@ No mês passado, um certo influencer tinha 5.641.981 seguidores no Instagram. Co
 
 ### Atividade 3
 
-Uma certa empresa teve lucro de US\\$ 12.095.187,05 em dezembro de 2023, com o dólar a R\\$ 4,8526. Em janeiro de 2024, com o dólar a R\\$ 4,9163, a empresa teve lucro de US\\$ 11.567.011,87. Qual é a diferença percentual entre os valores em reais?
+Uma certa empresa teve lucro de US$ 12.095.187,05 em dezembro de 2023, com o dólar a R$ 4,8526. Em janeiro de 2024, com o dólar a R$ 4,9163, a empresa teve lucro de US$ 11.567.011,87. Qual é a diferença percentual entre os valores em reais?
 
 ### Atividade 4
 
