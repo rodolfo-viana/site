@@ -1,0 +1,214 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss xmlns:atom="http://www.w3.org/2005/Atom" version="2.0">
+    <channel>
+      <title>rodolfo viana</title>
+      <link>https://rodolfoviana.com.br</link>
+      <description>aulas, estudos e publicações sobre ciência de dados</description>
+      <language>pt-br</language>
+      <managingEditor>eu@rodolfoviana.com.br (Rodolfo Viana)</managingEditor>
+      <atom:link href="https://rodolfoviana.com.br/rss.xml" rel="self" type="application/rss+xml"/>
+      <lastBuildDate>Fri, 21 Feb 2025 00:00:00 +0000</lastBuildDate>
+      <item>
+          <title>Modo de usar: regressão linear simples</title>
+          <pubDate>Mon, 17 Feb 2025 00:00:00 +0000</pubDate>
+          <author>rodolfo viana</author>
+          <link>https://rodolfoviana.com.br/publicacoes/mlintro-regressaosimples/</link>
+          <guid>https://rodolfoviana.com.br/publicacoes/mlintro-regressaosimples/</guid>
+          <description xml:base="https://rodolfoviana.com.br/publicacoes/mlintro-regressaosimples/">Recentemente encontrei nas minhas bagunças um caderno com as anotações que fiz enquanto estudava machine learning pela primeira vez, há uns cinco anos. Relendo as notas vi que tinham alguns cálculos, uns gráficos, e me dei conta: naquela época eu fazia regressão linear simples à mão, para treinar. Sempre aprendo melhor quando pratico.
+Daí me surgiu a ideia de transcrever essas notas — melhor: passar para este blog explicações de conceitos de aprendizado de máquina. O primeiro texto é este. E é justamente sobre regressão linear.
+Em estatística, regressão linear é o modelo que estima a relação linear entre uma variável dependente e uma ou mais variáveis explanatórias. Uma ilustração simples:
+
+Você quer comprar um carro. Você observa a marca, o modelo, o ano de fabricação, se é câmbio manual ou automático etc. Todos esses elementos que você observa são importantes para você analisar se o preço pedido por ele é aceitável. Esses elementos (marca, modelo, ano...) são variáveis explanatórias; o preço é a variável dependente.
+
+Em machine learning utilizamos regressão linear nos problemas em que desejamos prever um valor contínuo a partir de um conjunto de variáveis de entrada (também chamadas de features). Um exemplo:
+
+Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R$ 151 mil e R$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200²... A sua casa tem 182m². Quanto você deve pedir por ela?
+
+
+  
+    
+      
+        
+        Veja metragens e valores das 99 casas
+
+        
+      
+    
+
+    
+    
+    
+    imetragemvalor
+1100.4151001
+2103.2177313
+3104.9194625
+4105.6217938
+5109.8277250
+6111.0210563
+7112.9191875
+8116.3253188
+9117.5413500
+10117.7310813
+11117.9299125
+12122.1345438
+13124.3362750
+14124.4419063
+15128.6431375
+16131.8454688
+17132.0375000
+18134.2415313
+19139.4485625
+20141.6535938
+21143.8556250
+22146.0556563
+23147.1596875
+24149.3517188
+25149.5590199
+26154.7664836
+27154.9618100
+28156.1700892
+29158.361053...</description>
+      </item>
+      <item>
+          <title>Web scraping com Python</title>
+          <pubDate>Mon, 18 Mar 2024 00:00:00 +0000</pubDate>
+          <author>rodolfo viana</author>
+          <link>https://rodolfoviana.com.br/aulas/scraping/</link>
+          <guid>https://rodolfoviana.com.br/aulas/scraping/</guid>
+          <description xml:base="https://rodolfoviana.com.br/aulas/scraping/">
+  
+    
+      
+        
+        Exemplo de web scraping em DDJ
+
+        
+      
+    
+
+    
+    
+    
+    Começamos aqui o módulo de web scraping (ou, em português, raspagem de dados). Trata-se de uma técnica de extração de informações dispostas em websites ou aplicações. Isso pode ser feito manualmente, por meio de sistemas específicos (como webscraper.io), ou a partir da criação de um script (em Python, R, Java ou outras linguagens) para esta finalidade.
+No jornalismo, web scraping tem sido fundamental para a elaboração de reportagens baseadas em dados que estão disponíveis na internet. Como a notícia sobre uso de verba de gabinete da Câmara de São Paulo para envio de cartões de aniversário (link).
+
+A reportagem começou com a raspagem de dados de relatórios disponibilizados pela Câmara em https:&#x2F;&#x2F;www.saopaulo.sp.leg.br&#x2F;relatorio-por-natureza-de-despesa-partir-de-2015&#x2F;.
+
+
+O script para raspar os dados é este aqui. Com os dados baixados, foi feita uma análise com Pandas que constatou os gastos exorbitantes.
+
+A análise na íntegra está aqui.
+
+    
+  
+
+
+  
+    
+      
+        
+        Como funciona um site
+
+        
+      
+    
+
+    
+    
+    
+    A primeira coisa que precisamos compreender é como funciona a internet. De forma simples:
+
+o usuário, via browser, faz uma solicitação ao servidor do site (request);
+o servidor responde à solicitação (response) entregando ao browser arquivos .html, .css, .js etc.;
+o browser renderiza esses arquivos e transforma no que conhecemos como website.
+
+Este ponto inicial é importante porque, quando falamos em raspagem de dados, estamos falando de capturar informações que estão dentro de tags de HTML, atributos de CSS etc.
+Quando abrimos um site qualquer temos na tela diversos elementos: textos de diversos tamanhos, estilos e cores; imagens que podem ser fotos ou ilustrações; gráficos de toda sorte; ícones de redes sociais.
+
+Os elementos gráficos que vemos são códigos renderizados. São linhas de código (HTML, CSS, JavaScript etc.) que ...</description>
+      </item>
+      <item>
+          <title>Introdução à linguagem Python</title>
+          <pubDate>Sun, 18 Feb 2024 00:00:00 +0000</pubDate>
+          <author>rodolfo viana</author>
+          <link>https://rodolfoviana.com.br/aulas/intropy/</link>
+          <guid>https://rodolfoviana.com.br/aulas/intropy/</guid>
+          <description xml:base="https://rodolfoviana.com.br/aulas/intropy/">
+  
+    
+      
+        
+        Variáveis
+
+        
+      
+    
+
+    
+    
+    
+    Variável é um nome que faz referência a um valor e fica temporariamente salvo na memória do computador. Funciona como um apelido que damos a um determinado dado. Sempre que chamarmos o apelido —a variável—, o dado será evocado.
+A atribuição é simples:
+variavel = dado
+
+Vejamos um uso real:
+vlr_dolar = 4.95
+
+O valor 4.95 está agora salvo na memória do meu computador. Para obter o valor, eu chamo vlr_dolar. Assim:
+print(vlr_dolar)
+
+4.95
+
+Uma variável serve, entre outros, para que não precisemos repetir a digitação ou operação para obter o valor. Vamos pegar como exemplo este verso de &quot;A flor e a náusea&quot;, de Carlos Drummond de Andrade:
+
+É feia. Mas é uma flor. Furou o asfalto, o tédio, o nojo e o ódio.
+
+Essa frase não precisa mais ser digitada se for atribuída à uma variável:
+frase = &amp;quot;É feia. Mas é uma flor. Furou o asfalto, o tédio, o nojo e o ódio.&amp;quot;
+print(frase)
+
+É feia. Mas é uma flor. Furou o asfalto, o tédio, o nojo e o ódio.
+
+Mas lembre-se: a variável perde seu valor quando:
+
+o script é finalizado; ou
+o valor é alterado.
+
+Sim, alterado. É possível mudar o valor de uma variável já existente —afinal, ela chama &quot;variável&quot;. Para isso, basta atribuir novo valor:
+print(vlr_dolar) # até aqui, o valor de `vlr_dolar` é 4.95...
+vlr_dolar = 4.91 # ...e aqui, altero o valor da variável para 4.91
+print(vlr_dolar) # agora a variável apresenta o novo valor
+
+4.95
+4.91
+
+Há algumas regras para criar variáveis:
+
+não pode começar com número ou símbolo, mas pode ter número e underscore (_) no meio ou no fim;
+
+idade1 = 42 # correto, pois números são permitidos tanto no meio quanto no fim
+1idade = 42 # incorreto, pois números não podem estar no início da variável
+
+
+não pode conter pontos e demais sinais gráficos, e acentos são desaconselháveis;
+
+idade_1 = 42 # correto, pois underscore é permitido
+idade.1 = 42 # incorreto, pois não se pode usar ponto na variável
+
+
+maiúsculas e minúsculas são di...</description>
+      </item>
+      <item>
+          <title>Detecção de anomalias em gastos dos deputados estaduais com K-Means</title>
+          <pubDate>Fri, 01 Sep 2023 00:00:00 +0000</pubDate>
+          <author>rodolfo viana</author>
+          <link>https://rodolfoviana.com.br/projetos/alesp-kmeans/</link>
+          <guid>https://rodolfoviana.com.br/projetos/alesp-kmeans/</guid>
+          <description xml:base="https://rodolfoviana.com.br/projetos/alesp-kmeans/">Introdução
+Cada um dos 94 parlamentares da Assembleia Legislativa do Estado de São Paulo [Alesp] tem direito aos Auxílio-Encargos Gerais de Gabinete de Deputado e Auxílio-Hospedagem, referenciados conjuntamente como &quot;verba de gabinete&quot;. Tal direito foi conferido pela resolução 783, artigo 11, de 1º de julho de 19971. Trata-se de um valor mensal devido pelo Estado aos deputados a fim de que eles possam ser ressarcidos de gastos com o funcionamento e manutenção dos gabinetes, com hospedagem e demais despesas inerentes ao pleno exercício das atividades parlamentares.
+Esses gastos previstos na legislação são agregados em 11 categorias, dentre as quais materiais e serviços gráficos, consultoria, combustíveis, locação de automóveis, hospedagem e alimentação. Em 2022, considerando o limite máximo da verba de gabinete em 1.250 unidades fiscais do Estado de São Paulo [Ufesp]1 e o valor da Ufesp em R$ 31,972, o limite mensal da verba de gabinete que poderia ser ressarcido por deputado no ano passado foi de R$ 39.962,50.
+Naquele ano, o valor total empenhado para custeio da verba de gabinete perfez R$ 26.652.243,513. O montante foi 24,43% maior do que a soma em 2021, de R$ 21.419.316,883, e menor do que o valor anotado na rubrica para 2023, de R$ 28.607.099,963. Caso este montante se cumpra neste ano, será a primeira vez que o valor ultrapassa R$ 28,5 milhões desde 2018.
+Tais somas de recursos públicos passam pelo escrutínio de órgãos de controle, como o Tribunal de Contas do Estado e o Ministério Público de São Paulo, que não raro abrem procedimentos para averiguar a lisura do trâmite de ressarcimento aos parlamentares. Um exemplo é o processo investigatório 29.0001.0246360.2021-544, instaurado em 5 de maio 2022, que discorre sobre possível malversação no uso da verba de gabinete por parte do deputado estadual Murilo Felix, que a teria empregado para pagar pela locação de imóveis pertencentes a aliados políticos e nunca utilizados. Outro exemplo é a ação penal 0037174-14.2021....</description>
+      </item>
+    </channel>
+</rss>
