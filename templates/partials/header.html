@@ -7,7 +7,6 @@
     <meta name="base" content="{{ config.base_url }}">
 
     {% if page.extra.meta %}
-         <!-- the meta data config goes here  -->
          {% for data in page.extra.meta %}
              <meta
                  {% for key, value in data%}
@@ -112,7 +111,6 @@
         });
     </script>
 
-    {# RSS #}
     <link rel="alternate" type="application/rss+xml" title="{{ config.title }}" href="{{ get_url(path="rss.xml", trailing_slash=false) }}">
 
     {% set theme = config.extra.theme | default(value="toggle") %}

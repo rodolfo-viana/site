@@ -38,6 +38,3 @@ menu = [
 ]
 
 custom_css = []
-
-[extra.analytics]
-enabled = false
