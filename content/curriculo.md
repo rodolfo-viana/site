@@ -19,7 +19,7 @@ Engenheiro de dados com MBA em Data Science e mestrando em Ciência da Computaç
 
 # Experiência profissional
 
-&rarr; Engenheiro de Dados Sr @ [Farfetch](https://www.farfetch.com/)<br />
+⟶ Engenheiro de Dados Sr @ [Farfetch](https://www.farfetch.com/)<br />
 [agosto de 2021 &mdash; o momento]
 
 > Responsabilidades:
@@ -37,7 +37,7 @@ Engenheiro de dados com MBA em Data Science e mestrando em Ciência da Computaç
 > - Liderança em projeto de otimização da infraestrutura de dados na Stadium Goods, com ações que reduziram o tempo de processamento em 63%, aumentaram a performance (IOPS) em 88% e geraram economia de 67% nos custos mensais
 > - Mentoria e treinamento de mais de 10 profissionais na Stadium Goods, aprimorando suas competências técnicas
 
-&rarr; Professor de Pós-graduação @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
+⟶ Professor de Pós-graduação @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
 [julho de 2021 &mdash; o momento]
 
 > Responsabilidades: 
@@ -45,7 +45,7 @@ Engenheiro de dados com MBA em Data Science e mestrando em Ciência da Computaç
 > - Aulas de introdução a Python
 > - Aulas de web scraping
 
-&rarr; Cientista de Dados Sr @ [Rede Globo](https://redeglobo.globo.com/)<br />
+⟶ Cientista de Dados Sr @ [Rede Globo](https://redeglobo.globo.com/)<br />
 [dezembro de 2018 &mdash; agosto de 2021]
 
 > Responsabilidades:
@@ -58,7 +58,7 @@ Engenheiro de dados com MBA em Data Science e mestrando em Ciência da Computaç
 > 
 > - Idealização e implantação de um sistema para fornecer estatísticas em tempo real sobre o SARS-CoV-2 para centenas de jornalistas da Rede Globo, ampliando o noticiário e aumentando o engajamento dos espectadores em 41%
 
-&rarr; Repórter, produtor @ [Rede Globo](https://redeglobo.globo.com/), [Revista piauí](https://piaui.folha.uol.com.br/), [Folha de S.Paulo](https://www.folha.uol.com.br/), [Editora Abril](https://grupoabril.com.br/)<br />
+⟶ Repórter, produtor @ [Rede Globo](https://redeglobo.globo.com/), [Revista piauí](https://piaui.folha.uol.com.br/), [Folha de S.Paulo](https://www.folha.uol.com.br/), [Editora Abril](https://grupoabril.com.br/)<br />
 [julho de 2009 &mdash; dezembro de 2018]
 
 > Na Rede Globo:
@@ -87,12 +87,12 @@ Engenheiro de dados com MBA em Data Science e mestrando em Ciência da Computaç
 
 # Educação
 
-Mestrado em Ciência da Computação @ [Ibilce-Unesp](https://www.ibilce.unesp.br/)<br />
+⟶ Mestrado em Ciência da Computação @ [Ibilce-Unesp](https://www.ibilce.unesp.br/)<br />
 2025 &mdash; em curso
 
-MBA em Data Science e Analytics @ [Esalq-USP](https://www.esalq.usp.br/)<br />
+⟶ MBA em Data Science e Analytics @ [Esalq-USP](https://www.esalq.usp.br/)<br />
 2022 &mdash; 2023<br />
-Trabalho desenvolvido: [Detecção de anomalias em despesas dos deputados estaduais de São Paulo por meio de K-Means](/projetos/alesp-kmeans)
+- Trabalho desenvolvido: [Detecção de anomalias em despesas dos deputados estaduais de São Paulo por meio de K-Means](/projetos/alesp-kmeans)
 
 # Habilidades técnicas
 

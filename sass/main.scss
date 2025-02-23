@@ -12,13 +12,10 @@
 
 
 :root {
-  /* Used for: block comment, hr, ... */
   --border-color: var(--border-color);
-
-  /* Fonts */
-  --text-font: 'Jetbrains Mono';
+  --text-font: 'Jetbrains Mono', 'Helvetica', sans-serif;
   --header-font: 'Space Grotesk', 'Helvetica', sans-serif;
-  --code-font: 'Jetbrains Mono';
+  --code-font: 'Ubuntu Mono', monospace;
 }
 
 html {

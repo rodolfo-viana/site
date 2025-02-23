@@ -1,10 +1,9 @@
 // Define base colors and fonts for light and dark themes
 :root {
-    --code-font: 'Courier New', monospace;
+    --code-font: monospace;
     --bg-primary: var(--bg-1);
     --text-color: var(--text-0); // Color of the code text
     --label-color: #f0f0f0; // Text color of the label
-
     --hightlight-color: #f0f0f0;
 }
 
@@ -52,7 +51,7 @@ $language-colors: (
 @mixin base-label-style($bg-color, $text-color: var(--label-color)) {
     background: $bg-color;
     color: $text-color;
-    border-radius: 0 0 0.25rem 0.25rem;
+    border-radius: 0px;
     font-size: 12px;
     letter-spacing: 0.025rem;
     padding: 0.1rem 0.5rem;
@@ -61,7 +60,7 @@ $language-colors: (
     position: absolute;
     right: 0;
     top: 0;
-    margin-top: 0.1rem;
+    margin-top: 0rem;
 }
 
 // Example usage within a specific class for clarity
@@ -78,7 +77,7 @@ $language-colors: (
 code {
     background-color: var(--bg-primary);
     padding: 0.1em 0.2em;
-    border-radius: 5px;
+    border-radius: 0px;
     border: 1px solid var(--border-color);
     font-family: var(--code-font);
     font-variant-ligatures: none;
@@ -86,7 +85,7 @@ code {
 
 pre {
     background-color: var(--bg-primary) !important;
-    border-radius: 5px;
+    border-radius: 0px;
     border: 1px solid var(--border-color);
     line-height: 1.4;
     overflow-x: auto;
@@ -102,7 +101,7 @@ pre {
     code {
         background-color: transparent !important;
         color: var(--text-color);
-        font-size: 100%;
+        font-size: 95%;
         padding: 0;
         border: none;
         font-family: var(--code-font);

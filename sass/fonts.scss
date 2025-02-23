@@ -1,4 +1,20 @@
 @font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 400;
+  src: url('fonts/UbuntuMono/UbuntuMono-Regular.ttf'), local('ttf');
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Ubuntu Mono';
+  font-style: normal;
+  font-weight: 700;
+  src: url('fonts/UbuntuMono/UbuntuMono-Bold.ttf'), local('ttf');
+  font-display: swap
+}
+
+@font-face {
   font-family: 'Jetbrains Mono';
   font-style: normal;
   font-weight: 400;

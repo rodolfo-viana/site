@@ -29,12 +29,12 @@ dynamic_note = true
 comment = false
 
 menu = [
-    { name = "/publicações", url = "/publicacoes", weight = 1 },
-    { name = "/projetos", url = "/projetos", weight = 2 },
-    { name = "/aulas", url = "/aulas", weight = 3 },
-    { name = "/cv", url = "/curriculo", weight = 4 },
-    { name = "/tags", url = "/tags", weight = 5 },
-    { name = "/rss", url = "/rss.xml", weight = 6 },
+    { name = "publicações", url = "/publicacoes", weight = 1 },
+    { name = "projetos", url = "/projetos", weight = 2 },
+    { name = "aulas", url = "/aulas", weight = 3 },
+    { name = "cv", url = "/curriculo", weight = 4 },
+    { name = "tags", url = "/tags", weight = 5 },
+    { name = "rss", url = "/rss.xml", weight = 6 },
 ]
 
 custom_css = []
