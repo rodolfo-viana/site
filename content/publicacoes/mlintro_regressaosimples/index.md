@@ -18,7 +18,7 @@ Em estatística, regressão linear é o modelo que estima a relação linear ent
 
 Em _machine learning_ utilizamos regressão linear nos problemas em que desejamos prever um **valor contínuo** a partir de um conjunto de variáveis de entrada (também chamadas de _features_). Um exemplo:
 
-> Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R$ 151 mil e R$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200²... A sua casa tem 182m². Quanto você deve pedir por ela?
+> Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R$ 151 mil e R$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200m²... A sua casa tem 182m². Quanto você deve pedir por ela?
 
 {% note(clickable=true, hidden=true, header="Veja metragens e valores das 99 casas") %}
 | i   | metragem | valor   |
