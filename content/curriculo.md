@@ -5,12 +5,9 @@ path = "curriculo"
 
 # Informações
 
-Rodolfo Viana
-
-<span id="age"></span> anos
-
-Marília, São Paulo
-
+Rodolfo Viana<br />
+<span id="age"></span> anos<br />
+Marília, São Paulo<br />
 [Linkedin](https://www.linkedin.com/in/rodolfoviana/) / [Github](https://github.com/rodolfo-viana) / [E-mail](mailto:eu@rodolfoviana.com.br)
 
 # Resumo
