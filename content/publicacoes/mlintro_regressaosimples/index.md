@@ -305,7 +305,7 @@ Neste cenário, o **valor** que queremos prever é o preço da casa &mdash; para
 
 (Poderíamos ter mais de uma _feature_, como quantidade de quartos ou de banheiros, idade do imóvel etc. Mas para ficarmos numa explicação mais didática, vamos trabalhar apenas com uma variável. Aliás, chamamos este modelo de **regressão linear simples** justamente por isso: é **simples** porque trabalhamos com apenas uma variável preditora.)
 
-Cientificamente, buscamos modelar a relação entre as variáveis de entrada (%%x%%) e a variável alvo (%%y%%) &mdash; ou seja, objetivamos encontrar a melhor reta que descreve a relação entre nossos dados (afinal, cada %%y%% está associado a um %%x%% e, portanto, temos um conjunto %%(x_1,y_1),(x_2, y_2),...,(z_n,y_n)%%). Quando encontramos a reta, conseguimos determinar o valor previsto (%%\hat{y}%%) da sua casa. 
+Cientificamente, buscamos modelar a relação entre as variáveis de entrada (%%x%%) e a variável alvo (%%y%%) &mdash; ou seja, objetivamos encontrar a melhor reta que descreve a relação entre nossos dados (afinal, cada %%y%% está associado a um %%x%% e, portanto, temos um conjunto %%(x_1,y_1),(x_2, y_2),...,(x_n,y_n)%%). Quando encontramos a reta, conseguimos determinar o valor previsto (%%\hat{y}%%) da sua casa. 
 
 Em termos matemáticos, nosso %%\hat{y}%% é encontrado por meio desta fórmula:
 
