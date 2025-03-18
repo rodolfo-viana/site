@@ -12,11 +12,11 @@ Recentemente encontrei nas minhas bagunças um caderno com as anotações que fi
 
 Daí me surgiu a ideia de transcrever essas notas &mdash; melhor: passar para este blog explicações de conceitos de aprendizado de máquina. O primeiro texto é este. E é justamente sobre regressão linear.
 
-Em estatística, regressão linear é o modelo que estima a relação linear entre uma variável dependente e uma ou mais variáveis explanatórias. Uma ilustração simples:
+De forma geral, regressão linear é o modelo que estima a relação linear entre uma variável dependente e uma ou mais variáveis explanatórias. Uma ilustração simples:
 
 > Você quer comprar um carro. Você observa a marca, o modelo, o ano de fabricação, se é câmbio manual ou automático etc. Todos esses elementos que você observa são importantes para você analisar se o preço pedido por ele é aceitável. Esses elementos (marca, modelo, ano...) são variáveis explanatórias; o preço é a variável dependente. 
 
-Em _machine learning_ utilizamos regressão linear nos problemas em que desejamos prever um **valor contínuo** a partir de um conjunto de variáveis de entrada (também chamadas de _features_). Um exemplo:
+Em _machine learning_ utilizamos regressão linear nos problemas em que desejamos prever um **valor** a partir de um conjunto de variáveis de entrada (também chamadas de _features_). Um exemplo:
 
 > Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R$ 151 mil e R$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200m²... A sua casa tem 182m². Quanto você deve pedir por ela?
 
@@ -124,7 +124,7 @@ Em _machine learning_ utilizamos regressão linear nos problemas em que desejamo
 | 99  | 300.0    | 1150000 |
 {% end %}
 
-Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos algo assim:
+Se colocarmos em gráfico as 99 casas do nosso exemplo, com suas metragens e valores, teríamos algo assim:
 
 <div id="graph1" class="d3js"></div>
 <div id="tooltip" style="position: absolute; display: none; pointer-events: none; background: #fff; border: 1px solid #121212; padding: 5px; font-size: 12px; color: #121212;"></div>
@@ -301,11 +301,13 @@ Se colocarmos em gráfico as 99 casas, com suas metragens e valores, teríamos a
          })();
 </script>
 
-Neste cenário, o **valor contínuo** que queremos prever é o preço da casa que você deve pedir; o **conjunto de _features_** é composto por apenas uma variável: a metragem. (Poderíamos ter mais de uma variável no conjunto de _features_, como quantidade de quartos ou de banheiros, idade do imóvel etc. Mas para ficarmos numa explicação mais simples, vamos trabalhar apenas com uma variável.)
+Neste cenário, o **valor** que queremos prever é o preço da casa &mdash; para isso, utilizamos a metragem como **_feature_**. 
 
-Em termos mais técnicos, buscamos modelar a relação entre as variáveis de entrada (%%x%%) e a variável alvo (%%y%%) para determinar o valor previsto (%%\hat{y}%%) da sua casa.
+(Poderíamos ter mais de uma _feature_, como quantidade de quartos ou de banheiros, idade do imóvel etc. Mas para ficarmos numa explicação mais didática, vamos trabalhar apenas com uma variável. Aliás, chamamos este modelo de **regressão linear simples** justamente por isso: é **simples** porque trabalhamos com apenas uma variável preditora.)
 
-Aqui, aliás, temos uma **regressão linear simples**, ou seja, com apenas uma variável preditora. Sua tarefa é tentar encontrar a melhor reta que descreve a relação entre nossos dados &mdash; afinal, cada %%x%% tem um %%y%% e, portanto, temos um conjunto %%(x_1,y_1),(x_2, y_2),...,(z_n,y_n)%%. Em termos matemáticos, nosso %%\hat{y}%% é encontrado por meio desta fórmula:
+Cientificamente, buscamos modelar a relação entre as variáveis de entrada (%%x%%) e a variável alvo (%%y%%) &mdash; ou seja, objetivamos encontrar a melhor reta que descreve a relação entre nossos dados (afinal, cada %%x%% tem um %%y%% e, portanto, temos um conjunto %%(x_1,y_1),(x_2, y_2),...,(z_n,y_n)%%). Quando encontramos a reta, conseguimos determinar o valor previsto (%%\hat{y}%%) da sua casa. 
+
+Em termos matemáticos, nosso %%\hat{y}%% é encontrado por meio desta fórmula:
 
 $$
 \hat{y}_i=\beta_0 + \beta_1 x_i
