@@ -16,7 +16,7 @@ De forma geral, regressão linear é o modelo que estima a relação linear entr
 
 > Você quer comprar um carro. Você observa a marca, o modelo, o ano de fabricação, se é câmbio manual ou automático etc. Todos esses elementos que você observa são importantes para você analisar se o preço pedido por ele é aceitável. Esses elementos (marca, modelo, ano...) são variáveis explanatórias; o preço é a variável dependente. 
 
-Em _machine learning_ utilizamos regressão linear nos problemas em que desejamos prever um **valor** a partir de um conjunto de variáveis de entrada (também chamadas de _features_). Um exemplo:
+Em _machine learning_ utilizamos regressão linear nos problemas em que desejamos prever **valores** a partir de um conjunto de variáveis de entrada (também chamadas de **_features_**). Um exemplo:
 
 > Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R$ 151 mil e R$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200m²... A sua casa tem 182m². Quanto você deve pedir por ela?
 
