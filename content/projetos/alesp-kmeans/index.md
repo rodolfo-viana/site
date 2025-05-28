@@ -3,7 +3,7 @@ title = "Detecção de anomalias em gastos dos deputados estaduais com K-Means"
 description = "Versão editada do meu trabalho de conclusão do MBA em Data Science e Analytics na USP-Esalq, sob orientação da Profª Drª Ana Julia Righetto, defendido em janeiro de 2024"
 date = "2023-09-01"
 updated = "2023-11-16"
-weight = 1
+weight = 9
 
 [taxonomies]
 tags=["aprendizado de máquina", "k-means"]
