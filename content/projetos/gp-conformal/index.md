@@ -30,15 +30,17 @@ A implementação dos modelos propostos neste trabalho segue uma arquitetura hí
 
 A arquitetura híbrida consiste em dois componentes principais integrados: um extrator de características baseado em perceptron multicamadas (MLP) que transforma os dados de entrada em representações de maior nível, e um GP que opera sobre essas características extraídas para fornecer predições de intervalos. O MLP é estruturado com três camadas totalmente conectadas: uma camada de entrada que recebe as características originais dos dados, duas camadas ocultas com 64 neurônios cada, aplicando funções de ativação ReLU e dropout de 0,1 para regularização, e uma camada de saída com 32 neurônios que produz as características refinadas.
 
-O GP subsequente opera sobre essas características extraídas \\(\mathbf{z}\\), utilizando uma função de base radial para modelar as correlações no espaço de características transformado. A escolha do kernel _Radial Basis Function_ deve-se à sua capacidade de capturar relações não-lineares suaves entre variáveis, sendo adequado para a maioria dos problemas de regressão. Outras opções como kernels periódicos ou Matérn poderiam ser usadas para capturar padrões específicos como sazonalidade ou diferentes graus de suavidade.
+O GP subsequente opera sobre essas características extraídas \(\mathbf{z}\), utilizando uma função de base radial para modelar as correlações no espaço de características transformado. A escolha do kernel _Radial Basis Function_ deve-se à sua capacidade de capturar relações não-lineares suaves entre variáveis, sendo adequado para a maioria dos problemas de regressão. Outras opções como kernels periódicos ou Matérn poderiam ser usadas para capturar padrões específicos como sazonalidade ou diferentes graus de suavidade.
 
-O treinamento conjunto otimiza simultaneamente os parâmetros do MLP (%%\mathbf{W}_i, \mathbf{b}_i%%) e os hiperparâmetros do GP (%%\boldsymbol{\theta}_{GP}%%) através de gradiente descendente
+O treinamento conjunto otimiza simultaneamente os parâmetros do MLP (\(\mathbf{W}_i, \mathbf{b}_i\)) e os hiperparâmetros do GP (\(\boldsymbol{\theta}_{GP}\)) através de gradiente descendente
 
 $$
-\mathcal{L}(\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}) = -\log p(\mathbf{y}|\text{MLP}(\mathbf{X}), \boldsymbol{\theta}_{GP}) \\
-\boldsymbol{\phi}_{t+1} = \boldsymbol{\phi}_t - \eta \nabla_{\boldsymbol{\phi}} \mathcal{L}(\boldsymbol{\phi}_t),
+\begin{aligned}
+\mathcal{L}(\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}) &= -\log p(\mathbf{y}\mid\text{MLP}(\mathbf{X}), \boldsymbol{\theta}_{GP}) \\
+\boldsymbol{\phi}_{t+1} &= \boldsymbol{\phi}_t - \eta \nabla_{\boldsymbol{\phi}} \mathcal{L}(\boldsymbol{\phi}_t),
+\end{aligned}
 $$
 
-onde \\(\boldsymbol{\phi} = \{\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}\}\\) representa todos os parâmetros treináveis do modelo híbrido.
+onde \(\boldsymbol{\phi} = \{\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}\}\) representa todos os parâmetros treináveis do modelo híbrido.
 
 Esta arquitetura híbrida une o poder das redes neurais na extração de características complexas com a precisão dos GPs na quantificação de incerteza.
