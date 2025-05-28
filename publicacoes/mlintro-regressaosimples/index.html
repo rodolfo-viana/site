@@ -1,0 +1,425 @@
+<!doctype html><html class="dark light" lang=pt-br><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content=https://rodolfoviana.com.br name=base><title>
+         Modo de usar: regressão linear simples
+        
+    </title><meta content="Modo de usar: regressão linear simples" property=og:title><meta content="Explore de forma prática os fundamentos e cálculos deste algoritmo básico de machine learning" property=og:description><meta content="Explore de forma prática os fundamentos e cálculos deste algoritmo básico de machine learning" name=description><meta content=https://rodolfoviana.com.br/image.png property=og:image><meta content=image/png property=og:image:type><meta content=website property=og:type><meta content=https://rodolfoviana.com.br/publicacoes/mlintro-regressaosimples/ property=og:url><link href=/favicon.png rel=icon type=image/png><link href=https://rodolfoviana.com.br/fonts.css rel=stylesheet><script src=https://rodolfoviana.com.br/js/codeblock.js></script><script src=https://rodolfoviana.com.br/js/note.js></script><script>MathJax = {
+          options: {enableMenu: false},
+          loader: {load: ['[tex]/boldsymbol', '[tex]/mathtools']},
+          tex: {
+               inlineMath: [['\\(', '\\)']],
+               displayMath: [['$$', '$$'], ['\\[', '\\]']],
+               processEscapes: true,
+               processEnvironments: true,
+               packages: {'[+]': ['boldsymbol', 'mathtools']}  
+           },
+
+        }</script><link title="rodolfo viana" href=https://rodolfoviana.com.br/rss.xml rel=alternate type=application/rss+xml><link href=https://rodolfoviana.com.br/theme/dark.css rel=stylesheet><script src=https://rodolfoviana.com.br/js/themetoggle.js></script><script>setTheme("dark");</script><link href=https://rodolfoviana.com.br/main.css media=screen rel=stylesheet><script src=https://rodolfoviana.com.br/js/mobile-menu.js></script><script src=https://rodolfoviana.com.br/js/d3.min.js></script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js></script><body><div class=content><header><div class=main><a href=https://rodolfoviana.com.br>rodolfo viana</a></div><button aria-label=Menu class=hamburger id=mobile-menu-button><span></span> <span></span> <span></span></button><nav id=nav-menu><a href=https://rodolfoviana.com.br/publicacoes style=margin-left:.5em>publicações</a><a href=https://rodolfoviana.com.br/projetos style=margin-left:.5em>projetos</a><a href=https://rodolfoviana.com.br/aulas style=margin-left:.5em>aulas</a><a href=https://rodolfoviana.com.br/curriculo style=margin-left:.5em>cv</a><a href=https://rodolfoviana.com.br/tags style=margin-left:.5em>tags</a><a href=https://rodolfoviana.com.br/rss.xml style=margin-left:.5em>rss</a></nav></header><main><article><div class=title><div class=page-header>Modo de usar: regressão linear simples<span class=primary-color style=font-size:1.6em>.</span></div><div class=meta>Publicação: <time>17-02-2025</time><br>Atualização: <time>21-02-2025</time><br><span class=tags-label>Tags:</span><span class=tags> <a class=post-tag href=https://rodolfoviana.com.br/tags/aprendizado-de-maquina/>aprendizado de máquina</a>, <a class=post-tag href=https://rodolfoviana.com.br/tags/regressao-linear/>regressão linear</a> </span></div></div><section class=body><p>Recentemente encontrei nas minhas bagunças um caderno com as anotações que fiz enquanto estudava <em>machine learning</em> pela primeira vez, há uns cinco anos. Relendo as notas vi que tinham alguns cálculos, uns gráficos, e me dei conta: naquela época eu fazia regressão linear simples à mão, para treinar. Sempre aprendo melhor quando pratico.<p>Daí me surgiu a ideia de transcrever essas notas — melhor: passar para este blog explicações de conceitos de aprendizado de máquina. O primeiro texto é este. E é justamente sobre regressão linear.<p>De forma geral, regressão linear é o modelo que estima a relação linear entre uma variável dependente e uma ou mais variáveis explanatórias. Uma ilustração simples:<blockquote><p>Você quer comprar um carro. Você observa a marca, o modelo, o ano de fabricação, se é câmbio manual ou automático etc. Todos esses elementos que você observa são importantes para você analisar se o preço pedido por ele é aceitável. Esses elementos (marca, modelo, ano...) são variáveis explanatórias; o preço é a variável dependente.</blockquote><p>Em <em>machine learning</em> utilizamos regressão linear nos problemas em que desejamos prever <strong>valores</strong> a partir de um conjunto de variáveis de entrada (também chamadas de <strong><em>features</em></strong>). Um exemplo:<blockquote><p>Em determinado bairro da cidade, há 99 casas à venda. Os preços variam entre R$ 151 mil e R$ 1,150 milhão, seguindo relativamente sua metragem. Algumas casas têm 100m², outras 150m², 200m²... A sua casa tem 182m². Quanto você deve pedir por ela?</blockquote><div class=note-container><button class=note-toggle><div class=note-icon><p>Veja metragens e valores das 99 casas</div></button><div class=note-content style=display:none><table><thead><tr><th>i<th>metragem<th>valor<tbody><tr><td>1<td>100.4<td>151001<tr><td>2<td>103.2<td>177313<tr><td>3<td>104.9<td>194625<tr><td>4<td>105.6<td>217938<tr><td>5<td>109.8<td>277250<tr><td>6<td>111.0<td>210563<tr><td>7<td>112.9<td>191875<tr><td>8<td>116.3<td>253188<tr><td>9<td>117.5<td>413500<tr><td>10<td>117.7<td>310813<tr><td>11<td>117.9<td>299125<tr><td>12<td>122.1<td>345438<tr><td>13<td>124.3<td>362750<tr><td>14<td>124.4<td>419063<tr><td>15<td>128.6<td>431375<tr><td>16<td>131.8<td>454688<tr><td>17<td>132.0<td>375000<tr><td>18<td>134.2<td>415313<tr><td>19<td>139.4<td>485625<tr><td>20<td>141.6<td>535938<tr><td>21<td>143.8<td>556250<tr><td>22<td>146.0<td>556563<tr><td>23<td>147.1<td>596875<tr><td>24<td>149.3<td>517188<tr><td>25<td>149.5<td>590199<tr><td>26<td>154.7<td>664836<tr><td>27<td>154.9<td>618100<tr><td>28<td>156.1<td>700892<tr><td>29<td>158.3<td>610533<tr><td>30<td>162.4<td>591643<tr><td>31<td>163.6<td>651266<tr><td>32<td>165.8<td>662045<tr><td>33<td>177.0<td>671092<tr><td>34<td>171.6<td>640001<tr><td>35<td>172.2<td>428751<tr><td>36<td>174.2<td>597501<tr><td>37<td>175.7<td>756251<tr><td>38<td>176.1<td>575001<tr><td>39<td>178.6<td>593751<tr><td>40<td>178.9<td>642501<tr><td>41<td>181.6<td>531251<tr><td>42<td>183.1<td>490001<tr><td>43<td>184.9<td>568751<tr><td>44<td>186.1<td>707501<tr><td>45<td>186.6<td>606251<tr><td>46<td>189.8<td>625001<tr><td>47<td>190.6<td>643751<tr><td>48<td>192.0<td>662501<tr><td>49<td>193.5<td>701251<tr><td>50<td>193.9<td>650001<tr><td>51<td>196.3<td>788751<tr><td>52<td>198.1<td>597501<tr><td>53<td>199.6<td>776251<tr><td>54<td>200.1<td>765001<tr><td>55<td>200.7<td>803751<tr><td>56<td>205.5<td>822501<tr><td>57<td>205.8<td>811251<tr><td>58<td>207.0<td>830001<tr><td>59<td>208.1<td>868751<tr><td>60<td>209.6<td>1017501<tr><td>61<td>211.6<td>926251<tr><td>62<td>211.8<td>855001<tr><td>63<td>213.4<td>903751<tr><td>64<td>214.3<td>1002501<tr><td>65<td>218.2<td>961251<tr><td>66<td>220.1<td>951094<tr><td>67<td>221.0<td>840001<tr><td>68<td>223.5<td>890939<tr><td>69<td>225.9<td>921876<tr><td>70<td>228.4<td>1012814<tr><td>71<td>230.4<td>973751<tr><td>72<td>233.3<td>794689<tr><td>73<td>235.8<td>925626<tr><td>74<td>238.3<td>976564<tr><td>75<td>240.8<td>917501<tr><td>76<td>243.2<td>998439<tr><td>77<td>245.7<td>929376<tr><td>78<td>248.2<td>980314<tr><td>79<td>250.6<td>951251<tr><td>80<td>253.1<td>972189<tr><td>81<td>255.6<td>913126<tr><td>82<td>258.0<td>994064<tr><td>83<td>260.5<td>925001<tr><td>84<td>263.0<td>985939<tr><td>85<td>265.4<td>1006876<tr><td>86<td>267.9<td>1037814<tr><td>87<td>270.4<td>1008751<tr><td>88<td>272.8<td>1019689<tr><td>89<td>275.3<td>1040626<tr><td>90<td>277.8<td>1051564<tr><td>91<td>280.3<td>942501<tr><td>92<td>282.7<td>1123439<tr><td>93<td>285.2<td>1014376<tr><td>94<td>287.7<td>1095314<tr><td>95<td>290.1<td>996251<tr><td>96<td>292.6<td>1127189<tr><td>97<td>295.1<td>1148126<tr><td>98<td>297.5<td>1129064<tr><td>99<td>300.0<td>1150000</table></div></div><p>Se colocarmos em gráfico as 99 casas do nosso exemplo, com suas metragens e valores, teríamos algo assim:<div class=d3js id=graph1></div><div style="pointer-events:none;color:#121212;background:#fff;border:1px solid #121212;padding:5px;font-size:12px;display:none;position:absolute" id=tooltip></div><script>(function(){
+  const data = [
+    { metragem: 100.4, valor: 151001 },
+    { metragem: 103.2, valor: 177313 },
+    { metragem: 104.9, valor: 194625 },
+    { metragem: 105.6, valor: 217938 },
+    { metragem: 109.8, valor: 277250 },
+    { metragem: 111.0, valor: 210563 },
+    { metragem: 112.9, valor: 191875 },
+    { metragem: 116.3, valor: 253188 },
+    { metragem: 117.5, valor: 413500 },
+    { metragem: 117.7, valor: 310813 },
+    { metragem: 117.9, valor: 299125 },
+    { metragem: 122.1, valor: 345438 },
+    { metragem: 124.3, valor: 362750 },
+    { metragem: 124.4, valor: 419063 },
+    { metragem: 128.6, valor: 431375 },
+    { metragem: 131.8, valor: 454688 },
+    { metragem: 132.0, valor: 375000 },
+    { metragem: 134.2, valor: 415313 },
+    { metragem: 139.4, valor: 485625 },
+    { metragem: 141.6, valor: 535938 },
+    { metragem: 143.8, valor: 556250 },
+    { metragem: 146.0, valor: 556563 },
+    { metragem: 147.1, valor: 596875 },
+    { metragem: 149.3, valor: 517188 },
+    { metragem: 149.5, valor: 590199 },
+    { metragem: 154.7, valor: 664836 },
+    { metragem: 154.9, valor: 618100 },
+    { metragem: 156.1, valor: 700892 },
+    { metragem: 158.3, valor: 610533 },
+    { metragem: 162.4, valor: 591643 },
+    { metragem: 163.6, valor: 651266 },
+    { metragem: 165.8, valor: 662045 },
+    { metragem: 177.0, valor: 671092 },
+    { metragem: 171.6, valor: 640001 },
+    { metragem: 172.2, valor: 428751 },
+    { metragem: 174.2, valor: 597501 },
+    { metragem: 175.7, valor: 756251 },
+    { metragem: 176.1, valor: 575001 },
+    { metragem: 178.6, valor: 593751 },
+    { metragem: 178.9, valor: 642501 },
+    { metragem: 181.6, valor: 531251 },
+    { metragem: 183.1, valor: 490001 },
+    { metragem: 184.9, valor: 568751 },
+    { metragem: 186.1, valor: 707501 },
+    { metragem: 186.6, valor: 606251 },
+    { metragem: 189.8, valor: 625001 },
+    { metragem: 190.6, valor: 643751 },
+    { metragem: 192.0, valor: 662501 },
+    { metragem: 193.5, valor: 701251 },
+    { metragem: 193.9, valor: 650001 },
+    { metragem: 196.3, valor: 788751 },
+    { metragem: 198.1, valor: 597501 },
+    { metragem: 199.6, valor: 776251 },
+    { metragem: 200.1, valor: 765001 },
+    { metragem: 200.7, valor: 803751 },
+    { metragem: 205.5, valor: 822501 },
+    { metragem: 205.8, valor: 811251 },
+    { metragem: 207.0, valor: 830001 },
+    { metragem: 208.1, valor: 868751 },
+    { metragem: 209.6, valor: 1017501 },
+    { metragem: 211.6, valor: 926251 },
+    { metragem: 211.8, valor: 855001 },
+    { metragem: 213.4, valor: 903751 },
+    { metragem: 214.3, valor: 1002501 },
+    { metragem: 218.2, valor: 961251 },
+    { metragem: 220.1, valor: 951094 },
+    { metragem: 221.0, valor: 840001 },
+    { metragem: 223.5, valor: 890939 },
+    { metragem: 225.9, valor: 921876 },
+    { metragem: 228.4, valor: 1012814 },
+    { metragem: 230.4, valor: 973751 },
+    { metragem: 233.3, valor: 794689 },
+    { metragem: 235.8, valor: 925626 },
+    { metragem: 238.3, valor: 976564 },
+    { metragem: 240.8, valor: 917501 },
+    { metragem: 243.2, valor: 998439 },
+    { metragem: 245.7, valor: 929376 },
+    { metragem: 248.2, valor: 980314 },
+    { metragem: 250.6, valor: 951251 },
+    { metragem: 253.1, valor: 972189 },
+    { metragem: 255.6, valor: 913126 },
+    { metragem: 258.0, valor: 994064 },
+    { metragem: 260.5, valor: 925001 },
+    { metragem: 263.0, valor: 985939 },
+    { metragem: 265.4, valor: 1006876 },
+    { metragem: 267.9, valor: 1037814 },
+    { metragem: 270.4, valor: 1008751 },
+    { metragem: 272.8, valor: 1019689 },
+    { metragem: 275.3, valor: 1040626 },
+    { metragem: 277.8, valor: 1051564 },
+    { metragem: 280.3, valor: 942501 },
+    { metragem: 282.7, valor: 1123439 },
+    { metragem: 285.2, valor: 1014376 },
+    { metragem: 287.7, valor: 1095314 },
+    { metragem: 290.1, valor: 996251 },
+    { metragem: 292.6, valor: 1127189 },
+    { metragem: 295.1, valor: 1148126 },
+    { metragem: 297.5, valor: 1129064 },
+    { metragem: 300.0, valor: 1150000 }
+  ];
+
+  const virtualWidth = 600;
+  const virtualHeight = 300;
+  const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+  const width = virtualWidth - margin.left - margin.right;
+  const height = virtualHeight - margin.top - margin.bottom;
+
+  const svg0 = d3.select("#graph1")
+    .append("svg")
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .attr("width", `${virtualWidth}`)
+      .attr("height", `${virtualHeight}`)
+      .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`);
+
+  const svg = svg0.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const xScale = d3.scaleLinear()
+                   .domain([100, 300])
+                   .range([0, width])
+                   .nice();
+
+  const yScale = d3.scaleLinear()
+                   .domain([150000, 1150000])
+                   .range([height, 0])
+                   .nice();
+
+  const xAxis = d3.axisBottom(xScale)
+                  .tickFormat(d => `${d}m²`)
+                  .ticks(5);
+
+  const yAxis = d3.axisLeft(yScale)
+                  .tickFormat(d => `R$ ${(d/1000).toFixed(0)}k`)
+                  .ticks(5);
+
+  svg.append("g")
+     .attr("class", "axis")
+     .attr("transform", `translate(0, ${height})`)
+     .call(xAxis);
+
+  svg.append("g")
+     .attr("class", "axis")
+     .call(yAxis);
+
+  svg.selectAll(".dot")
+     .data(data)
+     .enter()
+     .append("circle")
+       .attr("class", "dot")
+       .attr("cx", d => xScale(d.metragem))
+       .attr("cy", d => yScale(d.valor))
+       .attr("r", 5)
+       .attr("fill", "#ef5350")
+       .on("mouseover", function(event, d) {
+          d3.select("#tooltip")
+            .style("display", "block")
+            .html(`Metragem: ${d.metragem.toFixed(1)} m²<br>Valor: R$ ${(d.valor/1000).toFixed(0)}k`);
+       })
+       .on("mousemove", function(event) {
+          d3.select("#tooltip")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
+       })
+       .on("mouseout", function() {
+          d3.select("#tooltip").style("display", "none");
+       });
+         })();</script><p>Neste cenário, o <strong>valor</strong> que queremos prever é o preço da casa — para isso, utilizamos a metragem como <strong><em>feature</em></strong>.<p>(Poderíamos ter mais de uma <em>feature</em>, como quantidade de quartos ou de banheiros, idade do imóvel etc. Mas para ficarmos numa explicação mais didática, vamos trabalhar apenas com uma variável. Aliás, chamamos este modelo de <strong>regressão linear simples</strong> justamente por isso: é <strong>simples</strong> porque trabalhamos com apenas uma variável preditora.)<p>Cientificamente, buscamos modelar a relação entre as variáveis de entrada (\(x\)) e a variável alvo (\(y\)) — ou seja, objetivamos encontrar a melhor reta que descreve a relação entre nossos dados (afinal, cada \(y\) está associado a um \(x\) e, portanto, temos um conjunto \((x_1,y_1),(x_2, y_2),...,(x_n,y_n)\)). Quando encontramos a reta, conseguimos determinar o valor previsto (\(\hat{y}\)) da sua casa.<p>Em termos matemáticos, nosso \(\hat{y}\) é encontrado por meio desta fórmula:<p>$$ \hat{y}_i=\beta_0 + \beta_1 x_i $$<p>sendo,<ul><li>\(\hat{y}_i\): o valor previsto para \(y\) dada a variável de entrada \(x_i\)<li>\(\beta_0\): o intercepto da reta (isto é, o valor de \(\hat{y}\) quando \(x=0\)) <ul><li>É o ponto onde a reta cruza o eixo \(y\). Mesmo que \(x=0\), você ainda terá um resultado básico. No nosso exemplo, de preço de casa a partir da metragem, \(\beta_0\) representa o valor previsto quando a metragem (\(x\)) é 0. (Pode parecer lógico que uma casa com 0m² custe R$ 0, mas para a modelagem não funciona assim.)</ul><li>\(\beta_1\): a inclinação (<em>slope</em>) da reta <ul><li>Indica quanto o valor previsto (\(\hat{y}\)) muda quando \(x\) aumenta em 1 unidade. Se \(\beta_1\) é positivo, a reta inclina para cima; se negativo, para baixo.</ul></ul><p>Desenhando melhor, para chegar a essa operação precisamos:<ol><li>Encontrar as médias de todos os valores \(x\) (ou seja, \(\bar{x}\)): \(\bar{x}=\frac{1}{99}\sum_{i=1}^{99}x_i\)</ol><blockquote><p>\(\bar{x} \approx 196.4626\)</blockquote><ol start=2><li>Encontrar as médias de todos os valores \(y\) (ou seja, \(\bar{y}\)): \(\bar{y}=\frac{1}{99}\sum_{i=1}^{99}y_i\)</ol><blockquote><p>\(\bar{y} \approx 721273.0202\)</blockquote><ol start=2><li>Para cada ponto \(i\), calcular desvios de \(x\) e \(y\), e seus produtos:</ol><ul><li>Tomar a diferença entre a metragem do ponto e a média: \(d_{x,i}=x_{i}-\bar{x}\)<li>Calcular o quadrado do desvio de \(x\): \(dd_{x,i}=(x_{i}-\bar{x})^2\)<li>Tomar a diferença entre o valor do ponto e a média: \(d_{y,i}=y_{i}-\bar{y}\)<li>Calcular o produto dessas diferenças: \(p_{i}=d_{x,i}d_{y,i}\)</ul><blockquote><table><thead><tr><th>\(i\)<th>\(x\)<th>\(y\)<th>\(d_{x,i}\)<th>\(dd_{x,i}\)<th>\(d_{y,i}\)<th>\(p_{i}\)<tbody><tr><td>1<td>100.4<td>151001<td>-96.0626<td>9228.0231<td>-570272.0202<td>54781812.9677<tr><td>2<td>103.2<td>177313<td>-93.2626<td>8697.9125<td>-543960.0202<td>50731125.7799<tr><td>3<td>104.9<td>194625<td>-91.5626<td>8383.7097<td>-526648.0202<td>48221262.0144<tr><td>...<td>...<td>...<td>...<td>...<td>...<td><tr><td>97<td>295.1<td>1148126<td>98.6374<td>9729.3367<td>426852.9798<td>42103668.1097<tr><td>98<td>297.5<td>1129064<td>101.0374<td>10208.5562<td>407790.9798<td>41202140.3424<tr><td>99<td>300.0<td>1150000<td>103.5374<td>10719.9932<td>428726.9798<td>44389276.7983</table></blockquote><ol start=3><li>Somar todos os produtos: \(S_{xy} = \sum_{i=1}^{99}p_{i}\)</ol><blockquote><p>\(S_{xy} \approx 1379676325.7747\)</blockquote><ol start=4><li>Somar os quadrados de desvios de \(x\): \(S_{xx} = \sum_{i=1}^{99}dd_{x,i}\)</ol><blockquote><p>\(S_{xx} \approx 303018.3117\)</blockquote><ol start=5><li>Com base nos cálculos, é possível obter a inclinação da reta: \(\beta_1 = \frac{S_{xy}}{S_{xx}}\)</ol><blockquote><p>\(\beta_1 \approx 4553.1120\)</blockquote><ul><li>Isso significa que, em termos práticos, para cada 1m² a mais na metragem, o valor previsto aumenta em cerca de R$ 4.553,11.</ul><ol start=6><li>Calcular o intercepto a partir do <em>slope</em> e das médias: \(\beta_0=\bar{y}- \beta_1\bar{x}\)</ol><blockquote><p>\(\beta_0 \approx -173243.3304\)</blockquote><ul><li>Representa que, quando a metragem é 0 (ou seja, \(x=0\)), o valor da casa é de aproximadamente R$ -173.243,33. (Obviamente não faz sentido uma casa com metragem 0 e valor negativo no mundo real, mas em regressão o intercepto é matematicamente necessário para ajustar a reta aos dados.)</ul><p>Com todos esses cálculos, conseguimos desenhar uma reta:<div class=d3js id=graph2></div><div style="pointer-events:none;color:#121212;background:#fff;border:1px solid #121212;padding:5px;font-size:12px;display:none;position:absolute" id=tooltip></div><script>(function(){
+  const data = [
+    { metragem: 100.4, valor: 151001 },
+    { metragem: 103.2, valor: 177313 },
+    { metragem: 104.9, valor: 194625 },
+    { metragem: 105.6, valor: 217938 },
+    { metragem: 109.8, valor: 277250 },
+    { metragem: 111.0, valor: 210563 },
+    { metragem: 112.9, valor: 191875 },
+    { metragem: 116.3, valor: 253188 },
+    { metragem: 117.5, valor: 413500 },
+    { metragem: 117.7, valor: 310813 },
+    { metragem: 117.9, valor: 299125 },
+    { metragem: 122.1, valor: 345438 },
+    { metragem: 124.3, valor: 362750 },
+    { metragem: 124.4, valor: 419063 },
+    { metragem: 128.6, valor: 431375 },
+    { metragem: 131.8, valor: 454688 },
+    { metragem: 132.0, valor: 375000 },
+    { metragem: 134.2, valor: 415313 },
+    { metragem: 139.4, valor: 485625 },
+    { metragem: 141.6, valor: 535938 },
+    { metragem: 143.8, valor: 556250 },
+    { metragem: 146.0, valor: 556563 },
+    { metragem: 147.1, valor: 596875 },
+    { metragem: 149.3, valor: 517188 },
+    { metragem: 149.5, valor: 590199 },
+    { metragem: 154.7, valor: 664836 },
+    { metragem: 154.9, valor: 618100 },
+    { metragem: 156.1, valor: 700892 },
+    { metragem: 158.3, valor: 610533 },
+    { metragem: 162.4, valor: 591643 },
+    { metragem: 163.6, valor: 651266 },
+    { metragem: 165.8, valor: 662045 },
+    { metragem: 177.0, valor: 671092 },
+    { metragem: 171.6, valor: 640001 },
+    { metragem: 172.2, valor: 428751 },
+    { metragem: 174.2, valor: 597501 },
+    { metragem: 175.7, valor: 756251 },
+    { metragem: 176.1, valor: 575001 },
+    { metragem: 178.6, valor: 593751 },
+    { metragem: 178.9, valor: 642501 },
+    { metragem: 181.6, valor: 531251 },
+    { metragem: 183.1, valor: 490001 },
+    { metragem: 184.9, valor: 568751 },
+    { metragem: 186.1, valor: 707501 },
+    { metragem: 186.6, valor: 606251 },
+    { metragem: 189.8, valor: 625001 },
+    { metragem: 190.6, valor: 643751 },
+    { metragem: 192.0, valor: 662501 },
+    { metragem: 193.5, valor: 701251 },
+    { metragem: 193.9, valor: 650001 },
+    { metragem: 196.3, valor: 788751 },
+    { metragem: 198.1, valor: 597501 },
+    { metragem: 199.6, valor: 776251 },
+    { metragem: 200.1, valor: 765001 },
+    { metragem: 200.7, valor: 803751 },
+    { metragem: 205.5, valor: 822501 },
+    { metragem: 205.8, valor: 811251 },
+    { metragem: 207.0, valor: 830001 },
+    { metragem: 208.1, valor: 868751 },
+    { metragem: 209.6, valor: 1017501 },
+    { metragem: 211.6, valor: 926251 },
+    { metragem: 211.8, valor: 855001 },
+    { metragem: 213.4, valor: 903751 },
+    { metragem: 214.3, valor: 1002501 },
+    { metragem: 218.2, valor: 961251 },
+    { metragem: 220.1, valor: 951094 }, 
+    { metragem: 221.0, valor: 840001 },
+    { metragem: 223.5, valor: 890939 },
+    { metragem: 225.9, valor: 921876 },
+    { metragem: 228.4, valor: 1012814 },
+    { metragem: 230.4, valor: 973751 },
+    { metragem: 233.3, valor: 794689 },
+    { metragem: 235.8, valor: 925626 },
+    { metragem: 238.3, valor: 976564 },
+    { metragem: 240.8, valor: 917501 },
+    { metragem: 243.2, valor: 998439 },
+    { metragem: 245.7, valor: 929376 },
+    { metragem: 248.2, valor: 980314 },
+    { metragem: 250.6, valor: 951251 },
+    { metragem: 253.1, valor: 972189 },
+    { metragem: 255.6, valor: 913126 },
+    { metragem: 258.0, valor: 994064 },
+    { metragem: 260.5, valor: 925001 },
+    { metragem: 263.0, valor: 985939 },
+    { metragem: 265.4, valor: 1006876 },
+    { metragem: 267.9, valor: 1037814 },
+    { metragem: 270.4, valor: 1008751 },
+    { metragem: 272.8, valor: 1019689 },
+    { metragem: 275.3, valor: 1040626 },
+    { metragem: 277.8, valor: 1051564 },
+    { metragem: 280.3, valor: 942501 },
+    { metragem: 282.7, valor: 1123439 },
+    { metragem: 285.2, valor: 1014376 },
+    { metragem: 287.7, valor: 1095314 },
+    { metragem: 290.1, valor: 996251 },
+    { metragem: 292.6, valor: 1127189 },
+    { metragem: 295.1, valor: 1148126 },
+    { metragem: 297.5, valor: 1129064 },
+    { metragem: 300.0, valor: 1150000 }
+  ];
+
+  const virtualWidth = 600;
+  const virtualHeight = 300;
+  const margin = { top: 20, right: 20, bottom: 40, left: 50 };
+  const width = virtualWidth - margin.left - margin.right;
+  const height = virtualHeight - margin.top - margin.bottom;
+
+  const svg0 = d3.select("#graph2")
+    .append("svg")
+      .attr("preserveAspectRatio", "xMidYMid meet")
+      .attr("width", `${virtualWidth}`)
+      .attr("height", `${virtualHeight}`)
+      .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`);
+
+  const svg = svg0.append("g")
+    .attr("transform", `translate(${margin.left},${margin.top})`);
+
+  const xScale = d3.scaleLinear()
+                   .domain([100, 300])
+                   .range([0, width])
+                   .nice();
+
+  const yScale = d3.scaleLinear()
+                   .domain([150000, 1150000])
+                   .range([height, 0])
+                   .nice();
+
+  const xAxis = d3.axisBottom(xScale)
+                  .tickFormat(d => `${d}m²`)
+                  .ticks(5);
+
+  const yAxis = d3.axisLeft(yScale)
+                  .tickFormat(d => `R$ ${(d/1000).toFixed(0)}k`)
+                  .ticks(5);
+
+  svg.append("g")
+     .attr("class", "axis")
+     .attr("transform", `translate(0, ${height})`)
+     .call(xAxis);
+
+  svg.append("g")
+     .attr("class", "axis")
+     .call(yAxis);
+
+  svg.selectAll(".dot")
+     .data(data)
+     .enter()
+     .append("circle")
+       .attr("class", "dot")
+       .attr("cx", d => xScale(d.metragem))
+       .attr("cy", d => yScale(d.valor))
+       .attr("r", 5)
+       .attr("fill", "#ef5350")
+       .on("mouseover", function(event, d) {
+          d3.select("#tooltip")
+            .style("display", "block")
+            .html(`Metragem: ${d.metragem.toFixed(1)} m²<br>Valor: R$ ${(d.valor/1000).toFixed(0)}k`);
+       })
+       .on("mousemove", function(event) {
+          d3.select("#tooltip")
+            .style("left", (event.pageX + 10) + "px")
+            .style("top", (event.pageY - 28) + "px");
+       })
+       .on("mouseout", function() {
+          d3.select("#tooltip").style("display", "none");
+       });
+
+  const n = data.length;
+  let sumX = 0, sumY = 0;
+  data.forEach(d => {
+    sumX += d.metragem;
+    sumY += d.valor;
+  });
+  const meanX = sumX / n;
+  const meanY = sumY / n;
+
+  let num = 0, den = 0;
+  data.forEach(d => {
+    num += (d.metragem - meanX) * (d.valor - meanY);
+    den += Math.pow(d.metragem - meanX, 2);
+  });
+  const slope = num / den;
+  const intercept = meanY - slope * meanX;
+
+  const x1 = 100;
+  const x2 = 300;
+  const y1 = slope * x1 + intercept;
+  const y2 = slope * x2 + intercept;
+
+  svg.append("line")
+     .attr("class", "regression-line")
+     .attr("x1", xScale(x1))
+     .attr("y1", yScale(y1))
+     .attr("x2", xScale(x2))
+     .attr("y2", yScale(y2))
+     .attr("stroke", "#f0f0f0")
+     .attr("stroke-width", 2);
+       })();</script><p>Para o nosso exemplo, em que o estimado leitor tem uma casa tem 182m², aplicamos a equação inicial:<p>$$ \hat{y}_i=\beta_0 + \beta_1 x_i $$<p>$$ = -173243.33037111675 + 4553.112047771215 \times 182 $$<p>$$ \approx 655423.06 $$<p>E obtemos o resultado: a casa vale R$ 655.423,06.<div class=note-container><button class=note-toggle><div class=note-icon><p>Implementação em Python</div></button><div class=note-content style=display:none><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672>import </span><span>pandas </span><span style=color:#f92672>as </span><span>pd
+</span><span>
+</span><span style=color:#75715e># Dados
+</span><span>data </span><span style=color:#f92672>= </span><span>{
+</span><span>    </span><span style=color:#e6db74>"x"</span><span>: [</span><span style=color:#ae81ff>100.4</span><span>, </span><span style=color:#ae81ff>103.2</span><span>, </span><span style=color:#ae81ff>104.9</span><span>, </span><span style=color:#ae81ff>105.6</span><span>, </span><span style=color:#ae81ff>109.8</span><span>, </span><span style=color:#ae81ff>111.0</span><span>, </span><span style=color:#ae81ff>112.9</span><span>, </span><span style=color:#ae81ff>116.3</span><span>, </span><span style=color:#ae81ff>117.5</span><span>, </span><span style=color:#ae81ff>117.7</span><span>,
+</span><span>          </span><span style=color:#ae81ff>117.9</span><span>, </span><span style=color:#ae81ff>122.1</span><span>, </span><span style=color:#ae81ff>124.3</span><span>, </span><span style=color:#ae81ff>124.4</span><span>, </span><span style=color:#ae81ff>128.6</span><span>, </span><span style=color:#ae81ff>131.8</span><span>, </span><span style=color:#ae81ff>132.0</span><span>, </span><span style=color:#ae81ff>134.2</span><span>, </span><span style=color:#ae81ff>139.4</span><span>, </span><span style=color:#ae81ff>141.6</span><span>,
+</span><span>          </span><span style=color:#ae81ff>143.8</span><span>, </span><span style=color:#ae81ff>146.0</span><span>, </span><span style=color:#ae81ff>147.1</span><span>, </span><span style=color:#ae81ff>149.3</span><span>, </span><span style=color:#ae81ff>149.5</span><span>, </span><span style=color:#ae81ff>154.7</span><span>, </span><span style=color:#ae81ff>154.9</span><span>, </span><span style=color:#ae81ff>156.1</span><span>, </span><span style=color:#ae81ff>158.3</span><span>, </span><span style=color:#ae81ff>162.4</span><span>,
+</span><span>          </span><span style=color:#ae81ff>163.6</span><span>, </span><span style=color:#ae81ff>165.8</span><span>, </span><span style=color:#ae81ff>177.0</span><span>, </span><span style=color:#ae81ff>171.6</span><span>, </span><span style=color:#ae81ff>172.2</span><span>, </span><span style=color:#ae81ff>174.2</span><span>, </span><span style=color:#ae81ff>175.7</span><span>, </span><span style=color:#ae81ff>176.1</span><span>, </span><span style=color:#ae81ff>178.6</span><span>, </span><span style=color:#ae81ff>178.9</span><span>,
+</span><span>          </span><span style=color:#ae81ff>181.6</span><span>, </span><span style=color:#ae81ff>183.1</span><span>, </span><span style=color:#ae81ff>184.9</span><span>, </span><span style=color:#ae81ff>186.1</span><span>, </span><span style=color:#ae81ff>186.6</span><span>, </span><span style=color:#ae81ff>189.8</span><span>, </span><span style=color:#ae81ff>190.6</span><span>, </span><span style=color:#ae81ff>192.0</span><span>, </span><span style=color:#ae81ff>193.5</span><span>, </span><span style=color:#ae81ff>193.9</span><span>,
+</span><span>          </span><span style=color:#ae81ff>196.3</span><span>, </span><span style=color:#ae81ff>198.1</span><span>, </span><span style=color:#ae81ff>199.6</span><span>, </span><span style=color:#ae81ff>200.1</span><span>, </span><span style=color:#ae81ff>200.7</span><span>, </span><span style=color:#ae81ff>205.5</span><span>, </span><span style=color:#ae81ff>205.8</span><span>, </span><span style=color:#ae81ff>207.0</span><span>, </span><span style=color:#ae81ff>208.1</span><span>, </span><span style=color:#ae81ff>209.6</span><span>,
+</span><span>          </span><span style=color:#ae81ff>211.6</span><span>, </span><span style=color:#ae81ff>211.8</span><span>, </span><span style=color:#ae81ff>213.4</span><span>, </span><span style=color:#ae81ff>214.3</span><span>, </span><span style=color:#ae81ff>218.2</span><span>, </span><span style=color:#ae81ff>220.1</span><span>, </span><span style=color:#ae81ff>221.0</span><span>, </span><span style=color:#ae81ff>223.5</span><span>, </span><span style=color:#ae81ff>225.9</span><span>, </span><span style=color:#ae81ff>228.4</span><span>,
+</span><span>          </span><span style=color:#ae81ff>230.4</span><span>, </span><span style=color:#ae81ff>233.3</span><span>, </span><span style=color:#ae81ff>235.8</span><span>, </span><span style=color:#ae81ff>238.3</span><span>, </span><span style=color:#ae81ff>240.8</span><span>, </span><span style=color:#ae81ff>243.2</span><span>, </span><span style=color:#ae81ff>245.7</span><span>, </span><span style=color:#ae81ff>248.2</span><span>, </span><span style=color:#ae81ff>250.6</span><span>, </span><span style=color:#ae81ff>253.1</span><span>,
+</span><span>          </span><span style=color:#ae81ff>255.6</span><span>, </span><span style=color:#ae81ff>258.0</span><span>, </span><span style=color:#ae81ff>260.5</span><span>, </span><span style=color:#ae81ff>263.0</span><span>, </span><span style=color:#ae81ff>265.4</span><span>, </span><span style=color:#ae81ff>267.9</span><span>, </span><span style=color:#ae81ff>270.4</span><span>, </span><span style=color:#ae81ff>272.8</span><span>, </span><span style=color:#ae81ff>275.3</span><span>, </span><span style=color:#ae81ff>277.8</span><span>,
+</span><span>          </span><span style=color:#ae81ff>280.3</span><span>, </span><span style=color:#ae81ff>282.7</span><span>, </span><span style=color:#ae81ff>285.2</span><span>, </span><span style=color:#ae81ff>287.7</span><span>, </span><span style=color:#ae81ff>290.1</span><span>, </span><span style=color:#ae81ff>292.6</span><span>, </span><span style=color:#ae81ff>295.1</span><span>, </span><span style=color:#ae81ff>297.5</span><span>, </span><span style=color:#ae81ff>300.0</span><span>],
+</span><span>    </span><span style=color:#e6db74>"y"</span><span>: [</span><span style=color:#ae81ff>151001</span><span>, </span><span style=color:#ae81ff>177313</span><span>, </span><span style=color:#ae81ff>194625</span><span>, </span><span style=color:#ae81ff>217938</span><span>, </span><span style=color:#ae81ff>277250</span><span>, </span><span style=color:#ae81ff>210563</span><span>, </span><span style=color:#ae81ff>191875</span><span>, </span><span style=color:#ae81ff>253188</span><span>, </span><span style=color:#ae81ff>413500</span><span>, </span><span style=color:#ae81ff>310813</span><span>,
+</span><span>          </span><span style=color:#ae81ff>299125</span><span>, </span><span style=color:#ae81ff>345438</span><span>, </span><span style=color:#ae81ff>362750</span><span>, </span><span style=color:#ae81ff>419063</span><span>, </span><span style=color:#ae81ff>431375</span><span>, </span><span style=color:#ae81ff>454688</span><span>, </span><span style=color:#ae81ff>375000</span><span>, </span><span style=color:#ae81ff>415313</span><span>, </span><span style=color:#ae81ff>485625</span><span>, </span><span style=color:#ae81ff>535938</span><span>,
+</span><span>          </span><span style=color:#ae81ff>556250</span><span>, </span><span style=color:#ae81ff>556563</span><span>, </span><span style=color:#ae81ff>596875</span><span>, </span><span style=color:#ae81ff>517188</span><span>, </span><span style=color:#ae81ff>590199</span><span>, </span><span style=color:#ae81ff>664836</span><span>, </span><span style=color:#ae81ff>618100</span><span>, </span><span style=color:#ae81ff>700892</span><span>, </span><span style=color:#ae81ff>610533</span><span>, </span><span style=color:#ae81ff>591643</span><span>,
+</span><span>          </span><span style=color:#ae81ff>651266</span><span>, </span><span style=color:#ae81ff>662045</span><span>, </span><span style=color:#ae81ff>671092</span><span>, </span><span style=color:#ae81ff>640001</span><span>, </span><span style=color:#ae81ff>428751</span><span>, </span><span style=color:#ae81ff>597501</span><span>, </span><span style=color:#ae81ff>756251</span><span>, </span><span style=color:#ae81ff>575001</span><span>, </span><span style=color:#ae81ff>593751</span><span>, </span><span style=color:#ae81ff>642501</span><span>,
+</span><span>          </span><span style=color:#ae81ff>531251</span><span>, </span><span style=color:#ae81ff>490001</span><span>, </span><span style=color:#ae81ff>568751</span><span>, </span><span style=color:#ae81ff>707501</span><span>, </span><span style=color:#ae81ff>606251</span><span>, </span><span style=color:#ae81ff>625001</span><span>, </span><span style=color:#ae81ff>643751</span><span>, </span><span style=color:#ae81ff>662501</span><span>, </span><span style=color:#ae81ff>701251</span><span>, </span><span style=color:#ae81ff>650001</span><span>,
+</span><span>          </span><span style=color:#ae81ff>788751</span><span>, </span><span style=color:#ae81ff>597501</span><span>, </span><span style=color:#ae81ff>776251</span><span>, </span><span style=color:#ae81ff>765001</span><span>, </span><span style=color:#ae81ff>803751</span><span>, </span><span style=color:#ae81ff>822501</span><span>, </span><span style=color:#ae81ff>811251</span><span>, </span><span style=color:#ae81ff>830001</span><span>, </span><span style=color:#ae81ff>868751</span><span>, </span><span style=color:#ae81ff>1017501</span><span>,
+</span><span>          </span><span style=color:#ae81ff>926251</span><span>, </span><span style=color:#ae81ff>855001</span><span>, </span><span style=color:#ae81ff>903751</span><span>, </span><span style=color:#ae81ff>1002501</span><span>, </span><span style=color:#ae81ff>961251</span><span>, </span><span style=color:#ae81ff>951094</span><span>, </span><span style=color:#ae81ff>840001</span><span>, </span><span style=color:#ae81ff>890939</span><span>, </span><span style=color:#ae81ff>921876</span><span>, </span><span style=color:#ae81ff>1012814</span><span>,
+</span><span>          </span><span style=color:#ae81ff>973751</span><span>, </span><span style=color:#ae81ff>794689</span><span>, </span><span style=color:#ae81ff>925626</span><span>, </span><span style=color:#ae81ff>976564</span><span>, </span><span style=color:#ae81ff>917501</span><span>, </span><span style=color:#ae81ff>998439</span><span>, </span><span style=color:#ae81ff>929376</span><span>, </span><span style=color:#ae81ff>980314</span><span>, </span><span style=color:#ae81ff>951251</span><span>, </span><span style=color:#ae81ff>972189</span><span>,
+</span><span>          </span><span style=color:#ae81ff>913126</span><span>, </span><span style=color:#ae81ff>994064</span><span>, </span><span style=color:#ae81ff>925001</span><span>, </span><span style=color:#ae81ff>985939</span><span>, </span><span style=color:#ae81ff>1006876</span><span>, </span><span style=color:#ae81ff>1037814</span><span>, </span><span style=color:#ae81ff>1008751</span><span>, </span><span style=color:#ae81ff>1019689</span><span>, </span><span style=color:#ae81ff>1040626</span><span>, </span><span style=color:#ae81ff>1051564</span><span>,
+</span><span>          </span><span style=color:#ae81ff>942501</span><span>, </span><span style=color:#ae81ff>1123439</span><span>, </span><span style=color:#ae81ff>1014376</span><span>, </span><span style=color:#ae81ff>1095314</span><span>, </span><span style=color:#ae81ff>996251</span><span>, </span><span style=color:#ae81ff>1127189</span><span>, </span><span style=color:#ae81ff>1148126</span><span>, </span><span style=color:#ae81ff>1129064</span><span>, </span><span style=color:#ae81ff>1150000</span><span>]
+</span><span>}
+</span><span>
+</span><span>df </span><span style=color:#f92672>= </span><span>pd.DataFrame(data)
+</span><span>
+</span><span style=color:#75715e># Parâmetros para regressão
+</span><span>mean_x, mean_y </span><span style=color:#f92672>= </span><span>df[</span><span style=color:#e6db74>"x"</span><span>].mean(), df[</span><span style=color:#e6db74>"y"</span><span>].mean()
+</span><span>sxy </span><span style=color:#f92672>= </span><span>((df[</span><span style=color:#e6db74>"x"</span><span>] </span><span style=color:#f92672>- </span><span>mean_x) </span><span style=color:#f92672>* </span><span>(df[</span><span style=color:#e6db74>"y"</span><span>] </span><span style=color:#f92672>- </span><span>mean_y)).sum()
+</span><span>sxx </span><span style=color:#f92672>= </span><span>((df[</span><span style=color:#e6db74>"x"</span><span>] </span><span style=color:#f92672>- </span><span>mean_x) </span><span style=color:#f92672>** </span><span style=color:#ae81ff>2</span><span>).sum()
+</span><span>
+</span><span>beta_1 </span><span style=color:#f92672>= </span><span>sxy </span><span style=color:#f92672>/ </span><span>sxx
+</span><span>beta_0 </span><span style=color:#f92672>= </span><span>mean_y </span><span style=color:#f92672>- </span><span>beta_1 </span><span style=color:#f92672>* </span><span>mean_x
+</span><span>
+</span><span style=color:#75715e># Previsão para x=182
+</span><span>x_new </span><span style=color:#f92672>= </span><span style=color:#ae81ff>182
+</span><span>yhat </span><span style=color:#f92672>= </span><span>beta_0 </span><span style=color:#f92672>+ </span><span>beta_1 </span><span style=color:#f92672>* </span><span>x_new
+</span><span>
+</span><span style=color:#75715e># Resultado
+</span><span style=color:#66d9ef>print</span><span>(yhat)
+</span></code></pre><pre class=language-resultado data-lang=resultado style=color:#f8f8f2;background-color:#272822><code class=language-resultado data-lang=resultado><span>655423.0623232443
+</span></code></pre></div></div></section></article></main><footer class=footer><div class=footer-content><div class=footer-left>© 2025 Rodolfo Viana</div><div class=footer-right>Feito com <a href=https://www.getzola.org/ rel=noopener target=_blank>Zola</a>, <a href=https://github.com/not-matthias/apollo rel=noopener target=_blank>Apollo</a></div></div></footer></div>
