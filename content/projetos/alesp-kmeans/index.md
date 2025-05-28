@@ -208,7 +208,7 @@ $$
 P(x) = \frac{D(x)^2}{\sum_{x^{\prime} \in D}D(x^{\prime})^2}
 $$
 
-sendo \\(D(x)\\): distância entre o ponto $x$ e o centroide mais próximo em \\(C\\).
+sendo \\(D(x)\\): distância entre o ponto \\(x\\) e o centroide mais próximo em \\(C\\).
 
 Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Esses pontos formam clusters. Considerando o ponto \\(x\\) e um conjunto de centroides \\(C\\), o rótulo do cluster \\(l\\) ao qual \\(x\\) pertence é computado por
 
