@@ -97,12 +97,14 @@
     <script>
         MathJax = {
           options: {enableMenu: false},
-            tex: {
-                inlineMath: [['\\(', '\\)'], ['%%', '%%']],
-                displayMath: [['$$', '$$'], ['\\[', '\\]']],
-                processEscapes: true,
-                processEnvironments: true
-            },
+          loader: {load: ['[tex]/autoload', '[tex]/ams', '[tex]/newcommand', '[tex]/boldsymbol', '[tex]/mathtools']},
+          tex: {
+               inlineMath: [['\\(', '\\)'], ['%%', '%%']],
+               displayMath: [['$$', '$$'], ['\\[', '\\]']],
+               processEscapes: true,
+               processEnvironments: true,
+               packages: {'[+]': ['autoload', 'ams', 'newcommand', 'boldsymbol', 'mathtools']}  
+           },
 
         }
     </script>
