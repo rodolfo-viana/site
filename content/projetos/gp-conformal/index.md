@@ -32,7 +32,7 @@ A arquitetura híbrida consiste em dois componentes principais integrados: um ex
 
 O GP subsequente opera sobre essas características extraídas \\(\mathbf{z}\\), utilizando uma função de base radial para modelar as correlações no espaço de características transformado. A escolha do kernel _Radial Basis Function_ deve-se à sua capacidade de capturar relações não-lineares suaves entre variáveis, sendo adequado para a maioria dos problemas de regressão. Outras opções como kernels periódicos ou Matérn poderiam ser usadas para capturar padrões específicos como sazonalidade ou diferentes graus de suavidade.
 
-O treinamento conjunto otimiza simultaneamente os parâmetros do MLP \\(\mathbf{W}_{i}\\), \\(\mathbf{b}_{i}\\) e os hiperparâmetros do GP (\\(\boldsymbol{\theta}_{GP}\\)) através de gradiente descendente
+O treinamento conjunto otimiza simultaneamente os parâmetros do MLP (%%\mathbf{W}_i, \mathbf{b}_i%%) e os hiperparâmetros do GP (%%\boldsymbol{\theta}_{GP}%%) através de gradiente descendente
 
 $$
 \mathcal{L}(\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}) = -\log p(\mathbf{y}|\text{MLP}(\mathbf{X}), \boldsymbol{\theta}_{GP}) \\
