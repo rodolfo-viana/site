@@ -37,7 +37,7 @@ Foram inseridas no estudo apenas as despesas relacionadas a alimentação e hosp
 
 Implementou-se um algoritmo de clusterização por K-Means com a finalidade de processar esses registros. Em linhas gerais, K-Means é um algoritmo que particiona um conjunto de pontos de dados em clusters não sobrepostos, sendo pré-determinada a quantidade de clusters[^8]. Cada ponto de dado pertence ao cluster com a menor distância média entre ele e um centro (centroide).
 
-Dado um conjunto de observações %%x = \lbrace x_1, x_2, ..., x_n\rbrace%%, o algoritmo reparte as %%n%% observações em %%k \(\geq n\)%% conjuntos %%S = \lbrace S_1, S_2, ..., S_k \rbrace%% a fim de minimizar a soma dos quadrados dentro do cluster.
+Dado um conjunto de observações \\(x = \lbrace x_1, x_2, ..., x_n\rbrace\\), o algoritmo reparte as \\(n\\) observações em \\(k \(\geq n\)\\) conjuntos \\(S = \lbrace S_1, S_2, ..., S_k \rbrace\\) a fim de minimizar a soma dos quadrados dentro do cluster.
 
 $$
 \sum_{i = 1}^{k}\sum_{x \in S_i}{\Vert x - \mu_i \Vert}^2
@@ -45,10 +45,10 @@ $$
 
 onde,
 
-- %%k%%: número de clusters
-- %%S_i%%: cluster %%i%%
-- %%x%%: ponto de dado
-- %%\mu_i%%: média da distância dos pontos em %%S_i%%
+- \\(k\\): número de clusters
+- \\(S_i\\): cluster \\(i\\)
+- \\(x\\): ponto de dado
+- \\(\mu_i\\): média da distância dos pontos em \\(S_i\\)
 
 Considerando que o conjunto de dados deste trabalho é univariado e o algoritmo aplicado visa encontrar anomalias,
 
@@ -202,15 +202,15 @@ A determinação do número de clusters, porém, não garante que o algoritmo en
 
 Para sobrepor tal limitação, este trabalho se utilizou do método de inicialização chamado K-Means++[^13], em que o centroide passa por iterações, e é selecionado a partir da probabilidade de determinado ponto ser o melhor centroide com base na distância em relação aos outros pontos de dados. A mudança sucessiva entre centroides reduz as chances de o algoritmo K-Means convergir para uma solução abaixo do ideal.
 
-Dado um conjunto de pontos %%D%% e um conjunto de centroides selecionados %%C%%, a probabilidade de se escolher o ponto %%x%% como próximo centroide é calculada por meio de
+Dado um conjunto de pontos \\(D\\) e um conjunto de centroides selecionados \\(C\\), a probabilidade de se escolher o ponto \\(x\\) como próximo centroide é calculada por meio de
 
 $$
 P(x) = \frac{D(x)^2}{\sum_{x^{\prime} \in D}D(x^{\prime})^2}
 $$
 
-sendo %%D(x)%%: distância entre o ponto $x$ e o centroide mais próximo em %%C%%.
+sendo \\(D(x)\\): distância entre o ponto $x$ e o centroide mais próximo em \\(C\\).
 
-Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Esses pontos formam clusters. Considerando o ponto %%x%% e um conjunto de centroides %%C%%, o rótulo do cluster %%l%% ao qual %%x%% pertence é computado por
+Com os centroides inicializados, cada ponto é atribuído ao centroide mais próximo. Esses pontos formam clusters. Considerando o ponto \\(x\\) e um conjunto de centroides \\(C\\), o rótulo do cluster \\(l\\) ao qual \\(x\\) pertence é computado por
 
 $$
 l(x) = \arg \min_{c \in C}\Vert x - c \Vert
@@ -222,7 +222,7 @@ $$
 c_i = \frac{1}{\vert S_i \vert}\sum_{x \in S_i} x
 $$
 
-onde %%S_i%%: conjunto de todos os pontos atribuídos ao centroide %%i%%.
+onde \\(S_i\\): conjunto de todos os pontos atribuídos ao centroide \\(i\\).
 
 A cada iteração de atualização de centroides é computada a inércia. Para conjunto univariado,
 
@@ -230,11 +230,11 @@ $$
 \sum_{i=1}^{n}{\Vert {x_i} - {c_{l(x_i)}}\Vert}^2
 $$
 
-onde %%c\_{l(x_i)}%%: centroide do cluster para o qual %%x_i%% foi atribuído.
+onde \\(c\_{l(x_i)}\\): centroide do cluster para o qual \\(x_i\\) foi atribuído.
 
 ### Critérios aprimorados para convergência
 
-Além da inicialização por K-Means++, o algoritmo adota critérios de convergência avançados ao comparar o movimento dos centroides entre iterações. Sendo %%C_t%% o conjunto de centroides na iteração %%t%%, o algoritmo converge se
+Além da inicialização por K-Means++, o algoritmo adota critérios de convergência avançados ao comparar o movimento dos centroides entre iterações. Sendo \\(C_t\\) o conjunto de centroides na iteração \\(t\\), o algoritmo converge se
 
 $$
 \max_{c \in C_t}\Vert c - c_{t - 1} \Vert < tol
@@ -242,8 +242,8 @@ $$
 
 onde,
 
-- %%\Vert c - c\_{t - 1} \Vert%%: distância euclidiana
-- %%tol%%: tolerância especificada
+- \\(\Vert c - c\_{t - 1} \Vert\\): distância euclidiana
+- \\(tol\\): tolerância especificada
 
 ### Validação pelo método da silhueta
 
@@ -255,8 +255,8 @@ $$
 
 onde,
 
-- %%a_i%%: distância média de %%i%% para todos os outros pontos intra-agrupamento
-- %%b_i%%: a menor distância média de %%i%% para todos os pontos em agrupamentos diferentes
+- \\(a_i\\): distância média de \\(i\\) para todos os outros pontos intra-agrupamento
+- \\(b_i\\): a menor distância média de \\(i\\) para todos os pontos em agrupamentos diferentes
 
 O método da silhueta retorna resultados no intervalo de -1 a 1. Se o valor for:
 
@@ -276,10 +276,10 @@ $$
 
 sendo,
 
-- %%k%%: número de clusters
-- %%i%%, %%j%%: clusters diferentes
-- %%S_i%%, %%S_j%%: dispersão interna dos clusters %%i%% e %%j%%, respectivamente
-- %%M\_{ij}%%: distância entre clusters %%i%% e %%j%%
+- \\(k\\): número de clusters
+- \\(i\\), \\(j\\): clusters diferentes
+- \\(S_i\\), \\(S_j\\): dispersão interna dos clusters \\(i\\) e \\(j\\), respectivamente
+- \\(M\_{ij}\\): distância entre clusters \\(i\\) e \\(j\\)
 
 # Resultados
 

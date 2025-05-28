@@ -305,9 +305,9 @@ Neste cenário, o **valor** que queremos prever é o preço da casa &mdash; para
 
 (Poderíamos ter mais de uma _feature_, como quantidade de quartos ou de banheiros, idade do imóvel etc. Mas para ficarmos numa explicação mais didática, vamos trabalhar apenas com uma variável. Aliás, chamamos este modelo de **regressão linear simples** justamente por isso: é **simples** porque trabalhamos com apenas uma variável preditora.)
 
-Cientificamente, buscamos modelar a relação entre as variáveis de entrada (%%x%%) e a variável alvo (%%y%%) &mdash; ou seja, objetivamos encontrar a melhor reta que descreve a relação entre nossos dados (afinal, cada %%y%% está associado a um %%x%% e, portanto, temos um conjunto %%(x_1,y_1),(x_2, y_2),...,(x_n,y_n)%%). Quando encontramos a reta, conseguimos determinar o valor previsto (%%\hat{y}%%) da sua casa. 
+Cientificamente, buscamos modelar a relação entre as variáveis de entrada (\\(x\\)) e a variável alvo (\\(y\\)) &mdash; ou seja, objetivamos encontrar a melhor reta que descreve a relação entre nossos dados (afinal, cada \\(y\\) está associado a um \\(x\\) e, portanto, temos um conjunto \\((x_1,y_1),(x_2, y_2),...,(x_n,y_n)\\)). Quando encontramos a reta, conseguimos determinar o valor previsto (\\(\hat{y}\\)) da sua casa. 
 
-Em termos matemáticos, nosso %%\hat{y}%% é encontrado por meio desta fórmula:
+Em termos matemáticos, nosso \\(\hat{y}\\) é encontrado por meio desta fórmula:
 
 $$
 \hat{y}_i=\beta_0 + \beta_1 x_i
@@ -315,30 +315,30 @@ $$
 
 sendo,
 
-- %%\hat{y}_i%%: o valor previsto para %%y%% dada a variável de entrada %%x_i%%
-- %%\beta_0%%: o intercepto da reta (isto é, o valor de %%\hat{y}%% quando %%x=0%%)
-  - É o ponto onde a reta cruza o eixo %%y%%. Mesmo que %%x=0%%, você ainda terá um resultado básico. No nosso exemplo, de preço de casa a partir da metragem, %%\beta_0%% representa o valor previsto quando a metragem (%%x%%) é 0. (Pode parecer lógico que uma casa com 0m² custe R$ 0, mas para a modelagem não funciona assim.)
-- %%\beta_1%%: a inclinação (_slope_) da reta
-  - Indica quanto o valor previsto (%%\hat{y}%%) muda quando %%x%% aumenta em 1 unidade. Se %%\beta_1%% é positivo, a reta inclina para cima; se negativo, para baixo.
+- \\(\hat{y}_i\\): o valor previsto para \\(y\\) dada a variável de entrada \\(x_i\\)
+- \\(\beta_0\\): o intercepto da reta (isto é, o valor de \\(\hat{y}\\) quando \\(x=0\\))
+  - É o ponto onde a reta cruza o eixo \\(y\\). Mesmo que \\(x=0\\), você ainda terá um resultado básico. No nosso exemplo, de preço de casa a partir da metragem, \\(\beta_0\\) representa o valor previsto quando a metragem (\\(x\\)) é 0. (Pode parecer lógico que uma casa com 0m² custe R$ 0, mas para a modelagem não funciona assim.)
+- \\(\beta_1\\): a inclinação (_slope_) da reta
+  - Indica quanto o valor previsto (\\(\hat{y}\\)) muda quando \\(x\\) aumenta em 1 unidade. Se \\(\beta_1\\) é positivo, a reta inclina para cima; se negativo, para baixo.
 
 Desenhando melhor, para chegar a essa operação precisamos:
 
-1. Encontrar as médias de todos os valores %%x%% (ou seja, %%\bar{x}%%): %%\bar{x}=\frac{1}{99}\sum_{i=1}^{99}x_i%%
+1. Encontrar as médias de todos os valores \\(x\\) (ou seja, \\(\bar{x}\\)): \\(\bar{x}=\frac{1}{99}\sum_{i=1}^{99}x_i\\)
 
-> %%\bar{x} \approx 196.4626%%
+> \\(\bar{x} \approx 196.4626\\)
 
-2. Encontrar as médias de todos os valores %%y%% (ou seja, %%\bar{y}%%): %%\bar{y}=\frac{1}{99}\sum_{i=1}^{99}y_i%%
+2. Encontrar as médias de todos os valores \\(y\\) (ou seja, \\(\bar{y}\\)): \\(\bar{y}=\frac{1}{99}\sum_{i=1}^{99}y_i\\)
 
-> %%\bar{y} \approx 721273.0202%%
+> \\(\bar{y} \approx 721273.0202\\)
 
-2. Para cada ponto %%i%%, calcular desvios de %%x%% e %%y%%, e seus produtos:
+2. Para cada ponto \\(i\\), calcular desvios de \\(x\\) e \\(y\\), e seus produtos:
 
-  - Tomar a diferença entre a metragem do ponto e a média: %%d_{x,i}=x_{i}-\bar{x}%%
-  - Calcular o quadrado do desvio de %%x%%: %%dd_{x,i}=(x_{i}-\bar{x})^2%%
-  - Tomar a diferença entre o valor do ponto e a média: %%d_{y,i}=y_{i}-\bar{y}%%
-  - Calcular o produto dessas diferenças: %%p_{i}=d_{x,i}d_{y,i}%%
+  - Tomar a diferença entre a metragem do ponto e a média: \\(d_{x,i}=x_{i}-\bar{x}\\)
+  - Calcular o quadrado do desvio de \\(x\\): \\(dd_{x,i}=(x_{i}-\bar{x})^2\\)
+  - Tomar a diferença entre o valor do ponto e a média: \\(d_{y,i}=y_{i}-\bar{y}\\)
+  - Calcular o produto dessas diferenças: \\(p_{i}=d_{x,i}d_{y,i}\\)
 
-> | %%i%% | %%x%% | %%y%% | %%d_{x,i}%% | %%dd_{x,i}%% | %%d_{y,i}%% | %%p_{i}%% |
+> | \\(i\\) | \\(x\\) | \\(y\\) | \\(d_{x,i}\\) | \\(dd_{x,i}\\) | \\(d_{y,i}\\) | \\(p_{i}\\) |
 > | --- | --- | --- | --- | --- | --- | --- |
 > | 1   | 100.4 | 151001  | -96.0626 | 9228.0231 | -570272.0202 | 54781812.9677 |
 > | 2   | 103.2 | 177313  | -93.2626 | 8697.9125 | -543960.0202 | 50731125.7799 |
@@ -348,25 +348,25 @@ Desenhando melhor, para chegar a essa operação precisamos:
 > | 98 | 297.5 | 1129064 | 101.0374 | 10208.5562 | 407790.9798 | 41202140.3424 | 
 > | 99 | 300.0 | 1150000 | 103.5374 | 10719.9932 | 428726.9798 | 44389276.7983 |
 
-3. Somar todos os produtos: %%S_{xy} = \sum_{i=1}^{99}p_{i}%%
+3. Somar todos os produtos: \\(S_{xy} = \sum_{i=1}^{99}p_{i}\\)
 
-> %%S_{xy} \approx 1379676325.7747%%
+> \\(S_{xy} \approx 1379676325.7747\\)
 
-4. Somar os quadrados de desvios de %%x%%: %%S_{xx} = \sum_{i=1}^{99}dd_{x,i}%%
+4. Somar os quadrados de desvios de \\(x\\): \\(S_{xx} = \sum_{i=1}^{99}dd_{x,i}\\)
 
-> %%S_{xx} \approx 303018.3117%%
+> \\(S_{xx} \approx 303018.3117\\)
 
-5. Com base nos cálculos, é possível obter a inclinação da reta: %%\beta_1 = \frac{S_{xy}}{S_{xx}}%%
+5. Com base nos cálculos, é possível obter a inclinação da reta: \\(\beta_1 = \frac{S_{xy}}{S_{xx}}\\)
 
-> %%\beta_1 \approx 4553.1120%%
+> \\(\beta_1 \approx 4553.1120\\)
 
   - Isso significa que, em termos práticos, para cada 1m² a mais na metragem, o valor previsto aumenta em cerca de R$ 4.553,11.
 
-6. Calcular o intercepto a partir do _slope_ e das médias: %%\beta_0=\bar{y}- \beta_1\bar{x}%%
+6. Calcular o intercepto a partir do _slope_ e das médias: \\(\beta_0=\bar{y}- \beta_1\bar{x}\\)
 
-> %%\beta_0 \approx -173243.3304%%
+> \\(\beta_0 \approx -173243.3304\\)
 
-  - Representa que, quando a metragem é 0 (ou seja, %%x=0%%), o valor da casa é de aproximadamente R$ -173.243,33. (Obviamente não faz sentido uma casa com metragem 0 e valor negativo no mundo real, mas em regressão o intercepto é matematicamente necessário para ajustar a reta aos dados.)
+  - Representa que, quando a metragem é 0 (ou seja, \\(x=0\\)), o valor da casa é de aproximadamente R$ -173.243,33. (Obviamente não faz sentido uma casa com metragem 0 e valor negativo no mundo real, mas em regressão o intercepto é matematicamente necessário para ajustar a reta aos dados.)
 
 Com todos esses cálculos, conseguimos desenhar uma reta:
 
