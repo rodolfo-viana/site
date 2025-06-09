@@ -1,0 +1,22 @@
+{#  
+  Required param:
+    • file: path under `static/`, e.g. "videos/my-clip.mp4"
+  Optional params:
+    • width, height (pixels)
+    • poster: path under `static/`, e.g. "videos/poster.jpg"
+    • autoplay, loop, muted (flags; pass "true" to enable)
+#}
+<video
+  style="border: 2px solid #ef5350; width:100%; height:auto; max-width:100%;"
+  {% if poster %}poster="{{ config.base_url | safe }}{{ poster }}"{% endif %}
+  controls
+  {% if autoplay == "true" %}autoplay{% endif %}
+  {% if loop     == "true" %}loop{% endif %}
+  {% if muted    == "true" %}muted{% endif %}
+>
+  <source src="{{ config.base_url | safe }}{{ file }}" type="video/mp4">
+  {% if fallback %}
+  <source src="{{ config.base_url | safe }}{{ fallback }}" type="video/webm">
+  {% endif %}
+  Your browser does not support HTML5 video.
+</video>

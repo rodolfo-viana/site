@@ -27,6 +27,7 @@ theme = "dark"
 fancy_code = true
 dynamic_note = true
 comment = false
+mathjax = true
 
 menu = [
     { name = "publicações", url = "/publicacoes", weight = 1 },

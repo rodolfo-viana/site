@@ -97,15 +97,14 @@
     <script>
         MathJax = {
           options: {enableMenu: false},
-          loader: {load: ['[tex]/boldsymbol', '[tex]/mathtools']},
+          loader: {load: ['[tex]/boldsymbol']},
           tex: {
-               inlineMath: [['\\(', '\\)']],
-               displayMath: [['$$', '$$'], ['\\[', '\\]']],
-               processEscapes: true,
-               processEnvironments: true,
-               packages: {'[+]': ['boldsymbol', 'mathtools']}  
-           },
-
+            packages: {'[+]': ['boldsymbol']},
+            inlineMath: [['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            }
         }
     </script>
     
