@@ -7,7 +7,7 @@
     • autoplay, loop, muted (flags; pass "true" to enable)
 #}
 <video
-  style="border: 2px solid #ef5350; width:100%; height:auto; max-width:100%;"
+  style="border: 5px solid #ef5350; width:100%; height:auto; max-width:100%;"
   {% if poster %}poster="{{ config.base_url | safe }}{{ poster }}"{% endif %}
   controls
   {% if autoplay == "true" %}autoplay{% endif %}
