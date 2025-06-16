@@ -11,6 +11,13 @@ feed_filenames = ["rss.xml"]
 taxonomies = [{ name = "tags" }]
 author = "rodolfo viana"
 
+# Multilingual configuration
+[languages.en]
+title = "rodolfo viana"
+description = "classes, studies and publications about data science"
+generate_feeds = true
+taxonomies = [{ name = "tags" }]
+
 [markdown]
 highlight_code = true
 highlight_theme = "monokai"
@@ -29,13 +36,13 @@ dynamic_note = true
 comment = false
 mathjax = true
 
+# Default menu (Portuguese)
 menu = [
-    # { name = "publicações", url = "/publicacoes", weight = 1 },
-    { name = "projetos", url = "/projetos", weight = 2 },
-    { name = "aulas", url = "/aulas", weight = 3 },
-    { name = "cv", url = "/curriculo", weight = 4 },
-    { name = "tags", url = "/tags", weight = 5 },
-    { name = "rss", url = "/rss.xml", weight = 6 },
+    { name = "projetos", url = "projetos", weight = 2 },
+    { name = "aulas", url = "aulas", weight = 3 },
+    { name = "cv", url = "curriculo", weight = 4 },
+    { name = "tags", url = "tags", weight = 5 },
+    { name = "rss", url = "rss.xml", weight = 6 },
 ]
 
 custom_css = []

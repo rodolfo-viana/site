@@ -1,33 +1,99 @@
 <header>
-    <div class="main">
-        {% if config.extra.logo %}
-            <a href={{ config.base_url }} class="logo">
-                <img alt={{ config.title }} src={{ get_url(path=config.extra.logo) }}>
-            </a>
-        {% else %}
-            <a href={{ config.base_url }}>{{ config.title }}</a>
+  <div class="main">
+    {% if config.extra.logo %}
+      <a href="{{ config.base_url }}" class="logo">
+        <img alt="{{ config.title }}" src="{{ get_url(path=config.extra.logo) }}">
+      </a>
+    {% else %}
+      <a href="{{ config.base_url }}">{{ config.title }}</a>
+    {% endif %}
+  </div>
+
+  <button id="mobile-menu-button" class="hamburger" aria-label="Menu">
+    <span></span><span></span><span></span>
+  </button>
+
+  <nav id="nav-menu">
+    {% if lang == "en" %}
+      <a href="{{ get_url(path="projetos", lang='en') }}"  style="margin-left:0.5em">projects</a>
+      <a href="{{ get_url(path="aulas", lang='en') }}"  style="margin-left:0.5em">classes</a>
+      <a href="{{ get_url(path="curriculo", lang='en') }}"  style="margin-left:0.5em">resume</a>
+      <a href="{{ get_url(path="tags", lang='en') }}"  style="margin-left:0.5em">tags</a>
+      <a href="{{ get_url(path="rss.xml", lang='en') }}"  style="margin-left:0.5em">rss</a>
+    {% else %}
+      {% for item in config.extra.menu %}
+        <a href="{{ get_url(path=item.url) }}" style="margin-left:0.5em">{{ item.name }}</a>
+      {% endfor %}
+    {% endif %}
+
+    {% if page is defined %}
+      {% for tr in page.translations %}
+        {% if tr.lang != page.lang %}
+          <a
+            href="{{ tr.permalink }}"
+            title="{% if page.lang == config.default_language %}Switch to English{% else %}Voltar para Português{% endif %}"
+            style="margin-left:0.5em"
+          >{% if page.lang == config.default_language %}EN{% else %}PT{% endif %}</a>
+          {% break %}
         {% endif %}
-    </div>
-
-    <button id="mobile-menu-button" class="hamburger" aria-label="Menu">
-        <span></span>
-        <span></span>
-        <span></span>
-    </button>
-
-    <nav id="nav-menu">
-        {% for menu in config.extra.menu %}
-            <a href={{ get_url(path=menu.url) }} style="margin-left: 0.5em">{{ menu.name }}</a>
-        {% endfor %}
-
-        {% if config.extra.theme == "toggle" %}
-            <a id="dark-mode-toggle" onclick="toggleTheme(); event.preventDefault();" href="#">
-                <img src={{ get_url(path="feather/sun.svg") }} id="sun-icon" style="filter: invert(1);" alt="Light" />
-                <img src={{ get_url(path="feather/moon.svg") }} id="moon-icon" alt="Dark" />
-            </a>
-
-            <!-- Inititialize the theme toggle icons -->
-            <script>updateItemToggleTheme()</script>
+      {% endfor %}
+    {% elif section is defined %}
+      {% for tr in section.translations %}
+        {% if tr.lang != section.lang %}
+          <a
+            href="{{ tr.permalink }}"
+            title="{% if section.lang == config.default_language %}Switch to English{% else %}Voltar para Português{% endif %}"
+            style="margin-left:0.5em"
+          >{% if section.lang == config.default_language %}EN{% else %}PT{% endif %}</a>
+          {% break %}
         {% endif %}
-    </nav>
+      {% endfor %}
+    {% elif terms is defined %}
+      {# Handle taxonomy list pages (e.g., /tags) #}
+      {% if lang == "en" %}
+        <a
+          href="{{ get_url(path="tags", lang="pt") }}"
+          title="Voltar para Português"
+          style="margin-left:0.5em"
+        >PT</a>
+      {% else %}
+        <a
+          href="{{ get_url(path="tags", lang="en") }}"
+          title="Switch to English"
+          style="margin-left:0.5em"
+        >EN</a>
+      {% endif %}
+    {% elif term is defined %}
+      {# Handle single taxonomy pages (e.g., /tags/python) #}
+      {% if lang == "en" %}
+        <a
+          href="{{ get_url(path="tags/" ~ term.slug, lang="pt") }}"
+          title="Voltar para Português"
+          style="margin-left:0.5em"
+        >PT</a>
+      {% else %}
+        <a
+          href="{{ get_url(path="tags/" ~ term.slug, lang="en") }}"
+          title="Switch to English"
+          style="margin-left:0.5em"
+        >EN</a>
+      {% endif %}
+    {% else %}
+      {# Fallback for cases where none of the above contexts are available #}
+      {% if lang == "en" %}
+        <a
+          href="{{ get_url(path="", lang="pt") }}"
+          title="Voltar para Português"
+          style="margin-left:0.5em"
+        >PT</a>
+      {% else %}
+        <a
+          href="{{ get_url(path="", lang="en") }}"
+          title="Switch to English"
+          style="margin-left:0.5em"
+        >EN</a>
+      {% endif %}
+    {% endif %}
+
+  </nav>
 </header>
