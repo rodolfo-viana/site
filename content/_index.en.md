@@ -3,7 +3,7 @@ title= ""
 template = "homepage.html"
 +++
 
-Hello!
+Hi!
 
 My name is Rodolfo Viana and I'm <span id="age"></span> years old. I hold a specialization in Data Science and Analytics from USP and I'm currently pursuing a Master’s degree in Computer Science at Unesp.
 
