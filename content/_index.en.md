@@ -5,9 +5,9 @@ template = "homepage.html"
 
 Hi!
 
-My name is Rodolfo Viana and I'm <span id="age"></span> years old. I hold a specialization in Data Science and Analytics from USP and I'm currently pursuing a Master’s degree in Computer Science at Unesp.
+My name is Rodolfo Viana and I'm a <span id="age"></span>-year-old Brazilian data engineer. I hold a specialization in Data Science and Analytics from USP and I'm currently pursuing a Master’s degree in Computer Science at Unesp.
 
-I work as a data engineer at [Stadium Goods](https://www.stadiumgoods.com/), a renowned sneaker marketplace based in New York. There, I'm involved in data infrastructure projects: creating, maintaining, and optimizing pipelines and routines, as well as designing tests to ensure data quality, integrity, and availability.
+I currently work at [Stadium Goods](https://www.stadiumgoods.com/), a renowned sneaker marketplace based in New York. There, I'm involved in data infrastructure projects: creating, maintaining, and optimizing pipelines and routines, as well as designing tests to ensure data quality, integrity, and availability.
 
 I also teach in the [MBA in Data Journalism](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) program at [IDP](https://www.idp.edu.br/). My courses are Introduction to Python and Web Scraping with Python.
 
