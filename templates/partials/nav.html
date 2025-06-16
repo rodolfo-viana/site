@@ -17,9 +17,9 @@
     {% if lang == "en" %}
       <a href="{{ get_url(path="projetos", lang='en') }}"  style="margin-left:0.5em">projects</a>
       <a href="{{ get_url(path="aulas", lang='en') }}"  style="margin-left:0.5em">classes</a>
-      <a href="{{ get_url(path="curriculo", lang='en') }}"  style="margin-left:0.5em">resume</a>
+      <a href="{{ get_url(path="curriculo", lang='en') }}"  style="margin-left:0.5em">résumé</a>
       <a href="{{ get_url(path="tags", lang='en') }}"  style="margin-left:0.5em">tags</a>
-      <a href="{{ get_url(path="rss.xml", lang='en') }}"  style="margin-left:0.5em">rss</a>
+      <!--<a href="{{ get_url(path="rss.xml", lang='en') }}"  style="margin-left:0.5em">rss</a>-->
     {% else %}
       {% for item in config.extra.menu %}
         <a href="{{ get_url(path=item.url) }}" style="margin-left:0.5em">{{ item.name }}</a>
