@@ -11,7 +11,7 @@ Marília, São Paulo<br />
 
 # Summary
 
-Data Engineer with 7+ years of experience, an MBA in Data Science from the University of São Paulo and an M.Sc. in Computer Science in progress at UNESP. I currently serve as a Senior Data Engineer at Stadium Goods —the global leader in the sneaker market—driving projects in data architecture, pipeline development, and data-quality governance. Combining a solid academic foundation with extensive industry experience, I excel at designing and optimizing cloud-based data infrastructures and have a proven track record of automating workflows to boost availability, integrity, and scalability.
+Data Engineer with <span id="working-age"></span>+ years of experience, an MBA in Data Science from the University of São Paulo and an M.Sc. in Computer Science in progress at UNESP. I currently serve as a Senior Data Engineer at Stadium Goods —the global leader in the sneaker market—driving projects in data architecture, pipeline development, and data-quality governance. Combining a solid academic foundation with extensive industry experience, I excel at designing and optimizing cloud-based data infrastructures and have a proven track record of automating workflows to boost availability, integrity, and scalability.
 
 # Professional Experience
 
@@ -83,15 +83,19 @@ Data Engineer with 7+ years of experience, an MBA in Data Science from the Unive
 Portuguese (native), English (fluent)
 
 <script>
-    const today = new Date();
-    const birthdate = new Date(1981, 2, 17);
-    function age() {
-        const one_or_zero = (today.getMonth() < birthdate.getMonth()) ||
-                            (today.getMonth() === birthdate.getMonth() &&
-                            today.getDate() < birthdate.getDate());
-        let year_difference = today.getFullYear() - birthdate.getFullYear();
-        const age = year_difference - one_or_zero;
-        return age;
-    }
-    document.getElementById("age").innerHTML = age();
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      const birthdate = new Date(1981, 2, 17);
+      const start = new Date(2018, 0, 1);
+
+      function yearsSince(d) {
+        let y = today.getFullYear() - d.getFullYear();
+        const m = today.getMonth() - d.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) y--;
+        return y;
+      }
+
+      document.getElementById("age").textContent = yearsSince(birthdate);
+      document.getElementById("working-age").textContent = yearsSince(start);
+    });
 </script>
