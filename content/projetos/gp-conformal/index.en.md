@@ -1,7 +1,7 @@
 +++
 title = "Uncertainty quantification with Gaussian processes and conformal prediction"
 description = "Edited version of an article written for the Artificial Neural Networks course, by Prof. Dr. Lucas Ribas, in the master's program of the Computer Science Graduate Program at Unesp"
-date = "2025-06-09"
+date = "2025-06-17"
 weight = 1
 
 [taxonomies]

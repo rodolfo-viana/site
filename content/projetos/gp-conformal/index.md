@@ -1,7 +1,7 @@
 +++
 title = "Quantificação de incertezas com processos gaussianos e previsão conformal"
 description = "Versão editada de artigo escrito para a disciplina Redes Neurais Artificiais, do Prof. Dr. Lucas Ribas, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp"
-date = "2025-06-09"
+date = "2025-06-17"
 weight = 1
 
 [taxonomies]
