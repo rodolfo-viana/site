@@ -111,11 +111,11 @@
 
                 <div class="meta">
                     {% if page.date %}
-                        Publicação: <time>{{ page.date | date(format="%d-%m-%Y") }}</time>
+                    {% if page.lang == config.default_language %}Publicação: <time>{{ page.date | date(format="%d-%m-%Y") }}</time>{% else %}Published: <time>{{ page.date | date(format="%m-%d-%Y") }}</time>{% endif %}
                     {% endif %}
 
                     {% if page.updated %}
-                        <br />Atualização: <time>{{ page.updated | date(format="%d-%m-%Y") }}</time>
+                    {% if page.lang == config.default_language %}<br />Atualização: <time>{{ page.updated | date(format="%d-%m-%Y") }}</time>{% else %}<br />Updated: <time>{{ page.updated | date(format="%m-%d-%Y") }}</time>{% endif %}
                     {% endif %}
 
                     {# Inline display of tags directly after the date #}
@@ -140,7 +140,7 @@
         {% if config.extra.toc | default(value=false) %}
         {% if page.toc and page.extra.toc | default(value=false) %}
             <div class="toc-container">
-                <h1 class="toc-title">Sumário</h1>
+                <h1 class="toc-title">{% if page.lang == config.default_language %}Sumário{% else %}Table of Contents{% endif %}</h1>
                 <ul class="toc-list">
                     {% for h1 in page.toc %}
                         <li>
