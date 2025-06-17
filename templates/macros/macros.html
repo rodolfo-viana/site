@@ -1,7 +1,7 @@
 {% macro list_tag_posts(pages, tag_name=false) %}
     {% if tag_name %}
     <div class="page-header">
-        Textos com a tag <i>{{ tag_name }}</i><span class="primary-color" style="font-size: 1.6em">.</span>
+        {% if lang == config.default_language %}Textos com a tag {% else %}Texts tagged {% endif %}<i>{{ tag_name }}</i><span class="primary-color" style="font-size: 1.6em">.</span>
     </div>
     {% else %}
     <div class="page-header">
@@ -20,7 +20,8 @@
     <li class="list-item">
     <section>
         <div class="post-header">
-            <time>{{ page.date | date(format="%d-%m-%Y") }}</time>
+            {% if page.lang == config.default_language %}<time>{{ page.date | date(format="%d-%m-%Y") }}</time>{% else %}<time>{{ page.date | date(format="%m-%d-%Y") }}</time>{% endif %}
+            
 
             <div>
                 <h1 class="title">
@@ -43,7 +44,7 @@
                     </div>
 
                     {% if not hide_read_more %}
-                    <a class="readmore" href={{ page.permalink | safe }}>Leia mais ⟶</a>
+                    <a class="readmore" href={{ page.permalink | safe }}>{% if page.lang == config.default_language %}Leia mais ⟶{% else %}Read more ⟶{% endif %}</a>
                     {% endif %}
                 </div>
             </div>
@@ -201,7 +202,8 @@
 
                 <div class="meta">
                     {%- if page.date %}
-                        <time>{{ page.date | date(format="%d-%m-%Y") }}</time>
+                    {% if page.lang == config.default_language %}<time>{{ page.date | date(format="%d-%m-%Y") }}</time>{% else %}<time>{{ page.date | date(format="%m-%d-%Y") }}</time>{% endif %}
+                        
                     {% endif -%}
                     {% if page.draft %}
                         <span class="draft-label">DRAFT</span>
