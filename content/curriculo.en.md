@@ -2,11 +2,11 @@
 title = "Résumé"
 +++
 
-# Information
+# Personal Info
 
 Rodolfo Viana<br />
 <span id="age"></span> years old<br />
-Marília, São Paulo<br />
+Marília, São Paulo, Brazil<br />
 [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) / [Github](https://github.com/rodolfo-viana) / [Email](mailto:eu@rodolfoviana.com.br)
 
 # Summary
