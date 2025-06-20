@@ -11,7 +11,7 @@ Marília, São Paulo, Brazil<br />
 
 # Summary
 
-Data Engineer with <span id="working-age"></span>+ years of experience, an MBA in Data Science from the University of São Paulo and an M.Sc. in Computer Science in progress at UNESP. I currently serve as a Senior Data Engineer at Stadium Goods —the global leader in the sneaker market—driving projects in data architecture, pipeline development, and data-quality governance. Combining a solid academic foundation with extensive industry experience, I excel at designing and optimizing cloud-based data infrastructures and have a proven track record of automating workflows to boost availability, integrity, and scalability.
+Data Engineer with <span id="working-age"></span>+ years of experience, an MBA in Data Science from the University of São Paulo and an M.Sc. in Computer Science in progress at Unesp. I currently serve as a Senior Data Engineer at Stadium Goods —the global leader in the sneaker market—driving projects in data architecture, pipeline development, and data-quality governance. Combining a solid academic foundation with extensive industry experience, I excel at designing and optimizing cloud-based data infrastructures and have a proven track record of automating workflows to boost availability, integrity, and scalability.
 
 # Professional Experience
 
@@ -41,9 +41,9 @@ Data Engineer with <span id="working-age"></span>+ years of experience, an MBA i
 
 > Responsibilities:
 > 
-> - Developed and deployed predictive models—including classification algorithms and neural networks—for business intelligence and content personalization
-> - Performed exploratory data analysis and statistical modeling to generate story ideas and inform editorial planning.
-> - Led the design and implementation of ETL pipelines and large-scale web-scraping processes to ingest external data for analysis.
+> - Developed and deployed predictive models&mdash;including classification algorithms and neural networks&mdash;for business intelligence and content personalization
+> - Performed exploratory data analysis and statistical modeling to generate story ideas and inform editorial planning
+> - Led the design and implementation of ETL pipelines and large-scale web-scraping processes to ingest external data for analysis
 > 
 > Key contribution:
 > 
