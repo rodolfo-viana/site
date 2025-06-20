@@ -402,7 +402,7 @@ Além disso, a investigação restringiu-se a tarefas de regressão. Como a estr
 
 [^5]: MURPHY, K. P. *Machine learning: a probabilistic perspective*. Cambridge, MA: MIT Press, 2012.
 
-[^6]: KENDALL, A.; GAL, Y. What uncertainties do we need in Bayesian deep learning for computer vision? In: *Proceedings of the 31st Annual Conference on Neural Information Processing Systems (NIPS’17)*, Long Beach, CA, EUA, p. 5580–5590, 2017.
+[^6]: KENDALL, A.; GAL, Y. What uncertainties do we need in Bayesian deep learning for computer vision? In: *Proceedings of the 31st Annual Conference on Neural Information Processing Systems (NIPS'17)*, Long Beach, CA, EUA, p. 5580–5590, 2017.
 
 [^7]: ANGELOPOULOS, A. N.; BATES, S. A gentle introduction to conformal prediction and distribution-free uncertainty quantification. *arXiv preprint arXiv:2107.07511*, 2022.
 
