@@ -30,7 +30,8 @@
       {% for tr in page.translations %}
         {% if tr.lang != page.lang %}
           <a
-            href="{{ tr.permalink }}"
+            href="javascript:void(0)"
+            onclick="switchLanguage('{% if page.lang == config.default_language %}en{% else %}pt{% endif %}')"
             title="{% if page.lang == config.default_language %}Switch to English{% else %}Voltar para Português{% endif %}"
             style="margin-left:0.5em"
           >{% if page.lang == config.default_language %}EN{% else %}PT{% endif %}</a>
@@ -41,7 +42,8 @@
       {% for tr in section.translations %}
         {% if tr.lang != section.lang %}
           <a
-            href="{{ tr.permalink }}"
+            href="javascript:void(0)"
+            onclick="switchLanguage('{% if section.lang == config.default_language %}en{% else %}pt{% endif %}')"
             title="{% if section.lang == config.default_language %}Switch to English{% else %}Voltar para Português{% endif %}"
             style="margin-left:0.5em"
           >{% if section.lang == config.default_language %}EN{% else %}PT{% endif %}</a>
@@ -52,13 +54,15 @@
       {# Handle taxonomy list pages (e.g., /tags) #}
       {% if lang == "en" %}
         <a
-          href="{{ get_url(path="tags", lang="pt") }}"
+          href="javascript:void(0)"
+          onclick="switchLanguage('pt')"
           title="Voltar para Português"
           style="margin-left:0.5em"
         >PT</a>
       {% else %}
         <a
-          href="{{ get_url(path="tags", lang="en") }}"
+          href="javascript:void(0)"
+          onclick="switchLanguage('en')"
           title="Switch to English"
           style="margin-left:0.5em"
         >EN</a>
@@ -67,13 +71,15 @@
       {# Handle single taxonomy pages (e.g., /tags/python) #}
       {% if lang == "en" %}
         <a
-          href="{{ get_url(path="tags/" ~ term.slug, lang="pt") }}"
+          href="javascript:void(0)"
+          onclick="switchLanguage('pt')"
           title="Voltar para Português"
           style="margin-left:0.5em"
         >PT</a>
       {% else %}
         <a
-          href="{{ get_url(path="tags/" ~ term.slug, lang="en") }}"
+          href="javascript:void(0)"
+          onclick="switchLanguage('en')"
           title="Switch to English"
           style="margin-left:0.5em"
         >EN</a>
@@ -82,13 +88,15 @@
       {# Fallback for cases where none of the above contexts are available #}
       {% if lang == "en" %}
         <a
-          href="{{ get_url(path="", lang="pt") }}"
+          href="javascript:void(0)"
+          onclick="switchLanguage('pt')"
           title="Voltar para Português"
           style="margin-left:0.5em"
         >PT</a>
       {% else %}
         <a
-          href="{{ get_url(path="", lang="en") }}"
+          href="javascript:void(0)"
+          onclick="switchLanguage('en')"
           title="Switch to English"
           style="margin-left:0.5em"
         >EN</a>
