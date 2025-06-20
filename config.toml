@@ -2,8 +2,8 @@ base_url = "https://rodolfoviana.com.br"
 title = "rodolfo viana"
 description = "aulas, estudos e publicações sobre ciência de dados"
 default_language = "pt"
-build_search_index = true
-generate_feeds = true
+build_search_index = false
+generate_feeds = false
 compile_sass = true
 minify_html = true
 ignored_content = ["rascunhos/"]
@@ -38,9 +38,8 @@ mathjax = true
 # Default menu (Portuguese)
 menu = [
     { name = "projetos", url = "projetos", weight = 2 },
-    { name = "aulas", url = "aulas", weight = 3 },
-    { name = "cv", url = "curriculo", weight = 4 },
-    { name = "tags", url = "tags", weight = 5 }
+    { name = "cv", url = "curriculo", weight = 3 },
+    { name = "tags", url = "tags", weight = 4 }
 ]
 
 custom_css = []
