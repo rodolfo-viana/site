@@ -5,7 +5,7 @@ template = "homepage.html"
 
 Olá!
 
-Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos. Sou especialista em Data Science e Analytics pela USP e atualmente faço mestrado em Ciência da Computação na Unesp.
+Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou especialista em ciência de dados. Tenho pós-graduação em Data Science e Analytics pela USP e atualmente faço mestrado em Ciência da Computação na Unesp.
 
 Trabalho como engenheiro de dados na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers sediado em Nova York. Ali atuo em projetos relacionados à infraestrutura de dados: criação, manutenção e otimização de pipelines e rotinas, além de elaboração de testes para garantir qualidade, integridade e disponibilidade de dados. 
 
