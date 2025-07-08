@@ -3,17 +3,15 @@ title= ""
 template = "homepage.html"
 +++
 
-Hi!
+Hi there,
 
-My name is Rodolfo Viana and I'm a <span id="age"></span>-year-old Brazilian data engineer. I hold a specialization in Data Science and Analytics from USP and I'm currently pursuing a Master's degree in Computer Science at Unesp.
+I am Rodolfo Viana, a Brazilian data engineer aged <span id="age"></span>. I hold a postgraduate specialization in Data Science and Analytics from the University of São Paulo (USP) and am presently pursuing an M.Sc. in Computer Science at São Paulo State University (UNESP).
 
-I currently work at [Stadium Goods](https://www.stadiumgoods.com/), a renowned sneaker marketplace based in New York. There, I'm involved in data infrastructure projects: creating, maintaining, and optimizing pipelines and routines, as well as designing tests to ensure data quality, integrity, and availability.
+I currently serve as a Sr Data Engineer at [Stadium Goods](https://www.stadiumgoods.com/), a renowned sneaker marketplace headquartered in New York, where I oversee data-infrastructure initiatives, including the creation, maintenance, and optimization of pipelines and automated routines, as well as the design of tests to safeguard data quality, integrity, and availability.
 
-I also teach in the [MBA in Data Journalism](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) program at [IDP](https://www.idp.edu.br/). My courses are Introduction to Python and Web Scraping with Python.
+On this website you will find articles on statistics, machine learning, and related topics, together with projects I have developed in the field of Data Science.
 
-On this website you'll find publications on statistics, machine learning, and related topics, as well as projects I've developed in the field of data science.
-
-You can view my résumé [here](/en/curriculo). You can also find me on [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) and [Github](https://github.com/rodolfo-viana). If you'd like to send me a message, write to [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
+My résumé is available [here](/en/curriculo). You can also find me on [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) and [Github](https://github.com/rodolfo-viana). For direct inquiries, please write to [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
 Enjoy your reading!
 

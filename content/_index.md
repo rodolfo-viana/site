@@ -5,15 +5,13 @@ template = "homepage.html"
 
 Olá!
 
-Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou especialista em ciência de dados. Tenho pós-graduação em Data Science e Analytics pela USP e atualmente faço mestrado em Ciência da Computação na Unesp.
+Meu nome é Rodolfo Viana, tenho <span id="age"></span> anos e sou especialista em ciência de dados. Tenho pós-graduação em Data Science e Analytics pela USP e faço mestrado em Ciência da Computação na Unesp.
 
-Trabalho como engenheiro de dados na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers sediado em Nova York. Ali atuo em projetos relacionados à infraestrutura de dados: criação, manutenção e otimização de pipelines e rotinas, além de elaboração de testes para garantir qualidade, integridade e disponibilidade de dados. 
+Atualmente atuo como engenheiro de dados sênior na [Stadium Goods](https://www.stadiumgoods.com/), um renomado marketplace de sneakers com sede em Nova York, onde gerencio iniciativas de infraestrutura de dados, incluindo a criação, manutenção e otimização de pipelines e rotinas automatizadas, bem como a elaboração de testes para garantir a qualidade, integridade e disponibilidade dos dados.
 
-Também sou professor no [MBA em Jornalismo de Dados](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/) do [IDP](https://www.idp.edu.br/). Minhas disciplinas são Introdução a Python e Web Scraping com Python.
+Neste site, você encontrará artigos sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. 
 
-Neste site você vai encontrar publicações sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. 
-
-Meu currículo é este [aqui](/curriculo). Você pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Se quiser mandar uma mensagem, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
+Meu currículo está disponível [aqui](/curriculo). Você também pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Para contatos diretos, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
 Boa leitura.
 

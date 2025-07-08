@@ -12,7 +12,7 @@ Marília, São Paulo<br />
 
 # Resumo
 
-Engenheiro de dados com mais de <span id="working-age"></span> anos de experiência. Possuo MBA em Data Science pela USP e sou aluno de mestrado em Ciência da Computação na Unesp. Atualmente trabalho como engenheiro de dados sênio na Stadium Goods, líder global no mercado de sneakers, atuando em projetos relacionados à arquitetura de dados, desenvolvimento de pipelines e data quality. Com uma combinação de sólida fundação acadêmica e vasta experiêcia no mercado, destaco-me na construção e otimização de infraestruturas de dados baseadas em nuvem e tenho histórico comprovado em automação de fluxos para aumentar a disponibilidade, a integridade e a escalabilidade de dados.
+Engenheiro de dados com mais de <span id="working-age"></span> anos de experiência. Possuo MBA em Data Science pela USP e sou aluno de mestrado em Ciência da Computação na Unesp. Atualmente trabalho como engenheiro de dados sênior na Stadium Goods, líder global no mercado de sneakers, atuando em projetos relacionados à arquitetura de dados, desenvolvimento de pipelines e data quality. Com uma combinação de sólida fundação acadêmica e vasta experiêcia no mercado, destaco-me na construção e otimização de infraestruturas de dados baseadas em nuvem e tenho histórico comprovado em automação de fluxos para aumentar a disponibilidade, a integridade e a escalabilidade de dados.
 
 # Experiência profissional
 
@@ -31,11 +31,11 @@ Engenheiro de dados com mais de <span id="working-age"></span> anos de experiên
 > - Mentoria e treinamento de mais de 10 profissionais na Stadium Goods, aprimorando suas habilidades técnicas
 
 ⟶ Professor Adjunto @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
-[julho de 2021 &mdash; o momento]
+[julho de 2021 &mdash; outubro de 2024]
 
 > Responsabilidades: 
 > 
-> - Lecionar "Introdução à Programação com Python" e "Web Scraping" em cursos de pós-graduação, treinando mais de 100 profissionais até o momento
+> - Lecionar "Introdução à Programação com Python" e "Web Scraping" em cursos de pós-graduação, tendo treinado mais de 100 profissionais
 
 ⟶ Cientista de Dados Sr @ [Rede Globo](https://redeglobo.globo.com/)<br />
 [dezembro de 2018 &mdash; agosto de 2021]

@@ -30,7 +30,7 @@ Data Engineer with <span id="working-age"></span>+ years of experience, an MBA i
 > - Mentoring and training of more than 10 professionals at Stadium Goods, improving their technical skills
 
 ⟶ Adjunct Instructor @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
-[July 2021 &mdash; present]
+[July 2021 &mdash; October 2024]
 
 > Responsibilities: 
 > 
