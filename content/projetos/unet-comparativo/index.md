@@ -223,6 +223,6 @@ Os autores declaram que nenhuma ferramenta de inteligência artificial generativ
 
 [^17]: C.-H. Huang, H.-Y. Wu, and Y.-L. Lin, "HarDNet-MSEG: A simple encoder-decoder polyp segmentation neural network that achieves over 0.9 mean dice and 86 fps", arXiv preprint arXiv:2101.07172, 2021.
 
-[^18]: K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition", in **2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)**. IEEE, 2016, pp. 770&mdash;778.
+[^18]: K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition", in *2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)*. IEEE, 2016, pp. 770&mdash;778.
 
 [^19]: Z. Zhang, Q. Liu, and Y. Wang, "Road extraction by deep residual u-net", *IEEE Geoscience and Remote Sensing Letters*, vol. 15, no. 5, pp. 749&mdash;753, 2018.
