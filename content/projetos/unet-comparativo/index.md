@@ -20,7 +20,7 @@ Neste contexto, a ciência de dados, particularmente o aprendizado de máquina, 
 
 Neste cenário, U-Net se estabelece como o estado-da-arte para tal tarefa através de um esquema codificador-decodificador com *skip connections*[^6].
 
-<img src="./unet.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%;">
+<img src="./unet.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 Suas limitações, porém, motivaram variantes que visam melhorar a fusão de representações e a seletividade de características. Este trabalho realiza comparações sistemáticas sob condições experimentais controladas, comparando cinco arquiteturas na segmentação de pólipos usando o conjunto Kvasir-SEG[^7].
 
