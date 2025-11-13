@@ -38,6 +38,29 @@ Trabalhos mais recentes investigam *transformers* para segmentação médica. Va
 
 Apesar dos avanços, comparações diretas são dificultadas por variações metodológicas: diferentes particionamentos de dados, estratégias de augmentação, funções de perda e hiperparâmetros. Muitos trabalhos reportam resultados em múltiplos conjuntos mas carecem de análise estatística rigorosa. Este estudo aborda essas lacunas através de comparação sistemática de cinco arquiteturas U-Net fundamentais sob condições experimentais controladas, com múltiplas sementes para análise de variância, fornecendo *benchmark* reproduzível para o domínio.
 
+# Fundamentos Teóricos de Arquiteturas U-Net
+
+A U-Net estabelece o paradigma codificador-decodificador com *skip connections* para segmentação biomédica[^6]. O codificador captura informação semântica multi-escala através de convoluções e pooling sucessivos, enquanto *skip connections* concatenam características do codificador ao decodificador, preservando detalhes espaciais.
+
+Seja \\(x\in\mathbb{R}^{H\times W\times C}\\) uma imagem de entrada e \\(y\in{\{0,1\}}^{H\times W}\\) sua máscara binária de referência. A rede implementa um mapeamento \\(f:\mathbb{R}^{H\times W\times C}\rightarrow[0,1]^{H\times W}\\) cujo *threshold* em 0,5 produz \\(\hat{y}\in{\{0,1\}}^{H\times W}\\). Em cada nível \\(l\\) do codificador, o número de canais (largura) segue \\(c\_l = c\_0\cdot 2^{l}\\).
+
+## U-Net++: Conexões Densas Aninhadas
+
+A U-Net++ aborda a lacuna semântica da U-Net através de blocos convolucionais aninhados[^9]. Na U-Net, *skip connections* concatenam características semanticamente distantes (baixo nível no codificador, alto nível no decodificador). A U-Net++ resolve isso conectando, de maneira gradual, características através de caminhos densos. Cada nó \\(\mathbf{X}^{i,j}\\) é:
+
+\\[
+\begin{aligned}
+\mathbf{X}^{i,j} = \begin{cases}
+\mathcal{H}(\mathbf{X}^{i,j-1}), & j = 0 \\\\
+\mathcal{H}\left(\left[\left[\mathbf{X}^{i,k}\right]\_{k=0}^{j-1}, \mathcal{U}(\mathbf{X}^{i+1,j-1})\right]\right), & j > 0,
+\end{cases}
+\end{aligned}
+\\]
+
+onde \\(i\\) indexa resolução, \\(j\\) densidade de conexões, \\(\mathcal{H}(\cdot)\\) convolução, \\(\mathcal{U}(\cdot)\\) upsampling, \\([[\cdot]]\\) concatenação. Isso reduz progressivamente a lacuna semântica através de transformações sucessivas.
+
+Além de U-Net++, neste trabalho adotamos ainda uma versão com *deep supervision*, que adiciona supervisão multi-escala \\(\mathcal{L}\_{\text{total}} = \sum\_{j=1}^{J} \omega\_j \mathcal{L}(\mathbf{y}, \mathbf{\hat{y}}^{(j)})\\), mitigando gradientes evanescentes e acelerando convergência.
+
 # Referências
 
 [^1]: World Health Organization, "Colorectal cancer", https://www.who.int/news-room/fact-sheets/detail/colorectal-cancer, Jul. 2023, online. Acessado em 25 de setembro de 2025.
