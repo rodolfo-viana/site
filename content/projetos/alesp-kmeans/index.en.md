@@ -1,6 +1,6 @@
 +++
 title = "Anomaly detection in São Paulo state deputies' expenses using K-Means"
-description = "Edited version of my MBA final project in Data Science and Analytics at USP-Esalq, supervised by Prof. Dr. Ana Julia Righetto, presented in January 2024"
+description = "Edited version of my MBA final project in Data Science and Analytics at USP-Esalq, supervised by Prof. Ana Julia Righetto, PhD., presented in January 2024"
 date = "2023-09-01"
 updated = "2023-11-16"
 weight = 9
