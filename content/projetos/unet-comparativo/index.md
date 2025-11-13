@@ -97,7 +97,7 @@ Todos os modelos foram treinados por no máximo 100 épocas, com *batch size* 8,
 
 Nosso arcabouço de avaliação emprega cinco métricas complementares que capturam diferentes aspectos do desempenho de segmentação, fornecendo uma apreciação abrangente das capacidades do modelo em diversos cenários clínicos, utilizando informações de falsos negativos (FN), falsos positivos (FP), positivos verdadeiros (TP) e negativos verdadeiros (TN).
 
-O Coeficiente de Similaridade de Dice (Dice score) mede a sobreposição regional entre as segmentações predita \\(P\\) e verdadeira \\(V\\) -- para segmentação binária por pixel, o Dice score equivale ao F1 score. É obtida com 
+O Coeficiente de Similaridade de Dice (Dice score) mede a sobreposição regional entre as segmentações predita \\(P\\) e verdadeira \\(V\\) &mdash; para segmentação binária por pixel, o Dice score equivale ao F1 score. É obtida com 
 
 \\[
 \frac{2 \mid P \cap V \mid}{\mid P \mid + \mid V \mid}.
@@ -133,7 +133,7 @@ A análise do desempenho das arquiteturas nos três contextos distintos (treinam
 
 <img src="./graph.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
-A U-Net padrão demonstra excelente consistência entre validação e teste, com gap mínimo (\\(\sim\\)1,5 pp.), indicando robusta capacidade de generalização. Sua baixa variabilidade entre sementes, visível nos boxplots compactos, sugere treinamento estável e previsível -- característica desejável para aplicações clínicas onde reprodutibilidade é crítica.
+A U-Net padrão demonstra excelente consistência entre validação e teste, com gap mínimo (\\(\sim\\)1,5 pp.), indicando robusta capacidade de generalização. Sua baixa variabilidade entre sementes, visível nos boxplots compactos, sugere treinamento estável e previsível &mdash; característica desejável para aplicações clínicas onde reprodutibilidade é crítica.
 
 U-Net++ com supervisão profunda apresenta comportamento similar, mantendo boa consistência e gap reduzido entre validação e teste. A estratégia de supervisão multi-escala contribui efetivamente para estabilização do treinamento, resultando em sensibilidade elevada sem sacrificar significativamente outras métricas. ResU-Net exibe variabilidade intermediária, com as conexões residuais proporcionando treinamento estável mas sem vantagens decisivas em desempenho final.
 
@@ -167,7 +167,7 @@ Este estudo comparou cinco variantes de arquitetura U-Net para segmentação de 
 
 U-Net++ com supervisão profunda obteve desempenho comparável (Dice: 83,48\\(\pm\\)0,89\%) e maior sensibilidade (89,39\%), sugerindo que supervisão multi-escala pode melhorar detecção de pólipos sem comprometer outras métricas. ResU-Net destacou-se em especificidade (97,52\%), indicando que conexões residuais contribuem para melhor discriminação de tecido não-pólipo, embora sem vantagens decisivas em Dice score.
 
-U-Net++ padrão e Attention U-Net apresentaram desempenho similar mas inferior (Dice: 82,24\%). A ausência de ganhos significativos para Attention U-Net questiona a efetividade de mecanismos de atenção espacial neste domínio, especialmente considerando a complexidade adicional. Os resultados sugerem que características de pólipos -- alta variabilidade morfológica e baixo contraste -- podem não beneficiar de seletividade espacial adicional.
+U-Net++ padrão e Attention U-Net apresentaram desempenho similar mas inferior (Dice: 82,24\%). A ausência de ganhos significativos para Attention U-Net questiona a efetividade de mecanismos de atenção espacial neste domínio, especialmente considerando a complexidade adicional. Os resultados sugerem que características de pólipos &mdash; alta variabilidade morfológica e baixo contraste &mdash; podem não beneficiar de seletividade espacial adicional.
 
 Todas as arquiteturas mantiveram especificidade superior a 96,8\%, essencial para aceitação clínica onde falsos positivos reduzem confiança do endoscopista. As diferenças primárias manifestam-se em sensibilidade e delineação de bordas, métricas críticas para intervenções endoscópicas precisas. Os resultados destacam o valor de arquiteturas fundamentais bem calibradas e questionam o custo-benefício de modificações arquiteturais complexas para segmentação de pólipos.
 
@@ -191,38 +191,38 @@ Os autores declaram que nenhuma ferramenta de inteligência artificial generativ
 
 [^1]: World Health Organization, "Colorectal cancer", https://www.who.int/news-room/fact-sheets/detail/colorectal-cancer, Jul. 2023, online. Acessado em 25 de setembro de 2025.
 
-[^2]: D. A. Corley, C. D. Jensen, A. R. Marks, W. K. Zhao, J. K. Lee, C. A. Doubeni, A. G. Zauber, J. de Boer, B. H. Fireman, J. E. Schottinger, and T. R. Levin, "Adenoma detection rate and risk of colorectal cancer and death", *The New England Journal of Medicine*, vol. 370, no. 14, pp. 1298–1306, 2014.
+[^2]: D. A. Corley, C. D. Jensen, A. R. Marks, W. K. Zhao, J. K. Lee, C. A. Doubeni, A. G. Zauber, J. de Boer, B. H. Fireman, J. E. Schottinger, and T. R. Levin, "Adenoma detection rate and risk of colorectal cancer and death", *The New England Journal of Medicine*, vol. 370, no. 14, pp. 1298&mdash;1306, 2014.
 
-[^3]: J. Bernal, F. J. Sánchez, G. Fernández-Esparrach, D. Gil, C. Rodríguez, and F. Vilariño, "WM-DOVA maps for accurate polyp highlighting in colonoscopy: Validation vs. saliency maps from physicians", *Computerized Medical Imaging and Graphics*, vol. 43, pp. 99–111, 2015.
+[^3]: J. Bernal, F. J. Sánchez, G. Fernández-Esparrach, D. Gil, C. Rodríguez, and F. Vilariño, "WM-DOVA maps for accurate polyp highlighting in colonoscopy: Validation vs. saliency maps from physicians", *Computerized Medical Imaging and Graphics*, vol. 43, pp. 99&mdash;111, 2015.
 
 [^4]: P. Brandão, E. Mazomenos, G. Ciuti, R. Caliò, F. Bianchi, A. Menciassi, P. Dario, A. Koulaouzidis, A. Arezzo, and D. Stoyanov, "Fully convolutional neural networks for polyp segmentation in colonoscopy", in *Medical Imaging 2017: Computer-Aided Diagnosis, ser. Proceedings of SPIE*, vol. 10134, Orlando, FL, USA, 2017.
 
-[^5]: N. Tajbakhsh, S. R. Gurudu, and J. Liang, "Automated polyp detection in colonoscopy videos using shape and context information", *IEEE Transactions on Medical Imaging*, vol. 35, no. 2, pp. 630–644, 2016.
+[^5]: N. Tajbakhsh, S. R. Gurudu, and J. Liang, "Automated polyp detection in colonoscopy videos using shape and context information", *IEEE Transactions on Medical Imaging*, vol. 35, no. 2, pp. 630&mdash;644, 2016.
 
-[^6]: O. Ronneberger, P. Fischer, and T. Brox, "U-net: Convolutional networks for biomedical image segmentation", in *Medical Image Computing and Computer-Assisted Intervention - MICCAI 2015, ser. Lecture Notes in Computer Science*, vol. 9351. Cham: Springer, 2015, pp. 234–241.
+[^6]: O. Ronneberger, P. Fischer, and T. Brox, "U-net: Convolutional networks for biomedical image segmentation", in *Medical Image Computing and Computer-Assisted Intervention - MICCAI 2015, ser. Lecture Notes in Computer Science*, vol. 9351. Cham: Springer, 2015, pp. 234&mdash;241.
 
-[^7]: D. Jha, P. H. Smedsrud, M. A. Riegler, P. Halvorsen, T. de Lange, D. Johansen, and H. D. Johansen, "Kvasir-SEG: A segmented polyp dataset", in *MultiMedia Modeling (MMM 2020), Proceedings, Part II, ser. Lecture Notes in Computer Science*, vol. 11962. Cham: Springer, 2020, pp. 451–462.
+[^7]: D. Jha, P. H. Smedsrud, M. A. Riegler, P. Halvorsen, T. de Lange, D. Johansen, and H. D. Johansen, "Kvasir-SEG: A segmented polyp dataset", in *MultiMedia Modeling (MMM 2020), Proceedings, Part II, ser. Lecture Notes in Computer Science*, vol. 11962. Cham: Springer, 2020, pp. 451&mdash;462.
 
-[^8]: E. Shelhamer, J. Long, and T. Darrell, "Fully convolutional networks for semantic segmentation", *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. 39, no. 4, pp. 640–651. 2017.
+[^8]: E. Shelhamer, J. Long, and T. Darrell, "Fully convolutional networks for semantic segmentation", *IEEE Transactions on Pattern Analysis and Machine Intelligence*, vol. 39, no. 4, pp. 640&mdash;651. 2017.
 
-[^9]: Z. Zhou, M. M. Rahman Siddiquee, N. Tajbakhsh, and J. Liang, "Unet++: A nested u-net architecture for medical image segmentation", in *4th International Workshop, DLMIA 2018, and 8th International Workshop, ML-CDS 2018, Held in Conjunction with MICCAI 2018*, vol. 11045, 2018, pp. 3–11.
+[^9]: Z. Zhou, M. M. Rahman Siddiquee, N. Tajbakhsh, and J. Liang, "Unet++: A nested u-net architecture for medical image segmentation", in *4th International Workshop, DLMIA 2018, and 8th International Workshop, ML-CDS 2018, Held in Conjunction with MICCAI 2018*, vol. 11045, 2018, pp. 3&mdash;11.
 
 [^10]: O. Oktay, J. Schlemper, L. L. Folgoc, M. Lee, M. Heinrich, K. Misawa, K. Mori, S. McDonagh, N. Y. Hammerla, B. Kainz et al., "Attention u-net: Learning where to look for the pancreas", arXiv preprint arXiv:1804.03999, 2018.
 
-[^11]: D. Jha, P. H. Smedsrud, M. A. Riegler, H. D. Johansen, T. de Lange, P. Halvorsen, and D. Johansen, "DoubleU-Net: A deep convolutional neural network for medical image segmentation", in *2020 IEEE 33rd International Symposium on Computer-Based Medical Systems (CBMS)*. IEEE, 2020, pp. 558–564.
+[^11]: D. Jha, P. H. Smedsrud, M. A. Riegler, H. D. Johansen, T. de Lange, P. Halvorsen, and D. Johansen, "DoubleU-Net: A deep convolutional neural network for medical image segmentation", in *2020 IEEE 33rd International Symposium on Computer-Based Medical Systems (CBMS)*. IEEE, 2020, pp. 558&mdash;564.
 
-[^12]: D.-P. Fan, G.-P. Ji, T. Zhou, G. Chen, H. Fu, J. Shen, and L. Shao, "PraNet: Parallel reverse attention network for polyp segmentation", in *Medical Image Computing and Computer-Assisted Intervention – MICCAI 2020*. Springer International Publishing, 2020, pp. 263–273.
+[^12]: D.-P. Fan, G.-P. Ji, T. Zhou, G. Chen, H. Fu, J. Shen, and L. Shao, "PraNet: Parallel reverse attention network for polyp segmentation", in *Medical Image Computing and Computer-Assisted Intervention &mdash; MICCAI 2020*. Springer International Publishing, 2020, pp. 263&mdash;273.
 
-[^13]: Y. Fang, C. Chen, Y. Yuan, and K.-y. Tong, "Selective feature aggregation network with area-boundary constraints for polyp segmentation", in *Medical Image Computing and Computer-Assisted Intervention – MICCAI 2019*. Springer International Publishing, 2019, pp. 302–310.
+[^13]: Y. Fang, C. Chen, Y. Yuan, and K.-y. Tong, "Selective feature aggregation network with area-boundary constraints for polyp segmentation", in *Medical Image Computing and Computer-Assisted Intervention &mdash; MICCAI 2019*. Springer International Publishing, 2019, pp. 302&mdash;310.
 
-[^14]: R. Zhang, G. Li, Z. Li, S. Cui, D. Qian, and Y. Yu, "Adaptive context selection for polyp segmentation", in *Medical Image Computing and Computer-Assisted Intervention – MICCAI 2020*. Springer International Publishing, 2020, pp. 253–262.
+[^14]: R. Zhang, G. Li, Z. Li, S. Cui, D. Qian, and Y. Yu, "Adaptive context selection for polyp segmentation", in *Medical Image Computing and Computer-Assisted Intervention &mdash; MICCAI 2020*. Springer International Publishing, 2020, pp. 253&mdash;262.
 
-[^15]: A. Srivastava, D. Jha, S. Chanda, U. Pal, H. D. Johansen, D. Johansen, M. A. Riegler, S. Ali, and P. Halvorsen, "MSRF-Net: A multi-scale residual fusion network for biomedical image segmentation", *IEEE Journal of Biomedical and Health Informatics*, vol. 26, no. 5, pp. 2252–2263, 2022.
+[^15]: A. Srivastava, D. Jha, S. Chanda, U. Pal, H. D. Johansen, D. Johansen, M. A. Riegler, S. Ali, and P. Halvorsen, "MSRF-Net: A multi-scale residual fusion network for biomedical image segmentation", *IEEE Journal of Biomedical and Health Informatics*, vol. 26, no. 5, pp. 2252&mdash;2263, 2022.
 
-[^16]: J. M. J. Valanarasu, P. Oza, I. Hacihaliloglu, and V. M. Patel, "Medical transformer: Gated axial-attention for medical image segmentation", in *Medical Image Computing and Computer-Assisted Intervention – MICCAI 2021*. Springer International Publishing, 2021, pp. 36–46.
+[^16]: J. M. J. Valanarasu, P. Oza, I. Hacihaliloglu, and V. M. Patel, "Medical transformer: Gated axial-attention for medical image segmentation", in *Medical Image Computing and Computer-Assisted Intervention &mdash; MICCAI 2021*. Springer International Publishing, 2021, pp. 36&mdash;46.
 
 [^17]: C.-H. Huang, H.-Y. Wu, and Y.-L. Lin, "HarDNet-MSEG: A simple encoder-decoder polyp segmentation neural network that achieves over 0.9 mean dice and 86 fps", arXiv preprint arXiv:2101.07172, 2021.
 
-[^18]: K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition", in **2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)**. IEEE, 2016, pp. 770–778.
+[^18]: K. He, X. Zhang, S. Ren, and J. Sun, "Deep residual learning for image recognition", in **2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)**. IEEE, 2016, pp. 770&mdash;778.
 
-[^19]: Z. Zhang, Q. Liu, and Y. Wang, "Road extraction by deep residual u-net", *IEEE Geoscience and Remote Sensing Letters*, vol. 15, no. 5, pp. 749–753, 2018.
+[^19]: Z. Zhang, Q. Liu, and Y. Wang, "Road extraction by deep residual u-net", *IEEE Geoscience and Remote Sensing Letters*, vol. 15, no. 5, pp. 749&mdash;753, 2018.
