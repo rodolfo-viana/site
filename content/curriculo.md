@@ -31,7 +31,7 @@ Engenheiro de dados com mais de <span id="working-age"></span> anos de experiên
 > - Mentoria e treinamento de mais de 10 profissionais na Stadium Goods, aprimorando suas habilidades técnicas
 
 ⟶ Professor Adjunto @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
-[julho de 2021 &mdash; outubro de 2024]
+[julho de 2021 &mdash; o momento]
 
 > Responsabilidades: 
 > 
@@ -54,10 +54,13 @@ Engenheiro de dados com mais de <span id="working-age"></span> anos de experiên
 
 ⟶ Mestrado em Ciência da Computação @ [Ibilce-Unesp](https://www.ibilce.unesp.br/)<br />
 2025 &mdash; em andamento
+- Trabalho em desenvolvimento: Aprimoramento em detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas
+- Orientador: Prof Dr Wallace Correa de Oliveira Casaca
 
 ⟶ MBA em Data Science e Analytics @ [Esalq-USP](https://www.esalq.usp.br/)<br />
 2022 &mdash; 2023<br />
 - Trabalho desenvolvido: [Detecção de anomalias em gastos de deputados estaduais de São Paulo usando K-Means](/projetos/alesp-kmeans)
+- Orientadora: Profª Drª Ana Julia Righetto
 
 # Habilidades Técnicas
 
@@ -82,6 +85,20 @@ Engenheiro de dados com mais de <span id="working-age"></span> anos de experiên
 # Idiomas
 
 Português (nativo), Inglês (fluente)
+
+# Interesses
+
+- Aprendizado de Máquina e IA
+    > Visão computacional, Scientific Machine Learning, Deep Reinforcement Learning
+
+- Matemática e Modelagem
+    > Estatística bayesiana, processos gaussianos, modelagem baseada em equações diferenciais
+ 
+- Ciência da Computação
+    > Estruturas de dados e algoritmos, computação bioinspirada, engenharia de software para data products
+
+- Domínios
+    > Aplicações de IA em saúde (imagens médicas, diagnóstico assistido), transparência e ética em IA (responsabilidade, viés, governança)
 
 <script>
     document.addEventListener("DOMContentLoaded", () => {
