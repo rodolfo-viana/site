@@ -22,12 +22,7 @@ Para responder a essas questões, desenvolveu-se um sistema computacional que in
 
 O objetivo principal deste trabalho é desenvolver e validar o sistema aplicado à produção acadêmica da Unesp, especificamente os trabalhos de conclusão de curso (TCCs) produzidos entre 2015 e 2024.
 
-De maneira específica, os autores buscam:
-
-1. implementar computacionalmente as três fases da metodologia de Bardin através de técnicas de PLN e aprendizado de máquina,
-2. identificar e caracterizar os principais tópicos de pesquisa presentes nos TCCs através de modelagem automática de tópicos,
-3. analisar a evolução temporal dos tópicos identificados, detectando tendências emergentes e declinantes, e
-4. mapear a distribuição geográfica e disciplinar dos tópicos entre os diferentes campi e cursos.
+De maneira específica, os autores buscam (a) implementar computacionalmente as três fases da metodologia de Bardin através de técnicas de PLN e aprendizado de máquina, (b) identificar e caracterizar os principais tópicos de pesquisa presentes nos TCCs através de modelagem automática de tópicos, (c) analisar a evolução temporal dos tópicos identificados, detectando tendências emergentes e declinantes, e (d) mapear a distribuição geográfica e disciplinar dos tópicos entre os diferentes campi e cursos.
 
 # Revisão de Literatura
 
@@ -67,9 +62,9 @@ O processamento de textos em português apresenta desafios específicos relacion
 
 O spaCy implementa um pipeline de processamento linguístico baseado em redes neurais convolucionais (CNN). As principais operações realizadas são:
 
-- **Tokenização:** Segmentação do texto em tokens utilizando regras linguísticas específicas do português e padrões de expressões regulares. Cada documento $D$ é transformado em uma sequência de tokens \\(T = \{t\_1, t\_2, ..., t\_n\}\\).
+- **Tokenização:** Segmentação do texto em tokens utilizando regras linguísticas específicas do português e padrões de expressões regulares. Cada documento \\(D\\) é transformado em uma sequência de tokens \\(T = \{t\_1, t\_2, ..., t\_n\}\\).
 
-- **Lematização:** Redução de cada token à sua forma canônica (lema) através de um modelo estatístico treinado. Para cada token $t_i$, a lematização mapeia
+- **Lematização:** Redução de cada token à sua forma canônica (lema) através de um modelo estatístico treinado. Para cada token \\(t\_i\\), a lematização mapeia
 
 \\[
   \text{lemma}(t\_i) = l\_i
@@ -80,7 +75,7 @@ onde \\(l\_i\\) representa a forma base da palavra, removendo flexões verbais, 
 - **Part-of-Speech (POS) Tagging:** O spaCy utiliza uma rede neural convolucional para classificar cada token em categorias gramaticais. A probabilidade de um token \\(t\_i\\) pertencer à classe POS \\(c\_j\\) é calculada através de
 
 \\[
-  P(c\_j \mid t\_i) = \text{softmax}(\mathbf{W} \cdot \text{CNN}(t\i) + \mathbf{b})\_j
+  P(c\_j \mid t\_i) = \text{softmax}(\mathbf{W} \cdot \text{CNN}(t\_i) + \mathbf{b})\_j
 \\]
 
 onde \\(\mathbf{W}\\) são os pesos da camada de classificação, \\(\text{CNN}(t\_i)\\) é a representação vetorial do token, e \\(\mathbf{b}\\) é o vetor de bias.
