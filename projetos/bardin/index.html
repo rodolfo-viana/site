@@ -1,0 +1,145 @@
+<!doctype html><html class="dark light" lang=pt><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content=https://rodolfoviana.com.br name=base><title>
+         Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp
+        
+    </title><meta content="Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp" property=og:title><meta content="Versão editada de artigo escrito em coautoria com Júlia Canedo para a disciplina Aprendizado Profundo, do Prof. Dr. Denis Henrique Pinheiro Salvadeo, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp" property=og:description><meta content="Versão editada de artigo escrito em coautoria com Júlia Canedo para a disciplina Aprendizado Profundo, do Prof. Dr. Denis Henrique Pinheiro Salvadeo, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp" name=description><meta content=https://rodolfoviana.com.br/image.png property=og:image><meta content=image/png property=og:image:type><meta content=website property=og:type><meta content=https://rodolfoviana.com.br/projetos/bardin/ property=og:url><link href=/favicon.png rel=icon type=image/png><link href=https://rodolfoviana.com.br/fonts.css rel=stylesheet><script src=https://rodolfoviana.com.br/js/codeblock.js></script><script src=https://rodolfoviana.com.br/js/note.js></script><script>MathJax = {
+          options: {enableMenu: false},
+          loader: {load: ['[tex]/boldsymbol']},
+          tex: {
+            packages: {'[+]': ['boldsymbol']},
+            inlineMath: [['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            }
+        }</script><link title="rodolfo viana" href=https://rodolfoviana.com.br/rss.xml rel=alternate type=application/rss+xml><link href=https://rodolfoviana.com.br/theme/dark.css rel=stylesheet><script src=https://rodolfoviana.com.br/js/themetoggle.js></script><script>setTheme("dark");</script><link href=https://rodolfoviana.com.br/main.css media=screen rel=stylesheet><script src=https://rodolfoviana.com.br/js/mobile-menu.js></script><script src=https://rodolfoviana.com.br/js/d3.min.js></script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js></script><script src=https://rodolfoviana.com.br/js/geolocation.js></script><body><div class=content><header><div class=main><a href=https://rodolfoviana.com.br>rodolfo viana</a></div><button aria-label=Menu class=hamburger id=mobile-menu-button><span></span><span></span><span></span></button><nav id=nav-menu><a href=https://rodolfoviana.com.br/projetos style=margin-left:.5em>projetos</a><a href=https://rodolfoviana.com.br/curriculo style=margin-left:.5em>cv</a><a href=https://rodolfoviana.com.br/tags style=margin-left:.5em>tags</a></nav></header><main><article><div class=title><div class=page-header>Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp<span class=primary-color style=font-size:1.6em>.</span></div><div class=meta>Publicação: <time>22-11-2025</time><br><span class=tags-label>Tags:</span><span class=tags> <a class=post-tag href=https://rodolfoviana.com.br/tags/aprendizado-de-maquina/>aprendizado de máquina</a>, <a class=post-tag href=https://rodolfoviana.com.br/tags/processamento-de-linguagem-natural/>processamento de linguagem natural</a>, <a class=post-tag href=https://rodolfoviana.com.br/tags/unesp/>unesp</a> </span></div></div><div class=toc-container><h1 class=toc-title>Sumário</h1><ul class=toc-list><li><a href=https://rodolfoviana.com.br/projetos/bardin/#introducao>Introdução</a><li><a href=https://rodolfoviana.com.br/projetos/bardin/#revisao-de-literatura>Revisão de Literatura</a> <ul><li><a href=https://rodolfoviana.com.br/projetos/bardin/#analise-de-conteudo-de-bardin>Análise de Conteúdo de Bardin</a><li><a href=https://rodolfoviana.com.br/projetos/bardin/#topic-modeling-e-bertopic>Topic Modeling e BERTopic</a><li><a href=https://rodolfoviana.com.br/projetos/bardin/#processamento-de-linguagem-natural-em-portugues>Processamento de Linguagem Natural em Português</a></ul><li><a href=https://rodolfoviana.com.br/projetos/bardin/#fundamentos-matematicos-dos-algoritmos>Fundamentos Matemáticos dos Algoritmos</a> <ul><li><a href=https://rodolfoviana.com.br/projetos/bardin/#processamento-linguistico-com-spacy>Processamento Linguístico com spaCy</a><li><a href=https://rodolfoviana.com.br/projetos/bardin/#term-frequency-inverse-document-frequency-tf-idf>Term Frequency-Inverse Document Frequency (TF-IDF)</a><li><a href=https://rodolfoviana.com.br/projetos/bardin/#embeddings-semanticos-sentence-transformers>Embeddings Semânticos (Sentence-Transformers)</a></ul><li><a href=https://rodolfoviana.com.br/projetos/bardin/#metodologia>Metodologia</a> <ul><li><a href=https://rodolfoviana.com.br/projetos/bardin/#arquitetura-do-sistema>Arquitetura do Sistema</a><li><a href=https://rodolfoviana.com.br/projetos/bardin/#coleta-de-dados>Coleta de Dados</a></ul><li><a href=https://rodolfoviana.com.br/projetos/bardin/#referencias>Referências</a></ul></div><section class=body><h1 id=introducao>Introdução</h1><p>A análise sistemática da produção acadêmica institucional representa um desafio fundamental para a compreensão das tendências de pesquisa, áreas de interesse e evolução do conhecimento em universidades. No contexto da Universidade Estadual Paulista (Unesp), com múltiplos campi distribuídos pelo estado de São Paulo, essa tarefa torna-se ainda mais complexa devido ao volume e diversidade da produção científica.<p>O presente trabalho aborda a questão central: "O que os alunos de graduação da Unesp produziram nos últimos 10 anos?". Esta pergunta desdobra-se em questões específicas sobre preferências disciplinares, evolução temporal de tópicos de pesquisa, distribuição geográfica de áreas de interesse e padrões emergentes na produção acadêmica.<p>Para responder a essas questões, desenvolveu-se um sistema computacional que integra a metodologia clássica de Análise de Conteúdo proposta por Laurence Bardin<sup class=footnote-reference id=fr-1-1><a href=#fn-1>1</a></sup> com técnicas atuais de aprendizado profundo e processamento de linguagem natural (PLN). Esta abordagem híbrida permite manter o rigor metodológico da análise qualitativa tradicional, ao mesmo tempo em que viabiliza o processamento de grandes volumes de dados através de algoritmos automatizados.<p>O objetivo principal deste trabalho é desenvolver e validar o sistema aplicado à produção acadêmica da Unesp, especificamente os trabalhos de conclusão de curso (TCCs) produzidos entre 2015 e 2024.<p>De maneira específica, os autores buscam (a) implementar computacionalmente as três fases da metodologia de Bardin através de técnicas de PLN e aprendizado de máquina, (b) identificar e caracterizar os principais tópicos de pesquisa presentes nos TCCs através de modelagem automática de tópicos, (c) analisar a evolução temporal dos tópicos identificados, detectando tendências emergentes e declinantes, e (d) mapear a distribuição geográfica e disciplinar dos tópicos entre os diferentes campi e cursos.<h1 id=revisao-de-literatura>Revisão de Literatura</h1><h2 id=analise-de-conteudo-de-bardin>Análise de Conteúdo de Bardin</h2><p>A Análise de Conteúdo, conforme sistematizada por Laurence Bardin<sup class=footnote-reference id=fr-1-2><a href=#fn-1>1</a></sup>, constitui-se como "um conjunto de técnicas de análise das comunicações visando obter por procedimentos sistemáticos e objetivos de descrição do conteúdo das mensagens indicadores (quantitativos ou não) que permitam a inferência de conhecimentos relativos às condições de produção/recepção (variáveis inferidas) dessas mensagens".<p>A metodologia estrutura-se em três fases fundamentais:<ol><li><p>Pré-análise: Organização do material e sistematização das ideias iniciais. Inclui a leitura flutuante, escolha dos documentos, formulação de hipóteses e objetivos, e elaboração de indicadores.</p><li><p>Exploração do material: Aplicação sistemática das decisões tomadas na pré-análise. Consiste essencialmente em operações de codificação, decomposição ou enumeração, em função de regras previamente formuladas.</p><li><p>Tratamento dos resultados e interpretação: Os resultados brutos são tratados de maneira a serem significativos e válidos. Operações estatísticas simples ou complexas permitem estabelecer quadros de resultados, diagramas, figuras e modelos.</p></ol><h2 id=topic-modeling-e-bertopic><em>Topic Modeling</em> e BERTopic</h2><p><em>Topic modeling</em> refere-se a uma família de algoritmos de aprendizado de máquina não supervisionado destinados a descobrir estruturas temáticas latentes em grandes coleções de documentos<sup class=footnote-reference id=fr-2-1><a href=#fn-2>2</a></sup>. Tradicionalmente, métodos como <em>Latent Dirichlet Allocation</em> (LDA) dominam o campo, modelando documentos como misturas probabilísticas de tópicos.<p>BERTopic, introduzido por Grootendorst<sup class=footnote-reference id=fr-3-1><a href=#fn-3>3</a></sup>, representa uma evolução significativa nessa área, combinando embeddings de linguagem pré-treinados com técnicas de clustering para criar representações de tópicos mais coerentes e interpretáveis. O algoritmo segue uma pipeline modular:<ol><li><p>Geração de Embeddings: Utilização de modelos de linguagem pré-treinados (BERT, Sentence-BERT) para criar representações vetoriais densas dos documentos.</p><li><p>Redução Dimensional: Aplicação de <em>Uniform Manifold Approximation and Projection</em> (UMAP) para reduzir a dimensionalidade dos embeddings, preservando estruturas locais e globais<sup class=footnote-reference id=fr-4-1><a href=#fn-4>4</a></sup>.</p><li><p>Clustering: Uso de <em>Hierarchical Density-Based Spatial Clustering of Applications with Noise</em> (HDBSCAN) para identificar clusters de documentos semanticamente similares<sup class=footnote-reference id=fr-5-1><a href=#fn-5>5</a></sup>.</p><li><p>Representação de Tópicos: Extração de palavras representativas através de <em>class-based TF-IDF</em> (c-TF-IDF), uma variação do TF-IDF tradicional<sup class=footnote-reference id=fr-6-1><a href=#fn-6>6</a></sup> adaptada para contextos de clustering<sup class=footnote-reference id=fr-3-2><a href=#fn-3>3</a></sup>.</p></ol><h2 id=processamento-de-linguagem-natural-em-portugues>Processamento de Linguagem Natural em Português</h2><p>O processamento de textos em português apresenta desafios específicos relacionados à morfologia rica da língua<sup class=footnote-reference id=fr-7-1><a href=#fn-7>7</a></sup>, incluindo conjugações verbais complexas, concordância de gênero e número, e uso extensivo de clíticos. Para este trabalho, utilizou-se o modelo spaCy <code>pt_core_news_lg</code>, treinado especificamente para português brasileiro, oferecendo capacidades de tokenização, lematização, análise morfossintática e reconhecimento de entidades nomeadas<sup class=footnote-reference id=fr-8-1><a href=#fn-8>8</a></sup>.<h1 id=fundamentos-matematicos-dos-algoritmos>Fundamentos Matemáticos dos Algoritmos</h1><h2 id=processamento-linguistico-com-spacy>Processamento Linguístico com spaCy</h2><p>O spaCy implementa um pipeline de processamento linguístico baseado em redes neurais convolucionais (CNN). As principais operações realizadas são:<ul><li><p><strong>Tokenização:</strong> Segmentação do texto em tokens utilizando regras linguísticas específicas do português e padrões de expressões regulares. Cada documento \(D\) é transformado em uma sequência de tokens \(T = {t_1, t_2, ..., t_n}\).</p><li><p><strong>Lematização:</strong> Redução de cada token à sua forma canônica (lema) através de um modelo estatístico treinado. Para cada token \(t_i\), a lematização mapeia \(\text{lemma}(t_i) = l_i\), onde \(l_i\) representa a forma base da palavra, removendo flexões verbais, plurais e outras variações morfológicas.</p><li><p><strong>Part-of-Speech (POS) Tagging:</strong> O spaCy utiliza uma rede neural convolucional para classificar cada token em categorias gramaticais. A probabilidade de um token \(t_i\) pertencer à classe POS \(c_j\) é calculada através de \(P(c_j \mid t_i) = \text{softmax}(\mathbf{W} \cdot \text{CNN}(t_i) + \mathbf{b})_j\), onde \(\mathbf{W}\) são os pesos da camada de classificação, \(\text{CNN}(t_i)\) é a representação vetorial do token, e \(\mathbf{b}\) é o vetor de bias.</p></ul><h2 id=term-frequency-inverse-document-frequency-tf-idf>Term Frequency-Inverse Document Frequency (TF-IDF)</h2><p>O TF-IDF é uma medida estatística que avalia a importância de um termo em um documento dentro de um corpus. É calculado como o produto de duas componentes:<p><strong>Frequência do Termo (TF):</strong><p>\[ \text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t' \in d} f_{t',d}} \]<p>onde \(f_{t,d}\) é a frequência bruta do termo \(t\) no documento \(d\).<p><strong>Frequência Inversa de Documento (IDF):</strong><p>\[ \text{IDF}(t, D) = \log\left(\frac{N}{\mid{d \in D : t \in d}\mid}\right) \]<p>onde \(N\) é o número total de documentos e \(\mid{d \in D : t \in d}\mid\) é o número de documentos contendo o termo \(t\).<p>O TF-IDF final, é, portanto, obtido com \(\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)\). Esta métrica penaliza termos muito frequentes (como stopwords) e valoriza termos distintivos de documentos específicos.<h2 id=embeddings-semanticos-sentence-transformers>Embeddings Semânticos (Sentence-Transformers)</h2><p>O modelo <code>paraphrase-multilingual-mpnet-base-v2</code> utiliza uma arquitetura transformer<sup class=footnote-reference id=fr-9-1><a href=#fn-9>9</a></sup> com mean pooling para gerar representações vetoriais densas de sentenças. Para uma sequência de entrada \(\mathbf{X} = [\mathbf{x}_1, ..., \mathbf{x}_n]\), o mecanismo de atenção multi-cabeças calcula:<p>\[ \text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V} \]<p>onde \(\mathbf{Q}\) (queries), \(\mathbf{K}\) (keys) e \(\mathbf{V}\) (values) são projeções lineares da entrada, e \(d_k\) é a dimensão das keys.<p>A representação final do documento é obtida pela média das representações de todos os tokens,<p>\[ \mathbf{e}_d = \frac{1}{n}\sum_{i=1}^{n} \mathbf{h}_i \]<p>onde \(\mathbf{h}_i\) é a representação contextualizada do token \(i\) na última camada do transformer, e \(\mathbf{e}_d \in \mathbb{R}^{384}\) é o embedding final do documento.<h1 id=metodologia>Metodologia</h1><h2 id=arquitetura-do-sistema>Arquitetura do Sistema</h2><p>O sistema desenvolvido implementa uma arquitetura modular baseada em pipeline, organizada em cinco estágios distintos que correspondem às fases da metodologia de Bardin adaptadas ao contexto computacional:</p><script src=https://rodolfoviana.com.br/js/mermaid.js></script><pre class=mermaid>
+  stateDiagram-v2
+    [*] --> Coleta
+    
+    Coleta: Coleta de dados
+    state Coleta {
+        [*] --> CriaDB
+        CriaDB --> Pagina
+        Pagina --> ExtraiMeta
+        ExtraiMeta --> Normaliza
+        Normaliza --> SalvaDB
+        Normaliza --> SalvaJSON
+        SalvaDB --> [*]
+        SalvaJSON --> [*]
+        
+        CriaDB: Cria database vazio
+        Pagina: Requisição HTTP com paginação e retry
+        ExtraiMeta: Extrai metadados JSON da API
+        Normaliza: Normaliza valores
+        SalvaDB: Salva metadados no database relacional
+        SalvaJSON: Salva backup de metadados em JSON
+    }
+    
+    Coleta --> Preprocessamento
+    
+    Preprocessamento: Pré-processamento
+    state Preprocessamento {
+        [*] --> CarregaDB
+        CarregaDB --> DetectaLingua
+        DetectaLingua --> FiltraPortugues
+        FiltraPortugues --> LimpezaTexto
+        LimpezaTexto --> Vetorizacao
+        Vetorizacao --> SalvaCorpus
+        SalvaCorpus --> [*]
+        
+        CarregaDB: Carrega TCCs do database
+        DetectaLingua: Detecta idioma com confiança
+        FiltraPortugues: Filtra apenas português
+        LimpezaTexto: Tokenização + Lematização + Remoção de stopwords
+        Vetorizacao: Cria matriz TF-IDF (unigramas, bigramas, trigramas)
+        SalvaCorpus: Salva corpus processado + vetorizador
+    }
+    
+    Preprocessamento --> PreAnalise
+    
+    PreAnalise: FASE 1 BARDIN - Pré-análise
+    state PreAnalise {
+        [*] --> CarregaCorpus1
+        CarregaCorpus1 --> EstatisticasDesc
+        EstatisticasDesc --> AnaliseTemp
+        EstatisticasDesc --> AnaliseGeo
+        EstatisticasDesc --> AnaliseLex
+        AnaliseTemp --> GeraViz1
+        AnaliseGeo --> GeraViz1
+        AnaliseLex --> GeraViz1
+        GeraViz1 --> GeraRelat1
+        GeraRelat1 --> [*]
+        
+        CarregaCorpus1: Carrega corpus processado
+        EstatisticasDesc: Calcula estatísticas descritivas
+        AnaliseTemp: Distribuição temporal por ano/curso
+        AnaliseGeo: Distribuição por campus e curso
+        AnaliseLex: Frequência de palavras e vocabulário
+        GeraViz1: Gera visualizações
+        GeraRelat1: Gera relatório textual de pré-análise
+    }
+    
+    PreAnalise --> TopicModeling
+    
+    TopicModeling: FASE 2 BARDIN - Exploração do Material
+    state TopicModeling {
+        [*] --> CarregaCorpus2
+        CarregaCorpus2 --> GeraEmbeddings
+        GeraEmbeddings --> ReducaoDim
+        ReducaoDim --> Clustering
+        Clustering --> ExtraiTopicos
+        ExtraiTopicos --> AtribuiTopicos
+        AtribuiTopicos --> GeraViz2
+        GeraViz2 --> SalvaModelo
+        SalvaModelo --> [*]
+        
+        CarregaCorpus2: Carrega corpus processado
+        GeraEmbeddings: Gera embeddings semânticos dos documentos
+        ReducaoDim: Redução dimensional com UMAP (5D, cosine)
+        Clustering: Clustering hierárquico com HDBSCAN
+        ExtraiTopicos: Extrai palavras-chave com c-TF-IDF
+        AtribuiTopicos: Atribui tópico a cada documento
+        GeraViz2: Gera visualizações
+        SalvaModelo: Salva modelo + corpus com tópicos
+    }
+    
+    TopicModeling --> Interpretacao
+    
+    Interpretacao: FASE 3 BARDIN - Interpretação
+    state Interpretacao {
+        [*] --> CarregaTopicos
+        CarregaTopicos --> AnaliseTemporal
+        CarregaTopicos --> AnaliseGeografica
+        CarregaTopicos --> AnaliseCurso
+        AnaliseTemporal --> IdentTendencias
+        IdentTendencias --> TestaSignificancia
+        AnaliseGeografica --> TestaSignificancia
+        AnaliseCurso --> SinteseInterpret
+        TestaSignificancia --> SinteseInterpret
+        SinteseInterpret --> GeraViz3
+        GeraViz3 --> GeraRelat3
+        GeraRelat3 --> [*]
+        
+        CarregaTopicos: Carrega corpus com tópicos + modelo
+        AnaliseTemporal: Agrupa por ano + tópico
+        IdentTendencias: Regressão linear (emergentes/declinantes)
+        AnaliseGeografica: Matriz contingência campus×tópico
+        TestaSignificancia: Teste chi-square de independência
+        AnaliseCurso: Análise de tópicos por curso específico
+        SinteseInterpret: Cruza análises temporais + geográficas
+        GeraViz3: Gera visualizações
+        GeraRelat3: Gera relatório interpretativo final
+    }
+    
+    Interpretacao --> [*]
+</pre><script>if (typeof mermaid !== 'undefined' && !window.mermaidInitialized) {
+	window.mermaidInitialized = true;
+	mermaid.initialize({
+		startOnLoad: true,
+		theme: 'dark',
+		themeVariables: {
+			darkMode: true,
+			fontFamily: 'monospace',
+			fontSize: '14px',
+		},
+	});
+}</script><h2 id=coleta-de-dados>Coleta de Dados</h2><p>A coleta de dados foi realizada através da API do repositório institucional da Unesp, implementando-se um cliente HTTP com tratamento de erros e retry automático. Utilizamos exclusivamente os resumos dos trabalhos. Os parâmetros de busca incluíram:<ul><li><strong>Tipo de documento:</strong> "Trabalho de conclusão de curso"<li><strong>Idioma:</strong> Português (por)<li><strong>Período:</strong> 2015-2024<li><strong>Campos extraídos:</strong> UUID, handle, título, resumo, data de publicação, campus, curso, autores, orientadores, palavras-chave</ul><figure style="width:85%;max-width:85%;height:auto;margin:0 auto;display:block"><img style="border:5px solid #ef5350" src=./temporal_distribution.png><figcaption style=color:#555;margin-top:1px;font-size:.8em;line-height:1.5>Distribuição temporal dos TCCs coletados</figcaption></figure><p>O processo resultou na coleta de 13.213 documentos, armazenados em banco de dados SQLite com esquema normalizado para garantir integridade referencial. Destes, 13.112 possuem resumos e títulos em português, e puderam ser utilizados neste estudo.<h1 id=referencias>Referências</h1><section class=footnotes><ol class=footnotes-list><li id=fn-1><p>BARDIN, L. <em>Análise de conteúdo</em>. São Paulo: Edições 70, 2016. <a href=#fr-1-1>↩</a> <a href=#fr-1-2>↩2</a></p><li id=fn-2><p>BLEI, D. M.; NG, A. Y.; JORDAN, M. I. "Latent Dirichlet Allocation". <em>Journal of Machine Learning Research</em>, vol. 3, 993-1022, 2003. <a href=#fr-2-1>↩</a></p><li id=fn-3><p>GROOTENDORST, M. "BERTopic: Neural topic modeling with a class-based TF-IDF procedure". 10.48550/arXiv.2203.05794, 2022. <a href=#fr-3-1>↩</a> <a href=#fr-3-2>↩2</a></p><li id=fn-4><p>McINNES, L.; HEALY, J.; MELVILLE, J. "UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction". arXiv preprint arXiv:1802.03426, 2018. <a href=#fr-4-1>↩</a></p><li id=fn-5><p>CAMPELLO, R. J. G. B.; MOULAVI, D.; SANDER, J. "Density-Based Clustering Based on Hierarchical Density Estimates". In: <em>Advances in Knowledge Discovery and Data Mining. PAKDD 2013. Lecture Notes in Computer Science</em>, vol. 7819. Berlim, Heidelberg: Springer, 2013. <a href=#fr-5-1>↩</a></p><li id=fn-6><p>SALTON, G.; BUCKLEY, C. "Term-weighting approaches in automatic text retrieval". <em>Information Processing & Management</em>, vol. 24, no. 5, pp. 513-523, 1988. <a href=#fr-6-1>↩</a></p><li id=fn-7><p>AIRES, R. V. X. <em>Implementação, adaptação, combinação e avaliação de etiquetadores para o português do Brasil</em>. Dissertação (Mestrado). Universidade de São Paulo, São Carlos, 2000. <a href=#fr-7-1>↩</a></p><li id=fn-8><p>HONNIBAL, M.; MONTANI, I.; VAN LANDEGHEM, S.; BOYD, A. "spaCy: Industrial-strength Natural Language Processing in Python". Zenodo. https://doi.org/10.5281/zenodo.1212303, 2020. <a href=#fr-8-1>↩</a></p><li id=fn-9><p>VASWANI, A.; SHAZEER, N.; PARMAR, N.; USZKOREIT, J.; JONES, L.; GOMEZ, A. N.; KAISER, Ł.; POLOSUKHIN, I. "Attention is all you need". In: <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, vol. 30, pp. 5998-6008, 2017. <a href=#fr-9-1>↩</a></p></ol></section></section></article></main><footer class=footer><div class=footer-content><div class=footer-left>© 2025 Rodolfo Viana</div><div class=footer-right>Feito com <a href=https://www.getzola.org/ rel=noopener target=_blank>Zola</a>, <a href=https://github.com/not-matthias/apollo rel=noopener target=_blank>Apollo</a></div></div></footer></div>
