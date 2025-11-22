@@ -2,7 +2,7 @@
 title = "Análise comparativa de arquiteturas U-Net para segmentação de pólipo em colonoscopia"
 description = "Versão editada de artigo escrito para a disciplina Aprendizado Profundo, do Prof. Dr. Denis Henrique Pinheiro Salvadeo, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp"
 date = "2025-11-13"
-weight = 1
+weight = 7
 
 [taxonomies]
 tags=["aprendizado de máquina", "u-net", "redes neurais", "medicina"]

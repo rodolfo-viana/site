@@ -83,7 +83,7 @@ code {
     font-variant-ligatures: none;
 }
 
-pre {
+pre:not(.mermaid) {
     background-color: var(--bg-primary) !important;
     border-radius: 0px;
     border: 1px solid var(--border-color);

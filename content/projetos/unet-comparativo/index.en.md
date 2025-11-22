@@ -2,7 +2,7 @@
 title = "Comparative Analysis of U-Net Architectures for Polyp Segmentation in Colonoscopy"
 description = "Edited version of a paper written for the Deep Learning course, taught by Prof. Denis Henrique Pinheiro Salvadeo, PhD., in the master's program of the Graduate Program in Computer Science at Unesp"
 date = "2025-11-13"
-weight = 1
+weight = 7
 
 [taxonomies]
 tags=["machine learning", "u-net", "neural networks", "medicine"]
