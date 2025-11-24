@@ -108,6 +108,71 @@ A representação final do documento é obtida pela média das representações 
 
 onde \\(\mathbf{h}\_i\\) é a representação contextualizada do token \\(i\\) na última camada do transformer, e \\(\mathbf{e}\_d \in \mathbb{R}^{384}\\) é o embedding final do documento.
 
+## Uniform Manifold Approximation and Projection (UMAP)
+
+O UMAP reduz a dimensionalidade dos embeddings preservando estruturas topológicas locais e globais. O algoritmo baseia-se na teoria de variedades Riemannianas e topologia algébrica[^4]. Para cada ponto \\(x\_i\\), define-se uma distância normalizada aos \\(k\\) vizinhos mais próximos,
+
+\\[
+  d\_i(x\_i, x\_j) = \max\left(0, \frac{\mid x\_i - x\_j\mid - \rho\_i}{\sigma\_i}\right)
+\\]
+
+onde \\(\rho_i\\) é a distância ao vizinho mais próximo e \\(\sigma\_i\\) é um fator de normalização.
+
+A probabilidade de conexão entre \\(x\_i\\) e \\(x\_j\\) no espaço de alta dimensão é
+
+\\[
+  w\_{ij} = \exp(-d\_i(x\_i, x\_j))
+\\]
+
+O UMAP minimiza a divergência de entropia cruzada entre os grafos de alta e baixa dimensão via
+
+\\[
+  \mathcal{L} = \sum_{i,j} w\_{ij} \log\left(\frac{w\_{ij}}{v\_{ij}}\right) + (1-w\_{ij})\log\left(\frac{1-w\_{ij}}{1-v\_{ij}}\right)
+\\]
+
+onde \\(v\_{ij}\\) são os pesos no espaço de baixa dimensão, calculados analogamente.
+
+
+## Hierarchical DBSCAN (HDBSCAN)
+
+O HDBSCAN é um algoritmo de clustering hierárquico baseado em densidade que identifica clusters de diferentes densidades e tamanhos[^5]. Para dois pontos \\(x\_i\\) e \\(x\_j\\), a distância de alcance mútua é definida como
+
+\\[
+  d\_{\text{mreach}-k}(x\_i, x\_j) = \max\{\text{core}\_k(x\_i), \text{core}\_k(x\_j), d(x\_i, x\_j)\}
+\\]
+
+onde \\(\text{core}\_k(x\_i)\\) é a distância ao \\(k\\)-ésimo vizinho mais próximo de \\(x\_i\\) (com \\(k\\) = `min_cluster_size`).
+
+O algoritmo constrói uma árvore de spanning mínima (MST) sobre o grafo completo com pesos \\(d\_{\text{mreach}-k}\\). A MST minimiza
+
+\\[
+  \sum\_{(i,j) \in \text{MST}} d\_{\text{mreach}-k}(x\_i, x\_j)
+\\]
+
+Em seguida, remove-se iterativamente arestas da MST em ordem decrescente de peso, criando uma hierarquia de clusters. Para cada nível \\(\epsilon\\), um cluster é estável se sua "persistência" (número de pontos multiplicado pelo tempo de vida) é alta.
+
+O método Excess of Mass (EOM) seleciona clusters que maximizam:
+
+\\[
+  \text{Estabilidade}(C) = \sum\_{x\_i \in C} (\lambda\_{x_i} - \lambda\_{\text{birth}})
+\\]
+
+onde \\(\lambda = 1/\epsilon\\) é o parâmetro de densidade inversa, e \\(\lambda\_{\text{birth}}\\) é a densidade quando o cluster nasce na hierarquia.
+
+Pontos que não pertencem a nenhum cluster estável são classificados como outliers.
+
+## Class-based TF-IDF (c-TF-IDF)
+
+O BERTopic utiliza uma variação do TF-IDF tradicional adaptada para contexto de clusters. Enquanto o TF-IDF tradicional opera em nível de documento, o c-TF-IDF trata cada cluster como um único "documento":
+
+\\[
+  W\_{t,c} = tf\_{t,c} \times \log\left(\frac{m}{df\_t}\right)
+\\]
+
+onde \\(W\_{t,c}\\) é peso do termo \\(t\\) no cluster \\(c\\), \\(tf\_{t,c}\\) é a soma das frequências do termo em todos os documentos do cluster, \\(m\\) é o número total de clusters, e \\(df\_t\\) é número de clusters contendo o termo \\(t\\).
+
+Esta abordagem permite extrair termos que são distintivos de cada cluster, gerando representações interpretáveis dos tópicos identificados.
+
 # Metodologia
 
 ## Arquitetura do Sistema
@@ -253,6 +318,60 @@ A coleta de dados foi realizada através da API do repositório institucional da
 </figure>
 
 O processo resultou na coleta de 13.213 documentos, armazenados em banco de dados SQLite com esquema normalizado para garantir integridade referencial. Destes, 13.112 possuem resumos e títulos em português, e puderam ser utilizados neste estudo.
+
+## Implementação das Fases de Bardin
+
+### Pré-Análise
+
+A pré-análise computacional incluiu:
+
+- **Estatísticas Descritivas:** Total de documentos, período temporal, distribuição por campus/curso
+- **Análise Exploratória:** Visualizações de distribuições temporais, geográficas e disciplinares
+- **Nuvem de Palavras:** Representação visual das palavras mais frequentes no corpus
+
+### Exploração do Material
+
+A modelagem de tópicos foi realizada através do BERTopic com os seguintes hiperparâmetros:
+
+**Embeddings:**
+
+- Modelo: `paraphrase-multilingual-mpnet-base-v2`
+- Dimensão: 384
+
+**UMAP:**
+
+- `n_neighbors` = 15
+- `n_components` = 5
+- `min_dist` = 0.0
+- `metric` = 'cosine'
+
+**HDBSCAN:**
+
+- `min_cluster_size` = 10
+- `metric` = 'euclidean'
+- `cluster_selection_method` = 'eom'
+
+### Tratamento e Interpretação
+
+A interpretação dos resultados envolveu três análises principais:
+
+1. Análise Temporal: Identificação de tendências através de regressão linear para cada tópico. O coeficiente normalizado é calculado como
+
+\\[
+  \beta\_{norm} = \frac{\beta\_1}{\bar{y}}
+\\]
+
+O sistema classifica os tópicos com base no coeficiente normalizado para identificar tendências emergentes, estáveis ou declinantes.
+
+2. Análise Geográfica: teste qui-quadrado de independência entre campus e tópico:
+
+\\[
+  \chi^2 = \sum\_{i,j} \frac{(O\_{ij} - E\_{ij})^2}{E\_{ij}}
+\\]
+
+onde \\(O\_{ij}\\) é a frequência observada e \\(E\_{ij}\\) é a frequência esperada sob a hipótese de independência.
+
+3. Análise por Curso: Identificação dos tópicos predominantes em cada programa de graduação através de análise de frequências relativas.
 
 # Referências
 
