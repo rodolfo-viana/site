@@ -138,7 +138,7 @@ onde \\(v\_{ij}\\) são os pesos no espaço de baixa dimensão, calculados analo
 O HDBSCAN é um algoritmo de clustering hierárquico baseado em densidade que identifica clusters de diferentes densidades e tamanhos[^5]. Para dois pontos \\(x\_i\\) e \\(x\_j\\), a distância de alcance mútua é definida como
 
 \\[
-  d\_{\text{mreach}-k}(x\_i, x\_j) = \max\left\{\text{core}\_k(x\_i), \text{core}\_k(x\_j), d(x\_i, x\_j)\right\}
+  d\_{\text{mreach}-k}(x\_i, x\_j) = \max \left\\{ \text{core}\_k(x\_i), \text{core}\_k(x\_j), d(x\_i, x\_j) \right\\}
 \\]
 
 onde \\(\text{core}\_k(x\_i)\\) é a distância ao \\(k\\)-ésimo vizinho mais próximo de \\(x\_i\\) (com \\(k\\) = `min_cluster_size`).
