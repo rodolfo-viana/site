@@ -113,7 +113,7 @@ onde \\(\mathbf{h}\_i\\) é a representação contextualizada do token \\(i\\) n
 O UMAP reduz a dimensionalidade dos embeddings preservando estruturas topológicas locais e globais. O algoritmo baseia-se na teoria de variedades Riemannianas e topologia algébrica[^4]. Para cada ponto \\(x\_i\\), define-se uma distância normalizada aos \\(k\\) vizinhos mais próximos,
 
 \\[
-  d\_i(x\_i, x\_j) = \max\left(0, \frac{\left\| x\_i - x\_j\right\| - \rho\_i}{\sigma\_i}\right)
+  d\_i(x\_i, x\_j) = \max\left(0, \frac{\Vert x\_i - x\_j \Vert - \rho\_i}{\sigma\_i}\right)
 \\]
 
 onde \\(\rho_i\\) é a distância ao vizinho mais próximo e \\(\sigma\_i\\) é um fator de normalização.
