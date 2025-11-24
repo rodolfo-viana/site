@@ -113,7 +113,7 @@ onde \\(\mathbf{h}\_i\\) é a representação contextualizada do token \\(i\\) n
 O UMAP reduz a dimensionalidade dos embeddings preservando estruturas topológicas locais e globais. O algoritmo baseia-se na teoria de variedades Riemannianas e topologia algébrica[^4]. Para cada ponto \\(x\_i\\), define-se uma distância normalizada aos \\(k\\) vizinhos mais próximos,
 
 \\[
-  d\_i(x\_i, x\_j) = \max\left(0, \frac{\mid x\_i - x\_j\mid - \rho\_i}{\sigma\_i}\right)
+  d\_i(x\_i, x\_j) = \max\left(0, \frac{\left\| x\_i - x\_j\right\| - \rho\_i}{\sigma\_i}\right)
 \\]
 
 onde \\(\rho_i\\) é a distância ao vizinho mais próximo e \\(\sigma\_i\\) é um fator de normalização.
@@ -138,7 +138,7 @@ onde \\(v\_{ij}\\) são os pesos no espaço de baixa dimensão, calculados analo
 O HDBSCAN é um algoritmo de clustering hierárquico baseado em densidade que identifica clusters de diferentes densidades e tamanhos[^5]. Para dois pontos \\(x\_i\\) e \\(x\_j\\), a distância de alcance mútua é definida como
 
 \\[
-  d\_{\text{mreach}-k}(x\_i, x\_j) = \max\{\text{core}\_k(x\_i), \text{core}\_k(x\_j), d(x\_i, x\_j)\}
+  d\_{\text{mreach}-k}(x\_i, x\_j) = \max\left\{\text{core}\_k(x\_i), \text{core}\_k(x\_j), d(x\_i, x\_j)\right\}
 \\]
 
 onde \\(\text{core}\_k(x\_i)\\) é a distância ao \\(k\\)-ésimo vizinho mais próximo de \\(x\_i\\) (com \\(k\\) = `min_cluster_size`).
