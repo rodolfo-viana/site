@@ -373,6 +373,383 @@ onde \\(O\_{ij}\\) é a frequência observada e \\(E\_{ij}\\) é a frequência e
 
 3. Análise por Curso: Identificação dos tópicos predominantes em cada programa de graduação através de análise de frequências relativas.
 
+# Resultados e Discussão
+
+## Estatísticas Gerais do Corpus
+
+A análise do corpus revelou as seguintes características:
+
+- **Total de documentos processados:** 13.112
+- **Período temporal:** 2015-2024
+- **Campi únicos:** 27
+- **Cursos únicos:** 64
+- **Autores únicos:** 13.356
+- **Orientadores únicos:** 4.605
+
+A distribuição temporal dos TCCs mostra um crescimento significativo a partir de 2021, com picos em 2023 (2.771 documentos) e 2024 (2.311 documentos), sugerindo melhorias no processo de submissão ao repositório institucional.
+
+Os cinco principais institutos/faculdades em termos de produção foram:
+
+1. **Instituto de Biociências:** 2.209 TCCs
+2. **Faculdade de Engenharia:** 2.083 TCCs
+3. **Faculdade de Arquitetura, Artes, Comunicação e Design:** 1.037 TCCs
+4. **Faculdade de Odontologia:** 1031 TCCs
+5. **Instituto de Geociências e Ciências Exatas:** 1005 TCCs
+
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./campus_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição de TCCs pelos principais campi da Unesp
+  </figcaption>
+</figure>
+
+Os cursos com maior produção foram:
+
+1. **Ciências Biológicas:** 1.249 TCCs
+2. **Odontologia:** 1.208 TCCs
+3. **Educação Física:** 701 TCCs
+4. **Geografia:** 610 TCCs
+5. **Engenharia Agronômica:** 593 TCCs
+6. **Pedagogia:** 562 TCCs
+7. **Engenharia Mecânica:** 510 TCCs
+8. **Medicina Veterinária:** 425 TCCs
+9. **Comunicação: Rádio, Tv e Internet:** 394 TCCs
+10. **Engenharia Ambiental:** 377 TCCs
+
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./course_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Top 20 cursos por número de TCCs produzidos
+  </figcaption>
+</figure>
+
+## Identificação e Caracterização de Tópicos
+
+O modelo BERTopic identificou 188 tópicos distintos, cobrindo 66,1% do corpus (8.661 documentos). Os documentos restantes (33,9%) foram classificados como outliers (tópico -1), indicando conteúdo muito específico ou interdisciplinar que não se agrupa claramente.
+
+Os 10 tópicos mais prevalentes foram:
+
+| Tópico | Documentos | Palavras-chave                              | Área Temática        |
+| ------ | ---------- | ------------------------------------------- | -------------------- |
+| 0      | 527        | arte, artístico, artista, teatro            | Artes                |
+| 1      | 381        | planta, produtividade, soja, dose           | Agronomia            |
+| 2      | 344        | urbano, cidade, espaço, bairro              | Geografia Urbana     |
+| 3      | 190        | empresa, lean, melhoria, gestão             | Administração        |
+| 4      | 190        | pandemia, covid, covid 19                   | Saúde Pública        |
+| 5      | 167        | educação, escola, ensino, professor         | Educação             |
+| 6      | 160        | rocha, depósito, mineral, mina              | Geologia             |
+| 7      | 159        | musical, música, compositor                 | Música               |
+| 8      | 139        | câncer, célula, tumoral, tumor              | Oncologia            |
+| 9      | 131        | ósseo, óssea, zol, rata                     | Odontologia/Medicina |
+
+{% note(clickable=true, hidden=true, header="Veja todos os tópicos") %}
+
+| topico | quantidade_trabalhos | label_topico |
+| ---: | ---- | ---- |
+| -1 | 4451 | -utilizar realizar apresentar dado |
+| 0 | 527 | arte artístico artista teatro |
+| 1 | 381 | planta produtividade soja dose |
+| 2 | 344 | urbano cidade espaço bairro |
+| 3 | 190 | empresa lean melhoria gestão |
+| 4 | 190 | pandemia covid covid 19 |
+| 5 | 167 | educação escola ensino professor |
+| 6 | 160 | rocha depósito mineral mina |
+| 7 | 159 | musical música compositor educação musical |
+| 8 | 139 | câncer célula tumoral tumor |
+| 9 | 131 | ósseo óssea zol rata |
+| 10 | 127 | espécie conservação biodiversidade paisagem |
+| 11 | 127 | propriedade material filme síntese |
+| 12 | 120 | aço usinagem corte alumínio |
+| 13 | 117 | construção construção civil civil concreto |
+| 14 | 115 | biofilme extrato cepa antimicrobiano |
+| 15 | 97 | ciência ensino científico didático |
+| 16 | 95 | educação ambiental ambiental educação natureza |
+| 17 | 94 | fotovoltaico energia solar elétrico |
+| 18 | 92 | toxicidade concentração metal efluente |
+| 19 | 83 | quântico partícula equação teoria |
+| 20 | 82 | geografia ensino geografia ensino geográfico |
+| 21 | 82 | biogás biodiesel metano biomassa |
+| 22 | 79 | resina cor espécime rugosidade |
+| 23 | 78 | aerodinâmico aeronave escoamento voo |
+| 24 | 78 | água hídrico bacia recurso hídrico |
+| 25 | 78 | energia elétrico energia elétrico energético |
+| 26 | 77 | doença cruzi chaga leishmaniose |
+| 27 | 75 | sexualidade gênero sexual mulher |
+| 28 | 74 | espécie gênero família morfológico |
+| 29 | 73 | paciente saúde enfermeiro internação |
+| 30 | 72 | rural agricultura agricultor familiar |
+| 31 | 70 | jurídico penal direito justiça |
+| 32 | 70 | financeiro mercado carteira investimento |
+| 33 | 68 | rata espermatozoide materno gestacional |
+| 34 | 68 | criança infantil brincar educação infantil |
+| 35 | 67 | paciente dente oclusão fratura |
+| 36 | 63 | jornalismo documentário reportagem fotografia |
+| 37 | 63 | radiação radioterapia dose feixe |
+| 38 | 62 | país econômico china latino |
+| 39 | 62 | resíduo resíduo sólido sólido resíduo sólir |
+| 40 | 60 | leitura escrita criança infantil |
+| 41 | 59 | mulher feminino feminismo feminista |
+| 42 | 53 | elétrico rede distribuição energia |
+| 43 | 52 | dança educação físico ginástica físico |
+| 44 | 52 | físico atividade físico exercício exercício físico |
+| 45 | 51 | cão cirúrgico clínico urinário |
+| 46 | 50 | futebol jogador partida jogo |
+| 47 | 50 | matemática matemático aluno ensino |
+| 48 | 49 | veterinário estágio veterinária estágio curricular |
+| 49 | 47 | vaca leiteiro leite nacional internacional |
+| 50 | 46 | esmalte naf tmp dentifrício |
+| 51 | 44 | empresa negócio inovação startup |
+| 52 | 44 | carne frango ave peso |
+| 53 | 44 | veterinário estágio estágio curricular medicina veterinário |
+| 54 | 43 | peixe tilápia filé crescimento |
+| 55 | 42 | comunicação público comunicação público bauru |
+| 56 | 42 | cromossomo dna sequência genoma |
+| 57 | 41 | atleta esporte ansiedade esportivo |
+| 58 | 41 | professor afetividade aprendizagem aluno |
+| 59 | 40 | cana açúcar cana açúcar cultivar |
+| 60 | 39 | pesca espécie litoral encalhe |
+| 61 | 38 | esporte educação físico esportivo atletismo |
+| 62 | 37 | sorriso estético dente estética |
+| 63 | 37 | tensão simulação suspensão sae |
+| 64 | 37 | fungo inseto praga formiga |
+| 65 | 37 | ambiental empresa esg sustentabilidade |
+| 66 | 36 | arterial cardíaco cardiovascular doença cardiovascular |
+| 67 | 36 | tecnologia aluno aprendizagem aula |
+| 68 | 36 | violência mulher gênero obstétrico |
+| 69 | 36 | anel órbita orbital satélite |
+| 70 | 35 | fogo cerrado queimar queima |
+| 71 | 35 | jogo jogo eletrônico game eletrônico |
+| 72 | 34 | transporte rodovia rodoviário aviação |
+| 73 | 34 | parkinson andar doença parkinson postural |
+| 74 | 34 | enzima lipase enzimático lacase |
+| 75 | 33 | semente dispersão ave espécie |
+| 76 | 33 | lignina etanol celulose biomassa |
+| 77 | 33 | estresse ansiedade depressão resposta |
+| 78 | 33 | eucalipto altura árvore genótipo |
+| 79 | 32 | obesidade obeso exercício exercício físico |
+| 80 | 32 | extrato medicinal the planta |
+| 81 | 31 | automação dispositivo automação residencial internet |
+| 82 | 31 | periodontal periodontite doença periodontal doença |
+| 83 | 31 | disponível disponível disponível   |
+| 84 | 31 | deficiência inclusivo deficiência visual aluno |
+| 85 | 30 | reconhecimento voz biométrico reconhecimento facial |
+| 86 | 30 | odontologia odontológico bucal dentista |
+| 87 | 29 | compósito fadiga aeronáutico material |
+| 88 | 29 | turístico turismo evento turista |
+| 89 | 29 | liga titânio superfície implante |
+| 90 | 29 | certificação construção sustentável ecotécnica |
+| 91 | 29 | violência bullying escolar violência escolar |
+| 92 | 29 | carne queijo bovino animal |
+| 93 | 28 | tea autista espectro autista transtorno espectro |
+| 94 | 28 | ninho reprodutivo ave ovo |
+| 95 | 28 | dor lombar dor lombar tronco |
+| 96 | 28 | hepatite hiv aids sífilis |
+| 97 | 26 | climático coemissão mudança climático |
+| 98 | 26 | ataque detecção aprendizado máquina malicioso |
+| 99 | 26 | yoga marcial prática yoga prática |
+| 100 | 26 | disponível disponível disponível   |
+| 101 | 26 | rede social meme social comunicação |
+| 102 | 26 | design moda marca peça |
+| 103 | 26 | circuito tensão simulação fator potência |
+| 104 | 25 | negro racismo racial população negro |
+| 105 | 25 | educação físico físico docente ensino |
+| 106 | 25 | diabete mellitus diabete mellitus hemoglobina |
+| 107 | 25 | inundação alagamento suscetibilidade córrego |
+| 108 | 25 | madeira painel colagem destrutivo |
+| 109 | 24 | cannabis droga psicoativo substância |
+| 110 | 24 | imagem exame radiografia calcificação |
+| 111 | 23 | leite raça rebanho produção leite |
+| 112 | 23 | eclâmpsia endotelial pré eclâmpsia disfunção |
+| 113 | 23 | ambiental sustentável política sustentabilidade |
+| 114 | 23 | idoso envelhecimento flexibilidade andar |
+| 115 | 22 | código óptico canal ruído |
+| 116 | 22 | pfa resposta ventilatório neurônio |
+| 117 | 22 | restauração resina resina composta composta |
+| 118 | 21 | precipitação meteorológico chuva evento |
+| 119 | 21 | imagem rede neural neural classificação |
+| 120 | 21 | mta cimento tubo bio |
+| 121 | 21 | dengue mosquito aede aegypti |
+| 122 | 21 | muscular jmt músculo junção miotendíneo |
+| 123 | 21 | robô robótico manipulador cinemática |
+| 124 | 21 | cosmético produto pele formulação |
+| 125 | 20 | guerra conflito israel internacional |
+| 126 | 20 | luxo marca comunicação organização |
+| 127 | 20 | antena diretividade arranjo lóbulo |
+| 128 | 20 | inflamatório intestinal inflamatório intestinal tgi |
+| 129 | 19 | ozônio ozonizar mitocondrial água |
+| 130 | 19 | muscular treinamento hipertrofia força |
+| 131 | 18 | hepático fígado fitossanitário metabolismo |
+| 132 | 18 | tfd fotodinâmico terapia fotodinâmico azul |
+| 133 | 18 | implante peri prótese paciente |
+| 134 | 18 | aquífero água subterrâneo água subterrâneo |
+| 135 | 18 | abelha inseticida clferrão |
+| 136 | 17 | veneno serpente acidente toxina |
+| 137 | 17 | saneamento ambiental esgoto solo |
+| 138 | 17 | anti helmíntico helmíntico anti opg |
+| 139 | 17 | ácido butírico butírico carvacrol timol |
+| 140 | 17 | animal zoológico enriquecimento comportamento animal |
+| 141 | 17 | biologia ciência ensino ciência biologia |
+| 142 | 17 | africano afro racial afro brasileiro |
+| 143 | 17 | data nuvem centers dado |
+| 144 | 17 | eleitoral político partido eleição |
+| 145 | 17 | china exportação brasil importação |
+| 146 | 17 | idoso população idoso robô população |
+| 147 | 16 | nascido bebê recém nascido recém |
+| 148 | 16 | renal hemodiálise ira drc |
+| 149 | 16 | alimentar insegurança alimentar insegurança alimentação escolar |
+| 150 | 16 | radicular dente pino laser |
+| 151 | 16 | sono obstrutivo apneia obstrutivo sono |
+| 152 | 16 | aplicativo móvel tecnologia avc |
+| 153 | 16 | adesivo resistência união união pino |
+| 154 | 15 | erosão erosivo solo processo erosivo |
+| 155 | 15 | café cafeeiro planta cobertura solo |
+| 156 | 15 | criança adolescente adolescente acolhimento assistente social |
+| 157 | 15 | direito sucessório adoção família |
+| 158 | 15 | implante superfície implante superfície frequência ressonância |
+| 159 | 15 | plástico bioplástico microplástico pellet |
+| 160 | 15 | farmácia colorante recomendação farmácia vivo |
+| 161 | 14 | cimento sílica ativo hidrogel areia |
+| 162 | 14 | pe injeção rato indução |
+| 163 | 14 | citri cancro cítrico bactéria |
+| 164 | 14 | alfabetização estrangeiro texto pandemia |
+| 165 | 14 | manguezal coral recifes branqueamento |
+| 166 | 14 | futebol mulher esporte esportivo |
+| 167 | 14 | comunicação público corporativo comunicação reticular |
+| 168 | 13 | microhabitats animal fid comportamento |
+| 169 | 13 | surdo libra ivc sinal |
+| 170 | 13 | controlador realimentação lmi linear |
+| 171 | 13 | sinal fuso ecg eeg |
+| 172 | 13 | monetário crise política monetário inflação |
+| 173 | 13 | fascismo francês refugiado adorno |
+| 174 | 13 | calor trocador trocador calor transferência calor |
+| 175 | 12 | índice vegetação vegetação variabilidade espacial |
+| 176 | 12 | audiovisual produção pós produção produto audiovisual |
+| 177 | 12 | pele creme cutâneo óleo |
+| 178 | 12 | futebol aceleração atleta teste |
+| 179 | 12 | direito direito autoral jurídico propriedade intelectual |
+| 180 | 12 | vibração frequência filtro manutenção preditivo |
+| 181 | 12 | tuberculose mycobacterium mycobacterium tuberculosi tuberculosi |
+| 182 | 11 | algoritmo topologia radial fluxo potência |
+| 183 | 11 | resíduo gerenciamento resíduo resíduo sólido resíduo sólir |
+| 184 | 11 | pasto suplementação nitrogenar ruminal |
+| 185 | 10 | esporte basquetebol voleibol lance livre |
+| 186 | 10 | muscular músculo core crossfit |
+| 187 | 10 | câncer colo colo útero útero |
+
+{% end %}
+
+## Análise Temporal de Tópicos
+
+A análise temporal revelou padrões significativos de evolução dos tópicos ao longo do período estudado:
+
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./temporal_heatmap.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Heatmap da evolução temporal dos 20 principais tópicos
+  </figcaption>
+</figure>
+
+É possível, ainda, determinar tópicos emergentes e declinantes. Os tópicos identificados com maior crescimento incluem:
+
+1. **Tópico 182 (Algoritmos e Redes Elétricas):** Crescimento em otimização e topologia de sistemas elétricos
+2. **Tópico 60 (Pesca e Biodiversidade Marinha):** Crescimento em estudos de ecologia marinha e conservação costeira
+3. **Tópico 138 (Parasitologia Veterinária):** Crescimento em controle parasitário e saúde animal
+4. **Tópico 48 (Medicina Veterinária - Estágios):** Crescimento em formação prática e estágios curriculares
+5. **Tópico 187 (Câncer Ginecológico):** Crescimento em pesquisas sobre câncer de colo de útero
+
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./emerging_topics.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Evolução temporal dos 5 tópicos mais emergentes
+  </figcaption>
+</figure>
+
+Entre os tópicos com tendência de declínio, sugerindo mudanças nas prioridades de pesquisa, estão:
+
+1. **Tópico 108 (Engenharia de Madeira):** Declínio em estudos sobre painéis de madeira e ensaios destrutivos
+2. **Tópico 158 (Implantologia Avançada):** Redução em pesquisas sobre superfície de implantes e osseointegração
+3. **Tópico 151 (Distúrbios do Sono):** Declínio em estudos sobre apneia obstrutiva do sono
+4. **Tópico 145 (Comércio China-Brasil):** Redução em análises de exportação e importação com a China
+5. **Tópico 63 (Engenharia Automotiva):** Declínio em estudos de simulação de suspensão e projetos SAE
+
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./declining_topics.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Evolução temporal dos 5 tópicos declinantes
+  </figcaption>
+</figure>
+
+## Análise Geográfica
+
+O teste qui-quadrado implementado no sistema avalia a independência entre campus e distribuição de tópicos, permitindo identificar especializações regionais:
+
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./geographic_heatmap.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição de tópicos pelos principais campi
+  </figcaption>
+</figure>
+
+Alguns dos padrões de especialização identificados são:
+
+**Instituto de Biociências:**
+
+- **Tópico 10 (5,9%):** Espécie, conservação, biodiversidade, paisagem - forte pesquisa em ecologia e conservação
+- **Tópico 5 (5,3%):** Educação, escola, ensino, professor - formação de professores de ciências e biologia
+- **Tópico 37 (3,5%):** Radiação, radioterapia, dose, feixe - radiobiologia e efeitos biológicos da radiação
+- **Tópico 16 (3,1%):** Educação ambiental, ambiental, educação, natureza - interface entre biologia e educação ambiental
+- **Tópico 28 (3,1%):** Espécie, gênero, família, morfológico - estudos taxonômicos e sistemáticos
+
+**Faculdade de Engenharia:**
+
+- **Tópico 3 (8,9%):** Empresa, lean, melhoria, gestão - forte presença de engenharia de produção e gestão industrial
+- **Tópico 1 (8,2%):** Urbano, cidade, espaço, bairro - planejamento urbano e infraestrutura
+- **Tópico 13 (7,5%):** Construção, construção civil, civil, concreto - engenharia civil e materiais de construção
+- **Tópico 12 (7,2%):** Aço, usinagem, corte, alumínio - engenharia mecânica e processos de fabricação
+- **Tópico 23 (5,5%):** Aerodinâmico, aeronave, escoamento, voo - engenharia aeronáutica
+
+**Instituto de Geociências e Ciências Exatas:**
+
+- **Tópico 6 (21,3%):** Rocha, depósito, mineral, mina - predominância de geologia e mineralogia
+- **Tópico 2 (8,9%):** Urbano, cidade, espaço, bairro - geografia urbana e análise espacial
+- **Tópico 11 (6,7%):** Propriedade, material, filme, síntese - ciência dos materiais e física aplicada
+- **Tópico 19 (6,0%):** Quântico, partícula, equação, teoria - física teórica e quântica
+- **Tópico 20 (5,3%):** Geografia, ensino geografia, ensino, geográfico - ensino de geografia
+
+**Faculdade de Odontologia:**
+
+- **Tópico 9 (15,9%):** Ósseo, óssea, zol, rata - pesquisa em regeneração óssea e biomateriais
+- **Tópico 35 (9,0%):** Paciente, dente, oclusão, fratura - ortodontia e traumatologia bucomaxilofacial
+- **Tópico 22 (7,8%):** Resina, cor, espécime, rugosidade - materiais odontológicos restauradores
+- **Tópico 62 (6,0%):** Sorriso, estético, dente, estética - odontologia estética
+- **Tópico 50 (5,5%):** Esmalte, naf, tmp, dentifrício - prevenção e cariologia
+
+**Faculdade de Arquitetura, Artes, Comunicação e Design:**
+
+- **Tópico 0 (37,6%):** Arte, artístico, artista, teatro - predominância massiva de artes visuais e cênicas
+- **Tópico 36 (9,0%):** Jornalismo, documentário, reportagem, fotografia - comunicação social e jornalismo
+- **Tópico 41 (6,6%):** Mulher, feminino, feminismo, feminista - estudos de gênero na comunicação
+- **Tópico 2 (6,3%):** Urbano, cidade, espaço, bairro - urbanismo e arquitetura
+- **Tópico 55 (5,9%):** Comunicação, público, comunicação público, bauru - relações públicas e comunicação organizacional
+
+<figure style="width:100%; height:auto; max-width:100%; display:block; margin: 0 auto;">
+  <img src="./campus_topic_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição proporcional de tópicos por campus
+  </figcaption>
+</figure>
+
+## Limitações Identificadas
+
+Observamos três limitações relevantes. A primeira é a alta taxa de outliers, em 33,9%. Isso sugere necessidade de ajuste fino dos hiperparâmetros ou abordagem hierárquica. A segunda diz respeito ao viés temporal: a concentração de documentos em anos recentes pode distorcer tendências; por fim, a granularidade pode impactar os resultados, pois alguns tópicos são muito específicos, outros muito amplos.
+
+# Conclusões
+
+Este trabalho demonstrou a viabilidade e eficácia da integração entre a metodologia clássica de Análise de Conteúdo de Bardin e técnicas modernas de Aprendizado Profundo para análise de grandes volumes de produção acadêmica. O sistema desenvolvido processou com sucesso 13.112 TCCs da Unesp, identificando 188 tópicos distintos e revelando padrões temporais, geográficos e disciplinares significativos.
+
+A análise revelou um panorama abrangente da produção acadêmica de graduação da Unesp na última década. Os 188 tópicos identificados cobriram 66,1% do corpus (8.661 documentos), demonstrando a eficácia do BERTopic na captura de estruturas temáticas latentes em textos acadêmicos em português. A distribuição dos tópicos revelou clara segmentação disciplinar, com o tópico mais prevalente (Artes) representando 527 documentos, seguido por Agronomia (381) e Geografia Urbana (344).
+
+A análise temporal demonstrou a capacidade do sistema em detectar tendências emergentes, sendo o caso mais emblemático o Tópico 4 (COVID-19), que apresentou crescimento explosivo a partir de 2020, capturando 190 documentos relacionados à pandemia. Os tópicos com maior crescimento identificados incluíram Algoritmos e Redes Elétricas (Tópico 182), Pesca e Biodiversidade Marinha (Tópico 60), Parasitologia Veterinária (Tópico 138), refletindo áreas emergentes de pesquisa e formação prática.
+
+A distribuição geográfica dos tópicos revelou especializações regionais distintas. O Instituto de Biociências demonstrou forte vocação para estudos de biodiversidade e conservação (5,9% dos documentos no Tópico 10), enquanto a Faculdade de Engenharia destacou-se em gestão industrial e lean manufacturing (8,9% no Tópico 3). Particularmente notável foi a concentração de estudos em artes na Faculdade de Arquitetura, Artes, Comunicação e Design (37,6% no Tópico 0), e a predominância de geologia no Instituto de Geociências e Ciências Exatas (21,3% no Tópico 6).
+
+Apesar dos resultados promissores, o trabalho apresenta limitações que devem ser consideradas. A taxa de outliers de 33,9% sugere que uma parcela significativa dos documentos possui conteúdo muito específico ou interdisciplinar que não se enquadra nos clusters identificados. Isso pode indicar a necessidade de ajustes nos hiperparâmetros ou a implementação de abordagens hierárquicas de clustering.
+
+O viés temporal, com concentração de documentos nos anos mais recentes (2.771 em 2023 e 2.311 em 2024), pode refletir melhorias no processo de submissão ao repositório, mas também pode distorcer a análise de tendências de longo prazo. Estudos futuros poderiam beneficiar-se de técnicas de normalização temporal ou análise de séries temporais mais sofisticadas.
+
 # Referências
 
 [^1]: BARDIN, L. *Análise de conteúdo*. São Paulo: Edições 70, 2016.
