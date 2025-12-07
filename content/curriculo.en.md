@@ -11,7 +11,7 @@ Marília, São Paulo, Brazil<br />
 
 # Summary
 
-Data Engineer with <span id="working-age"></span>+ years of experience, an MBA in Data Science from the University of São Paulo and an M.Sc. in Computer Science in progress at Unesp. I currently serve as a Senior Data Engineer at Stadium Goods —the global leader in the sneaker market—driving projects in data architecture, pipeline development, and data-quality governance. Combining a solid academic foundation with extensive industry experience, I excel at designing and optimizing cloud-based data infrastructures and have a proven track record of automating workflows to boost availability, integrity, and scalability.
+Data Engineer with <span id="working-age"></span>+ years of experience, an MBA in Data Science from the University of São Paulo and an M.Sc. in Computer Science in progress at Unesp. Combining a solid academic foundation with extensive industry experience, I excel at designing and optimizing cloud-based data infrastructures and have a proven track record of automating workflows to boost availability, integrity, and scalability.
 
 # Professional Experience
 
@@ -29,8 +29,16 @@ Data Engineer with <span id="working-age"></span>+ years of experience, an MBA i
 > - Leadership in Stadium Goods data infrastructure optimization project, with actions that reduced processing time by 63%, increased performance (IOPS) by 88% and generated 67% savings in monthly costs
 > - Mentoring and training of more than 10 professionals at Stadium Goods, improving their technical skills
 
+⟶ Professor @ [Universidade de Marília](https://oficial.unimar.br/bacharelado-em-inteligencia-artificial/)<br />
+[January 2026 &mdash; present]
+
+> Responsibilities: 
+> 
+> - Teach "Autonomous Systems and Intelligent Agents" to undergraduate Artificial Intelligence students
+> - Design and write course materials, including lectures, assignments, and supporting resources
+
 ⟶ Adjunct Instructor @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
-[July 2021 &mdash; October 2024]
+[July 2021 &mdash; December 2025]
 
 > Responsibilities: 
 > 

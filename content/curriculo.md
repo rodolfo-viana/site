@@ -12,7 +12,7 @@ Marília, São Paulo<br />
 
 # Resumo
 
-Engenheiro de dados com mais de <span id="working-age"></span> anos de experiência. Possuo MBA em Data Science pela USP e sou aluno de mestrado em Ciência da Computação na Unesp. Atualmente trabalho como engenheiro de dados sênior na Stadium Goods, líder global no mercado de sneakers, atuando em projetos relacionados à arquitetura de dados, desenvolvimento de pipelines e data quality. Com uma combinação de sólida fundação acadêmica e vasta experiêcia no mercado, destaco-me na construção e otimização de infraestruturas de dados baseadas em nuvem e tenho histórico comprovado em automação de fluxos para aumentar a disponibilidade, a integridade e a escalabilidade de dados.
+Engenheiro de dados com mais de <span id="working-age"></span> anos de experiência. Possuo MBA em Data Science pela USP e sou aluno de mestrado em Ciência da Computação na Unesp. Com uma combinação de sólida fundação acadêmica e vasta experiêcia no mercado, destaco-me na construção e otimização de infraestruturas de dados baseadas em nuvem e tenho histórico comprovado em automação de fluxos para aumentar a disponibilidade, a integridade e a escalabilidade de dados.
 
 # Experiência profissional
 
@@ -30,8 +30,16 @@ Engenheiro de dados com mais de <span id="working-age"></span> anos de experiên
 > - Liderança no projeto de otimização da infraestrutura de dados, com ações que reduziram o tempo de processamento em 63%, aumentaram a performance (IOPS) em 88% e geraram 67% de economia nos custos mensais
 > - Mentoria e treinamento de mais de 10 profissionais na Stadium Goods, aprimorando suas habilidades técnicas
 
+⟶ Professor @ [Universidade de Marília](https://oficial.unimar.br/bacharelado-em-inteligencia-artificial/)<br />
+[janeiro de 2026 &mdash; presente]
+
+> Responsabilidades:
+> 
+> - Lecionar a disciplina "Sistemas Autônomos e Agentes Inteligentes" para alunos de graduação em Inteligência Artificial
+> - Planejar e elaborar materiais didáticos da disciplina, incluindo aulas, atividades avaliativas e materiais de apoio
+
 ⟶ Professor Adjunto @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
-[julho de 2021 &mdash; o momento]
+[julho de 2021 &mdash; dezembro de 2025]
 
 > Responsabilidades: 
 > 
