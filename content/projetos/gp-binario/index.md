@@ -30,7 +30,7 @@ Um GP é uma coleção de variáveis aleatórias, qualquer número finito das qu
 
 \\[
 \begin{aligned}
-m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\
+m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\\\
 k(\mathbf{x}, \mathbf{x'}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x'}) - m(\mathbf{x'}))].
 \end{aligned}
 \\]
