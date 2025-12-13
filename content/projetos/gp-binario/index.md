@@ -29,8 +29,10 @@ Apresentamos uma implementação de Processos Gaussianos com Inferência Variaci
 Um GP é uma coleção de variáveis aleatórias, qualquer número finito das quais possui uma distribuição Gaussiana conjunta[^4]. Formalmente, um GP é especificado por sua função de média \\(m(\mathbf{x})\\) e função de covariância \\(k(\mathbf{x}, \mathbf{x'})\\), onde
 
 \\[
+\begin{aligned}
 m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\
 k(\mathbf{x}, \mathbf{x'}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x'}) - m(\mathbf{x'}))].
+\end{aligned}
 \\]
 
 Assim, temos \\(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\\) para indicar que a função \\(f\\) segue um GP com função de média \\(m\\) e função de covariância \\(k\\).
@@ -90,7 +92,7 @@ Para garantir estabilidade numérica durante o treinamento, utilizamos a paramet
 Durante a inferência, para um ponto de teste \\(\mathbf{x}\_*\\), computamos a distribuição preditiva:
 
 \\[
-p(f\_{*} \mid \mathcal{D}, \mathbf{x}\_{*}) \approx \int p(f\_{*} \mid \mathbf{u}) q(\mathbf{u}) \, d\mathbf{u}
+p(f\_{\*} \mid \mathcal{D}, \mathbf{x}\_{\*}) \approx \int p(f\_{\*} \mid \mathbf{u}) q(\mathbf{u}) \, d\mathbf{u}
 \\]
 
 Esta é uma distribuição Gaussiana com média \\(\mu\_*\\) e variância \\(\sigma\_{*}^2\\). A probabilidade da classe positiva é obtida propagando essa distribuição através da verossimilhança:
