@@ -95,10 +95,10 @@ Durante a inferência, para um ponto de teste \\(\mathbf{x}\_*\\), computamos a 
 p(f\_{\*} \mid \mathcal{D}, \mathbf{x}\_{\*}) \approx \int p(f\_{\*} \mid \mathbf{u}) q(\mathbf{u}) \, d\mathbf{u}
 \\]
 
-Esta é uma distribuição Gaussiana com média \\(\mu\_*\\) e variância \\(\sigma\_{*}^2\\). A probabilidade da classe positiva é obtida propagando essa distribuição através da verossimilhança:
+Esta é uma distribuição Gaussiana com média \\(\mu\_\*\\) e variância \\(\sigma\_{\*}^2\\). A probabilidade da classe positiva é obtida propagando essa distribuição através da verossimilhança:
 
 \\[
-p(y\_{*}=1 \mid \mathcal{D}, \mathbf{x}\_{*}) = \mathbb{E}\_{f\_{*}\sim\mathcal{N}(\mu\_*,\sigma\_{*}^2})\big[\sigma(f\_*)\big]
+p(y\_{\*}=1 \mid \mathcal{D}, \mathbf{x}\_{\*}) = \mathbb{E}\_{f\_{\*}\sim\mathcal{N}(\mu\_\*,\sigma\_{\*}^2})\big[\sigma(f\_\*)\big]
 \\]
 
 A incerteza preditiva é quantificada pelo desvio-padrão \\(\sigma_*\\) no espaço latente, que reflete tanto a incerteza epistêmica quanto a aleatoriedade dos dados.
