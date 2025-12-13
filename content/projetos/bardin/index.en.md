@@ -2,7 +2,7 @@
 title = "Automated Bardin Content Analysis Applied to Unesp's Academic Production"
 description = "Edited version of an article co-authored with Júlia Canedo for the Deep Learning course, taught by Prof. Dr. Denis Henrique Pinheiro Salvadeo, in the master's program of the Graduate Program in Computer Science at Unesp"
 date = "2025-11-22"
-weight = 1
+weight = 2
 
 [taxonomies]
 tags=["machine learning", "natural language processing", "unesp"]

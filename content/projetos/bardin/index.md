@@ -2,7 +2,7 @@
 title = "Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp"
 description = "Versão editada de artigo escrito em coautoria com Júlia Canedo para a disciplina Aprendizado Profundo, do Prof. Dr. Denis Henrique Pinheiro Salvadeo, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp"
 date = "2025-11-22"
-weight = 1
+weight = 2
 
 [taxonomies]
 tags=["aprendizado de máquina", "processamento de linguagem natural", "unesp"]
