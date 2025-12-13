@@ -112,7 +112,7 @@ Português (nativo), Inglês (fluente)
     document.addEventListener("DOMContentLoaded", () => {
       const today = new Date();
       const birthdate = new Date(1981, 2, 17);
-      const start = new Date(2018, 0, 1);
+      const start = new Date(2017, 0, 1);
 
       function yearsSince(d) {
         let y = today.getFullYear() - d.getFullYear();
