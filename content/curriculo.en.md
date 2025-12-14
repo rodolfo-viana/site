@@ -5,7 +5,7 @@ title = "Résumé"
 # Personal Info
 
 Rodolfo Viana<br />
-<span id="age"></span> years old<br />
+<!--<span id="age"></span> years old<br />-->
 Marília, São Paulo, Brazil<br />
 [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) / [Github](https://github.com/rodolfo-viana) / [Email](mailto:eu@rodolfoviana.com.br)
 
@@ -37,10 +37,10 @@ Data Engineer with <span id="working-age"></span>+ years of experience, an MBA i
 > - Teach "Autonomous Systems and Intelligent Agents" to undergraduate Artificial Intelligence students
 > - Design and write course materials, including lectures, assignments, and supporting resources
 
-⟶ Adjunct Instructor @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
+⟶ Lecturer @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
 [July 2021 &mdash; December 2025]
 
-> Responsibilities: 
+> Responsibility: 
 > 
 > - Teach "Introduction to Programming with Python" and "Web Scraping" in graduate courses, training 100+ professionals to date
 
@@ -93,8 +93,8 @@ Portuguese (native), English (fluent)
 <script>
     document.addEventListener("DOMContentLoaded", () => {
       const today = new Date();
-      const birthdate = new Date(1981, 2, 17);
-      const start = new Date(2018, 0, 1);
+      // const birthdate = new Date(1981, 2, 17);
+      const start = new Date(2017, 0, 1);
 
       function yearsSince(d) {
         let y = today.getFullYear() - d.getFullYear();
@@ -103,7 +103,7 @@ Portuguese (native), English (fluent)
         return y;
       }
 
-      document.getElementById("age").textContent = yearsSince(birthdate);
+      // document.getElementById("age").textContent = yearsSince(birthdate);
       document.getElementById("working-age").textContent = yearsSince(start);
     });
 </script>

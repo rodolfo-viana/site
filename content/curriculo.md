@@ -6,13 +6,13 @@ path = "curriculo"
 # Informações
 
 Rodolfo Viana<br />
-<span id="age"></span> anos<br />
+<!--<span id="age"></span> anos<br />-->
 Marília, São Paulo<br />
 [Linkedin](https://www.linkedin.com/in/rodolfoviana/) / [Github](https://github.com/rodolfo-viana) / [E-mail](mailto:eu@rodolfoviana.com.br)
 
 # Resumo
 
-Engenheiro de dados com mais de <span id="working-age"></span> anos de experiência. Possuo MBA em Data Science pela USP e sou aluno de mestrado em Ciência da Computação na Unesp. Com uma combinação de sólida fundação acadêmica e vasta experiêcia no mercado, destaco-me na construção e otimização de infraestruturas de dados baseadas em nuvem e tenho histórico comprovado em automação de fluxos para aumentar a disponibilidade, a integridade e a escalabilidade de dados.
+Engenheiro de Dados com mais de <span id="working-age"></span> anos de experiência, atuando no desenvolvimento e manutenção de pipelines de ETL e na definição de arquitetura de dados de ponta a ponta. Experiência em gestão e evolução de data warehouses em diferentes provedores de nuvem, garantindo qualidade, governança, performance e confiabilidade das soluções. Liderança de projetos e iniciativas multidisciplinares, com foco em entrega de valor e escalabilidade. Perfil em constante aprimoramento, tem especialização em Data Science pela Esalq-USP e atualmente cursa mestrado em Ciência da Computação na Unesp.
 
 # Experiência profissional
 
@@ -38,10 +38,10 @@ Engenheiro de dados com mais de <span id="working-age"></span> anos de experiên
 > - Lecionar a disciplina "Sistemas Autônomos e Agentes Inteligentes" para alunos de graduação em Inteligência Artificial
 > - Planejar e elaborar materiais didáticos da disciplina, incluindo aulas, atividades avaliativas e materiais de apoio
 
-⟶ Professor Adjunto @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
+⟶ Professor @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
 [julho de 2021 &mdash; dezembro de 2025]
 
-> Responsabilidades: 
+> Responsabilidade: 
 > 
 > - Lecionar "Introdução à Programação com Python" e "Web Scraping" em cursos de pós-graduação, tendo treinado mais de 100 profissionais
 
@@ -111,7 +111,7 @@ Português (nativo), Inglês (fluente)
 <script>
     document.addEventListener("DOMContentLoaded", () => {
       const today = new Date();
-      const birthdate = new Date(1981, 2, 17);
+      // const birthdate = new Date(1981, 2, 17);
       const start = new Date(2017, 0, 1);
 
       function yearsSince(d) {
@@ -121,7 +121,7 @@ Português (nativo), Inglês (fluente)
         return y;
       }
 
-      document.getElementById("age").textContent = yearsSince(birthdate);
+      // document.getElementById("age").textContent = yearsSince(birthdate);
       document.getElementById("working-age").textContent = yearsSince(start);
     });
 </script>
