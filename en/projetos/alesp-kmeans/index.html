@@ -1,0 +1,386 @@
+<!doctype html><html class="dark light" lang=en><head><meta charset=UTF-8><meta content="IE=edge" http-equiv=X-UA-Compatible><meta content="width=device-width,initial-scale=1.0" name=viewport><meta content=https://rodolfoviana.com.br name=base><title>
+         Anomaly detection in São Paulo state deputies' expenses using K-Means
+        
+    </title><meta content="Anomaly detection in São Paulo state deputies' expenses using K-Means" property=og:title><meta content="Edited version of my MBA final project in Data Science and Analytics at USP-Esalq, supervised by Prof. Ana Julia Righetto, PhD., presented in January 2024" property=og:description><meta content="Edited version of my MBA final project in Data Science and Analytics at USP-Esalq, supervised by Prof. Ana Julia Righetto, PhD., presented in January 2024" name=description><meta content=https://rodolfoviana.com.br/image.png property=og:image><meta content=image/png property=og:image:type><meta content=website property=og:type><meta content=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/ property=og:url><link href=/favicon.png rel=icon type=image/png><link href=https://rodolfoviana.com.br/fonts.css rel=stylesheet><script src=https://rodolfoviana.com.br/js/codeblock.js></script><script src=https://rodolfoviana.com.br/js/note.js></script><script>MathJax = {
+          options: {enableMenu: false},
+          loader: {load: ['[tex]/boldsymbol']},
+          tex: {
+            packages: {'[+]': ['boldsymbol']},
+            inlineMath: [['\\(', '\\)']],
+            displayMath: [['$$', '$$'], ['\\[', '\\]']],
+            processEscapes: true,
+            processEnvironments: true,
+            }
+        }</script><link title="rodolfo viana" href=https://rodolfoviana.com.br/rss.xml rel=alternate type=application/rss+xml><link href=https://rodolfoviana.com.br/theme/dark.css rel=stylesheet><script src=https://rodolfoviana.com.br/js/themetoggle.js></script><script>setTheme("dark");</script><link href=https://rodolfoviana.com.br/main.css media=screen rel=stylesheet><script src=https://rodolfoviana.com.br/js/mobile-menu.js></script><script src=https://rodolfoviana.com.br/js/d3.min.js></script><script async id=MathJax-script src=https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js></script><script src=https://rodolfoviana.com.br/js/geolocation.js></script><body><div class=content><header><div class=main><a href=https://rodolfoviana.com.br>rodolfo viana</a></div><button aria-label=Menu class=hamburger id=mobile-menu-button><span></span><span></span><span></span></button><nav id=nav-menu><a href=https://rodolfoviana.com.br/en/projetos style=margin-left:.5em>projects</a><a href=https://rodolfoviana.com.br/en/curriculo style=margin-left:.5em>résumé</a><a href=https://rodolfoviana.com.br/en/tags style=margin-left:.5em>tags</a><a onclick="switchLanguage('pt')" title="Voltar para Português" href=javascript:void(0) style=margin-left:.5em>PT</a></nav></header><main><article><div class=title><div class=page-header>Anomaly detection in São Paulo state deputies' expenses using K-Means<span class=primary-color style=font-size:1.6em>.</span></div><div class=meta>Published: <time>09-01-2023</time><br>Updated: <time>11-16-2023</time><br><span class=tags-label>Tags:</span><span class=tags> <a class=post-tag href=https://rodolfoviana.com.br/en/tags/machine-learning/>machine learning</a>, <a class=post-tag href=https://rodolfoviana.com.br/en/tags/k-means/>k-means</a> </span></div></div><div class=toc-container><h1 class=toc-title>Table of Contents</h1><ul class=toc-list><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#introduction>Introduction</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#method>Method</a> <ul><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#exploratory-analysis>Exploratory analysis</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#k-means-clustering-algorithm>K-Means clustering algorithm</a></li><ul><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#elbow-method>Elbow method</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#k-means>K-Means++</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#advanced-convergence-criteria>Advanced convergence criteria</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#validation-by-silhouette-method>Validation by silhouette method</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#validation-by-davies-bouldin-index>Validation by Davies-Bouldin index</a></ul></ul><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#results>Results</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#commented-code>Commented code</a><li><a href=https://rodolfoviana.com.br/en/projetos/alesp-kmeans/#references>References</a></ul></div><section class=body><h1 id=introduction>Introduction</h1><p>Each of the 94 members of the Legislative Assembly of the State of São Paulo (Alesp) is entitled to General Office Expense Allowance and Lodging Allowance, jointly referred to as the "office allowance." This right was granted by Resolution 783, Article 11, of July 1, 1997<sup class=footnote-reference id=fr-1-1><a href=#fn-1>1</a></sup>. It is a monthly amount owed by the State so that representatives can be reimbursed for office operation and maintenance costs, lodging, and other expenses inherent to the full exercise of parliamentary activities.<p>These legally authorized expenses are grouped into 11 categories, including printing materials and services, consulting, fuel, car rental, lodging, and meals. In 2022, considering the maximum office-allowance limit of 1,250 São Paulo State Fiscal Units (Ufesp)<sup class=footnote-reference id=fr-1-2><a href=#fn-1>1</a></sup> and the Ufesp value of R$ 31.97<sup class=footnote-reference id=fr-2-1><a href=#fn-2>2</a></sup>, the monthly reimbursement ceiling per representative was R$ 39,962.50.<p>That year, the total amount committed to the office allowance was R$ 26,652,243.51<sup class=footnote-reference id=fr-3-1><a href=#fn-3>3</a></sup>. The sum was 24.43 % higher than in 2021 (R$ 21,419,316.88<sup class=footnote-reference id=fr-3-2><a href=#fn-3>3</a></sup>) and lower than the amount recorded for 2023 (R$ 28,607,099.96<sup class=footnote-reference id=fr-3-3><a href=#fn-3>3</a></sup>). If this budget is indeed reached this year, it will be the first time the figure tops R$ 28.5 million since 2018.<p>These public funds are scrutinized by oversight bodies such as the State Court of Accounts and the São Paulo Public Prosecutor's Office, which often open proceedings to verify the legitimacy of reimbursements. One example is Investigative Proceeding 29.0001.0246360.2021-54<sup class=footnote-reference id=fr-4-1><a href=#fn-4>4</a></sup>, initiated on 5 May 2022, concerning alleged misuse of the office allowance by Representative Murilo Felix, who supposedly paid rent on properties belonging to political allies that were never used. Another example is Criminal Case 0037174-14.2021.8.26.0000<sup class=footnote-reference id=fr-5-1><a href=#fn-5>5</a></sup>, which points, among other issues, to reimbursement of expenses never incurred by Representative Rogério Nogueira.<p>Against this backdrop, the present work aims to be an instrument for evaluating expenses and detecting anomalies through unsupervised machine learning. Its objective is not to state categorically whether a given expense is fraudulent; its scope is to serve as a first-look tool by clustering the values.<h1 id=method>Method</h1><h2 id=exploratory-analysis>Exploratory analysis</h2><p>The first step was to fetch data from Alesp's Open Data Portal <sup class=footnote-reference id=fr-6-1><a href=#fn-6>6</a></sup>, where <code>xml</code> files dating back to 2002 contain fields indicating the reference period ("Year," "Month") as well as information on both the representative ("Registration," "Representative") and the expense ("Vendor," "CNPJ," "Type," "Value"). To avoid ideological bias, representatives' names were ignored. Given the temporal nature of expenses, "Year" and "Month" were used solely to deflate the amounts to December 31, 2022 according to the Broad Consumer Price Index (IPCA)<sup class=footnote-reference id=fr-7-1><a href=#fn-7>7</a></sup>. The time dimension of the expenses was thus discarded.<p>Only meal and lodging expenses from 2018 to 2022 were included. Vendors with fewer than 20 expenses in the five-year span were excluded because a significant count is needed for clustering.<h2 id=k-means-clustering-algorithm>K-Means clustering algorithm</h2><p>A K-Means clustering algorithm was implemented to process these records. In short, K-Means partitions a data set into a predefined number of non-overlapping clusters<sup class=footnote-reference id=fr-8-1><a href=#fn-8>8</a></sup>. Each data point belongs to the cluster whose centroid is closest on average.<p>Given a set of observations \(x = \{x_1, x_2, \ldots, x_n\}\), the algorithm divides the \(n\) observations into \(k\) (\(\ge n\)) sets \(S = \{S_1, S_2, \ldots, S_k\}\) so as to minimize the sum of squares within clusters,<p>\[ \sum_{i = 1}^{k}\sum_{x \in S_i} \lVert x - \mu_i \rVert^2 \]<p>where<ul><li>\(k\): number of clusters<li>\(S_i\): cluster \(i\)<li>\(x\): data point<li>\(\mu_i\): mean distance of points in \(S_i\)</ul><p>Because our data set is univariate and the goal is anomaly detection,<ol><li>points are laid out according to their values;<li>given the predefined number of clusters, centroids are calculated by minimizing squared distances;<li>points near centroids form clusters;<li>points outside clusters are considered anomalies.</ol><p>However, K-Means imposes some requirements such as prior determination of the number of clusters, a centroid-initialization method that seeks the global minimum and not the local minima, convergence criteria, and validation of results. These were addressed respectively with the elbow method, K-Means++, centroid-movement comparison, and validation via the silhouette method and the Davies–Bouldin index.<h3 id=elbow-method>Elbow method</h3><p>The algorithm must know the number of clusters in advance. The elbow method<sup class=footnote-reference id=fr-9-1><a href=#fn-9>9</a></sup> provides that number by iterating over possible cluster centers and computing the sum of squared distances between them and the data points.<p>The logic is that increasing the number of clusters reduces intra-cluster distances because points are closer to their centroids. At some point, the reduction becomes marginal—in a graph, the line drops sharply at first and then levels out, forming an "elbow." That point is an estimate of the ideal number of clusters.number of clusters.<div class=d3js id=elbow-container></div><script>(function() {
+      const points = [{
+              x: 1,
+              y: 9000
+          },
+          {
+              x: 2,
+              y: 4000
+          },
+          {
+              x: 3,
+              y: 2000
+          },
+          {
+              x: 4,
+              y: 1500
+          },
+          {
+              x: 5,
+              y: 1300
+          },
+          {
+              x: 6,
+              y: 1200
+          },
+          {
+              x: 7,
+              y: 1100
+          }
+      ];
+      const virtualWidth = 600;
+      const virtualHeight = 300;
+      const margin = {
+          top: 20,
+          right: 50,
+          bottom: 60,
+          left: 85
+      };
+      const width = virtualWidth - margin.left - margin.right;
+      const height = virtualHeight - margin.top - margin.bottom;
+      const svg = d3.select("#elbow-container")
+          .append("svg")
+          .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+      const chartArea = svg.append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+      const xScale = d3.scaleLinear().domain([1, 7]).range([0, width]);
+      const yScale = d3.scaleLinear().domain([0, 10000]).range([height, 0]);
+      const xAxis = d3.axisBottom(xScale)
+          .tickValues([1, 2, 3, 4, 5, 6, 7])
+          .tickFormat(d3.format("d"));
+      const yAxis = d3.axisLeft(yScale)
+          .tickValues([0, 2000, 4000, 6000, 8000, 10000])
+          .tickFormat(d => d === 0 ? "" : d);
+      const xAxisGroup = chartArea.append("g")
+          .attr("transform", `translate(0, ${height})`)
+          .call(xAxis);
+      xAxisGroup.selectAll("path, line")
+          .attr("stroke", "#f0f0f0");
+      xAxisGroup.selectAll("text")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+      const yAxisGroup = chartArea.append("g")
+          .call(yAxis);
+      yAxisGroup.selectAll("path, line")
+          .attr("stroke", "#f0f0f0");
+      yAxisGroup.selectAll("text")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+      chartArea.append("text")
+          .attr("x", width / 2)
+          .attr("y", height + 50)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+          .text("Number of clusters");
+      chartArea.append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", `translate(${-70}, ${height / 2}) rotate(-90)`)
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+          .text("Sum of squared distances");
+      const lineGenerator = d3.line()
+          .x(d => xScale(d.x))
+          .y(d => yScale(d.y));
+      chartArea.append("path")
+          .datum(points)
+          .attr("fill", "none")
+          .attr("stroke", "#ababab")
+          .attr("stroke-width", 2)
+          .attr("d", lineGenerator);
+      chartArea.selectAll("circle.point")
+          .data(points)
+          .enter()
+          .append("circle")
+          .attr("r", 5)
+          .attr("cx", d => xScale(d.x))
+          .attr("cy", d => yScale(d.y))
+          .attr("fill", "#ababab");
+      const elbowPoint = points[2]; // x=3, y=2000
+      chartArea.append("circle")
+          .attr("cx", xScale(elbowPoint.x))
+          .attr("cy", yScale(elbowPoint.y))
+          .attr("r", 10)
+          .attr("fill", "none")
+          .attr("stroke", "#ef5350")
+          .attr("stroke-width", 2);
+      chartArea.append("line")
+          .attr("x1", xScale(elbowPoint.x) + 10)
+          .attr("y1", yScale(elbowPoint.y) - 10)
+          .attr("x2", xScale(elbowPoint.x) + 60)
+          .attr("y2", yScale(elbowPoint.y) - 60)
+          .attr("stroke", "#ef5350")
+          .attr("stroke-width", 2)
+          .attr("stroke-dasharray", "5,5");
+      chartArea.append("text")
+          .attr("x", xScale(elbowPoint.x) + 70)
+          .attr("y", yScale(elbowPoint.y) - 70)
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "12px")
+          .text("Elbow");
+  })();</script><p>Considering merely the observation of a graph to measure results on the ideal number of clusters, statistical support is abdicated to ensure the robustness of the elbow method. Schubert<sup class=footnote-reference id=fr-10-1><a href=#fn-10>10</a></sup> shows the method applied to datasets with more or less visually cohesive clusters, in which results are similar even in uniform sets or when data contains a single normal distribution. Problems associated with the elbow graph include lack of significant angle metric and axis scaling, which can alter human interpretation of an "elbow".<p>To mitigate such problems, a less subjective method could be used, such as the Variance Ratio Criterion (VRC). While the elbow method relies on the sum of squared distances between each point and the cluster centroid, the VRC measures the ratio between the sum of dispersion between clusters and the sum of dispersion within clusters<sup class=footnote-reference id=fr-11-1><a href=#fn-11>11</a></sup>. Since we have a data set that does not point to uniformity or normal distribution, the elbow method was chosen.<h3 id=k-means>K-Means++</h3><p>Defining the number of clusters, however, does not guarantee that the algorithm will find the best points to serve as centroids. When random initialization is used, where initial centroids are randomly selected within the cluster, points very close to each other may be chosen. The high sensitivity of the clustering technique can lead to a local minimum solution rather than a global one, generating suboptimal partitions<sup class=footnote-reference id=fr-12-1><a href=#fn-12>12</a></sup>.<p>To overcome this limitation, this study used an initialization method called K-Means++<sup class=footnote-reference id=fr-13-1><a href=#fn-13>13</a></sup>, where the centroid goes through iterations and is selected based on the probability that a given point is the best centroid based on distance relative to other data points. The successive change between centroids reduces the chances of the K-Means algorithm converging to a suboptimal solution.<p>Given a set of points \(D\) and a set of selected centroids \(C\), the probability of choosing point \(x\) as the next centroid is calculated by<p>$$ P(x) = \frac{D(x)^2}{\sum_{x^{\prime} \in D}D(x^{\prime})^2} $$<p>where \(D(x)\): distance between point \(x\) and the nearest centroid in \(C\).<p>With centroids initialized, each point is assigned to the nearest centroid. These points form clusters. Considering point \(x\) and a set of centroids \(C\), the cluster label \(l\) to which \(x\) belongs is computed by<p>$$ l(x) = \arg \min_{c \in C}\Vert x - c \Vert $$<p>Next, each centroid is recalculated by taking the mean distance of all points assigned to it,<p>$$ c_i = \frac{1}{\vert S_i \vert}\sum_{x \in S_i} x $$<p>where \(S_i\): set of all points assigned to centroid \(i\).<p>At each centroid update iteration, inertia is computed. For a univariate set,<p>$$ \sum_{i=1}^{n}{\Vert {x_i} - {c_{l(x_i)}}\Vert}^2 $$<p>where \(c_{l(x_i)}\): centroid of the cluster to which \(x_i\) was assigned.<h3 id=advanced-convergence-criteria>Advanced convergence criteria</h3><p>In addition to K-Means++ initialization, the algorithm adopts advanced convergence criteria by comparing centroid movement between iterations. Let \(C_t\) be the set of centroids at iteration \(t\), the algorithm converges if<p>$$ \max_{c \in C_t}\Vert c - c_{t - 1} \Vert &lt; tol $$<p>where,<ul><li>\(\Vert c - c_{t - 1} \Vert\): euclidean distance<li>\(tol\): specified tolerance</ul><h3 id=validation-by-silhouette-method>Validation by silhouette method</h3><p>Validation of results obtained from implementing these techniques was performed, first, by the silhouette method<sup class=footnote-reference id=fr-14-1><a href=#fn-14>14</a></sup>. This technique observes the similarity of a point with its cluster compared to other clusters from<p>$$ s_i = \frac{{b_i} - {a_i}}{\max({a_i},{b_i})} $$<p>where,<ul><li>\(a_i\): average distance from \(i\) to all other intra-cluster points<li>\(b_i\): smallest average distance from \(i\) to all points in different clusters</ul><p>The silhouette method returns results in the range -1 to 1. If the value is<ul><li>close to -1: the point is clustered incorrectly;<li>close to 0: the point is between two clusters, so clustering can be improved;<li>close to 1: the point is well clustered.</ul><h3 id=validation-by-davies-bouldin-index>Validation by Davies-Bouldin index</h3><p>While the silhouette method compares a single point to clusters, the Davies-Bouldin index<sup class=footnote-reference id=fr-15-1><a href=#fn-15>15</a></sup>, the second measure used in result validation, observes cluster cohesion, given the logic that adequate clustering is dense in itself while distant from other clusters.<p>The closer to 0 the index is, the better the clustering, a result obtained by<p>$$ \frac{1}{k}\sum_{i=1}^{k}\max_{i \ne j}\bigg(\frac{{S_i}+{S_j}}{M_{ij}}\bigg) $$<p>where,<ul><li>\(k\): number of clusters<li>\(i\), \(j\): different clusters<li>\(S_i\), \(S_j\): internal dispersion of clusters \(i\) and \(j\), respectively<li>\(M_{ij}\): distance between clusters \(i\) and \(j\)</ul><h1 id=results>Results</h1><p>An exploratory analysis was performed to understand the data and its dispersion. In the observed five-year period, there were 4,453 expense records across 86 unique CNPJ numbers, totaling R$ 1,784,601.08 after inflation adjustment. Each expense had an average value of R$ 400.76, but with a coefficient of variation of 241.41%, indicating significant data dispersion relative to the mean.<p>It was also noted that the mean is higher than the third quartile. This denotes data skewness toward lower values. The set thus presents a longer right tail than left, which is corroborated by the skewness of 5.21, while the kurtosis of 32.67 demonstrates a sharp peak compared to normal distribution.<table><thead><tr><th>Measure<th>Value<tbody><tr><td>Count<td>4,453<tr><td>Mean (R$)<td>400.763773<tr><td>Standard deviation (R$)<td>967.469752<tr><td>Minimum (R$)<td>6.49<tr><td>1st Quartile (R$)<td>55.75<tr><td>2nd Quartile (R$)<td>123.14<tr><td>3rd Quartile (R$)<td>276.18<tr><td>Maximum (R$)<td>10,250.41<tr><td>Coefficient of variation (%)<td>241.40648<tr><td>Skewness<td>5.21061<tr><td>Kurtosis<td>32.66851</table><p>Expenses were grouped by company to maintain spending behavior within the variability of values for each CNPJ. The present K-Means algorithm implementation processed information for each establishment following these parameters:<table><thead><tr><th>Parameter<th>Value<tbody><tr><td>Minimum number of clusters<td>2<tr><td>Number of clusters used<td>2 to 10, selected by elbow method<tr><td>Maximum iterations<td>100<tr><td>Tolerance for convergence<td>0.0001<tr><td>Percentile for anomaly detection<td>95</table><p>The result was 262 anomalies totaling R$ 197,697.24 —11.08% of total expense value. Anomalies are understood as patterns in data that do not fit a well-defined notion of normal behavior<sup class=footnote-reference id=fr-16-1><a href=#fn-16>16</a></sup> —in the context of this work, anomalies are expense values that do not fit into clusters created by the algorithm. By definition, not every anomaly can be treated as fraud: there are anomalies in the middle of all expenses for a given company, not being the highest values in the set. Such anomalies between clusters are treated here as false positives.<p>Given the role of clusters in this algorithm and the K-Means++ implementation, there is great variability in the number of clusters. In the set of 86 companies, the number of clusters ranges from 2 to 10. We validated these values using the two aforementioned instruments:<ol><li>Silhouette method, whose acceptable results should be between 0.5 and 1 on a scale from -1 to 1;<li>Davies-Bouldin index, with ideal results between 0 to 0.5, on a scale from 0 to 1.</ol><p>The number of clusters for each CNPJ was validated using the two aforementioned instruments: the silhouette method and the Davies-Bouldin index. An adequate result for the first would be between 0.5 and 1 on a scale of -1 to 1; the second, from 0 to 0.5 on the scale of 0 to 1.<p>Given the set of 86 companies, all recorded ideal results for the silhouette method (values between 0.577 and 0.918); 79 showed ideal results for the Davies-Bouldin index (values between 0.166 and 0.489), while seven showed below-ideal results (values between 0.508 and 0.573).<p>With expense clustering, algorithm-based anomaly detection, and validation of applied methods, a final analysis was performed to consider anomalies subject to oversight body inquiry as those whose values are greater than the largest non-anomaly value of the last cluster. This discarded anomalies positioned between clusters, and the result obtained was 46 anomalies in 32 companies, with a total value of R$ 44,348.88.<div class=note-container><button class=note-toggle><div class=note-icon><p>See companies and anomalies</div></button><div class=note-content style=display:none><table><thead><tr><th>CNPJ<th>Original value (R$)<th>Corrected value (R$)<th>Number of clusters for CNPJ<th>Silhouette method result<th>Davies-Bouldin index<tbody><tr><td>02.012.862/0001-60<td>9,525.39<td>9,584.44<td>6<td>0.5996<td>0.4816<tr><td>03.071.465/0001-21<td>1,340.00<td>1,658.78<td>3<td>0.6767<td>0.4664<tr><td>03.300.974/0049-23<td>229.12<td>298.95<td>2<td>0.6579<td>0.4856<tr><td>08.402.977/0001-47<td>266.51<td>269.26<td>4<td>0.7556<td>0.3117<tr><td>09.060.964/0106-77<td>360.91<td>448.74<td>6<td>0.6681<td>0.5129<tr><td>09.060.964/0106-77<td>314.57<td>389.17<td>6<td>0.6681<td>0.5129<tr><td>09.399.877/0001-71<td>1,398.26<td>1,788.63<td>4<td>0.6203<td>0.5162<tr><td>09.438.123/0001-83<td>445.86<td>570.85<td>3<td>0.6277<td>0.5329<tr><td>09.456.178/0001-16<td>229.75<td>285.66<td>4<td>0.6632<td>0.3914<tr><td>09.456.550/0001-94<td>379.80<td>487.44<td>3<td>0.6776<td>0.4350<tr><td>09.456.550/0001-94<td>354.59<td>453.99<td>3<td>0.6776<td>0.4350<tr><td>09.456.704/0001-48<td>432.16<td>438.34<td>4<td>0.6629<td>0.4534<tr><td>09.456.704/0001-48<td>326.36<td>405.21<td>4<td>0.6629<td>0.4534<tr><td>09.456.714/0001-83<td>458.39<td>567.66<td>4<td>0.6824<td>0.4745<tr><td>09.536.662/0001-55<td>403.31<td>407.22<td>3<td>0.7288<td>0.3667<tr><td>11.384.785/0001-60<td>678.58<td>840.34<td>3<td>0.6506<td>0.4524<tr><td>13.232.868/0001-69<td>1,360.75<td>1,683.45<td>3<td>0.6969<td>0.4445<tr><td>13.232.868/0001-69<td>1,209.82<td>1,498.23<td>3<td>0.6969<td>0.4445<tr><td>42.591.651/0612-82<td>110.60<td>134.45<td>6<td>0.6872<td>0.3487<tr><td>42.591.651/0612-82<td>118.80<td>119.93<td>6<td>0.6872<td>0.3487<tr><td>43.386.903/0001-65<td>1,361.20<td>1,361.20<td>2<td>0.9177<td>0.2157<tr><td>43.386.903/0001-65<td>1,030.60<td>1,036.99<td>2<td>0.9177<td>0.2157<tr><td>43.386.903/0001-65<td>249.27<td>308.69<td>2<td>0.9177<td>0.2157<tr><td>44.993.632/0001-79<td>2,004.54<td>2,621.23<td>6<td>0.6270<td>0.4621<tr><td>44.993.632/0001-79<td>1,700.39<td>2,218.63<td>6<td>0.6270<td>0.4621<tr><td>44.993.632/0001-79<td>1,441.83<td>1,887.10<td>6<td>0.6270<td>0.4621<tr><td>45.007.937/0001-27<td>1,189.20<td>1,556.45<td>5<td>0.7601<td>0.3129<tr><td>47.079.637/0001-89<td>1,800.00<td>1,805.09<td>2<td>0.7795<td>0.4130<tr><td>49.967.557/0001-95<td>1,395.16<td>1,777.74<td>4<td>0.7310<td>0.3074<tr><td>50.244.235/0001-05<td>93.50<td>108.86<td>3<td>0.7979<td>0.2713<tr><td>51.483.956/0001-22<td>140.59<td>184.01<td>3<td>0.6680<td>0.4331<tr><td>54.867.247/0001-39<td>361.15<td>447.56<td>4<td>0.6375<td>0.4426<tr><td>54.867.247/0001-39<td>336.96<td>359.06<td>4<td>0.6375<td>0.4426<tr><td>54.867.247/0001-39<td>174.04<td>216.09<td>4<td>0.6375<td>0.4426<tr><td>54.951.561/0001-03<td>236.00<td>239.37<td>8<td>0.6219<td>0.4354<tr><td>56.007.859/0001-87<td>453.85<td>593.48<td>3<td>0.8057<td>0.3859<tr><td>58.699.232/0001-60<td>168.16<td>218.54<td>5<td>0.6550<td>0.4581<tr><td>61.084.018/0001-03<td>1,073.17<td>1,372.78<td>4<td>0.6369<td>0.4892<tr><td>61.359.691/0001-09<td>180.10<td>181.82<td>5<td>0.5769<td>0.5270<tr><td>61.563.557/0001-25<td>238.45<td>242.33<td>4<td>0.7763<td>0.3427<tr><td>61.980.272/0012-42<td>172.88<td>219.43<td>3<td>0.7751<td>0.4507<tr><td>65.684.037/0003-93<td>636.78<td>790.71<td>5<td>0.6320<td>0.4574<tr><td>65.684.037/0003-93<td>513.97<td>647.51<td>5<td>0.6320<td>0.4574<tr><td>65.684.037/0003-93<td>422.30<td>525.07<td>5<td>0.6320<td>0.4574<tr><td>65.684.037/0003-93<td>399.87<td>495.19<td>5<td>0.6320<td>0.4574<tr><td>66.728.858/0001-85<td>482.40<td>603.21<td>7<td>0.6492<td>0.4156</table></div></div><h1 id=commented-code>Commented code</h1><div class=note-container><button class=note-toggle><div class=note-icon><p>Algorithm</div></button><div class=note-content style=display:none><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672>from </span><span>typing </span><span style=color:#f92672>import </span><span>Tuple
+</span><span style=color:#f92672>import </span><span>numpy </span><span style=color:#f92672>as </span><span>np
+</span><span>
+</span><span>
+</span><span style=color:#f92672;font-style:italic>class </span><span style=color:#a6e22e;text-decoration:underline>KMeans</span><span>:
+</span><span>    </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>    k-means with enhanced convergence criteria.
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>    Attributes:
+</span><span style=color:#75715e>        k (int): Number of clusters.
+</span><span style=color:#75715e>        max_iters (int): Maximum number of iterations for k-means.
+</span><span style=color:#75715e>        tol (float): Convergence tolerance based on centroid movement.
+</span><span style=color:#75715e>        n_init (int): Number of times the algorithm will run with
+</span><span style=color:#75715e>            different centroid seeds.
+</span><span style=color:#75715e>        threshold (int): Percentile for anomaly detection.
+</span><span style=color:#75715e>        centroids (np.ndarray): Centroids for clusters.
+</span><span style=color:#75715e>    """
+</span><span>
+</span><span>    </span><span style=color:#f92672;font-style:italic>def </span><span style=color:#66d9ef>__init__</span><span>(
+</span><span>        </span><span style=color:#fd971f;font-style:italic>self</span><span>,
+</span><span>        </span><span style=color:#fd971f;font-style:italic>k</span><span>: </span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#f92672>= </span><span style=color:#ae81ff>2</span><span>,
+</span><span>        </span><span style=color:#fd971f;font-style:italic>max_iters</span><span>: </span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#f92672>= </span><span style=color:#ae81ff>100</span><span>,
+</span><span>        </span><span style=color:#fd971f;font-style:italic>tol</span><span>: </span><span style=color:#66d9ef;font-style:italic>float </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1e-4</span><span>,
+</span><span>        </span><span style=color:#fd971f;font-style:italic>n_init</span><span>: </span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#f92672>= </span><span style=color:#ae81ff>30</span><span>,
+</span><span>        </span><span style=color:#fd971f;font-style:italic>threshold</span><span>: </span><span style=color:#66d9ef;font-style:italic>int </span><span style=color:#f92672>= </span><span style=color:#ae81ff>95</span><span>,
+</span><span>        </span><span style=color:#fd971f;font-style:italic>centroids</span><span>: np.ndarray </span><span style=color:#f92672>= </span><span style=color:#ae81ff>None</span><span>,
+</span><span>    ):
+</span><span>        </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>        Initialization with specified parameters.
+</span><span style=color:#75715e>        """
+</span><span>        self.k </span><span style=color:#f92672>= </span><span>k
+</span><span>        self.max_iters </span><span style=color:#f92672>= </span><span>max_iters
+</span><span>        self.tol </span><span style=color:#f92672>= </span><span>tol
+</span><span>        self.n_init </span><span style=color:#f92672>= </span><span>n_init
+</span><span>        self.threshold </span><span style=color:#f92672>= </span><span>threshold
+</span><span>        self.centroids </span><span style=color:#f92672>= </span><span>centroids
+</span><span>
+</span><span>    @</span><span style=color:#66d9ef>staticmethod
+</span><span>    </span><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>_kpp_init</span><span>(</span><span style=color:#fd971f;font-style:italic>data</span><span>: np.ndarray, </span><span style=color:#fd971f;font-style:italic>k</span><span>: </span><span style=color:#66d9ef;font-style:italic>int</span><span>) -> np.ndarray:
+</span><span>        </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>        K-Means++ initialization for better centroid selection.
+</span><span style=color:#75715e>        """
+</span><span>        centroids </span><span style=color:#f92672>= </span><span>np.zeros((k, data.shape[</span><span style=color:#ae81ff>1</span><span>]))
+</span><span>        centroids[</span><span style=color:#ae81ff>0</span><span>] </span><span style=color:#f92672>= </span><span>data[np.random.choice(data.shape[</span><span style=color:#ae81ff>0</span><span>])]
+</span><span>        
+</span><span>        </span><span style=color:#f92672>for </span><span>i </span><span style=color:#f92672>in </span><span style=color:#66d9ef>range</span><span>(</span><span style=color:#ae81ff>1</span><span>, k):
+</span><span>            distances </span><span style=color:#f92672>= </span><span>np.array([</span><span style=color:#66d9ef>min</span><span>([np.linalg.norm(x </span><span style=color:#f92672>- </span><span>c) </span><span style=color:#f92672>** </span><span style=color:#ae81ff>2 
+</span><span>                                     </span><span style=color:#f92672>for </span><span>c </span><span style=color:#f92672>in </span><span>centroids[:i]]) </span><span style=color:#f92672>for </span><span>x </span><span style=color:#f92672>in </span><span>data])
+</span><span>            probabilities </span><span style=color:#f92672>= </span><span>distances </span><span style=color:#f92672>/ </span><span>distances.sum()
+</span><span>            cumulative_prob </span><span style=color:#f92672>= </span><span>probabilities.cumsum()
+</span><span>            r </span><span style=color:#f92672>= </span><span>np.random.rand()
+</span><span>            
+</span><span>            </span><span style=color:#f92672>for </span><span>j, p </span><span style=color:#f92672>in </span><span style=color:#66d9ef>enumerate</span><span>(cumulative_prob):
+</span><span>                </span><span style=color:#f92672>if </span><span>r </span><span style=color:#f92672>&lt; </span><span>p:
+</span><span>                    centroids[i] </span><span style=color:#f92672>= </span><span>data[j]
+</span><span>                    </span><span style=color:#f92672>break
+</span><span>                    
+</span><span>        </span><span style=color:#f92672>return </span><span>centroids
+</span><span>
+</span><span>    </span><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>fit</span><span>(</span><span style=color:#fd971f;font-style:italic>self</span><span>, </span><span style=color:#fd971f;font-style:italic>data</span><span>: np.ndarray) -> </span><span style=color:#ae81ff>None</span><span>:
+</span><span>        </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>        Fit K-Means to the data.
+</span><span style=color:#75715e>        """
+</span><span>        best_inertia </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>float</span><span>(</span><span style=color:#e6db74>'inf'</span><span>)
+</span><span>        best_centroids </span><span style=color:#f92672>= </span><span style=color:#ae81ff>None
+</span><span>        
+</span><span>        </span><span style=color:#f92672>for </span><span>_ </span><span style=color:#f92672>in </span><span style=color:#66d9ef>range</span><span>(self.n_init):
+</span><span>            </span><span style=color:#75715e># Initialize centroids using K-Means++
+</span><span>            centroids </span><span style=color:#f92672>= </span><span>self._kpp_init(data, self.k)
+</span><span>            
+</span><span>            </span><span style=color:#f92672>for </span><span>iteration </span><span style=color:#f92672>in </span><span style=color:#66d9ef>range</span><span>(self.max_iters):
+</span><span>                </span><span style=color:#75715e># Assign points to clusters
+</span><span>                distances </span><span style=color:#f92672>= </span><span>np.sqrt(((data </span><span style=color:#f92672>- </span><span>centroids[:, np.newaxis])</span><span style=color:#f92672>**</span><span style=color:#ae81ff>2</span><span>).sum(</span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>2</span><span>))
+</span><span>                labels </span><span style=color:#f92672>= </span><span>np.argmin(distances, </span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0</span><span>)
+</span><span>                
+</span><span>                </span><span style=color:#75715e># Update centroids
+</span><span>                new_centroids </span><span style=color:#f92672>= </span><span>np.array([data[labels </span><span style=color:#f92672>== </span><span>i].mean(</span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0</span><span>) 
+</span><span>                                        </span><span style=color:#f92672>for </span><span>i </span><span style=color:#f92672>in </span><span style=color:#66d9ef>range</span><span>(self.k)])
+</span><span>                
+</span><span>                </span><span style=color:#75715e># Check for convergence
+</span><span>                </span><span style=color:#f92672>if </span><span>np.max(np.linalg.norm(new_centroids </span><span style=color:#f92672>- </span><span>centroids, </span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>1</span><span>)) </span><span style=color:#f92672>&lt; </span><span>self.tol:
+</span><span>                    </span><span style=color:#f92672>break
+</span><span>                    
+</span><span>                centroids </span><span style=color:#f92672>= </span><span>new_centroids
+</span><span>            
+</span><span>            </span><span style=color:#75715e># Calculate inertia
+</span><span>            inertia </span><span style=color:#f92672>= </span><span style=color:#66d9ef>sum</span><span>([np.linalg.norm(data[labels </span><span style=color:#f92672>== </span><span>i] </span><span style=color:#f92672>- </span><span>centroids[i])</span><span style=color:#f92672>**</span><span style=color:#ae81ff>2 
+</span><span>                          </span><span style=color:#f92672>for </span><span>i </span><span style=color:#f92672>in </span><span style=color:#66d9ef>range</span><span>(self.k)])
+</span><span>            
+</span><span>            </span><span style=color:#f92672>if </span><span>inertia </span><span style=color:#f92672>&lt; </span><span>best_inertia:
+</span><span>                best_inertia </span><span style=color:#f92672>= </span><span>inertia
+</span><span>                best_centroids </span><span style=color:#f92672>= </span><span>centroids
+</span><span>        
+</span><span>        self.centroids </span><span style=color:#f92672>= </span><span>best_centroids
+</span><span>
+</span><span>    </span><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>predict</span><span>(</span><span style=color:#fd971f;font-style:italic>self</span><span>, </span><span style=color:#fd971f;font-style:italic>data</span><span>: np.ndarray) -> Tuple[np.ndarray, np.ndarray]:
+</span><span>        </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>        Predict cluster labels and detect anomalies.
+</span><span style=color:#75715e>        """
+</span><span>        distances </span><span style=color:#f92672>= </span><span>np.sqrt(((data </span><span style=color:#f92672>- </span><span>self.centroids[:, np.newaxis])</span><span style=color:#f92672>**</span><span style=color:#ae81ff>2</span><span>).sum(</span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>2</span><span>))
+</span><span>        labels </span><span style=color:#f92672>= </span><span>np.argmin(distances, </span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0</span><span>)
+</span><span>        
+</span><span>        </span><span style=color:#75715e># Anomaly detection based on distance threshold
+</span><span>        min_distances </span><span style=color:#f92672>= </span><span>np.min(distances, </span><span style=color:#fd971f;font-style:italic>axis</span><span style=color:#f92672>=</span><span style=color:#ae81ff>0</span><span>)
+</span><span>        threshold </span><span style=color:#f92672>= </span><span>np.percentile(min_distances, self.threshold)
+</span><span>        anomalies </span><span style=color:#f92672>= </span><span>min_distances </span><span style=color:#f92672>> </span><span>threshold
+</span><span>        
+</span><span>        </span><span style=color:#f92672>return </span><span>labels, anomalies
+</span></code></pre></div></div><div class=note-container><button class=note-toggle><div class=note-icon><p>Exec</div></button><div class=note-content style=display:none><pre class=language-python data-lang=python style=color:#f8f8f2;background-color:#272822><code class=language-python data-lang=python><span style=color:#f92672>import </span><span>os
+</span><span style=color:#f92672>import </span><span>asyncio
+</span><span style=color:#f92672>import </span><span>glob
+</span><span style=color:#f92672>from </span><span>typing </span><span style=color:#f92672>import </span><span>List, Dict, Union
+</span><span style=color:#f92672>from </span><span>itertools </span><span style=color:#f92672>import </span><span>groupby
+</span><span style=color:#f92672>import </span><span>xml.etree.ElementTree </span><span style=color:#f92672>as </span><span>ET
+</span><span style=color:#f92672>import </span><span>aiohttp
+</span><span style=color:#f92672>from </span><span>aiolimiter </span><span style=color:#f92672>import </span><span>AsyncLimiter
+</span><span style=color:#f92672>import </span><span>pandas </span><span style=color:#f92672>as </span><span>pd
+</span><span style=color:#f92672>import </span><span>numpy </span><span style=color:#f92672>as </span><span>np
+</span><span style=color:#f92672>import </span><span>sys
+</span><span>
+</span><span>sys.path.insert(</span><span style=color:#ae81ff>0</span><span>, </span><span style=color:#e6db74>".."</span><span>)
+</span><span style=color:#f92672>from </span><span>src.kmeans </span><span style=color:#f92672>import </span><span>KMeans, Score
+</span><span>
+</span><span>
+</span><span style=color:#f92672>async </span><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>download_xml</span><span>(</span><span style=color:#fd971f;font-style:italic>year</span><span>: </span><span style=color:#66d9ef;font-style:italic>int</span><span>, </span><span style=color:#fd971f;font-style:italic>semaphore</span><span>: asyncio.Semaphore) -> </span><span style=color:#ae81ff>None</span><span>:
+</span><span>    </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>    Async download of xml file for a given year.
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>    Args:
+</span><span style=color:#75715e>        year (int): Year.
+</span><span style=color:#75715e>        semaphore (asyncio.Semaphore): Concurrent access controller.
+</span><span style=color:#75715e>    """
+</span><span>    limiter </span><span style=color:#f92672>= </span><span>AsyncLimiter(</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>0.125</span><span>)
+</span><span>    USER_AGENT </span><span style=color:#f92672>= </span><span style=color:#e6db74>""
+</span><span>    headers </span><span style=color:#f92672>= </span><span>{</span><span style=color:#e6db74>"User-Agent"</span><span>: USER_AGENT}
+</span><span>    DATA_DIR </span><span style=color:#f92672>= </span><span>os.path.join(os.getcwd(), </span><span style=color:#e6db74>"../data"</span><span>)
+</span><span>    </span><span style=color:#f92672>if not </span><span>os.path.exists(DATA_DIR):
+</span><span>        os.mkdir(DATA_DIR)
+</span><span>    url </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>f</span><span style=color:#e6db74>"https://www.al.sp.gov.br/repositorioDados/deputados/despesas_gabinetes_</span><span>{</span><span style=color:#66d9ef;font-style:italic>str</span><span>(year)}</span><span style=color:#e6db74>.xml"
+</span><span>    </span><span style=color:#f92672>async with </span><span>aiohttp.ClientSession(</span><span style=color:#fd971f;font-style:italic>headers</span><span style=color:#f92672>=</span><span>headers) </span><span style=color:#f92672>as </span><span>session:
+</span><span>        </span><span style=color:#f92672>await </span><span>semaphore.acquire()
+</span><span>        </span><span style=color:#f92672>async with </span><span>limiter:
+</span><span>            </span><span style=color:#f92672>async with </span><span>session.get(url) </span><span style=color:#f92672>as </span><span>resp:
+</span><span>                content </span><span style=color:#f92672>= await </span><span>resp.read()
+</span><span>                semaphore.release()
+</span><span>                file </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>f</span><span style=color:#e6db74>"despesas_gabinetes_</span><span>{</span><span style=color:#66d9ef;font-style:italic>str</span><span>(year)}</span><span style=color:#e6db74>.xml"
+</span><span>                </span><span style=color:#f92672>with </span><span style=color:#66d9ef>open</span><span>(os.path.join(DATA_DIR, file), </span><span style=color:#e6db74>"wb"</span><span>) </span><span style=color:#f92672>as </span><span>f:
+</span><span>                    f.write(content)
+</span><span>
+</span><span>
+</span><span style=color:#f92672>async </span><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>fetch_expenses</span><span>(</span><span style=color:#fd971f;font-style:italic>year_start</span><span>: </span><span style=color:#66d9ef;font-style:italic>int</span><span>, </span><span style=color:#fd971f;font-style:italic>year_end</span><span>: </span><span style=color:#66d9ef;font-style:italic>int</span><span>) -> </span><span style=color:#ae81ff>None</span><span>:
+</span><span>    </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>    Async download of xml files for a given period of time.
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>    Args:
+</span><span style=color:#75715e>        year_start (int): Start of the period.
+</span><span style=color:#75715e>        year_end (int): End of the period.
+</span><span style=color:#75715e>    """
+</span><span>    tasks </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>set</span><span>()
+</span><span>    semaphore </span><span style=color:#f92672>= </span><span>asyncio.Semaphore(</span><span style=color:#fd971f;font-style:italic>value</span><span style=color:#f92672>=</span><span style=color:#ae81ff>10</span><span>)
+</span><span>    </span><span style=color:#f92672>for </span><span>i </span><span style=color:#f92672>in </span><span style=color:#66d9ef>range</span><span>(</span><span style=color:#66d9ef;font-style:italic>int</span><span>(year_start), </span><span style=color:#66d9ef;font-style:italic>int</span><span>(year_end) </span><span style=color:#f92672>+ </span><span style=color:#ae81ff>1</span><span>):
+</span><span>        task </span><span style=color:#f92672>= </span><span>asyncio.create_task(download_xml(i, semaphore))
+</span><span>        tasks.add(task)
+</span><span>    </span><span style=color:#f92672>await </span><span>asyncio.wait(tasks, </span><span style=color:#fd971f;font-style:italic>return_when</span><span style=color:#f92672>=</span><span>asyncio.ALL_COMPLETED)
+</span><span>
+</span><span>
+</span><span style=color:#f92672;font-style:italic>def </span><span style=color:#a6e22e>parse_data</span><span>(</span><span style=color:#fd971f;font-style:italic>list_files</span><span>: List[</span><span style=color:#66d9ef;font-style:italic>str</span><span>]) -> List[Dict[</span><span style=color:#66d9ef;font-style:italic>str</span><span>, Union[</span><span style=color:#66d9ef;font-style:italic>str</span><span>, </span><span style=color:#ae81ff>None</span><span>]]]:
+</span><span>    </span><span style=color:#75715e>"""
+</span><span style=color:#75715e>    Parses xml files and extracts useful info.
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>    Args:
+</span><span style=color:#75715e>        list_files (list): List of paths for xml files.
+</span><span style=color:#75715e>
+</span><span style=color:#75715e>    Retorna:
+</span><span style=color:#75715e>        data (list): List of reimbursement dicts.
+</span><span style=color:#75715e>    """
+</span><span>    data </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>list</span><span>()
+</span><span>    </span><span style=color:#f92672>for </span><span>file </span><span style=color:#f92672>in </span><span>list_files:
+</span><span>        tree </span><span style=color:#f92672>= </span><span>ET.parse(file)
+</span><span>        xroot </span><span style=color:#f92672>= </span><span>tree.getroot()
+</span><span>        </span><span style=color:#f92672>for </span><span>child </span><span style=color:#f92672>in </span><span>xroot.iter(</span><span style=color:#e6db74>"despesa"</span><span>):
+</span><span>            cols </span><span style=color:#f92672>= </span><span>[elem.tag </span><span style=color:#f92672>for </span><span>elem </span><span style=color:#f92672>in </span><span>child]
+</span><span>            values </span><span style=color:#f92672>= </span><span>[elem.text </span><span style=color:#f92672>for </span><span>elem </span><span style=color:#f92672>in </span><span>child]
+</span><span>            data.append(</span><span style=color:#66d9ef;font-style:italic>dict</span><span>(</span><span style=color:#66d9ef>zip</span><span>(cols, values)))
+</span><span>    </span><span style=color:#f92672>return </span><span>data
+</span><span>
+</span><span>
+</span><span>asyncio.run(fetch_expenses(</span><span style=color:#ae81ff>2013</span><span>, </span><span style=color:#ae81ff>2022</span><span>))
+</span><span style=color:#f92672>if </span><span>os.path.exists(os.path.join(os.getcwd(), </span><span style=color:#e6db74>"../data"</span><span>)):
+</span><span>    os.chdir(</span><span style=color:#e6db74>"../data"</span><span>)
+</span><span>    files </span><span style=color:#f92672>= </span><span>glob.glob(</span><span style=color:#e6db74>"*.xml"</span><span>)
+</span><span>    load </span><span style=color:#f92672>= </span><span>parse_data(files)
+</span><span>    despesas </span><span style=color:#f92672>= </span><span>pd.DataFrame.from_dict(load)
+</span><span>ipca </span><span style=color:#f92672>= </span><span>pd.read_csv(</span><span style=color:#e6db74>"../data/ipca.csv"</span><span>)
+</span><span>ipca[</span><span style=color:#e6db74>"Data"</span><span>] </span><span style=color:#f92672>= </span><span>pd.to_datetime(ipca[</span><span style=color:#e6db74>"Data"</span><span>])
+</span><span>despesas[</span><span style=color:#e6db74>"Data"</span><span>] </span><span style=color:#f92672>= </span><span>pd.to_datetime(
+</span><span>    despesas[</span><span style=color:#e6db74>"Ano"</span><span>].astype(</span><span style=color:#66d9ef;font-style:italic>str</span><span>) </span><span style=color:#f92672>+ </span><span>(despesas[</span><span style=color:#e6db74>"Mes"</span><span>].astype(</span><span style=color:#66d9ef;font-style:italic>str</span><span>)).str.zfill(</span><span style=color:#ae81ff>2</span><span>) </span><span style=color:#f92672>+ </span><span style=color:#e6db74>"01"
+</span><span>)
+</span><span>despesas </span><span style=color:#f92672>= </span><span>despesas[
+</span><span>    despesas[</span><span style=color:#e6db74>"Tipo"</span><span>] </span><span style=color:#f92672>== </span><span style=color:#e6db74>"I - HOSPEDAGEM, ALIMENTAÇÃO E DESPESAS DE LOCOMOÇÃO"
+</span><span>]
+</span><span>despesas </span><span style=color:#f92672>= </span><span>despesas[[</span><span style=color:#e6db74>"Data"</span><span>, </span><span style=color:#e6db74>"CNPJ"</span><span>, </span><span style=color:#e6db74>"Valor"</span><span>]]
+</span><span>despesas </span><span style=color:#f92672>= </span><span>despesas[despesas[</span><span style=color:#e6db74>"Data"</span><span>].dt.year </span><span style=color:#f92672>> </span><span style=color:#ae81ff>2017</span><span>]
+</span><span>data </span><span style=color:#f92672>= </span><span>pd.merge(</span><span style=color:#fd971f;font-style:italic>left</span><span style=color:#f92672>=</span><span>despesas, </span><span style=color:#fd971f;font-style:italic>right</span><span style=color:#f92672>=</span><span>ipca, </span><span style=color:#fd971f;font-style:italic>on</span><span style=color:#f92672>=</span><span style=color:#e6db74>"Data"</span><span>, </span><span style=color:#fd971f;font-style:italic>how</span><span style=color:#f92672>=</span><span style=color:#e6db74>"inner"</span><span>)
+</span><span>data[</span><span style=color:#e6db74>"Valor_ref"</span><span>] </span><span style=color:#f92672>= </span><span>ipca[ipca[</span><span style=color:#e6db74>"Data"</span><span>] </span><span style=color:#f92672>== </span><span style=color:#e6db74>"2022-12-01"</span><span>][</span><span style=color:#e6db74>"Valor"</span><span>].values[</span><span style=color:#ae81ff>0</span><span>]
+</span><span>data[</span><span style=color:#e6db74>"Valor_corrigido"</span><span>] </span><span style=color:#f92672>= </span><span style=color:#66d9ef>round</span><span>(
+</span><span>    (data[</span><span style=color:#e6db74>"Valor_ref"</span><span>].astype(</span><span style=color:#66d9ef;font-style:italic>float</span><span>) </span><span style=color:#f92672>/ </span><span>data[</span><span style=color:#e6db74>"Valor_y"</span><span>].astype(</span><span style=color:#66d9ef;font-style:italic>float</span><span>))
+</span><span>    </span><span style=color:#f92672>* </span><span>data[</span><span style=color:#e6db74>"Valor_x"</span><span>].astype(</span><span style=color:#66d9ef;font-style:italic>float</span><span>),
+</span><span>    </span><span style=color:#ae81ff>2</span><span>,
+</span><span>)
+</span><span>data </span><span style=color:#f92672>= </span><span>data[[</span><span style=color:#e6db74>"CNPJ"</span><span>, </span><span style=color:#e6db74>"Valor_corrigido"</span><span>]]
+</span><span>data </span><span style=color:#f92672>= </span><span>data[data[</span><span style=color:#e6db74>"CNPJ"</span><span>].notnull()]
+</span><span>data </span><span style=color:#f92672>= </span><span>data.groupby(</span><span style=color:#e6db74>"CNPJ"</span><span>).filter(</span><span style=color:#f92672;font-style:italic>lambda </span><span style=color:#fd971f;font-style:italic>x</span><span>: </span><span style=color:#66d9ef>len</span><span>(x) </span><span style=color:#f92672>>= </span><span style=color:#ae81ff>20</span><span>)
+</span><span>sils, dbs </span><span style=color:#f92672>= </span><span style=color:#66d9ef;font-style:italic>list</span><span>(), </span><span style=color:#66d9ef;font-style:italic>list</span><span>()
+</span><span>kmeans </span><span style=color:#f92672>= </span><span>KMeans()
+</span><span>selecao_dados </span><span style=color:#f92672>= </span><span style=color:#66d9ef>sorted</span><span>(</span><span style=color:#66d9ef>zip</span><span>(data[</span><span style=color:#e6db74>"CNPJ"</span><span>], data[</span><span style=color:#e6db74>"Valor_corrigido"</span><span>]), </span><span style=color:#fd971f;font-style:italic>key</span><span style=color:#f92672>=</span><span style=color:#f92672;font-style:italic>lambda </span><span style=color:#fd971f;font-style:italic>x</span><span>: x[</span><span style=color:#ae81ff>0</span><span>])
+</span><span>resultados_lista </span><span style=color:#f92672>= </span><span>[]
+</span><span>
+</span><span style=color:#f92672>for </span><span>cnpj, grupo </span><span style=color:#f92672>in </span><span>groupby(selecao_dados, </span><span style=color:#fd971f;font-style:italic>key</span><span style=color:#f92672>=</span><span style=color:#f92672;font-style:italic>lambda </span><span style=color:#fd971f;font-style:italic>x</span><span>: x[</span><span style=color:#ae81ff>0</span><span>]):
+</span><span>    centroids_list </span><span style=color:#f92672>= </span><span>[]
+</span><span>    values </span><span style=color:#f92672>= </span><span>np.array([item[</span><span style=color:#ae81ff>1</span><span>] </span><span style=color:#f92672>for </span><span>item </span><span style=color:#f92672>in </span><span>grupo])
+</span><span>    kmeans.k </span><span style=color:#f92672>= </span><span>kmeans.get_optimal_k(values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>))
+</span><span>    kmeans.fit(values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>))
+</span><span>    anomalies_kmeans </span><span style=color:#f92672>= </span><span>kmeans.detect(values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>))
+</span><span>    silhouette_score </span><span style=color:#f92672>= </span><span>Score.silhouette(
+</span><span>        values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>), kmeans.get_labels(values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>))
+</span><span>    )
+</span><span>    db_score </span><span style=color:#f92672>= </span><span>Score.daviesbouldin(
+</span><span>        values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>), kmeans.get_labels(values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>))
+</span><span>    )
+</span><span>    labels </span><span style=color:#f92672>= </span><span>kmeans.get_labels(values.reshape(</span><span style=color:#f92672>-</span><span style=color:#ae81ff>1</span><span>, </span><span style=color:#ae81ff>1</span><span>))
+</span><span>    </span><span style=color:#f92672>for </span><span>value, label </span><span style=color:#f92672>in </span><span style=color:#66d9ef>zip</span><span>(values, labels):
+</span><span>        centroids_list.append({</span><span style=color:#e6db74>"centroid"</span><span>: kmeans.centroids[label][</span><span style=color:#ae81ff>0</span><span>]})
+</span><span>    centroid_idx </span><span style=color:#f92672>= </span><span style=color:#ae81ff>0
+</span><span>    </span><span style=color:#f92672>for </span><span>value </span><span style=color:#f92672>in </span><span>values:
+</span><span>        is_anomaly </span><span style=color:#f92672>= </span><span style=color:#ae81ff>1 </span><span style=color:#f92672>if </span><span>value </span><span style=color:#f92672>in </span><span>anomalies_kmeans </span><span style=color:#f92672>else </span><span style=color:#ae81ff>0
+</span><span>        resultados_lista.append(
+</span><span>            {
+</span><span>                </span><span style=color:#e6db74>"CNPJ"</span><span>: cnpj,
+</span><span>                </span><span style=color:#e6db74>"Valor"</span><span>: value,
+</span><span>                </span><span style=color:#e6db74>"Anomalia"</span><span>: is_anomaly,
+</span><span>                </span><span style=color:#e6db74>"Centroide"</span><span>: centroids_list[centroid_idx][</span><span style=color:#e6db74>"centroid"</span><span>],
+</span><span>                </span><span style=color:#e6db74>"Clusters"</span><span>: kmeans.k,
+</span><span>                </span><span style=color:#e6db74>"Silhueta"</span><span>: silhouette_score,
+</span><span>                </span><span style=color:#e6db74>"Davies_Bouldin"</span><span>: db_score,
+</span><span>            }
+</span><span>        )
+</span><span>        centroid_idx </span><span style=color:#f92672>+= </span><span style=color:#ae81ff>1
+</span><span>        
+</span><span>resultados </span><span style=color:#f92672>= </span><span>pd.DataFrame(resultados_lista)
+</span><span>resultados.to_csv(</span><span style=color:#e6db74>"../prd/resultado.csv"</span><span>, </span><span style=color:#fd971f;font-style:italic>index</span><span style=color:#f92672>=</span><span style=color:#ae81ff>False</span><span>, </span><span style=color:#fd971f;font-style:italic>encoding</span><span style=color:#f92672>=</span><span style=color:#e6db74>"utf-8"</span><span>)
+</span></code></pre></div></div><h1 id=references>References</h1><section class=footnotes><ol class=footnotes-list><li id=fn-1><p>Legislative Assembly of the State of São Paulo [Alesp]. 1997. Resolution n. 783, of July 1, 1997. Amends Resolution n° 776, of October 14, 1996, which implemented the new administrative structure, creates the Quality Center and institutes the office allowance. Available at: https://www.al.sp.gov.br/repositorio/legislacao/resolucao.alesp/1997/original-resolucao.alesp-783-01.07.1997.html. Accessed: March 19, 2023. <a href=#fr-1-1>↩</a> <a href=#fr-1-2>↩2</a></p><li id=fn-2><p>São Paulo State Government Treasury and Planning Secretariat. 2023. Indices. Available at: https://portal.fazenda.sp.gov.br/Paginas/Indices.aspx. Accessed: March 26, 2023. <a href=#fr-2-1>↩</a></p><li id=fn-3><p>São Paulo State Government Treasury and Planning Secretariat. 2023. Budget and financial execution. Available at: https://www.fazenda.sp.gov.br/sigeolei131/paginas/flexconsdespesa.aspx. Accessed: March 19, 2023. <a href=#fr-3-1>↩</a> <a href=#fr-3-2>↩2</a> <a href=#fr-3-3>↩3</a></p><li id=fn-4><p>São Paulo Public Prosecutor's Office. 2022. Electronic Information System. Available at: https://www.mpsp.mp.br/sei-sistema-eletronico-de-informacoes Accessed: March 26, 2023. <a href=#fr-4-1>↩</a></p><li id=fn-5><p>São Paulo State Court of Justice. 2023. E-SAJ. Available at: https://esaj.tjsp.jus.br/esaj/portal.do?servico=190090 Accessed: September 24, 2023. <a href=#fr-5-1>↩</a></p><li id=fn-6><p>Legislative Assembly of the State of São Paulo. 2023. Open Data Portal. Available at: https://www.al.sp.gov.br/dados-abertos/recurso/21 Accessed: March 26, 2023. <a href=#fr-6-1>↩</a></p><li id=fn-7><p>Brazilian Institute of Geography and Statistics. IPCA. Available at: https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html?=&t=series-historicas Accessed: March 26, 2023. <a href=#fr-7-1>↩</a></p><li id=fn-8><p>MacQueen, J. 1967. Some methods for classification and analysis of multivariate observations. In: 5th Berkeley Symposium on Mathematical Statistics and Probability, 1967, Los Angeles, LA, United States, Proceedings… p. 281-297. <a href=#fr-8-1>↩</a></p><li id=fn-9><p>Joshi, K.D.; Nalwade, P.S. 2012. Modified K-Means for better initial cluster centres. International Journal of Computer Science and Mobile Computing 7: 219-223. <a href=#fr-9-1>↩</a></p><li id=fn-10><p>Schubert, E. 2023. Stop using the elbow criterion for k-means and how to choose the number of clusters instead. SIGKDD Explorations Newsletter 25: 36-42. <a href=#fr-10-1>↩</a></p><li id=fn-11><p>Caliński, T.; Harabasz, J. 1974. A dendrite method for cluster analysis. Communications in Statistics 3: 1-27. <a href=#fr-11-1>↩</a></p><li id=fn-12><p>Morissette, L.; Chartier, S. 2013. The K-Means clustering technique: General considerations and implementation in Mathematica. Tutorials in Quantitative Methods for Psychology 9: 15-24. <a href=#fr-12-1>↩</a></p><li id=fn-13><p>Arthur, D.; Vassilvitskii, S. 2007. K-Means++: The advantages of careful seeding. Proceedings of Annual ACM-SIAM Symposium on Discrete Algorithms: 1027-1035. <a href=#fr-13-1>↩</a></p><li id=fn-14><p>Rousseeuw, P.J. 1987. Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. Journal of Computational and Applied Mathematics 20: 53-65. <a href=#fr-14-1>↩</a></p><li id=fn-15><p>Davies, D.L.; Bouldin, D.W. 1979. A cluster separation measure. IEEE Transactions on Pattern Analysis and Machine Intelligence 2: 224–227. <a href=#fr-15-1>↩</a></p><li id=fn-16><p>Chandola, V; Banerjee, A.; Kumar, V. 2009. Anomaly detection: a survey. Association for Computing Machinery Computing Surveys 41: 1-58. <a href=#fr-16-1>↩</a></p></ol></section></section></article></main><footer class=footer><div class=footer-content><div class=footer-left>© 2026 Rodolfo Viana</div><div class=footer-right>Made with <a href=https://www.getzola.org/ rel=noopener target=_blank>Zola</a>, <a href=https://github.com/not-matthias/apollo rel=noopener target=_blank>Apollo</a></div></div></footer></div>
