@@ -3,15 +3,15 @@ title= ""
 template = "homepage.html"
 +++
 
-Hi there,
+Hi there!
 
-I am Rodolfo Viana, a Brazilian data engineer aged <span id="age"></span>. I hold a postgraduate specialization in Data Science and Analytics from the University of São Paulo (USP) and am presently pursuing an M.Sc. in Computer Science at São Paulo State University (UNESP).
+I'm Rodolfo Viana, a <span id="age"></span>-year-old Brazilian data science specialist. I have a postgraduate degree in Data Science and Analytics from the University of São Paulo (USP) and I'm currently pursuing an M.Sc. in Computer Science at São Paulo State University (UNESP).
 
-On this website you will find articles on statistics, machine learning, and related topics, together with projects I have developed in the field of Data Science.
+Here you'll find articles on statistics, machine learning, and related topics, as well as projects I've developed in the field of data science.
 
-My résumé is available [here](/en/curriculo). You can also find me on [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) and [Github](https://github.com/rodolfo-viana). For direct inquiries, please write to [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
+My résumé is available [here](/en/curriculo). You can also find me on [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) and [Github](https://github.com/rodolfo-viana). Feel free to email me at [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
-Enjoy your reading!
+Happy reading!
 
 <script>
     const today = new Date();
