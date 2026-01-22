@@ -7,56 +7,58 @@ path = "curriculo"
 
 Rodolfo Viana<br />
 <!--<span id="age"></span> anos<br />-->
-Marília, São Paulo<br />
+São Paulo, Brasil<br />
 [Linkedin](https://www.linkedin.com/in/rodolfoviana/) / [Github](https://github.com/rodolfo-viana) / [E-mail](mailto:eu@rodolfoviana.com.br)
 
 # Resumo
 
-Engenheiro de Dados com mais de <span id="working-age"></span> anos de experiência, atuando no desenvolvimento e manutenção de pipelines de ETL e na definição de arquitetura de dados de ponta a ponta. Experiência em gestão e evolução de data warehouses em diferentes provedores de nuvem, garantindo qualidade, governança, performance e confiabilidade das soluções. Liderança de projetos e iniciativas multidisciplinares, com foco em entrega de valor e escalabilidade. Perfil em constante aprimoramento, tem especialização em Data Science pela Esalq-USP e atualmente cursa mestrado em Ciência da Computação na Unesp.
+Engenheiro de Dados com mais de <span id="working-age"></span> anos de experiência, atuando no desenvolvimento e manutenção de pipelines de ETL e na definição de arquitetura de dados de ponta a ponta. Experiência em gestão e evolução de data warehouses em diferentes provedores de nuvem, garantindo qualidade, governança, performance e confiabilidade. Liderança de projetos e iniciativas multidisciplinares, com foco em entrega de valor e escalabilidade. Especialista em Data Science pela Esalq-USP, atualmente cursa mestrado em Ciência da Computação na Unesp.
 
 # Experiência profissional
 
-⟶ Engenheiro de Dados Sr @ [Stadium Goods](https://www.stadiumgoods.com/)<br />
+⟶ Engenheiro de Dados Sr @ [Farfetch](https://www.stadiumgoods.com/)<br />
 [agosto de 2021 &mdash; o momento]
 
 > Responsabilidades:
 > 
-> - Projetar e implementar pipelines de dados escaláveis e automações que garantem a disponibilidade, integridade e eficiência dos dados, assegurando a operação de mais de 200 processos de dados
-> - Conduzir análises aprofundadas para verificar a consistência e confiabilidade dos dados
-> - Estudos ad hoc, relatórios e testes analíticos
+> - Projeta e implementa pipelines de ETL e automações para garantir a disponibilidade, integridade e eficiência dos dados, assegurando a operação de mais de 200 processos
+> - Cria aplicações como webscrapers e parsers para consumo de dados externos
+> - Conduz análises aprofundadas para verificar a consistência e confiabilidade dos dados
+> - Realiza estudos ad hoc e relatórios
 > 
 > Principais contribuições:
 > 
-> - Liderança no projeto de otimização da infraestrutura de dados, com ações que reduziram o tempo de processamento em 63%, aumentaram a performance (IOPS) em 88% e geraram 67% de economia nos custos mensais
-> - Mentoria e treinamento de mais de 10 profissionais na Stadium Goods, aprimorando suas habilidades técnicas
+> - Liderou projeto de otimização da infraestrutura de dados, com ações que reduziram o tempo de processamento em 63%, aumentaram a performance (IOPS) em 88% e geraram 67% de economia nos custos mensais
+> - Deu mentoria e treinamento a mais de 10 profissionais, aprimorando suas habilidades técnicas
 
 ⟶ Professor @ [Universidade de Marília](https://oficial.unimar.br/bacharelado-em-inteligencia-artificial/)<br />
 [janeiro de 2026 &mdash; presente]
 
 > Responsabilidades:
 > 
-> - Lecionar a disciplina "Sistemas Autônomos e Agentes Inteligentes" para alunos de graduação em Inteligência Artificial
-> - Planejar e elaborar materiais didáticos da disciplina, incluindo aulas, atividades avaliativas e materiais de apoio
+> - Leciona a disciplina "Sistemas Autônomos e Agentes Inteligentes" para alunos de graduação em Inteligência Artificial
+> - Leciona a disciplina "Introdução à Inteligência Artificial" para alunos de todos os cursos de TI da instituição
+> - Planeja e elabora materiais didáticos das disciplinas, incluindo aulas, atividades avaliativas e materiais de apoio
 
 ⟶ Professor @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
 [julho de 2021 &mdash; dezembro de 2025]
 
 > Responsabilidade: 
 > 
-> - Lecionar "Introdução à Programação com Python" e "Web Scraping" em cursos de pós-graduação, tendo treinado mais de 100 profissionais
+> - Lecionou "Introdução à Programação com Python" e "Web Scraping" em cursos de pós-graduação, tendo treinado mais de 100 profissionais
 
 ⟶ Cientista de Dados Sr @ [Rede Globo](https://redeglobo.globo.com/)<br />
 [dezembro de 2018 &mdash; agosto de 2021]
 
 > Responsabilidades:
 > 
-> - Desenvolver e implementar modelos preditivos &mdash;incluindo algoritmos de classificação e redes neurais&mdash; para business intelligence e personalização de conteúdo
-> - Realizar análise exploratória de dados e modelagem estatística para gerar ideias de pautas e informar o planejamento editorial
-> - Liderar o design e implementação de pipelines ETL e processos de web scraping em larga escala para ingestão de dados externos para análise
+> - Desenvolveu e implementou modelos preditivos &mdash;incluindo algoritmos de classificação e redes neurais&mdash; para business intelligence e personalização de conteúdo
+> - Realizou análises exploratórias de dados e modelagem estatística para gerar ideias de pautas e informar o planejamento editorial
+> - Liderou o design e a implementação de pipelines ETL e processos de web scraping em larga escala para ingestão de dados externos para análise
 > 
 > Principal contribuição:
 > 
-> - Concebi e implementei um sistema que forneceu estatísticas em tempo real de SARS-CoV-2 para mais de 500 jornalistas, expandindo a cobertura de notícias e aumentando o engajamento dos telespectadores em 41%
+> - Concebeu e implementou sistema responsável por fornecer estatísticas em tempo real de SARS-CoV-2 para mais de 500 jornalistas, expandindo a cobertura de notícias e aumentando o engajamento dos telespectadores em 41%
 
 # Formação
 
@@ -76,10 +78,10 @@ Engenheiro de Dados com mais de <span id="working-age"></span> anos de experiên
     > Google Cloud Platform (GCP), AWS, Microsoft Azure
 
 - Engenharia de Dados e Orquestração
-    > Docker, dbt, Databricks, Apache Airflow, Apache Spark, Google Cloud Functions, AWS Lambda, Apache NiFi, Pentaho, Git, Terraform
+    > Docker, dbt, Databricks, Airflow, Spark, Google Cloud Functions, AWS Lambda, Apache NiFi, Pentaho, Git, Terraform
 
 - Machine Learning e IA
-    > Pytorch, TensorFlow, Statsmodels, PyCaret, scikit-learn
+    > PyTorch, TensorFlow, Statsmodels, PyCaret, scikit-learn
 
 - SQL e Bancos de Dados
     > Google BigQuery, Amazon Redshift, Azure Synapse, Snowflake, Microsoft SQL Server, MySQL, PostgreSQL
