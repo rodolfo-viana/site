@@ -28,6 +28,8 @@ However, its limitations have motivated variants aimed at improving representati
 
 Automated polyp segmentation has evolved significantly from classical methods to specialized deep architectures. Initial approaches relied on manual features and traditional computer vision techniques. Bernal et al.[^3] proposed WM-DOVA maps combining intensity and shape information, while Tajbakhsh et al.[^5] employed shallow convolutional networks with contextual features for detection in colonoscopy videos.
 
+<img src="./imagem.gif" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+
 The introduction of fully convolutional networks (FCN)[^8] revolutionized semantic segmentation by eliminating final dense layers and enabling pixel-by-pixel predictions. Brandão et al.[^4] adapted FCNs for polyp segmentation, demonstrating superiority over traditional methods but still facing difficulties with imprecise edges and morphological variations. The U-Net architecture[^6], with its encoder-decoder paradigm and skip connections, became the reference for biomedical segmentation by preserving spatial information at multiple scales.
 
 Various U-Net extensions have been proposed for polyp segmentation. Zhou et al.[^9] introduced nested dense connections to reduce semantic gaps, while Oktay et al.[^10] incorporated spatial attention mechanisms. Jha et al.[^11] proposed DoubleU-Net, combining two encoder-decoder paths with ASPP (Atrous Spatial Pyramid Pooling) blocks, achieving a Dice score of 82.3\% on Kvasir-SEG.

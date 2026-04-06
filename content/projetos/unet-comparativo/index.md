@@ -30,6 +30,8 @@ A segmentação automatizada de pólipos evoluiu significativamente desde métod
 
 A introdução de redes totalmente convolucionais (FCN)[^8] revolucionou a segmentação semântica ao eliminar camadas densas finais e permitir predições pixel a pixel. Brandão et al.[^4] adaptaram FCNs para segmentação de pólipos, demonstrando superioridade sobre métodos tradicionais mas ainda enfrentando dificuldades com bordas imprecisas e variações morfológicas. A arquitetura U-Net[^6], com seu paradigma codificador-decodificador e *skip connections*, tornou-se referência para segmentação biomédica ao preservar informação espacial em múltiplas escalas.
 
+<img src="./imagem.gif" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+
 Diversas extensões da U-Net têm sido propostas para segmentação de pólipos. Zhou et al.[^9] introduziram conexões densas aninhadas para reduzir lacunas semânticas, enquanto Oktay et al.[^10] incorporaram mecanismos de atenção espacial. Jha et al.[^11] propuseram DoubleU-Net, combinando dois caminhos codificador-decodificador com blocos ASPP (*Atrous Spatial Pyramid Pooling*), alcançando Dice score de 82,3\% no Kvasir-SEG.
 
 Abordagens recentes exploram mecanismos sofisticados de atenção e agregação multi-escala. Fan et al.[^12] desenvolveram PraNet com atenção reversa paralela, reportando 89,8\% de Dice no Kvasir-SEG. Fang et al.[^13] propuseram agregação seletiva de características com restrições de área-fronteira, enquanto Zhang et al.[^14] introduziram seleção adaptativa de contexto para lidar com variabilidade morfológica. Srivastava et al.[^15] propuseram MSRF-Net com fusão residual multi-escala.
