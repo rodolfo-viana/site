@@ -5,10 +5,10 @@ template = "homepage.html"
 
 Olá!
 
-Meu nome é Rodolfo Viana e sou especialista em ciência de dados. Tenho pós-graduação em Data Science e Analytics pela USP e faço mestrado em Ciência da Computação na Unesp.
+Sou Rodolfo Viana, especialista em Ciência de Dados. Sou pós-graduado em Data Science e Analytics pela USP, mestrando em Ciência da Computação na Unesp e membro da SBC.
 
-Neste site, você encontrará artigos sobre estatística, machine learning e temas correlatos, além de projetos que desenvolvi no campo da ciência de dados. 
+Neste site, você encontrará artigos sobre IA, machine learning, estatística e temas correlatos, além de projetos que desenvolvi na área de dados.
 
-Meu currículo está disponível [aqui](/curriculo). Você também pode me encontrar no [Linkedin](https://www.linkedin.com/in/rodolfoviana/) e no [Github](https://github.com/rodolfo-viana). Para contatos diretos, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
+Meu currículo está disponível [aqui](/curriculo). Você também pode me encontrar no [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) e no [GitHub](https://github.com/rodolfo-viana). Para contato direto, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
 Boa leitura.
