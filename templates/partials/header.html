@@ -73,26 +73,26 @@
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jetbrains-mono@1.0.6/css/jetbrains-mono.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@4.5.8/index.min.css">
     {% else %}
-        <link rel="stylesheet" href="{{ get_url(path='fonts.css') }}" />
+        <link rel="stylesheet" href="{{ get_url(path='fonts.css', cachebust=true) }}" />
     {% endif %}
 
     {# Theme stylesheets. Only "toggle"/"auto" need the runtime switcher. #}
     {% set theme = config.extra.theme | default(value="toggle") %}
     {% if theme == "dark" %}
-        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css', cachebust=true) }}" />
     {% elif theme == "light" %}
-        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css', cachebust=true) }}" />
     {% elif theme == "auto" %}
-        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css') }}" />
-        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css') }}" media="(prefers-color-scheme: dark)" />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css', cachebust=true) }}" />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css', cachebust=true) }}" media="(prefers-color-scheme: dark)" />
     {% elif theme == "toggle" %}
-        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css') }}" />
-        <link id="darkModeStyle" rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css') }}" />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css', cachebust=true) }}" />
+        <link id="darkModeStyle" rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css', cachebust=true) }}" />
     {% endif %}
 
     {# Must stay synchronous and ahead of paint, otherwise the wrong theme flashes. #}
     {% if theme == "auto" or theme == "toggle" %}
-        <script src="{{ get_url(path='js/themetoggle.js') }}"></script>
+        <script src="{{ get_url(path='js/themetoggle.js', cachebust=true) }}"></script>
         {% if theme == "auto" %}
             <script>setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");</script>
         {% else %}
@@ -100,7 +100,7 @@
         {% endif %}
     {% endif %}
 
-    <link rel="stylesheet" type="text/css" media="screen" href="{{ get_url(path='main.css') }}" />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ get_url(path='main.css', cachebust=true) }}" />
 
     {% if config.extra.stylesheets %}
         {% for stylesheet in config.extra.stylesheets %}
@@ -109,15 +109,17 @@
     {% endif %}
 
     {% if config.extra.fancy_code %}
-        <script defer src="{{ get_url(path='js/codeblock.js') }}"></script>
+        <script defer src="{{ get_url(path='js/codeblock.js', cachebust=true) }}"></script>
     {% endif %}
     {% if config.extra.dynamic_note | default(value=false) %}
-        <script defer src="{{ get_url(path='js/note.js') }}"></script>
+        <script defer src="{{ get_url(path='js/note.js', cachebust=true) }}"></script>
     {% endif %}
-    <script defer src="{{ get_url(path='js/mobile-menu.js') }}"></script>
+    <script defer src="{{ get_url(path='js/mobile-menu.js', cachebust=true) }}"></script>
 
+    {# Must NOT be deferred: pages that use d3 call it from an inline <script>
+       in the body, which runs during parsing, before deferred scripts execute. #}
     {% if need_d3 %}
-        <script defer src="{{ get_url(path='js/d3.min.js') }}"></script>
+        <script src="{{ get_url(path='js/d3.min.js', cachebust=true) }}"></script>
     {% endif %}
 
     {% if need_math %}

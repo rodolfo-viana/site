@@ -1,4 +1,4 @@
-<script src={{ get_url(path="js/mermaid.js" ) }}></script>
+<script src="{{ get_url(path='js/mermaid.js', cachebust=true) }}"></script>
 
 <pre class="mermaid">
   {{ body | safe }}
