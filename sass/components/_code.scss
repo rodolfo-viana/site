@@ -1,14 +1,14 @@
-// Define base colors and fonts for light and dark themes
+// Define base colors for light and dark themes.
+// --code-font is declared once, in _tokens.scss.
 :root {
-    --code-font: monospace;
     --bg-primary: var(--bg-1);
     --text-color: var(--text-0); // Color of the code text
     --label-color: #f0f0f0; // Text color of the label
-    --hightlight-color: #f0f0f0;
+    --highlight-color: #f0f0f0;
 }
 
 :root.dark {
-    --hightlight-color: #204e8a;
+    --highlight-color: #204e8a;
 }
 
 
@@ -83,6 +83,8 @@ code {
     font-variant-ligatures: none;
 }
 
+// The !important flags below are load-bearing: Zola emits inline styles for the
+// Monokai highlighting theme, and these rules have to win against them.
 pre:not(.mermaid) {
     background-color: var(--bg-primary) !important;
     border-radius: 0px;
@@ -93,9 +95,18 @@ pre:not(.mermaid) {
     position: relative;
 
     mark {
-        background-color: var(--hightlight-color) !important; // Ensure mark uses the theme background
+        background-color: var(--highlight-color) !important; // Ensure mark uses the theme background
         padding: 0;
         border-radius: 0px;
+    }
+
+    // Zola's bundled Monokai theme maps the whitespace between the `class`
+    // keyword and the class name to black-on-white, which renders as a white
+    // block mid-line. Other themes (dracula, ayu-dark) don't do this.
+    // Inline styles, so !important is required.
+    span[style*="background-color:#fff"] {
+        background-color: transparent !important;
+        color: inherit !important;
     }
 
     code {
@@ -115,7 +126,7 @@ pre:not(.mermaid) {
                 display: block;
                 color: unset;
                 padding: 0;
-                background-color: var(--hightlight-color) !important;
+                background-color: var(--highlight-color) !important;
                 filter: brightness(1.2); // Example to slightly increase brightness
             }
 
@@ -133,7 +144,7 @@ pre:not(.mermaid) {
             text-align: center;
             user-select: none;
             min-width: 60px;
-            border-right: none,
+            border-right: none;
         }
 
         tbody tr:nth-child(even),

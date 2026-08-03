@@ -8,6 +8,7 @@ weight = 2
 tags=["aprendizado de máquina", "processamento de linguagem natural", "unesp"]
 
 [extra]
+math = true
 toc = true
 
 +++

@@ -3,25 +3,25 @@
     grid-template-rows: auto;
     gap: 24px;
     padding: 12px 0;
-}
 
-@media all and (min-width: 640px) {
-    .cards {
+    @include above($bp-sm) {
         grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
     }
-}
 
-@media all and (max-width: 640px) {
-    .cards {
+    @include below($bp-sm) {
         grid-template-columns: repeat(auto-fill, 1fr);
+    }
+
+    @include below($bp-md) {
+        gap: 18px;
     }
 }
 
 .card {
     min-height: 100px;
     background: var(--bg-1);
-    border: 2px solid var(--border-color);
-    border-radius: 10px;
+    border: $border-card solid var(--border-color);
+    border-radius: $radius-lg;
     overflow: hidden;
 }
 
@@ -38,6 +38,8 @@
     width: 100%;
 }
 
+// Keeps the top of a card from butting against the title when a page has no
+// extra.local_image / extra.remote_image.
 .card-image-placeholder {
     height: 12px;
     width: 100%;
@@ -46,10 +48,4 @@
 .card-description {
     margin-top: 0.5em;
     overflow: hidden;
-}
-
-@media all and (max-width:720px) {
-    .cards {
-        gap: 18px;
-    }
 }

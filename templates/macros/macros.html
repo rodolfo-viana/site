@@ -1,11 +1,11 @@
 {% macro list_tag_posts(pages, tag_name=false) %}
     {% if tag_name %}
     <div class="page-header">
-        {% if lang == config.default_language %}Textos com a tag {% else %}Texts tagged {% endif %}<i>{{ tag_name }}</i><span class="primary-color" style="font-size: 1.6em">.</span>
+        {{ trans(key="tagged", lang=lang) }} <i>{{ tag_name }}</i><span class="primary-color trailing-dot">.</span>
     </div>
     {% else %}
     <div class="page-header">
-        Todos<span class="primary-color" style="font-size: 1.6em">.</span>
+        {{ trans(key="all", lang=lang) }}<span class="primary-color trailing-dot">.</span>
     </div>
     {% endif %}
 
@@ -20,8 +20,7 @@
     <li class="list-item">
     <section>
         <div class="post-header">
-            {% if page.lang == config.default_language %}<time>{{ page.date | date(format="%d-%m-%Y") }}</time>{% else %}<time>{{ page.date | date(format="%m-%d-%Y") }}</time>{% endif %}
-            
+            <time>{{ page.date | date(format=trans(key="date_format", lang=page.lang)) }}</time>
 
             <div>
                 <h1 class="title">
@@ -44,7 +43,7 @@
                     </div>
 
                     {% if not hide_read_more %}
-                    <a class="readmore" href={{ page.permalink | safe }}>{% if page.lang == config.default_language %}Leia mais ⟶{% else %}Read more ⟶{% endif %}</a>
+                    <a class="readmore" href="{{ page.permalink | safe }}">{{ trans(key="read_more", lang=page.lang) }}</a>
                     {% endif %}
                 </div>
             </div>
@@ -88,9 +87,28 @@
 
 {% macro page_header(title) %}
     <div class="page-header">
-        {{ title }}<span class="primary-color" style="font-size: 1.6em">.</span>
+        {{ title }}<span class="primary-color trailing-dot">.</span>
     </div>
-{% endmacro content %}
+{% endmacro page_header %}
+
+{# Shared by section.html and cards.html #}
+{% macro pagination(paginator) %}
+    {% if paginator.previous or paginator.next %}
+        <ul class="pagination">
+            {% if paginator.previous %}
+                <span class="page-item page-prev">
+                    <a href="{{ paginator.previous }}" class="page-link" aria-label="Previous"><span aria-hidden="true">{{ trans(key="prev", lang=lang) }}</span></a>
+                </span>
+            {% endif %}
+
+            {% if paginator.next %}
+                <span class="page-item page-next">
+                    <a href="{{ paginator.next }}" class="page-link" aria-label="Next"><span aria-hidden="true">{{ trans(key="next", lang=lang) }}</span></a>
+                </span>
+            {% endif %}
+        </ul>
+    {% endif %}
+{% endmacro pagination %}
 
 {% macro home_page(section) %}
 <main>
@@ -111,18 +129,19 @@
             {{ post_macros::page_header(title=page.title) }}
 
                 <div class="meta">
+                    {% set date_format = trans(key="date_format", lang=page.lang) %}
                     {% if page.date %}
-                    {% if page.lang == config.default_language %}Publicação: <time>{{ page.date | date(format="%d-%m-%Y") }}</time>{% else %}Published: <time>{{ page.date | date(format="%m-%d-%Y") }}</time>{% endif %}
+                    {{ trans(key="published", lang=page.lang) }} <time>{{ page.date | date(format=date_format) }}</time>
                     {% endif %}
 
                     {% if page.updated %}
-                    {% if page.lang == config.default_language %}<br />Atualização: <time>{{ page.updated | date(format="%d-%m-%Y") }}</time>{% else %}<br />Updated: <time>{{ page.updated | date(format="%m-%d-%Y") }}</time>{% endif %}
+                    <br />{{ trans(key="updated", lang=page.lang) }} <time>{{ page.updated | date(format=date_format) }}</time>
                     {% endif %}
 
                     {# Inline display of tags directly after the date #}
                     {% if page.taxonomies and page.taxonomies.tags %}
                             <br />
-                            <span class="tags-label">Tags:</span>
+                            <span class="tags-label">{{ trans(key="tags_label", lang=page.lang) }}</span>
                             <span class="tags">
                                 {%- for tag in page.taxonomies.tags %}
                                     <a href="{{ get_taxonomy_url(kind='tags', name=tag, lang=page.lang) }}" class="post-tag">{{ tag }}</a>{% if not loop.last %}, {% endif %}
@@ -141,7 +160,7 @@
         {% if config.extra.toc | default(value=false) %}
         {% if page.toc and page.extra.toc | default(value=false) %}
             <div class="toc-container">
-                <h1 class="toc-title">{% if page.lang == config.default_language %}Sumário{% else %}Table of Contents{% endif %}</h1>
+                <h1 class="toc-title">{{ trans(key="toc", lang=page.lang) }}</h1>
                 <ul class="toc-list">
                     {% for h1 in page.toc %}
                         <li>
@@ -202,8 +221,7 @@
 
                 <div class="meta">
                     {%- if page.date %}
-                    {% if page.lang == config.default_language %}<time>{{ page.date | date(format="%d-%m-%Y") }}</time>{% else %}<time>{{ page.date | date(format="%m-%d-%Y") }}</time>{% endif %}
-                        
+                    <time>{{ page.date | date(format=trans(key="date_format", lang=page.lang)) }}</time>
                     {% endif -%}
                     {% if page.draft %}
                         <span class="draft-label">DRAFT</span>

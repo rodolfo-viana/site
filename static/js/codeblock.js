@@ -1,15 +1,5 @@
-// Function to get code text from tables, skipping line numbers
-const getCodeFromTable = (codeBlock) => {
-    return [...codeBlock.querySelectorAll('tr')]
-        .map(row => row.querySelector('td:last-child')?.innerText ?? '')
-        .join('');
-};
-
-// Function to get code text from non-table blocks
-const getNonTableCode = (codeBlock) => {
-    return codeBlock.textContent.trim();
-};
-
+// Adds a language badge to every highlighted code block and keeps it pinned to
+// the right edge while the block scrolls horizontally.
 document.addEventListener('DOMContentLoaded', function () {
     // Select all `pre` elements containing `code`
 
@@ -33,8 +23,11 @@ document.addEventListener('DOMContentLoaded', function () {
         const pre = codeBlock.parentNode;
         pre.style.position = 'relative'; // Ensure parent `pre` can contain absolute elements
 
-        const langClass = codeBlock.className.match(/language-(\w+)/);
-        const lang = langClass ? langClass[1] : 'default';
+        // Zola emits <code data-lang="python">, not class="language-python",
+        // so the class lookup alone always fell through to 'default'.
+        const lang = codeBlock.dataset.lang
+            || (codeBlock.className.match(/language-([\w-]+)/) || [])[1]
+            || 'default';
 
         // Create and append the label
         const label = document.createElement('span');

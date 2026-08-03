@@ -1,0 +1,14 @@
+table {
+  border-spacing: 0;
+  border-collapse: collapse;
+}
+
+table th,
+table td {
+  padding: 6px 13px;
+  border: $border-hairline solid var(--table-border);
+}
+
+table th {
+  font-size: large;
+}

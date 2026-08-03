@@ -1,0 +1,16 @@
+.tags {
+  ul {
+    margin-left: 0;
+    padding-left: 0;
+  }
+
+  li {
+    list-style-type: none;
+  }
+
+  // The a / a:hover pair here restated the global rules in base/_elements.scss
+  // verbatim; only the font-family is actually specific to tags.
+  a {
+    font-family: var(--text-font);
+  }
+}

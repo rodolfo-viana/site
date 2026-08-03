@@ -6,17 +6,18 @@
 
 
 .note-container {
-  border-radius: 4px;
+  border-radius: $radius-sm;
   overflow: hidden;
   margin: 1em 0;
   position: relative;
-  border-left: 3px solid var(--primary-color);
-  font-family: var(--paragraph-font);
+  border-left: $border-accent solid var(--primary-color);
+  // was var(--paragraph-font), which is not defined anywhere
+  font-family: var(--text-font);
 }
 
 .note-toggle,
 .note-header {
-  font-family: var(--paragraph-font);
+  font-family: var(--text-font);
   color: var(--note-header-color);
   background-color: var(--note-header-bg);
   padding: 10px 25px;

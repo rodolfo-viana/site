@@ -10,12 +10,63 @@ ignored_content = ["rascunhos/"]
 taxonomies = [{ name = "tags" }]
 author = "rodolfo viana"
 
+# UI strings for the default language (pt).
+# Every user-facing string in the templates lives here or in
+# [languages.en.translations]; templates read them with trans(key=..., lang=lang).
+[translations]
+tagged = "Textos com a tag"
+all = "Todos"
+read_more = "Leia mais ⟶"
+published = "Publicação:"
+updated = "Atualização:"
+tags_label = "Tags:"
+toc = "Sumário"
+tags_title = "Tags"
+post_count_one = "post"
+post_count_many = "posts"
+prev = "← Anterior"
+next = "Próxima →"
+made_with = "Feito com"
+not_found = "Página não encontrada :("
+switch_to = "Switch to English"
+switch_label = "EN"
+date_format = "%d-%m-%Y"
+menu_posts = "posts"
+menu_projects = "projetos"
+menu_classes = "aulas"
+menu_cv = "cv"
+menu_tags = "tags"
+
 # Multilingual configuration
 [languages.en]
 title = "rodolfo viana"
 description = "classes, studies and publications about data science"
 generate_feeds = false
 taxonomies = [{ name = "tags" }]
+
+[languages.en.translations]
+tagged = "Texts tagged"
+all = "All"
+read_more = "Read more ⟶"
+published = "Published:"
+updated = "Updated:"
+tags_label = "Tags:"
+toc = "Table of Contents"
+tags_title = "Tags"
+post_count_one = "post"
+post_count_many = "posts"
+prev = "← Prev"
+next = "Next →"
+made_with = "Made with"
+not_found = "Page not found :("
+switch_to = "Voltar para Português"
+switch_label = "PT"
+date_format = "%m-%d-%Y"
+menu_posts = "posts"
+menu_projects = "projects"
+menu_classes = "classes"
+menu_cv = "résumé"
+menu_tags = "tags"
 
 [markdown]
 external_links_target_blank = true
@@ -32,15 +83,17 @@ favicon = "/favicon.png"
 theme = "dark"
 fancy_code = true
 dynamic_note = true
-comment = false
-mathjax = true
 
-# Default menu (Portuguese)
+# Heavy, page-specific libraries. Off by default; opt in per page with
+# `[extra] math = true` / `d3 = true` in the page's front matter.
+mathjax = false
+d3 = false
+
+# One menu for every language. `key` resolves against [translations] /
+# [languages.<code>.translations]; `url` is resolved per-language by get_url().
 menu = [
-    { name = "posts", url = "publicacoes", weight = 1 },
-    { name = "projetos", url = "projetos", weight = 2 },
-    { name = "cv", url = "curriculo", weight = 3 },
-    { name = "tags", url = "tags", weight = 4 }
+    { key = "menu_posts", url = "publicacoes", weight = 1 },
+    { key = "menu_projects", url = "projetos", weight = 2 },
+    { key = "menu_cv", url = "curriculo", weight = 3 },
+    { key = "menu_tags", url = "tags", weight = 4 }
 ]
-
-custom_css = []

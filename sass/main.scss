@@ -1,53 +1,24 @@
-@import "parts/_cards.scss";
-@import "parts/_footer.scss";
-@import "parts/_code.scss";
-@import "parts/_header.scss";
-@import "parts/_image.scss";
-@import "parts/_toc.scss";
-@import "parts/_note.scss";
-@import "parts/_misc.scss";
-@import "parts/_mermaid.scss";
-@import "parts/_table.scss";
-@import "parts/_tags.scss";
-@import "parts/_d3.scss";
+// Import order is the cascade order: tokens, then bare elements, then layout,
+// then components. Anything later can safely override anything earlier.
+//
+// Colour tokens are NOT imported here — theme/dark.scss and theme/light.scss
+// compile to their own stylesheets and are linked separately by
+// templates/partials/header.html.
 
+@import "tokens";
 
-:root {
-  --border-color: var(--border-color);
-  --text-font: 'Jetbrains Mono', 'Helvetica', sans-serif;
-  --header-font: 'Space Grotesk', 'Helvetica', sans-serif;
-  --code-font: 'Ubuntu Mono', monospace;
-}
+@import "base/elements";
+@import "base/typography";
 
-html {
-  background-color: var(--bg-0);
-  color: var(--text-0);
-  font-family: var(--text-font);
-  line-height: 1.6em;
-  overflow-y: scroll;
-}
+@import "layout/shell";
+@import "layout/header";
+@import "layout/footer";
 
-.content {
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 0 24px;
-  word-wrap: break-word;
-}
-
-@media all and (min-width:640px) {
-  html {
-    font-size: 14px;
-  }
-}
-
-@media all and (min-width:720px) {
-  html {
-    font-size: 16px;
-  }
-}
-
-@media all and (min-width:960px) {
-  html {
-    font-size: 16px;
-  }
-}
+@import "components/cards";
+@import "components/code";
+@import "components/image";
+@import "components/note";
+@import "components/table";
+@import "components/tags";
+@import "components/mermaid";
+@import "components/d3";

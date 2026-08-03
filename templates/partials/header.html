@@ -1,166 +1,106 @@
-{% import "macros/macros.html" as post_macros %}
-
 <head>
     <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="base" content="{{ config.base_url }}">
 
+    {# Heavy, page-specific libraries: site default, overridable per page. #}
+    {%- set_global need_math = config.extra.mathjax | default(value=false) -%}
+    {%- set_global need_d3 = config.extra.d3 | default(value=false) -%}
+    {%- if page is defined -%}
+        {%- if page.extra.math is defined %}{% set_global need_math = page.extra.math %}{% endif -%}
+        {%- if page.extra.d3 is defined %}{% set_global need_d3 = page.extra.d3 %}{% endif -%}
+    {%- endif -%}
+
+    {# Pages may supply their own meta tags and suppress the defaults below.
+       Flags are reset explicitly so state cannot leak between renders. #}
+    {%- set_global page_has_og_title = false -%}
+    {%- set_global page_has_og_description = false -%}
+    {%- set_global page_has_description = false -%}
     {% if page.extra.meta %}
-         {% for data in page.extra.meta %}
-             <meta
-                 {% for key, value in data%}
-                     {% if key == "property" and value == "og:title"%}
-                         {% set_global page_has_og_title = true -%}
-                     {% endif %}
-                     {% if key == "property" and value == "og:description"%}
-                         {% set_global page_has_og_description = true -%}
-                     {% endif %}
-                     {% if key == "name" and value == "description"%}
-                         {% set_global page_has_description = true -%}
-                     {% endif %}
-                     {{ key }}="{{ value }}"
-                {% endfor %}
-            />
+        {% for data in page.extra.meta %}
+            <meta
+                {%- for key, value in data %}
+                    {%- if key == "property" and value == "og:title" %}{% set_global page_has_og_title = true %}{% endif -%}
+                    {%- if key == "property" and value == "og:description" %}{% set_global page_has_og_description = true %}{% endif -%}
+                    {%- if key == "name" and value == "description" %}{% set_global page_has_description = true %}{% endif %}
+                    {{ key }}="{{ value }}"
+                {%- endfor %} />
         {% endfor %}
     {% endif %}
 
-    {# Site title #}
-    {% set current_path = current_path | default(value="/") %}
-    {% if current_path == "/" %}
-    <title>
-        {{ config.title | default(value="Home") }}
-    </title>
+    {# Title. Home pages carry an empty title in front matter, so both languages
+       fall through to config.title (which is itself per-language). #}
+    {%- if page.title %}{% set page_title = page.title %}
+    {%- elif section.title %}{% set page_title = section.title %}
+    {%- else %}{% set page_title = config.title %}
+    {%- endif %}
+    <title>{{ page_title }}</title>
+
     {% if not page_has_og_title %}
-        <meta property="og:title" content="{{ config.title | default(value="Home") }}" />
+        <meta property="og:title" content="{{ page_title }}" />
     {% endif %}
 
-    {% else %}
-    <title>
-        {% if page.title %} {{ page.title }}
-        {% elif section.title %} {{ section.title }}
-        {% elif config.title %} {{ config.title }}
-        {% else %} Post {% endif %}
-    </title>
-
-        {% if not page_has_og_title %}
-            <meta property="og:title" content="{% if page.title -%}{{ page.title }}{% elif config.title -%}{{ config.title }}{% else -%}Post{% endif -%}" />
-        {% endif %}
-     {% endif %}
-
-     {% if not page_has_og_description %}
-         {% if page.description %}
-             <meta property="og:description" content="{{ page.description }}" />
-         {% elif config.description %}
-             <meta property="og:description" content="{{ config.description }}" />
-         {% endif %}
-     {% endif %}
-
-     {% if not page_has_description %}
-         {% if page.description %}
-             <meta name="description" content="{{ page.description }}" />
-         {% elif config.description %}
-             <meta name="description" content="{{ config.description }}" />
-         {% endif %}
+    {%- if page.description %}{% set page_description = page.description %}
+    {%- elif config.description %}{% set page_description = config.description %}
+    {%- else %}{% set page_description = "" %}
+    {%- endif %}
+    {% if page_description %}
+        {% if not page_has_description %}<meta name="description" content="{{ page_description }}" />{% endif %}
+        {% if not page_has_og_description %}<meta property="og:description" content="{{ page_description }}" />{% endif %}
     {% endif %}
 
-    {# Open Graph image for social media #}
-    <meta property="og:image" content="{{ config.base_url }}/image.png" />
+    <meta property="og:image" content="{{ get_url(path='image.png') }}" />
     <meta property="og:image:type" content="image/png" />
-    <meta property="og:type" content="website" />
+    <meta property="og:type" content="{% if page.date %}article{% else %}website{% endif %}" />
     <meta property="og:url" content="{{ current_url | default(value=config.base_url) }}" />
 
-    {# Favicon #}
+    {# Canonical + hreflang. This is what tells search engines about the
+       PT/EN pairing, replacing the old IP-based redirect. #}
+    {% if current_url %}<link rel="canonical" href="{{ current_url }}" />{% endif %}
+    {%- if page is defined %}{% set_global translations = page.translations %}
+    {%- elif section is defined %}{% set_global translations = section.translations %}
+    {%- else %}{% set_global translations = [] %}
+    {%- endif %}
+    {% for tr in translations %}
+        <link rel="alternate" hreflang="{{ tr.lang }}" href="{{ tr.permalink | safe }}" />
+    {% endfor %}
+
     {% if config.extra.favicon %}
-        <link rel="icon" type="image/png" href={{ config.extra.favicon }} />
+        <link rel="icon" type="image/png" href="{{ config.extra.favicon }}" />
     {% endif %}
 
-    {# Font from cdn or disk #}
+    {# Fonts from CDN or disk #}
     {% if config.extra.use_cdn | default(value=false) %}
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/jetbrains-mono@1.0.6/css/jetbrains-mono.min.css">
         <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fontsource/space-grotesk@4.5.8/index.min.css">
     {% else %}
-        <link href={{ get_url(path="fonts.css") }} rel="stylesheet" />
+        <link rel="stylesheet" href="{{ get_url(path='fonts.css') }}" />
     {% endif %}
 
-    {# Fancy Codeblock #}
-    {% if config.extra.fancy_code %}
-        <script src={{ get_url(path="js/codeblock.js") }}></script>
-    {% endif %}
-
-    {# Dynamic Note #}
-    {% if config.extra.dynamic_note | default(value=false) %}
-        <script src={{ get_url(path="js/note.js") }}></script>
-    {% endif %}
-
-
-    <script>
-        MathJax = {
-          options: {enableMenu: false},
-          loader: {load: ['[tex]/boldsymbol']},
-          tex: {
-            packages: {'[+]': ['boldsymbol']},
-            inlineMath: [['\\(', '\\)']],
-            displayMath: [['$$', '$$'], ['\\[', '\\]']],
-            processEscapes: true,
-            processEnvironments: true,
-            }
-        }
-    </script>
-    
-
-    <!--<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIslj+VczCZtlzBcjt5ppRcsAmDnRem7ESsYwWwg3m/OaJ2l4x7YBZl9Kxxib" crossorigin="anonymous">
-    <script src={{ get_url(path="js/katex.min.js") }}></script>
-    <script src={{ get_url(path="js/auto-render.min.js") }}></script>
-    <script>
-        document.addEventListener("DOMContentLoaded", function() {
-            renderMathInElement(document.body, {
-              delimiters: [
-                  {left: '$$', right: '$$', display: true},
-                  {left: '%%', right: '%%', display: false},
-                  //{left: '$', right: '$', display: false},
-                  {left: '\\(', right: '\\)', display: false},
-                  {left: '\\[', right: '\\]', display: true}
-              ],
-              throwOnError : false
-            });
-        });
-    </script>-->
-
-    <link rel="alternate" type="application/rss+xml" title="{{ config.title }}" href="{{ get_url(path="rss.xml", trailing_slash=false) }}">
-
+    {# Theme stylesheets. Only "toggle"/"auto" need the runtime switcher. #}
     {% set theme = config.extra.theme | default(value="toggle") %}
     {% if theme == "dark" %}
         <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css') }}" />
     {% elif theme == "light" %}
-        <link rel="stylesheet" type="text/css" href={{ get_url(path="theme/light.css") }} />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css') }}" />
     {% elif theme == "auto" %}
-        <link rel="stylesheet" type="text/css" href={{ get_url(path="theme/light.css") }} />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css') }}" />
         <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css') }}" media="(prefers-color-scheme: dark)" />
     {% elif theme == "toggle" %}
-        <link rel="stylesheet" type="text/css" href={{ get_url(path="theme/light.css") }} />
+        <link rel="stylesheet" type="text/css" href="{{ get_url(path='theme/light.css') }}" />
         <link id="darkModeStyle" rel="stylesheet" type="text/css" href="{{ get_url(path='theme/dark.css') }}" />
     {% endif %}
 
-    <!-- Set the correct theme in the script -->
-    <script src={{ get_url(path="js/themetoggle.js") }}></script>
-    {% if theme == "dark" %}
-        <script>setTheme("dark");</script>
-    {% elif theme == "light" %}
-        <script>setTheme("light");</script>
-    {% elif theme == "auto" %}
-        <script>
-            if (window.matchMedia('(prefers-color-scheme: dark)').matches) {
-                setTheme("dark");
-            } else {
-                setTheme("light");
-            }
-        </script>
-    {% else %}
-        <script>setTheme(getSavedTheme());</script>
+    {# Must stay synchronous and ahead of paint, otherwise the wrong theme flashes. #}
+    {% if theme == "auto" or theme == "toggle" %}
+        <script src="{{ get_url(path='js/themetoggle.js') }}"></script>
+        {% if theme == "auto" %}
+            <script>setTheme(window.matchMedia('(prefers-color-scheme: dark)').matches ? "dark" : "light");</script>
+        {% else %}
+            <script>setTheme(getSavedTheme());</script>
+        {% endif %}
     {% endif %}
 
-    <link rel="stylesheet" type="text/css" media="screen" href={{ get_url(path="main.css") }} />
+    <link rel="stylesheet" type="text/css" media="screen" href="{{ get_url(path='main.css') }}" />
 
     {% if config.extra.stylesheets %}
         {% for stylesheet in config.extra.stylesheets %}
@@ -168,10 +108,32 @@
         {% endfor %}
     {% endif %}
 
-    <script src={{ get_url(path="js/mobile-menu.js") }}></script>
-    <script src={{ get_url(path="js/d3.min.js") }}></script>
-    <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
-    
-    {# Geolocation-based language detection #}
-    <script src={{ get_url(path="js/geolocation.js") }}></script>
+    {% if config.extra.fancy_code %}
+        <script defer src="{{ get_url(path='js/codeblock.js') }}"></script>
+    {% endif %}
+    {% if config.extra.dynamic_note | default(value=false) %}
+        <script defer src="{{ get_url(path='js/note.js') }}"></script>
+    {% endif %}
+    <script defer src="{{ get_url(path='js/mobile-menu.js') }}"></script>
+
+    {% if need_d3 %}
+        <script defer src="{{ get_url(path='js/d3.min.js') }}"></script>
+    {% endif %}
+
+    {% if need_math %}
+        <script>
+            MathJax = {
+              options: {enableMenu: false},
+              loader: {load: ['[tex]/boldsymbol']},
+              tex: {
+                packages: {'[+]': ['boldsymbol']},
+                inlineMath: [['\\(', '\\)']],
+                displayMath: [['$$', '$$'], ['\\[', '\\]']],
+                processEscapes: true,
+                processEnvironments: true,
+                }
+            }
+        </script>
+        <script type="text/javascript" id="MathJax-script" async src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-mml-chtml.js"></script>
+    {% endif %}
 </head>

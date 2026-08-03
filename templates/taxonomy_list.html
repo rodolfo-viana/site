@@ -3,15 +3,16 @@
 {% block main_content %}
     <div class="tag-cloud">
         {% block title %}
-            {{ post_macros::page_header(title="Tags") }}
+            {{ post_macros::page_header(title=trans(key="tags_title", lang=lang)) }}
         {% endblock title %}
 
         <main class="list">
             <ul class="tags">
                 {% for term in terms %}
+                {% set count = term.pages | length %}
                 <li>
                     <a href="{{ term.permalink | safe }}">
-                        {{ term.name }} ({{ term.pages | length }} post{{ term.pages | length | pluralize }})
+                        {{ term.name }} ({{ count }} {% if count == 1 %}{{ trans(key="post_count_one", lang=lang) }}{% else %}{{ trans(key="post_count_many", lang=lang) }}{% endif %})
                     </a>
                 </li>
                 {% endfor %}

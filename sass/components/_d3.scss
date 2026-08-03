@@ -1,0 +1,21 @@
+.d3js {
+  width: 100%;
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 20px;
+  // was a hand-copied #121212, which would not follow a theme change
+  background-color: var(--bg-0);
+  font-family: var(--text-font);
+
+  svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  g,
+  .axis text {
+    font-family: inherit;
+  }
+}

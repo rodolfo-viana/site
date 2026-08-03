@@ -1,5 +1,5 @@
 img {
-  border: 3px solid #ececec;
+  border: $border-accent solid var(--image-border);
   max-width: 100%;
 }
 
@@ -14,7 +14,7 @@ figure img {
   max-height: 100%;
 }
 
-@media screen and (min-width: 600px) {
+@include above($bp-figure) {
   figure {
     padding: 0 40px;
   }

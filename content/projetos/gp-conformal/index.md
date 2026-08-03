@@ -8,6 +8,7 @@ weight = 8
 tags=["aprendizado de máquina", "processos gaussianos", "redes neurais"]
 
 [extra]
+math = true
 toc = true
 
 +++

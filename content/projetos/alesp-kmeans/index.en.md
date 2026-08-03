@@ -9,6 +9,8 @@ weight = 9
 tags=["machine learning", "k-means"]
 
 [extra]
+d3 = true
+math = true
 toc = true
 
 +++

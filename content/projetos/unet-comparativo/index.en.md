@@ -8,6 +8,7 @@ weight = 7
 tags=["machine learning", "u-net", "neural networks", "medicine"]
 
 [extra]
+math = true
 toc = true
 
 +++
