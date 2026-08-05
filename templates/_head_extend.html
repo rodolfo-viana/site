@@ -1,0 +1,19 @@
+{% if current_url %}
+<link rel="canonical" href="{{ current_url }}">
+<meta property="og:url" content="{{ current_url }}">
+{% endif %}
+<meta property="og:site_name" content="{{ config.title }}">
+<meta property="og:image" content="{{ get_url(path='image.png') }}">
+{% if page is defined %}
+  <meta property="og:type" content="{% if page.date %}article{% else %}website{% endif %}">
+  <meta property="og:title" content="{{ page.title }}">
+  {% for translation in page.translations %}
+  <link rel="alternate" hreflang="{{ translation.lang }}" href="{{ translation.permalink }}">
+  {% endfor %}
+{% elif section is defined %}
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="{% if section.title %}{{ section.title }}{% else %}{{ config.title }}{% endif %}">
+  {% for translation in section.translations %}
+  <link rel="alternate" hreflang="{{ translation.lang }}" href="{{ translation.permalink }}">
+  {% endfor %}
+{% endif %}

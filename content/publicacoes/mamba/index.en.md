@@ -9,6 +9,7 @@ tags=["machine learning", "sequence models", "state space models", "mamba"]
 
 [extra]
 math = true
+mermaid = true
 toc = true
 
 +++

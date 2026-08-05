@@ -1,5 +1,42 @@
-{% extends "base.html" %}
+{% extends "_base.html" %}
 
-{% block main_content %}
-    {{ post_macros::content(page=page)}}
-{% endblock main_content %}
+{% block page %}post{% endblock page %}
+{% block lang %}{{ page.lang }}{% endblock lang %}
+{% block title %}{{ page.title }}{% endblock title %}
+{% block desc %}<meta name="description" content="{% if page.description %}{{ page.description }}{% else %}{{ config.description }}{% endif %}">{% endblock desc %}
+
+{% block content %}
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    {% if page.extra.toc and page.toc %}
+    <nav><ul>
+      {% for h2 in page.toc %}
+      <li><a class="h2" href="#{{ h2.id | safe }}">{{ h2.title }}</a>
+        {% if h2.children %}<ul>{% for h3 in h2.children %}<li><a class="h3" href="#{{ h3.id | safe }}">{{ h3.title }}</a></li>{% endfor %}</ul>{% endif %}
+      </li>
+      {% endfor %}
+    </ul></nav>
+    {% endif %}
+    {% if page.extra.back_to_top %}
+    {% set icon = load_data(path="icon/arrow-up.svg") %}
+    <button id="back-to-top" aria-label="back to top">{{ icon | safe }}</button>
+    {% endif %}
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="{{ get_url(path='/', lang=page.lang) }}">← {{ trans(key="back", lang=page.lang) }}</a>
+      {% for translation in page.translations %}{% if translation.lang != page.lang %}<a class="lang-switch" href="{{ translation.permalink }}" hreflang="{{ translation.lang }}">{{ trans(key="switch_label", lang=page.lang) }}</a>{% endif %}{% endfor %}
+    </nav></header>
+    <div>
+      <article class="prose">
+        <h1>{{ page.title }}</h1>
+        {{ page.content | safe }}
+      </article>
+    </div>
+    {% include "_footer.html" %}
+  </main>
+</div>
+{% endblock content %}
+
+{% block script %}<script src="{{ get_url(path='js/lightense.min.js') }}"></script>{% endblock script %}

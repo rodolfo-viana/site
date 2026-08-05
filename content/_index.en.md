@@ -1,6 +1,19 @@
 +++
-title= ""
-template = "homepage.html"
+title = ""
+template = "home.html"
+
+[extra]
+lang = "en"
+footer = true
+name = "Rodolfo Viana"
+id = "rodolfo-viana"
+bio = "Data engineering, artificial intelligence, and applied research"
+links = [
+    { name = "GitHub", icon = "github", url = "https://github.com/rodolfo-viana" },
+    { name = "LinkedIn", icon = "linkedin", url = "https://www.linkedin.com/in/rodolfoviana/" },
+    { name = "Email", icon = "email", url = "mailto:eu@rodolfoviana.com.br" },
+]
+recent = false
 +++
 
 Hi there!

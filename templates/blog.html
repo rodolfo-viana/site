@@ -1,0 +1,27 @@
+{% extends "_base.html" %}
+
+{% block page %}blog{% endblock page %}
+{% block lang %}{{ section.lang }}{% endblock lang %}
+{% block title %}{{ section.title }}{% endblock title %}
+{% block desc %}<meta name="description" content="{% if section.description %}{{ section.description }}{% else %}{{ config.description }}{% endif %}">{% endblock desc %}
+
+{% block content %}
+<div id="wrapper">
+  <header><nav>
+    <a id="back-link" href="{{ get_url(path='/', lang=section.lang) }}">← {{ trans(key="back", lang=section.lang) }}</a>
+    {% for translation in section.translations %}{% if translation.lang != section.lang %}<a class="lang-switch" href="{{ translation.permalink }}" hreflang="{{ translation.lang }}">{{ trans(key="switch_label", lang=section.lang) }}</a>{% endif %}{% endfor %}
+  </nav></header>
+  {% include "_section_title.html" %}
+  <main class="layout-list">
+    <div class="post-list">
+      {% for post in section.pages %}
+      <a class="post instant {% if post.extra.featured %}featured{% endif %}" href="{{ post.permalink }}">
+        <span>{{ post.title }}</span>
+        <span class="date">{{ post.date | date(format=section.extra.date_format) }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </main>
+  {% include "_footer.html" %}
+</div>
+{% endblock content %}

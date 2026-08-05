@@ -1,0 +1,10 @@
+.zed/settings.json
+
+public/
+content/
+static/img/
+static/giallo-light.css
+static/giallo-dark.css
+config.toml
+
+.DS_Store

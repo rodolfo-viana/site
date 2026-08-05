@@ -9,6 +9,7 @@ tags=["machine learning", "natural language processing", "unesp"]
 
 [extra]
 math = true
+mermaid = true
 toc = true
 
 +++

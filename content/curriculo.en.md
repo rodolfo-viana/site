@@ -1,5 +1,11 @@
 +++
 title = "Résumé"
+template = "page.html"
+
+[extra]
+lang = "en"
+toc = true
+back_to_top = true
 +++
 
 # Personal Info

@@ -1,6 +1,12 @@
 +++
 title = "Currículo"
 path = "curriculo"
+template = "page.html"
+
+[extra]
+lang = "pt"
+toc = true
+back_to_top = true
 +++
 
 # Informações

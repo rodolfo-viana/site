@@ -1,24 +1,25 @@
+# Serene v5.6.3: https://github.com/isunjn/serene/releases/tag/v5.6.3
 base_url = "https://rodolfoviana.com.br"
 title = "rodolfo viana"
 description = "aulas, estudos e publicações sobre ciência de dados"
 default_language = "pt"
+theme = "serene"
+output_dir = "public"
+compile_sass = true
+minify_html = false
 build_search_index = false
 generate_feeds = false
-compile_sass = true
-minify_html = true
+feed_filenames = ["feed.xml"]
 ignored_content = ["rascunhos/"]
 taxonomies = [{ name = "tags" }]
 author = "rodolfo viana"
 
-# UI strings for the default language (pt).
-# Every user-facing string in the templates lives here or in
-# [languages.en.translations]; templates read them with trans(key=..., lang=lang).
 [translations]
 tagged = "Textos com a tag"
 all = "Todos"
 read_more = "Leia mais ⟶"
 published = "Publicação:"
-updated = "Atualização:"
+updated = "Atualizado em"
 tags_label = "Tags:"
 toc = "Sumário"
 tags_title = "Tags"
@@ -27,17 +28,19 @@ post_count_many = "posts"
 prev = "← Anterior"
 next = "Próxima →"
 made_with = "Feito com"
-not_found = "Página não encontrada :("
+not_found = "Página não encontrada"
+not_found_recover = "voltar ao início"
+back = "Voltar"
 switch_to = "Switch to English"
 switch_label = "EN"
 date_format = "%d-%m-%Y"
-menu_posts = "posts"
+menu_posts = "publicações"
 menu_projects = "projetos"
 menu_classes = "aulas"
-menu_cv = "cv"
+menu_cv = "currículo"
 menu_tags = "tags"
+recent_more = "mais +"
 
-# Multilingual configuration
 [languages.en]
 title = "rodolfo viana"
 description = "classes, studies and publications about data science"
@@ -49,7 +52,7 @@ tagged = "Texts tagged"
 all = "All"
 read_more = "Read more ⟶"
 published = "Published:"
-updated = "Updated:"
+updated = "Updated on"
 tags_label = "Tags:"
 toc = "Table of Contents"
 tags_title = "Tags"
@@ -58,7 +61,9 @@ post_count_many = "posts"
 prev = "← Prev"
 next = "Next →"
 made_with = "Made with"
-not_found = "Page not found :("
+not_found = "Page not found"
+not_found_recover = "« back to home »"
+back = "Back"
 switch_to = "Voltar para Português"
 switch_label = "PT"
 date_format = "%m-%d-%Y"
@@ -67,33 +72,40 @@ menu_projects = "projects"
 menu_classes = "classes"
 menu_cv = "résumé"
 menu_tags = "tags"
+recent_more = "more »"
 
 [markdown]
+render_emoji = false
 external_links_target_blank = true
+external_links_no_follow = false
+external_links_no_referrer = true
 smart_punctuation = false
 bottom_footnotes = true
+github_alerts = true
 
 [markdown.highlighting]
-theme = "monokai"
+style = "class"
+light_theme = "github-light"
+dark_theme = "github-dark"
+
+[slugify]
+paths = "on"
+taxonomies = "on"
+anchors = "on"
 
 [extra]
-toc = true
-use_cdn = false
-favicon = "/favicon.png"
-theme = "dark"
-fancy_code = true
-dynamic_note = true
-
-# Heavy, page-specific libraries. Off by default; opt in per page with
-# `[extra] math = true` / `d3 = true` in the page's front matter.
-mathjax = false
-d3 = false
-
-# One menu for every language. `key` resolves against [translations] /
-# [languages.<code>.translations]; `url` is resolved per-language by get_url().
-menu = [
-    { key = "menu_posts", url = "publicacoes", weight = 1 },
-    { key = "menu_projects", url = "projetos", weight = 2 },
-    { key = "menu_cv", url = "curriculo", weight = 3 },
-    { key = "menu_tags", url = "tags", weight = 4 }
+sections = [
+    { key = "menu_posts", path = "publicacoes", is_external = false },
+    { key = "menu_projects", path = "projetos", is_external = false },
+    { key = "menu_cv", path = "curriculo", is_external = false },
+    { key = "menu_tags", path = "tags", is_external = false },
 ]
+blog_section_path = "/publicacoes"
+back_link_text = "Voltar"
+force_theme = false
+footer_copyright = "© 2026 Rodolfo Viana"
+footer_credits = true
+not_found_error_text = "404"
+not_found_recover_text = "voltar ao início"
+reaction = false
+reaction_align = "right"

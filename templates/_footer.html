@@ -1,0 +1,21 @@
+<footer>
+  <div class="left">
+    <div class="copyright">
+      {{ config.extra.footer_copyright }}
+      {% if config.extra.footer_credits %}
+      <span>|</span>
+      {{ trans(key="made_with", lang=lang) }} <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      {% endif %}
+    </div>
+  </div>
+  <div class="right">
+    {% if not config.extra.force_theme %}
+    {% set moon_icon = load_data(path="icon/moon.svg") %}
+    {% set sun_icon = load_data(path="icon/sun.svg") %}
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon">{{ moon_icon | safe }}</span>
+      <span class="sun-icon">{{ sun_icon | safe }}</span>
+    </button>
+    {% endif %}
+  </div>
+</footer>

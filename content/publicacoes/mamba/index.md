@@ -9,6 +9,7 @@ tags=["aprendizado de máquina", "modelos de sequência", "modelos de espaço de
 
 [extra]
 math = true
+mermaid = true
 toc = true
 
 +++

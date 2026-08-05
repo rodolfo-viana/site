@@ -1,0 +1,28 @@
+{% extends "_base.html" %}
+
+{% block page %}tag-single{% endblock page %}
+{% block lang %}{{ lang }}{% endblock lang %}
+{% block title %}{{ term.name }}{% endblock title %}
+{% block desc %}<meta name="description" content="{{ trans(key='tagged', lang=lang) }} {{ term.name }}">{% endblock desc %}
+
+{% block content %}
+<div id="wrapper">
+  <header><nav>
+    <a id="back-link" href="{{ get_url(path='tags', lang=lang) }}">← {{ trans(key="back", lang=lang) }}</a>
+    {% if lang == config.default_language %}{% set other_lang = "en" %}{% else %}{% set other_lang = config.default_language %}{% endif %}
+    <a class="lang-switch" href="{{ get_url(path='tags', lang=other_lang) }}" hreflang="{{ other_lang }}">{{ trans(key="switch_label", lang=lang) }}</a>
+  </nav></header>
+  <main class="layout-list">
+    <div class="title"><span># {{ term.name }}</span></div>
+    <div class="post-list">
+      {% for post in term.pages %}
+      <a class="post instant {% if post.extra.featured %}featured{% endif %}" href="{{ post.permalink }}">
+        <span>{{ post.title }}</span>
+        <span class="date">{{ post.date | date(format=trans(key='date_format', lang=lang)) }}</span>
+      </a>
+      {% endfor %}
+    </div>
+  </main>
+  {% include "_footer.html" %}
+</div>
+{% endblock content %}

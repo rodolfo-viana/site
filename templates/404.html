@@ -1,8 +1,11 @@
-{% extends "page.html" %}
-
-{% block main_content %}
-    <main class="centered-header">
-        {{ post_macros::page_header(title="404")}}
-        <span>{{ trans(key="not_found", lang=lang) }}</span>
-    </main>
-{% endblock main_content %}
+{% extends "_base.html" %}
+{% block page %}not-found{% endblock page %}
+{% block lang %}{{ config.default_language }}{% endblock lang %}
+{% block title %}404 · {{ config.title }}{% endblock title %}
+{% block desc %}<meta name="description" content="{{ trans(key='not_found', lang=config.default_language) }}">{% endblock desc %}
+{% block content %}
+<div class="wrapper">
+  <p class="error">404 · {{ trans(key="not_found", lang=config.default_language) }}</p>
+  <a class="instant" href="{{ get_url(path='/') }}">{{ trans(key="not_found_recover", lang=config.default_language) }}</a>
+</div>
+{% endblock content %}
