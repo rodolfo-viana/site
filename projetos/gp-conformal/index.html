@@ -1,0 +1,737 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Versão editada de artigo escrito para a disciplina Redes Neurais Artificiais, do Prof. Dr. Lucas Ribas, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp">
+  <title>Quantificação de incertezas com processos gaussianos e previsão conformal</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;gp-conformal&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;gp-conformal&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Quantificação de incertezas com processos gaussianos e previsão conformal">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;gp-conformal&#x2F;">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;gp-conformal&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#introducao">Introdução</a></li>
+      
+      <li><a class="h2" href="#metodologia">Metodologia</a><ul><li><a class="h3" href="#processos-gaussianos-exatos">Processos Gaussianos Exatos</a></li><li><a class="h3" href="#processo-gaussiano-variacional-estocastico">Processo Gaussiano Variacional Estocástico</a></li><li><a class="h3" href="#predicao-conformal">Predição Conformal</a></li><li><a class="h3" href="#execucao-de-testes">Execução de Testes</a></li></ul></li>
+      
+      <li><a class="h2" href="#resultados">Resultados</a></li>
+      
+      <li><a class="h2" href="#conclusao">Conclusão</a></li>
+      
+      <li><a class="h2" href="#referencias">Referências</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;">← Voltar</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;gp-conformal&#x2F;" hreflang="en">EN</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Quantificação de incertezas com processos gaussianos e previsão conformal</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">17-06-2025</span>
+            
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/tags/aprendizado-de-maquina/"><span>#</span>aprendizado de máquina</a><a class="instant" href="https://rodolfoviana.com.br/tags/processos-gaussianos/"><span>#</span>processos gaussianos</a><a class="instant" href="https://rodolfoviana.com.br/tags/redes-neurais/"><span>#</span>redes neurais</a></div>
+        </div>
+        <h1 id="introducao">Introdução<a class="zola-anchor" href="#introducao" aria-label="Anchor link for: introducao" style="visibility: hidden;"></a>
+</h1>
+<p>Em problemas de regressão, modelos de aprendizado de máquina geralmente são capazes de apresentar predições pontuais com rigor; contudo, não raro negligenciam a quantificação da incerteza inerente a tais predições<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup> <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>. Essa limitação é particularmente crítica em aplicações reais, onde não apenas a precisão da previsão, mas também a confiabilidade e a quantificação da incerteza são cruciais para a tomada de decisões informadas<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup>.</p>
+<p>Neste cenário, modelos baseados em processos gaussianos (GP) destacam-se como uma abordagem robusta<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup>. São capazes de fornecer não apenas predições pontuais, mas também distribuições de probabilidade completas para as predições<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>, permitindos capturar tanto a incerteza epistêmica quanto a incerteza aleatória. A incerteza epistêmica refere-se à incerteza no modelo devido à falta de dados ou conhecimento, podendo ser reduzida com mais observações, enquanto a incerteza aleatória é inerente ao processo de geração dos dados e não pode ser reduzida, representando o ruído natural do sistema<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>.</p>
+<p>Processos gaussianos atribuem distribuição probabilística a funções, de modo que qualquer subconjunto finito de pontos amostrais obedece a uma distribuição gaussiana multivariada<sup class="footnote-reference" id="fr-5-2"><a href="#fn-5">5</a></sup>. Tornam-se, assim, adequados para construir intervalos de predição, pois delimitam a faixa esperada para o valor real com uma probabilidade específica<sup class="footnote-reference" id="fr-4-2"><a href="#fn-4">4</a></sup>.</p>
+<p>Na prática, contudo, intervalos extraídos diretamente de um GP podem não entregar a cobertura nominal desejada<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup>. É neste contexto que a predição conformal se apresenta como uma abordagem complementar<sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup> <sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">9</a></sup>. Trata-se de uma técnica estatística que permite calibrar os intervalos de predição para garantir propriedades teóricas de cobertura, independentemente da distribuição subjacente dos dados ou da adequação do modelo<sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">10</a></sup> <sup class="footnote-reference" id="fr-11-1"><a href="#fn-11">11</a></sup>.</p>
+<p>Uma configuração de modelo que integre GP e predição conformal torna-se uma abordagem promissora para a construção de intervalos que são simultaneamente informativos e confiáveis. Neste trabalho, investigamos essa configuração: implementamos o Processo Gaussiano aprimorado por rede neural (NE-GP, de <em>Neural-Enhanced Gaussian Process</em>) e o Processo Gaussiano Variacional Estocástico aprimorado por rede neural (NE-SVGP, de <em>Neural-Enhanced Stochastic Variational Gaussian Process</em>). Para cada um desses modelos, comparamos o desempenho dos intervalos de predição antes e após a aplicação do método conformal, em termos de cobertura e largura dos intervalos.</p>
+<h1 id="metodologia">Metodologia<a class="zola-anchor" href="#metodologia" aria-label="Anchor link for: metodologia" style="visibility: hidden;"></a>
+</h1>
+<p>A implementação dos modelos propostos neste trabalho segue uma arquitetura híbrida que combina redes neurais com processos gaussianos, criando os modelos NE-GP e NE-SVGP. Esta abordagem utiliza as bibliotecas PyTorch e GPyTorch para implementar uma arquitetura de duas etapas: extração de características neurais seguida de modelagem probabilística gaussiana.</p>
+<p>A arquitetura híbrida consiste em dois componentes principais integrados: um extrator de características baseado em perceptron multicamadas (MLP) que transforma os dados de entrada em representações de maior nível, e um GP que opera sobre essas características extraídas para fornecer predições de intervalos. O MLP é estruturado com três camadas totalmente conectadas: uma camada de entrada que recebe as características originais dos dados, duas camadas ocultas com 64 neurônios cada, aplicando funções de ativação ReLU e <em>dropout</em> de 0,1 para regularização, e uma camada de saída com 32 neurônios que produz as características refinadas.</p>
+<p>O GP subsequente opera sobre essas características extraídas (\(\mathbf{z}\)), utilizando uma função de base radial para modelar as correlações no espaço de características transformado. A escolha do kernel <em>Radial Basis Function</em> deve-se à sua capacidade de capturar relações não-lineares suaves entre variáveis, sendo adequado para a maioria dos problemas de regressão. Outras opções como kernels periódicos ou Matérn poderiam ser usadas para capturar padrões específicos como sazonalidade ou diferentes graus de suavidade.</p>
+<p>O treinamento conjunto otimiza simultaneamente os parâmetros do MLP (\(\mathbf{W}_i, \mathbf{b}_i\)) e os hiperparâmetros do GP (\(\boldsymbol{\theta}_{GP}\)) através de gradiente descendente</p>
+<p>\[
+\begin{aligned}
+\mathcal{L}(\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}) &amp;= -\log p(\mathbf{y}\mid\text{MLP}(\mathbf{X}), \boldsymbol{\theta}_{GP}) \\
+\boldsymbol{\phi}_{t+1} &amp;= \boldsymbol{\phi}_t - \eta \nabla_{\boldsymbol{\phi}} \mathcal{L}(\boldsymbol{\phi}_t),
+\end{aligned}
+\]</p>
+<p>onde \(\boldsymbol{\phi} = \{\mathbf{W}, \mathbf{b}, \boldsymbol{\theta}_{GP}\}\) representa todos os parâmetros treináveis do modelo híbrido.</p>
+<p>Esta arquitetura híbrida une o poder das redes neurais na extração de características complexas com a precisão dos GPs na quantificação de incerteza.</p>
+<h2 id="processos-gaussianos-exatos">Processos Gaussianos Exatos<a class="zola-anchor" href="#processos-gaussianos-exatos" aria-label="Anchor link for: processos-gaussianos-exatos" style="visibility: hidden;"></a>
+</h2>
+<p>Um GP é uma família de variáveis aleatórias tal que qualquer subconjunto finito segue uma distribuição gaussiana multivariada<sup class="footnote-reference" id="fr-4-3"><a href="#fn-4">4</a></sup> <sup class="footnote-reference" id="fr-5-3"><a href="#fn-5">5</a></sup>. Tal propriedade garante exatidão à inferência bayesiana sem a necessidade de recorrer a aproximações numéricas — difere, por exemplo, de redes neurais bayesianas, que precisam de amostragem Monte Carlo ou métodos variacionais.</p>
+<p>Formalmente, um GP é especificado por sua função de média \(m(\mathbf{x})\) e função de covariância \(k(\mathbf{x}, \mathbf{x’})\), onde</p>
+<p>\[
+\begin{aligned}
+m(\mathbf{x}) &amp;= \mathbb{E}[f(\mathbf{x})] \\
+k(\mathbf{x}, \mathbf{x’}) &amp;= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x’}) - m(\mathbf{x’}))]
+\end{aligned}
+\]</p>
+<p>Assim, temos \(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\) para indicar que a função \(f\) segue um GP com função de média \(m\) e função de covariância \(k\).</p>
+<p>No problema de regressão, dada uma amostra de treinamento \(\mathcal{D} = {(\mathbf{x}_i, y_i)}_{i=1}^{n}\) e assumindo ruído gaussiano homoscedático \(y_i = f(\mathbf{x}_i) + \varepsilon_i\), onde \(\varepsilon_i \sim \mathcal{N}(0, \sigma^2)\), a posteriori para um novo ponto \(\mathbf{x}_*\) é gaussiana com parâmetros</p>
+<p>\[
+\begin{aligned}
+\mu(\mathbf{x}_*) &amp;= \mathbf{k}_*^\top(\mathbf{K} + \sigma^2\mathbf{I})^{-1}\mathbf{y} \\
+\sigma^2(\mathbf{x}_*) &amp;= k(\mathbf{x}_*, \mathbf{x}_*) - \mathbf{k}_*^\top(\mathbf{K} + \sigma^2\mathbf{I})^{-1}\mathbf{k}_*
+\end{aligned}
+\]</p>
+<p>onde \(\mathbf{K}\) é a matriz de covariância entre os pontos de treinamento e \(\mathbf{k}_*\) contém as covariâncias entre \(\mathbf{x}_*\) e cada \(\mathbf{x}_i\).</p>
+<p>Neste trabalho, para obtermos funções-amostra suaves e isotrópicas, utilizamos a função de base radial para cálculo da covariância, definido como</p>
+<p>\[
+k(\mathbf{x}, \mathbf{x’}) = \sigma_f^2 \exp\left(-\frac{||\mathbf{x} - \mathbf{x’}||^2}{{{2l^2}}}\right)
+\]</p>
+<p>onde \(\sigma_f^2\) é a variância do sinal e \(l\) é o comprimento de escala, que controla a suavidade da função. Estes hiperparâmetros são otimizados maximizando a log-verossimilhança marginal dos dados de treinamento. A log-verossimilhança marginal é obtida integrando sobre a função latente \(f\), resultando em</p>
+<p>\[
+\log p(\mathbf{y}|\mathbf{X}, \boldsymbol{\theta}) = -\frac{1}{2}\mathbf{y}^\top(\mathbf{K} + \sigma^2\mathbf{I})^{-1}\mathbf{y} - \frac{1}{2}\log|\mathbf{K} + \sigma^2\mathbf{I}| - \frac{n}{2}\log(2\pi)
+\]</p>
+<p>onde \(\boldsymbol{\theta}\) são os hiperparâmetros do kernel. Esta otimização equilibra o ajuste aos dados com a complexidade do modelo.</p>
+
+<video  controls autoplay loop muted>
+  <source src="https://rodolfoviana.com.br/assets/GP.mp4" type="video/mp4">
+  
+  Your browser does not support HTML5 video.
+</video>
+<h2 id="processo-gaussiano-variacional-estocastico">Processo Gaussiano Variacional Estocástico<a class="zola-anchor" href="#processo-gaussiano-variacional-estocastico" aria-label="Anchor link for: processo-gaussiano-variacional-estocastico" style="visibility: hidden;"></a>
+</h2>
+<p>Uma limitação importante do GP exato é que ele exige complexidade computacional de \(\mathcal{O}(n^3)\) para treinamento e \(\mathcal{O}(n^2)\) para predição, onde \(n\) é o número de pontos de treinamento. Processo Gaussiano Variacional Estocástico (SVGP) reduz esses custos para \(\mathcal{O}(nm^{2}+m^{3})\) e \(\mathcal{O}(m^{2})\), respectivamente, ao introduzir um conjunto de \(m\) pontos-indutores em \(\mathbf Z={\mathbf z_{j}}_{j=1}^{m}\), com \(m\ll n\)<sup class="footnote-reference" id="fr-12-1"><a href="#fn-12">12</a></sup> <sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">13</a></sup> <sup class="footnote-reference" id="fr-14-1"><a href="#fn-14">14</a></sup> <sup class="footnote-reference" id="fr-15-1"><a href="#fn-15">15</a></sup>. Estes pontos-indutores são variáveis latentes que resumem as informações do conjunto de treinamento completo.</p>
+<p>Neste modelo, aproximamos a distribuição a posteriori \(p(\mathbf{f} \mid \mathcal{D})\) por uma distribuição variacional \(q(\mathbf{f})\), isto é,</p>
+<p>\[
+q(\mathbf{f}, \mathbf{u}) = p(\mathbf{f} \mid \mathbf{u})q(\mathbf{u}),
+\]</p>
+<p>onde \(\mathbf{f}\) são os valores da função nos pontos de treinamento, \(\mathbf{u}\) são os valores da função nos pontos-indutores, \(p(\mathbf{f} \mid \mathbf{u})\) é a distribuição condicional do GP, e \(q(\mathbf{u})\) é uma distribuição variacional gaussiana com parâmetros a serem otimizados.</p>
+<p>A otimização é realizada minimizando a divergência Kullback-Leibler entre a distribuição variacional e a distribuição a posteriori verdadeira. A divergão entre duas distribuições contínuas de densidade \(p\) e \(q\) é definida como</p>
+<p>\[
+D_{\mathrm{KL}}(P \mid Q) = \int p(x),\ln!\biggl(\frac{p(x)}{q(x)}\biggr),\mathrm{d}x
+\]</p>
+<p>Intuitivamente, \(D_{\mathrm{KL}}(P \mid Q)\) mede o excesso de informação exigido para representar amostras de \(P\) usando um código ótimo baseado em \(Q\) em vez de um código ótimo para \(P\) propriamente dito. Essa divergência é sempre não negativa e zera-se somente quando, para quase todo \(x\), tem-se \(p(x)=q(x)\).</p>
+<p>A tarefa de minimizar a divergência equivale a maximizar um limite inferior da evidência (ELBO, <em>Evidence Lower Bound</em>).</p>
+<p>A predição para um novo ponto \(\mathbf{x}_*\) é dada por</p>
+<p>\[
+\begin{aligned}
+q(f(\mathbf{x}_*)) &amp;= \int p(f(\mathbf{x}_*) \mid \mathbf{u})q(\mathbf{u})d\mathbf{u} \\
+&amp;= \mathcal{N}(f(\mathbf{x}_*) \mid \mu_q(\mathbf{x}_*), \sigma_q^2(\mathbf{x}_*)),
+\end{aligned}
+\]</p>
+<p>onde</p>
+<p>\[
+\begin{aligned}
+\mu_q(\mathbf{x}_*) &amp;= \mathbf{k}_{*z}\mathbf{K}_{zz}^{-1}\boldsymbol{\mu}_u \\
+\sigma_q^2(\mathbf{x}_*) &amp;= k(\mathbf{x}_*, \mathbf{x}_*) - \mathbf{k}_{*z}\mathbf{K}_{zz}^{-1}(\mathbf{K}_{zz} - \mathbf{S}_u)\mathbf{K}_{zz}^{-1}\mathbf{k}_{z*}
+\end{aligned}
+\]</p>
+<p>sendo \(\mathbf{k}_{*z}\) o vetor de covariâncias entre \(\mathbf{x}_*\) e os pontos-indutores, \(\mathbf{K}_{zz}\) a matriz de covariância entre os pontos-indutores, e \(\boldsymbol{\mu}_u\) e \(\mathbf{S}_u\) os parâmetros da distribuição variacional \(q(\mathbf{u}) = \mathcal{N}(\boldsymbol{\mu}_u, \mathbf{S}_u)\).</p>
+<p>Neste trabalho, inspirados nos gargalos de <em>underfitting</em> e instabilidade numérica<sup class="footnote-reference" id="fr-16-1"><a href="#fn-16">16</a></sup>, utilizamos extensões ao SVGP padrão, tais como seleção adaptativa dos pontos-indutores com base na distribuição dos dados, otimização conjunta dos pontos-indutores e dos hiperparâmetros do kernel, uso de mini-batches durante o treinamento para melhorar a eficiência computacional, e implementação de técnicas de estabilidade numérica, como a decomposição de Cholesky<sup class="footnote-reference" id="fr-17-1"><a href="#fn-17">17</a></sup> — ou seja, fatoração de uma matriz simétrica e definida positiva \(A\) em \(A = LL^\top\), onde \(L\) é matriz triangular inferior com elementos positivos na diagonal — para o cálculo de inversas de matrizes.</p>
+<p>Essas melhorias permitem que o SVGP retenha a interpretação probabilística do GP clássico, escale para conjuntos de dados com centenas de milhares de amostras e produza intervalos de predição que combinam validez estatística e largura competitiva.</p>
+<h2 id="predicao-conformal">Predição Conformal<a class="zola-anchor" href="#predicao-conformal" aria-label="Anchor link for: predicao-conformal" style="visibility: hidden;"></a>
+</h2>
+<p>Dada a natureza probabilística dos modelos baseados em GP, os intervalos de predição podem ser derivados diretamente da distribuição a posteriori. Para um nível de confiança \(1-\alpha\), o intervalo de predição para um novo ponto \(\mathbf{x}_*\) é:</p>
+<p>\[
+PI_{1-\alpha}(\mathbf{x}_*) = [\mu(\mathbf{x}_*) - z_{1-\alpha/2} \cdot \sigma(\mathbf{x}_*), \mu(\mathbf{x}_*) + z_{1-\alpha/2} \cdot \sigma(\mathbf{x}_*)]
+\]</p>
+<p>onde \(z_{1-\alpha/2}\) é o quantil \(1-\alpha/2\) da distribuição normal padrão.</p>
+<p>Este intervalo de predição tem uma interpretação bayesiana: assumindo que o modelo e seus hiperparâmetros estão corretos, o intervalo contém o valor verdadeiro com probabilidade \(1-\alpha\). No entanto, na prática, essas suposições podem não ser válidas, levando a intervalos que não atingem a cobertura nominal desejada. A predição conformal<sup class="footnote-reference" id="fr-9-2"><a href="#fn-9">9</a></sup> <sup class="footnote-reference" id="fr-10-2"><a href="#fn-10">10</a></sup> é uma abordagem estatística que permite calibrar os intervalos de predição para garantir propriedades teóricas de cobertura, independentemente da distribuição subjacente dos dados ou da adequação do modelo. A ideia central é usar um conjunto de calibração para determinar o quanto os intervalos de predição devem ser contraídos para atingir a cobertura desejada.</p>
+<p>Neste trabalho, implementamos uma variante da predição conformal conhecida como predição conformal indutiva<sup class="footnote-reference" id="fr-18-1"><a href="#fn-18">18</a></sup>, que utiliza um conjunto de validação separado para calibração. Além disso, fazemos uso de um escore de não-conformidade natural, dado por</p>
+<p>\[
+s_i = \max\{y_i - l(\mathbf{x}_i), u(\mathbf{x}_i) - y_i, 0\}
+\]</p>
+<p>e escolhido por sua simplicidade e interpretabilidade: trata-se do erro absoluto normalizado entre a predição e o valor verdadeiro; mede o quanto o valor verdadeiro está fora do intervalo de predição original.</p>
+<p>Uma propriedade teórica importante da predição conformal é que, sob a suposição de permutabilidade dos dados, os intervalos de predição conformal garantem uma cobertura marginal de pelo menos \(1-\alpha\) no conjunto de teste<sup class="footnote-reference" id="fr-7-2"><a href="#fn-7">7</a></sup>. Isso significa que, em média, pelo menos uma fração \(1-\alpha\) dos intervalos conterá os valores verdadeiros, independentemente da adequação do modelo ou da distribuição dos dados.</p>
+
+<video  controls autoplay loop muted>
+  <source src="https://rodolfoviana.com.br/assets/ConformalGPComparison.mp4" type="video/mp4">
+  
+  Your browser does not support HTML5 video.
+</video>
+<h2 id="execucao-de-testes">Execução de Testes<a class="zola-anchor" href="#execucao-de-testes" aria-label="Anchor link for: execucao-de-testes" style="visibility: hidden;"></a>
+</h2>
+<p>Avaliamos os modelos em três conjuntos de dados públicos amplamente utilizados em problemas de regressão: <em>Combined Cycle Power Plant</em><sup class="footnote-reference" id="fr-19-1"><a href="#fn-19">19</a></sup> (CCPP), que contém informações de uma usina de ciclo combinado, com o objetivo de prever a potência elétrica líquida; <em>Concrete Compressive Strength</em><sup class="footnote-reference" id="fr-20-1"><a href="#fn-20">20</a></sup> (Concrete), que contém valores para diferentes misturas de concreto, com o objetivo de prever a resistência à compressão; e <em>Condition Based Maintenance of Naval Propulsion Plants</em><sup class="footnote-reference" id="fr-21-1"><a href="#fn-21">21</a></sup> (Naval), que contém medições de uma planta de propulsão naval, com o objetivo de prever o coeficiente de decaimento do estado do compressor.</p>
+<table><thead><tr><th style="text-align: right">Conjuntos</th><th style="text-align: center">Dimensionalidade</th><th style="text-align: center">Amostras</th><th style="text-align: center">Assimetria de \(y\)</th><th style="text-align: center">Curtose de \(y\)</th></tr></thead><tbody>
+<tr><td style="text-align: right">CCPP</td><td style="text-align: center">5</td><td style="text-align: center">9.568</td><td style="text-align: center">0,31</td><td style="text-align: center">1,95</td></tr>
+<tr><td style="text-align: right">Concrete</td><td style="text-align: center">9</td><td style="text-align: center">1.030</td><td style="text-align: center">0,42</td><td style="text-align: center">2,69</td></tr>
+<tr><td style="text-align: right">Naval</td><td style="text-align: center">18</td><td style="text-align: center">11.934</td><td style="text-align: center">0,00</td><td style="text-align: center">1,80</td></tr>
+</tbody></table>
+<p>Estes conjuntos de dados foram escolhidos por representarem uma variedade de domínios e características, permitindo uma avaliação abrangente dos modelos em diferentes contextos. Para avaliar o desempenho dos intervalos de predição, utilizamos como métricas a cobertura, a largura média dos intervalos de predição (MPIW) e o desempenho.</p>
+<p>Cobertura é a fração de pontos de teste para os quais o valor verdadeiro está contido no intervalo de predição. Formalmente, para um conjunto de teste com \(n\) pontos, a cobertura é</p>
+<p>\[
+\text{Cobertura} = \frac{1}{n}\sum_{i=1}^{n}\mathbf{1}\{y_i \in PI(\mathbf{x}_i)\}
+\]</p>
+<p>onde \(\mathbf{1}\{\cdot\}\) é a função indicadora. Um bom intervalo de predição deve ter uma cobertura próxima ao nível de confiança nominal (\(1-\alpha\)).</p>
+<p>MPIW, a média da largura dos intervalos de predição, é obtida por meio de</p>
+<p>\[
+\text{MPIW} = \frac{1}{n}\sum_{i=1}^{n}(u(\mathbf{x}_i) - l(\mathbf{x}_i))
+\]</p>
+<p>onde \(l(\mathbf{x}_i)\) e \(u(\mathbf{x}_i)\) são os limites inferior e superior do intervalo de predição para \(\mathbf{x}_i\). Um bom intervalo de predição deve ser o mais estreito possível, condicionado a atingir a cobertura desejada.</p>
+<p>Para avaliar a precisão das predições pontuais, utilizamos o coeficiente de determinação \(R^2\), que mede a proporção da variância na variável dependente que é previsível a partir das variáveis independentes. Valores mais altos de \(R^2\) indicam melhor desempenho preditivo.</p>
+<p>Além dessas métricas principais, também calculamos métricas secundárias para uma análise mais detalhada, tais como a diferença entre a cobertura conformada e a cobertura bruta, a diferença entre a largura média do intervalo conformado e a largura média do intervalo bruto, a fração de pontos de teste para os quais o valor verdadeiro está abaixo do limite inferior ou acima do limite superior do intervalo de predição, a razão entre a largura média do intervalo conformado e a largura média do intervalo bruto, e a razão entre a diferença de cobertura e a diferença de largura, que mede a eficiência da calibração conformal.</p>
+<p>Para garantir a robustez dos resultados, cada conjunto de dados foi treinado utilizando cinco sementes distintas por até 200 épocas, com a possibilidade de parada antecipada no caso de a função de perda não apresentar melhoria por 10 épocas consecutivas, utilizando um delta mínimo de \(1 \times 10^{-6}\) para considerar uma melhoria significativa.</p>
+<h1 id="resultados">Resultados<a class="zola-anchor" href="#resultados" aria-label="Anchor link for: resultados" style="visibility: hidden;"></a>
+</h1>
+<p>Os resultados mostram padrões interessantes no comportamento dos modelos. Em primeiro lugar, observamos que os intervalos de predição brutos geralmente têm coberturas significativamente mais altas que o nível nominal de 90%.</p>
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Modelo</th>
+      <th rowspan="2">Conjuntos</th>
+      <th colspan="2">Cobertura (%)</th>
+      <th colspan="2">MPIW</th>
+      <th rowspan="2">R²</th>
+    </tr>
+    <tr>
+      <th>Bruto</th>
+      <th>Conformal</th>
+      <th>Bruto</th>
+      <th>Conformal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- NE-GP block -->
+    <tr>
+      <td rowspan="3">NE-GP</td>
+      <td style="text-align:right;">CCPP</td>
+      <td style="text-align:center;">99,89</td>
+      <td style="text-align:center;">90,13</td>
+      <td style="text-align:center;">2,64</td>
+      <td style="text-align:center;">0,76</td>
+      <td style="text-align:center;">0,941</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Concrete</td>
+      <td style="text-align:center;">99,03</td>
+      <td style="text-align:center;">91,55</td>
+      <td style="text-align:center;">2,72</td>
+      <td style="text-align:center;">1,47</td>
+      <td style="text-align:center;">0,796</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Naval</td>
+      <td style="text-align:center;">100,00</td>
+      <td style="text-align:center;">89,38</td>
+      <td style="text-align:center;">2,66</td>
+      <td style="text-align:center;">0,83</td>
+      <td style="text-align:center;">0,933</td>
+    </tr>
+    <!-- NE-SVGP block -->
+    <tr>
+      <td rowspan="3">NE-SVGP</td>
+      <td style="text-align:right;">CCPP</td>
+      <td style="text-align:center;">90,93</td>
+      <td style="text-align:center;">90,13</td>
+      <td style="text-align:center;">0,76</td>
+      <td style="text-align:center;">0,75</td>
+      <td style="text-align:center;">0,945</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Concrete</td>
+      <td style="text-align:center;">98,83</td>
+      <td style="text-align:center;">90,87</td>
+      <td style="text-align:center;">2,14</td>
+      <td style="text-align:center;">1,18</td>
+      <td style="text-align:center;">0,877</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Naval</td>
+      <td style="text-align:center;">96,65</td>
+      <td style="text-align:center;">90,26</td>
+      <td style="text-align:center;">0,52</td>
+      <td style="text-align:center;">0,39</td>
+      <td style="text-align:center;">0,984</td>
+    </tr>
+  </tbody>
+</table>
+<p>A tabela mostra que, no caso do NE-GP, as coberturas da predição bruta variam de 99,03% a 100,00%, enquanto para o NE-SVGP variam de 90,93% a 98,83%. Isso indica que os intervalos com predição bruta são, de maneira frequente, excessivamente conservadores, resultando em uma cobertura maior que a necessária.</p>
+<p>Após a aplicação do método conformal, as coberturas são consistentemente ajustadas para valores próximos a 90%, o que é o nível de cobertura nominal desejado. Esse resultado confirma a eficácia da predição conformal em calibrar os intervalos de predição para atingir a cobertura desejada, independentemente do modelo ou do conjunto de dados.</p>
+<p>Em relação à largura dos intervalos, observamos que, na maioria dos casos, a predição conformal resultou em intervalos mais estreitos. Isso é uma consequência direta da redução da cobertura para o nível nominal de 90%. É importante notar que, idealmente, desejamos intervalos de predição que sejam o mais estreitos possível, condicionado a atingir a cobertura desejada. Quanto ao desempenho, vemos que o NE-SVGP supera significativamente o NE-GP nos conjuntos de dados Naval (0,984 contra 0,933) e Concrete (0,877 contra 0,796), além de apresentar desempenho ligeiramente superior no conjunto CCPP (0,945 contra 0,941).</p>
+<img src="./combined_models_all_datasets.png" style="border: 5px solid #ef5350; width:100%; height:auto; max-width:100%;">
+<p>A figura, com resultados de execuções na semente 42, ilustra o <em>trade-off</em> entre cobertura e largura dos intervalos. Com NE-GP, em todos os conjuntos de dados, a calibração conformal reduz a cobertura para aproximadamente 90%, enquanto também reduz a largura dos intervalos. O efeito é particularmente pronunciado no conjunto CCPP, onde a largura média é reduzida de 2,64 para 0,76, uma redução de 71,2%, enquanto a cobertura passa de 99,89% para 90,13%.</p>
+<p>De forma análoga, para NE-SVGP, observamos um padrão semelhante, mas com algumas diferenças notáveis. Em particular, os intervalos brutos já são geralmente mais estreitos em comparação ao modelo NE-GP, e a redução proporcional na largura após a calibração conformal é menor. Por exemplo, no conjunto CCPP, a largura média é reduzida de 0,76 para 0,75, uma redução de apenas 1,3%, enquanto a cobertura passa de 90,93% para 90,13%.</p>
+<p>Além dessas métricas, os resultados também podem ser avaliados pela porcentagem de erros que, após a predição conformal, se distribuem entre os limites inferior e superior; pela razão entre a largura média do intervalo conformado e a largura média do intervalo bruto, em que valores menores indicam uma redução mais significativa após a aplicação do método conformal; pela redução do excesso de cobertura, que mede a eficiência da predição conformal ao quantificar o ganho obtido por unidade de redução na largura; e pelo erro de calibração, isto é, a diferença absoluta entre a cobertura alcançada e o nível nominal de 90%.</p>
+<table>
+  <thead>
+    <tr>
+      <th rowspan="2">Modelo</th>
+      <th rowspan="2">Conjunto</th>
+      <th colspan="2">Erros (%)</th>
+      <th rowspan="2">Razão entre Larguras</th>
+      <th rowspan="2">Redução do Excesso de Cobertura</th>
+      <th colspan="2">Erro de Calibração</th>
+    </tr>
+    <tr>
+      <th>Inferior</th>
+      <th>Superior</th>
+      <th>Bruta</th>
+      <th>Conformal</th>
+    </tr>
+  </thead>
+  <tbody>
+    <!-- NE-GP block -->
+    <tr>
+      <td rowspan="3">NE-GP</td>
+      <td style="text-align:right;">CCPP</td>
+      <td style="text-align:center;">4,22</td>
+      <td style="text-align:center;">5,65</td>
+      <td style="text-align:center;">0,289</td>
+      <td style="text-align:center;">0,052</td>
+      <td style="text-align:center;">0,099</td>
+      <td style="text-align:center;">0,002</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Concrete</td>
+      <td style="text-align:center;">4,27</td>
+      <td style="text-align:center;">4,17</td>
+      <td style="text-align:center;">0,541</td>
+      <td style="text-align:center;">0,060</td>
+      <td style="text-align:center;">0,090</td>
+      <td style="text-align:center;">0,020</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Naval</td>
+      <td style="text-align:center;">7,63</td>
+      <td style="text-align:center;">2,98</td>
+      <td style="text-align:center;">0,310</td>
+      <td style="text-align:center;">0,058</td>
+      <td style="text-align:center;">0,100</td>
+      <td style="text-align:center;">0,008</td>
+    </tr>
+    <!-- NE-SVGP block -->
+    <tr>
+      <td rowspan="3">NE-SVGP</td>
+      <td style="text-align:right;">CCPP</td>
+      <td style="text-align:center;">4,25</td>
+      <td style="text-align:center;">5,62</td>
+      <td style="text-align:center;">0,976</td>
+      <td style="text-align:center;">0,339</td>
+      <td style="text-align:center;">0,009</td>
+      <td style="text-align:center;">0,005</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Concrete</td>
+      <td style="text-align:center;">3,69</td>
+      <td style="text-align:center;">5,44</td>
+      <td style="text-align:center;">0,551</td>
+      <td style="text-align:center;">0,083</td>
+      <td style="text-align:center;">0,088</td>
+      <td style="text-align:center;">0,020</td>
+    </tr>
+    <tr>
+      <td style="text-align:right;">Naval</td>
+      <td style="text-align:center;">8,35</td>
+      <td style="text-align:center;">1,38</td>
+      <td style="text-align:center;">0,750</td>
+      <td style="text-align:center;">0,553</td>
+      <td style="text-align:center;">0,066</td>
+      <td style="text-align:center;">0,006</td>
+    </tr>
+  </tbody>
+</table>
+<p>A tabela revela padrões interessantes na distribuição de erros e na eficácia da calibração conformal. Para o NE-GP, observamos uma distribuição relativamente equilibrada de erros entre os limites inferior e superior nos conjuntos CCPP (4,22% inferior vs. 5,65% superior) e Concrete (4,27% inferior vs. 4,17% superior), enquanto o conjunto Naval apresenta uma assimetria notável com 7,63% de erros no limite inferior contra apenas 2,98% no superior.</p>
+<p>A razão entre larguras confirma a eficácia da calibração conformal em reduzir significativamente a largura dos intervalos. Para o NE-GP, observamos reduções substanciais: CCPP com razão de 0,289 (redução de 71,1%), Concrete com 0,541 (redução de 45,9%) e Naval com 0,310 (redução de 69,0%). O NE-SVGP apresenta comportamento distinto, com uma redução mais modesta no CCPP (razão de 0,976, apenas 2,4%) mas reduções significativas no Concrete (0,551, redução de 44,9%) e Naval (0,750, redução de 25,0%).</p>
+<p>O erro de calibração demonstra a superioridade da predição conformal. Para o NE-GP, os erros de calibração brutos variam de 0,090 a 0,100, sendo consistentemente reduzidos para valores próximos a zero após a calibração conformal (0,002 a 0,020). O NE-SVGP já apresenta erros de calibração brutos menores (0,009 a 0,088), mas ainda se beneficia da calibração conformal, alcançando erros finais de 0,005 a 0,020.</p>
+<h1 id="conclusao">Conclusão<a class="zola-anchor" href="#conclusao" aria-label="Anchor link for: conclusao" style="visibility: hidden;"></a>
+</h1>
+<p>Este trabalho investigou em profundidade a integração de processos gaussianos potencializados por redes neurais com a predição conformal como estratégia de calibração de intervalos de predição. Os resultados obtidos em três conjuntos de dados de natureza diversa evidenciam que a conformação fornece ganhos substanciais tanto em confiabilidade estatística quanto em eficiência informacional.</p>
+<p>Antes da calibração, os intervalos brutos exibiam coberturas muito superiores ao nível nominal de 90%, chegando a 100% no NE-GP para o conjunto Naval e a 99,89% no CCPP. Esse excesso de cobertura, embora pareça desejável à primeira vista, revela intervalos excessivamente largos e, portanto, pouco úteis na prática. A aplicação da predição conformal ajustou sistematicamente a cobertura para valores muito próximos a 90%, confirmando, na prática, as garantias teóricas do método: a cobertura marginal converge ao nível definido independentemente do ajuste do modelo ou da distribuição dos dados.</p>
+<p>A eficiência desse ajuste refletiu-se diretamente na largura média dos intervalos. No cenário mais expressivo, o CCPP com NE-GP sofreu uma redução de 71,2% na largura após a calibração, de 2,64 para 0,76 unidades, sem comprometer a taxa de acerto exigida. Mesmo no NE-SVGP, onde as larguras iniciais já eram menores devido ao caráter variacional esparso do modelo, observou-se uma diminuição adicional que, embora mais discreta em CCPP (1,3%), alcançou valores consideráveis em Concrete (44,9%) e Naval (25%).</p>
+<p>Esses achados ressaltam um ponto central: a calibração conformal não apenas corrige a cobertura, mas também tende a remover redundância estatística, comprimindo os intervalos até o limite necessário para preservar o nível de confiança. Em outras palavras, ela transforma incerteza superabundante em informação útil.</p>
+<p>O contraste entre os dois modelos avaliados fornece observações adicionais. O NE-SVGP, graças ao emprego de pontos-indutores e otimização variacional, obteve desempenho preditivo superior em termos de \(R^2\), chegando a 0,984 no conjunto Naval, e produziu intervalos brutos mais estreitos do que o NE-GP. Ainda assim, não dispensou a calibragem: pequenas violações de cobertura ou assimetrias na distribuição de erros foram corrigidas após a conformação.</p>
+<p>Para o NE-GP, a dependência da calibração foi ainda mais explícita, dada a tendência do modelo a superestimar incerteza em domínios com alto ruído ou desbalanceamento de características. Portanto, a predição conformal mostrou-se um complemento robusto a ambos os paradigmas: age como uma “segunda linha de defesa” contra defeitos de especificação do modelo e falhas nos pressupostos de ruído homoscedástico ou distribuição independente e identicamente distribuída.</p>
+<p>Apesar desses êxitos, algumas limitações merecem destaque. Em primeiro lugar, a extensão natural deste trabalho passa pela incorporação explícita de heteroscedasticidade, seja por meio de GPs variacionais locais, seja por modelos híbridos que aprendam a variância condicional da saída. Em segundo lugar, ainda que o SVGP escale melhor que o GP exato, conjuntos com milhões de amostras podem demandar particionamento hierárquico que preservem as garantias da predição conformal.</p>
+<p>Além disso, a investigação restringiu-se a tarefas de regressão. Como a estrutura teórica do conformal é agnóstica à função de perda, há terreno fértil para explorar classificações ordinais, detecção de anomalias e previsão intervalar em séries temporais, onde pressupostos de permutabilidade precisam ser revisitados.</p>
+<h1 id="referencias">Referências<a class="zola-anchor" href="#referencias" aria-label="Anchor link for: referencias" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>GAL, Y. <em>Uncertainty in deep learning</em>. Tese (Doutorado) — University of Cambridge, Cambridge, 2016. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>KULESHOV, V.; FENNER, N.; ERMON, S. Accurate uncertainties for deep learning using calibrated regression. In: <em>International Conference on Machine Learning</em>, 35., 2018, p. 2796–2804. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>HÜLLERMEIER, E.; WAEGEMAN, W. Aleatoric and epistemic uncertainty in machine learning: an introduction to concepts and methods. <em>Machine Learning</em>, v. 110, n. 3, p. 457–506, 2021. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>RASMUSSEN, C. E.; WILLIAMS, C. K. I. <em>Gaussian processes for machine learning</em>. Cambridge, MA: MIT Press, 2005. <a href="#fr-4-1">↩</a> <a href="#fr-4-2">↩2</a> <a href="#fr-4-3">↩3</a></p>
+</li>
+<li id="fn-5">
+<p>MURPHY, K. P. <em>Machine learning: a probabilistic perspective</em>. Cambridge, MA: MIT Press, 2012. <a href="#fr-5-1">↩</a> <a href="#fr-5-2">↩2</a> <a href="#fr-5-3">↩3</a></p>
+</li>
+<li id="fn-6">
+<p>KENDALL, A.; GAL, Y. What uncertainties do we need in Bayesian deep learning for computer vision? In: <em>Proceedings of the 31st Annual Conference on Neural Information Processing Systems (NIPS’17)</em>, Long Beach, CA, EUA, p. 5580–5590, 2017. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-7">
+<p>ANGELOPOULOS, A. N.; BATES, S. A gentle introduction to conformal prediction and distribution-free uncertainty quantification. <em>arXiv preprint arXiv:2107.07511</em>, 2022. <a href="#fr-7-1">↩</a> <a href="#fr-7-2">↩2</a></p>
+</li>
+<li id="fn-8">
+<p>BALASUBRAMANIAN, V.; HO, S.-S.; VOVK, V. <em>Conformal prediction for reliable machine learning: theory, adaptations and applications</em>. 1. ed. San Francisco: Morgan Kaufmann Publishers Inc., 2014. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>VOVK, V.; GAMMERMAN, A.; SHAFER, G. <em>Algorithmic learning in a random world</em>. New York, NY: Springer, 2005. <a href="#fr-9-1">↩</a> <a href="#fr-9-2">↩2</a></p>
+</li>
+<li id="fn-10">
+<p>SHAFER, G.; VOVK, V. A tutorial on conformal prediction. <em>The Journal of Machine Learning Research</em>, v. 9, p. 371–421, 2008. <a href="#fr-10-1">↩</a> <a href="#fr-10-2">↩2</a></p>
+</li>
+<li id="fn-11">
+<p>LEI, J.; G’S ELL, M.; RINALDO, A.; TIBSHIRANI, R. J.; WASSERMAN, L. Distribution-free predictive inference for regression. <em>Journal of the American Statistical Association</em>, v. 113, n. 523, p. 1094–1111, 2018. <a href="#fr-11-1">↩</a></p>
+</li>
+<li id="fn-12">
+<p>QUINONERO-CANDELA, J.; RASMUSSEN, C. E. A unifying view of sparse approximate Gaussian process regression. <em>Journal of Machine Learning Research</em>, v. 6, n. 65, p. 1939–1959, 2005. <a href="#fr-12-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>SNELSON, E.; GHAMRAMANI, Z. Sparse Gaussian processes using pseudo-inputs. In: <em>Advances in Neural Information Processing Systems</em>, v. 18, p. 1257–1264, 2005. MIT Press. <a href="#fr-13-1">↩</a></p>
+</li>
+<li id="fn-14">
+<p>TITSIAS, M. Variational learning of inducing variables in sparse Gaussian processes. In: <em>Proceedings of the Twelfth International Conference on Artificial Intelligence and Statistics</em>, 5., Clearwater, FL: PMLR, p. 567–574, 2009. <a href="#fr-14-1">↩</a></p>
+</li>
+<li id="fn-15">
+<p>HENSMAN, J.; FUSI, N.; LAWRENCE, N. D. Gaussian processes for big data. In: <em>Proceedings of the Twenty-Ninth Conference on Uncertainty in Artificial Intelligence</em>, Bellevue, WA; Arlington, VA: AUAI Press, p. 282–290, 2013. <a href="#fr-15-1">↩</a></p>
+</li>
+<li id="fn-16">
+<p>DEWOLF, N.; DE BAETS, B.; WAEGEMAN, W. Valid prediction intervals for regression problems. <em>Artificial Intelligence Review</em>, v. 56, n. 1, p. 577–613, 2023. <a href="#fr-16-1">↩</a></p>
+</li>
+<li id="fn-17">
+<p>GOLUB, G. H.; VAN LOAN, C. F. <em>Matrix computations</em>. 4. ed. Baltimore, MD: Johns Hopkins University Press, 2013. <a href="#fr-17-1">↩</a></p>
+</li>
+<li id="fn-18">
+<p>PAPADOPOULOS, H.; PROEDROU, K.; VOVK, V.; GAMMERMAN, A. Inductive confidence machines for regression. In: <em>Machine Learning: ECML 2002</em>, Berlin; Heidelberg: Springer Berlin Heidelberg, p. 345–356, 2002. <a href="#fr-18-1">↩</a></p>
+</li>
+<li id="fn-19">
+<p>TFEKCI, P.; KAYA, H. Combined cycle power plant. UCI Machine Learning Repository, 2014. <a href="#fr-19-1">↩</a></p>
+</li>
+<li id="fn-20">
+<p>YEH, I.-C. Concrete compressive strength. UCI Machine Learning Repository, 1998. <a href="#fr-20-1">↩</a></p>
+</li>
+<li id="fn-21">
+<p>CORADDU, A.; ONETO, L.; GHIO, A.; SAVIO, S.; ANGIUTA, D.; FIGARI, M. Condition based maintenance of naval propulsion plants. UCI Machine Learning Repository, 2014. <a href="#fr-21-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>

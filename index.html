@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="aulas, estudos e publicações sobre ciência de dados">
+  <title>rodolfo viana</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="rodolfo viana">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;">
+  
+
+
+</head>
+
+<body class="homepage">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+<div id="wrapper">
+  <main>
+    <section id="info">
+      
+      <div id="text">
+        <div>
+          <h3 id="name">Rodolfo Viana</h3>
+          <div id="bio">Engenharia de dados, inteligência artificial e pesquisa aplicada</div>
+        </div>
+      </div>
+    </section>
+    <section id="links">
+      <div id="left">
+        
+        <a href="https://rodolfoviana.com.br/publicacoes" class="instant">publicações</a>
+        
+        <a href="https://rodolfoviana.com.br/projetos" class="instant">projetos</a>
+        
+        <a href="https://rodolfoviana.com.br/curriculo" class="instant">currículo</a>
+        
+        <a href="https://rodolfoviana.com.br/tags" class="instant">tags</a>
+        
+        
+        <a href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;" hreflang="en" title="Switch to English">EN</a>
+        
+      </div>
+      <div id="right">
+        
+        <a href="https:&#x2F;&#x2F;github.com&#x2F;rodolfo-viana" aria-label="GitHub" target="_blank" rel="noreferrer noopener">
+          
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M5.88401 18.6531C5.58404 18.4523 5.32587 18.1972 5.0239 17.8366C4.91473 17.7062 4.47283 17.1521 4.55811 17.258C4.09533 16.6831 3.80296 16.4168 3.50156 16.3087C2.9817 16.1223 2.7114 15.5497 2.89784 15.0298C3.08428 14.51 3.65685 14.2397 4.17672 14.4261C4.92936 14.696 5.43847 15.1609 6.12425 16.0141C6.03025 15.8972 6.46364 16.4408 6.55731 16.5526C6.74784 16.7802 6.88732 16.918 6.99629 16.9909C7.20118 17.128 7.58451 17.1871 8.14709 17.1308C8.17065 16.7487 8.24136 16.378 8.34919 16.0355C5.38097 15.3101 3.70116 13.3949 3.70116 9.63947C3.70116 8.4006 4.0704 7.28368 4.75917 6.34756C4.5415 5.45368 4.57433 4.37259 5.06092 3.15611C5.1725 2.87715 5.40361 2.66314 5.69031 2.57328C5.77242 2.54949 5.81791 2.5389 5.89878 2.52648C6.70167 2.40319 7.83573 2.69681 9.31449 3.62311C10.181 3.41855 11.0885 3.31476 12.0012 3.31476C12.9129 3.31476 13.8196 3.41835 14.6854 3.62253C16.1619 2.68976 17.2986 2.39625 18.1072 2.52627C18.1919 2.53988 18.2645 2.55758 18.3249 2.57741C18.6059 2.66967 18.8316 2.88155 18.9414 3.15611C19.4279 4.37232 19.4608 5.45319 19.2433 6.34695C19.9342 7.28313 20.3012 8.39184 20.3012 9.63947C20.3012 13.3966 18.627 15.3046 15.6588 16.0318C15.7837 16.4467 15.8496 16.9103 15.8496 17.4118C15.8496 18.0763 15.8471 18.7108 15.8424 19.4223C15.8412 19.6124 15.8397 19.8156 15.8375 20.1279C16.2129 20.2107 16.5229 20.5074 16.6031 20.9086C16.7114 21.4502 16.3602 21.977 15.8186 22.0853C14.6794 22.3132 13.8353 21.5535 13.8353 20.5608C13.8353 20.4705 13.836 20.3414 13.8375 20.1142C13.8398 19.8012 13.8412 19.5987 13.8425 19.4092C13.8471 18.7017 13.8496 18.0714 13.8496 17.4118C13.8496 16.7145 13.6664 16.26 13.4237 16.0508C12.7627 15.481 13.0977 14.3971 13.965 14.2996C16.9314 13.9663 18.3012 12.8174 18.3012 9.63947C18.3012 8.68484 17.9893 7.89547 17.3881 7.23534C17.1301 6.95209 17.0567 6.54634 17.199 6.19062C17.3647 5.77639 17.4354 5.2336 17.2941 4.57678L17.2847 4.57944C16.7928 4.71861 16.1744 5.01956 15.4261 5.52826C15.182 5.69413 14.8772 5.74377 14.5932 5.66388C13.7729 5.43319 12.8913 5.31476 12.0012 5.31476C11.111 5.31476 10.2294 5.43319 9.40916 5.66388C9.12662 5.74335 8.82344 5.69468 8.57997 5.53077C7.8274 5.02414 7.2056 4.72355 6.71079 4.58352C6.56735 5.23672 6.63814 5.77758 6.80336 6.19062C6.94565 6.54634 6.87219 6.95209 6.61423 7.23534C6.01715 7.89096 5.70116 8.69352 5.70116 9.63947C5.70116 12.8114 7.07225 13.9681 10.023 14.2996C10.8883 14.3969 11.2246 15.4767 10.5675 16.048C10.3751 16.2153 10.1384 16.7799 10.1384 17.4118V20.5608C10.1384 21.5472 9.30356 22.2866 8.17878 22.0898C7.63476 21.9946 7.27093 21.4764 7.36613 20.9324C7.43827 20.5201 7.75331 20.2114 8.13841 20.1274V19.1379C7.22829 19.1991 6.47656 19.0496 5.88401 18.6531Z" fill="currentColor"></path></svg>
+
+        </a>
+        
+        <a href="https:&#x2F;&#x2F;www.linkedin.com&#x2F;in&#x2F;rodolfoviana&#x2F;" aria-label="LinkedIn" target="_blank" rel="noreferrer noopener">
+          
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M4.00098 3H20.001C20.5533 3 21.001 3.44772 21.001 4V20C21.001 20.5523 20.5533 21 20.001 21H4.00098C3.44869 21 3.00098 20.5523 3.00098 20V4C3.00098 3.44772 3.44869 3 4.00098 3ZM5.00098 5V19H19.001V5H5.00098ZM7.50098 9C6.67255 9 6.00098 8.32843 6.00098 7.5C6.00098 6.67157 6.67255 6 7.50098 6C8.3294 6 9.00098 6.67157 9.00098 7.5C9.00098 8.32843 8.3294 9 7.50098 9ZM6.50098 10H8.50098V17.5H6.50098V10ZM12.001 10.4295C12.5854 9.86534 13.2665 9.5 14.001 9.5C16.072 9.5 17.501 11.1789 17.501 13.25V17.5H15.501V13.25C15.501 12.2835 14.7175 11.5 13.751 11.5C12.7845 11.5 12.001 12.2835 12.001 13.25V17.5H10.001V10H12.001V10.4295Z"></path></svg>
+
+        </a>
+        
+        <a href="https:&#x2F;&#x2F;lattes.cnpq.br&#x2F;9571452574404221" aria-label="Lattes" target="_blank" rel="noreferrer noopener">
+          
+          
+          <!-- Academicons 1.9.5, licensed under the SIL Open Font License 1.1. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 448 512" width="18" height="18" fill="currentColor"><path d="M97.872 434.733C51.534 339.784 23.966 282.444 23.966 281.02c0-2.322 2.831-2 30.672 3.46 48.965 9.614 75.126 12.326 118.735 12.343 57.697.016 104.681-9.122 141.185-27.484 19.312-9.715 30.925-18.328 40.437-29.994 11.716-14.378 15.48-24.28 15.615-40.946.119-15.852-2.018-24.212-11.19-43.609-3.629-7.664-6.817-16.462-7.121-19.55-.475-4.968-.068-5.68 3.594-6.103 8.003-.948 47.508 37.402 62.055 60.241 25.076 39.386 27.112 81.993 5.884 123.195-13.039 25.313-27.449 42.827-51.577 62.734-40.098 33.062-86.708 56.086-151.068 74.635C186.616 459.911 130.715 472 119.202 472c-2.44 0-7.02-8.003-21.296-37.283l-.034.016zm12.904-153.121c-45.016-5.832-82.791-10.903-83.961-11.275-2-.645-9.154-24.516-13.19-43.947-1.017-4.917-2.509-17.939-3.323-28.958-3.63-49.17 7.069-83.165 35.739-113.735 48.542-51.712 152.476-58.003 269.737-16.328 20.583 7.324 28.755 12.411 24.975 15.581-2.797 2.34-21.753 2.306-54.509-.102-51.205-3.764-90.183 3.357-110.275 20.176-30.587 25.602-25.923 81.724 13.531 162.682 4.273 8.766 8.579 17.345 9.563 19.091 2.29 4.018.628 7.749-3.357 7.562-1.698-.082-39.915-4.912-84.93-10.746zm151.016-44.047c-35.928-6.46-68.227-28.739-78.654-54.222-5.002-12.241-4.764-28.213.576-37.774 4.832-8.648 17.31-18.65 28.484-22.839 18.6-6.968 51.17-4.188 74.907 6.41 22.532 10.055 42.506 27.738 49.932 44.185 9.529 21.108 1.593 44.659-18.821 55.9-13.531 7.443-39.827 11.326-56.443 8.341l.019-.001z"/></svg>
+
+        </a>
+        
+        <a href="https:&#x2F;&#x2F;orcid.org&#x2F;0009-0008-1356-5699" aria-label="ORCID" target="_blank" rel="noreferrer noopener">
+          
+          
+          <!-- Academicons 1.9.5, licensed under the SIL Open Font License 1.1. -->
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="18" height="18" fill="currentColor"><path d="M336.621 194.538c-7.13-3.328-13.868-5.56-20.254-6.614-6.365-1.095-16.574-1.612-30.71-1.612h-36.704v152.747h37.634c14.674 0 26.082-1.012 34.224-3.017 8.143-2.004 14.922-4.526 20.357-7.626 5.435-3.079 10.416-6.862 14.942-11.388 14.487-14.714 21.741-33.273 21.741-55.717 0-22.052-7.44-40.052-22.34-53.982-5.498-5.167-11.822-9.444-18.89-12.791zM256 8C119.022 8 8 119.042 8 256s111.022 248 248 248 248-111.042 248-248S392.978 8 256 8zm-82.336 357.513h-29.389V160.148h29.389v205.365zm-14.714-226.817c-11.14 0-20.213-9.01-20.213-20.212 0-11.119 9.052-20.191 20.213-20.191 11.18 0 20.232 9.052 20.232 20.191-.022 11.222-9.052 20.212-20.232 20.212zm241.387 163.597c-5.291 12.545-12.834 23.581-22.651 33.088-9.982 9.837-21.597 17.194-34.844 22.196-7.75 3.017-14.838 5.063-21.307 6.117-6.489 1.013-18.828 1.509-37.076 1.509h-64.956V160.148h69.234c27.962 0 50.034 4.154 66.32 12.545 16.264 8.37 29.181 20.729 38.791 36.973 9.61 16.265 14.425 34.018 14.425 53.196.023 13.764-2.666 26.908-7.936 39.431z"/></svg>
+
+        </a>
+        
+        <a href="mailto:eu@rodolfoviana.com.br" aria-label="E-mail" target="_blank" rel="noreferrer noopener">
+          
+          
+          <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M3 3H21C21.5523 3 22 3.44772 22 4V20C22 20.5523 21.5523 21 21 21H3C2.44772 21 2 20.5523 2 20V4C2 3.44772 2.44772 3 3 3ZM20 7.23792L12.0718 14.338L4 7.21594V19H20V7.23792ZM4.51146 5L12.0619 11.662L19.501 5H4.51146Z" fill="currentColor"></path></svg>
+
+        </a>
+        
+      </div>
+    </section>
+    <section id="brief" class="prose"><p>Olá!</p>
+<p>Meu nome é Rodolfo Viana. Sou engenheiro de dados com mais de uma década de experiência. Também sou professor na Universidade de Marília, onde leciono Sistemas Autônomos e Agentes Inteligentes e Introdução à Inteligência Artificial.</p>
+<p>Tenho especialização em Ciência de Dados pela USP, sou mestrando em Ciência da Computação pela Unesp e integrante do <a rel="noopener noreferrer external" target="_blank" href="https://www.viser.com.br/">VISER</a> — Visualization, Image and Smart Energy Research Group. Minha pesquisa está concentrada em inteligência artificial aplicada à medicina, especialmente em métodos de segmentação de tumores cerebrais em imagens médicas.</p>
+<p>Neste site você encontrará alguns trabalhos que desenvolvi, anotações de estudos e, vez ou outra, opiniões sobre IA, machine learning, estatística e temas relacionados.</p>
+<p>Meu currículo está disponível <a href="/curriculo">aqui</a>. Para contato direto, escreva para <a href="mailto:eu@rodolfoviana.com.br">eu@rodolfoviana.com.br</a>.</p>
+<p>Boa leitura.</p></section>
+    
+  </main>
+  <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+</div>
+
+  <script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>

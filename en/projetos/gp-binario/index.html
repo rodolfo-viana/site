@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Edited version of an article written for the Machine Learning course, taught by Prof. Dr. João Paulo Papa, in the master&#x27;s program of the Graduate Program in Computer Science at Unesp">
+  <title>Gaussian processes with variational inference for binary classification</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;gp-binario&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;gp-binario&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Gaussian processes with variational inference for binary classification">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;gp-binario&#x2F;">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;gp-binario&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#introduction">Introduction</a></li>
+      
+      <li><a class="h2" href="#theoretical-foundation">Theoretical Foundation</a><ul><li><a class="h3" href="#gaussian-processes">Gaussian Processes</a></li><li><a class="h3" href="#classification-with-gaussian-processes">Classification with Gaussian Processes</a></li><li><a class="h3" href="#variational-inference">Variational Inference</a></li><li><a class="h3" href="#variational-parametrization">Variational Parametrization</a></li></ul></li>
+      
+      <li><a class="h2" href="#methodology">Methodology</a><ul><li><a class="h3" href="#dataset">Dataset</a></li><li><a class="h3" href="#evaluation-metrics">Evaluation Metrics</a></li></ul></li>
+      
+      <li><a class="h2" href="#experimental-results">Experimental Results</a><ul><li><a class="h3" href="#classification-performance">Classification Performance</a></li><li><a class="h3" href="#probability-calibration">Probability Calibration</a></li><li><a class="h3" href="#uncertainty-analysis">Uncertainty Analysis</a></li><li><a class="h3" href="#training-convergence">Training Convergence</a></li></ul></li>
+      
+      <li><a class="h2" href="#discussion">Discussion</a></li>
+      
+      <li><a class="h2" href="#conclusion">Conclusion</a></li>
+      
+      <li><a class="h2" href="#references">References</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;">← Back</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;gp-binario&#x2F;" hreflang="pt">PT</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Gaussian processes with variational inference for binary classification</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">12-03-2025</span>
+            
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/en/tags/machine-learning/"><span>#</span>machine learning</a><a class="instant" href="https://rodolfoviana.com.br/en/tags/gaussian-processes/"><span>#</span>gaussian processes</a><a class="instant" href="https://rodolfoviana.com.br/en/tags/classification/"><span>#</span>classification</a></div>
+        </div>
+        <h1 id="introduction">Introduction<a class="zola-anchor" href="#introduction" aria-label="Anchor link for: introduction" style="visibility: hidden;"></a>
+</h1>
+<p>In classification problems, machine learning models are generally capable of presenting accurate point predictions; however, they often neglect the quantification of uncertainty inherent to such predictions<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup> <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>. This limitation is particularly critical in real-world applications, where not only prediction accuracy but also reliability and uncertainty quantification are crucial for informed decision-making<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup>.</p>
+<p>In this context, Gaussian Processes (GP) represent one of the most theoretically grounded tools for probabilistic machine learning<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup>. Unlike parametric methods that assume a specific functional form, GPs assign a probability distribution over functions, such that any finite subset of sample points follows a multivariate Gaussian distribution<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>. They thus become suitable for constructing prediction intervals, as they delimit the expected range for the true value with a specific probability.</p>
+<p>However, exact inference in GPs for classification is computationally intractable due to the non-conjugacy between the Bernoulli likelihood and the Gaussian prior<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>. Variational Inference (VI) emerges as an elegant solution to this problem, transforming inference into an optimization problem by approximating the true posterior distribution with a tractable variational distribution<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup>. The variational ELBO (evidence lower bound) method maximizes a lower bound of the marginal evidence, ensuring that the approximation is as close as possible to the true distribution within the chosen variational family.</p>
+<p>We present an implementation of Gaussian Processes with Variational Inference (GP-VI) for binary classification. The approach employs the Matérn kernel<sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup> with \(\nu=1{.}5\) to capture complex structures in the data. We use all training points as inducing points (\(M = N\)), prioritizing model expressiveness over computational efficiency<sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">9</a></sup>. Experiments conducted on the Wisconsin Breast Cancer dataset<sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">10</a></sup> demonstrate not only high predictive accuracy but also the model’s ability to provide uncertainty estimates.</p>
+<h1 id="theoretical-foundation">Theoretical Foundation<a class="zola-anchor" href="#theoretical-foundation" aria-label="Anchor link for: theoretical-foundation" style="visibility: hidden;"></a>
+</h1>
+<h2 id="gaussian-processes">Gaussian Processes<a class="zola-anchor" href="#gaussian-processes" aria-label="Anchor link for: gaussian-processes" style="visibility: hidden;"></a>
+</h2>
+<p>A GP is a collection of random variables, any finite number of which has a joint Gaussian distribution<sup class="footnote-reference" id="fr-4-2"><a href="#fn-4">4</a></sup>. Formally, a GP is specified by its mean function \(m(\mathbf{x})\) and covariance function \(k(\mathbf{x}, \mathbf{x’})\), where</p>
+<p>\[
+\begin{aligned}
+m(\mathbf{x}) &amp;= \mathbb{E}[f(\mathbf{x})] \\
+k(\mathbf{x}, \mathbf{x’}) &amp;= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x’}) - m(\mathbf{x’}))].
+\end{aligned}
+\]</p>
+<p>Thus, we have \(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\) to indicate that function \(f\) follows a GP with mean function \(m\) and covariance function \(k\).</p>
+<p>Typically, \(m(\mathbf{x}) = 0\) is assumed for simplicity. The kernel function determines the smoothness properties and structural characteristics of functions sampled from the GP. In this work, we use the Matérn kernel<sup class="footnote-reference" id="fr-8-2"><a href="#fn-8">8</a></sup> with \(\nu = 1{.}5\), which produces once-differentiable functions, offering a balance between smoothness and flexibility.</p>
+<p>Let \(r = \parallel\mathbf{x} - \mathbf{x}’\parallel\) be the Euclidean distance between two points, the Matérn kernel is defined as:</p>
+<p>\[
+k_{\text{Matérn}}(\mathbf{x}, \mathbf{x}’) = \sigma^2 \left(1 + \frac{\sqrt{3}r}{\ell}\right) \exp\left(-\frac{\sqrt{3}r}{\ell}\right)
+\]</p>
+<p>where \(\ell &gt; 0\) is the length scale that controls the smoothness of the function, and \(\sigma^2 &gt; 0\) is the scale variance that controls the amplitude of variations.</p>
+<h2 id="classification-with-gaussian-processes">Classification with Gaussian Processes<a class="zola-anchor" href="#classification-with-gaussian-processes" aria-label="Anchor link for: classification-with-gaussian-processes" style="visibility: hidden;"></a>
+</h2>
+<p>For binary classification, we model the latent function \(f(\mathbf{x})\) as a GP and connect this function to binary observations \(y \in {0,1}\) through a likelihood function. Using the Bernoulli likelihood<sup class="footnote-reference" id="fr-5-2"><a href="#fn-5">5</a></sup>:</p>
+<p>\[
+p(y \mid \mathbf{x}) = \text{Bernoulli}(\sigma(f(\mathbf{x})))
+\]</p>
+<p>where \(\sigma(\cdot)\) is the logistic function. The objective is to compute the posterior distribution \(p(f \mid \mathcal{D})\) given the dataset \(\mathcal{D} = {(\mathbf{x}_i, y_i)}_{i=1}^N\).</p>
+<h2 id="variational-inference">Variational Inference<a class="zola-anchor" href="#variational-inference" aria-label="Anchor link for: variational-inference" style="visibility: hidden;"></a>
+</h2>
+<p>The exact posterior \(p(f \mid \mathcal{D})\) is intractable due to the non-conjugacy between the Gaussian prior and the Bernoulli likelihood. Variational Inference approximates the true posterior with a tractable variational distribution \(q(f)\), minimizing the Kullback-Leibler divergence<sup class="footnote-reference" id="fr-11-1"><a href="#fn-11">11</a></sup>:</p>
+<p>\[
+\mathcal{L}_{\text{ELBO}} = \sum_{i=1}^N \mathbb{E}_{q(f_i)}[\log p(y_i \mid f_i)] - \text{KL}(q(f) \parallel p(f))
+\]</p>
+<p>Training minimizes \(- \mathcal{L}_{\text{ELBO}}\), i.e., maximizes the ELBO.</p>
+<h2 id="variational-parametrization">Variational Parametrization<a class="zola-anchor" href="#variational-parametrization" aria-label="Anchor link for: variational-parametrization" style="visibility: hidden;"></a>
+</h2>
+<p>Variational inference approximates the intractable posterior through a variational distribution \(q(\mathbf{u})\) over the function values at inducing points \(\mathbf{u} = f(\mathbf{Z})\), where \(\mathbf{Z}\) represents the set of inducing points<sup class="footnote-reference" id="fr-6-2"><a href="#fn-6">6</a></sup>. The variational distribution is parametrized as a Gaussian \(q(\mathbf{u}) = \mathcal{N}(\mathbf{m}, \mathbf{S})\), where \(\mathbf{m}\) is the mean vector and \(\mathbf{S}\) is the covariance matrix.</p>
+<p>To ensure that \(\mathbf{S}\) remains positive definite during optimization, we use the Cholesky parametrization:</p>
+<p>\[
+q(\mathbf{u}) = \mathcal{N}(\mathbf{m}, \mathbf{S}), \quad \mathbf{S} = \mathbf{L}\mathbf{L}^T
+\]</p>
+<p>where \(\mathbf{L}\) is a lower triangular matrix. The variational parameters \(\mathbf{m}\) and \(\mathbf{L}\) are learned through ELBO maximization.</p>
+<h1 id="methodology">Methodology<a class="zola-anchor" href="#methodology" aria-label="Anchor link for: methodology" style="visibility: hidden;"></a>
+</h1>
+<p>We implemented a variational GP model whose architecture consists of: (i) a mean module that uses a constant mean \(m(\mathbf{x}) = c\); (ii) a covariance module based on scaled kernel \(k(\mathbf{x}, \mathbf{x}‘) = \sigma^2 k_{\text{Matérn}}(\mathbf{x}, \mathbf{x}’)\); (iii) a variational distribution \(q(\mathbf{u})\) parametrized via Cholesky decomposition, where we use all \(N\) training points as inducing points (\(M = N = 455\)); and (iv) a Bernoulli likelihood for binary classification.</p>
+<p>This choice of \(M = N\) eliminates the sparse approximation, resulting in a more expressive model at the cost of greater computational complexity. For larger datasets, a strategy with \(M \ll N\) would be necessary for scalability<sup class="footnote-reference" id="fr-9-2"><a href="#fn-9">9</a></sup>.</p>
+<p>Training is performed by maximizing the ELBO through gradient-based optimization. The optimization process simultaneously updates: (i) kernel parameters (\(\ell\), \(\sigma^2\)); (ii) variational parameters (\(\mathbf{m}\), \(\mathbf{L}\)); and (iii) inducing point locations \(\mathbf{Z}\), when enabled.</p>
+<p>To ensure numerical stability during training, we use the Cholesky parametrization for the variational covariance matrix. Additionally, we add a jitter term (\(10^{-6}\)) to the diagonal of covariance matrices when necessary, and gradients are computed through automatic differentiation, minimizing numerical errors.</p>
+<p>During inference, for a test point \(\mathbf{x}_*\), we compute the predictive distribution:</p>
+<p>\[
+p(f_{*} \mid \mathcal{D}, \mathbf{x}_{*}) \approx \int p(f_{*} \mid \mathbf{u}) q(\mathbf{u}) , d\mathbf{u}
+\]</p>
+<p>This is a Gaussian distribution with mean \(\mu_*\) and variance \(\sigma_{*}^2\). The probability of the positive class is obtained by propagating this distribution through the likelihood:</p>
+<p>\[
+p(y_{*}=1 \mid \mathcal{D}, \mathbf{x}_{*}) = \mathbb{E}_{f_{*}\sim\mathcal{N}(\mu_*,\sigma_{*}^2})\big[\sigma(f_*)\big]
+\]</p>
+<p>Predictive uncertainty is quantified by the standard deviation \(\sigma_*\) in the latent space, which reflects both epistemic uncertainty and data randomness.</p>
+<h2 id="dataset">Dataset<a class="zola-anchor" href="#dataset" aria-label="Anchor link for: dataset" style="visibility: hidden;"></a>
+</h2>
+<p>We use the Wisconsin Breast Cancer dataset<sup class="footnote-reference" id="fr-10-2"><a href="#fn-10">10</a></sup> <sup class="footnote-reference" id="fr-12-1"><a href="#fn-12">12</a></sup>. This dataset contains 569 samples with 30 features calculated from digitized images of breast mass aspirates, with the task of classifying tumors as malignant (1) or benign (0).</p>
+<p>The data was split into 80% training and 20% testing using stratification to maintain class proportions. All features were standardized on the training set.</p>
+<h2 id="evaluation-metrics">Evaluation Metrics<a class="zola-anchor" href="#evaluation-metrics" aria-label="Anchor link for: evaluation-metrics" style="visibility: hidden;"></a>
+</h2>
+<p>We evaluate the model using a comprehensive set of metrics. Classification metrics include accuracy,</p>
+<p>\[
+\text{Accuracy} = \frac{TP + TN}{TP + TN + FP + FN},
+\]</p>
+<p>F1-Score, area under the ROC curve \(\text{AUC-ROC} \in [0,1]\) and area under the Precision-Recall curve \(\text{AUPRC} \in [0,1]\).</p>
+<p>Calibration metrics comprise the Brier score:</p>
+<p>\[
+\text{BS} = \frac{1}{N}\sum_{i=1}^{N}(p_i - y_i)^2,
+\]</p>
+<p>log loss, and expected calibration error (ECE).</p>
+<h1 id="experimental-results">Experimental Results<a class="zola-anchor" href="#experimental-results" aria-label="Anchor link for: experimental-results" style="visibility: hidden;"></a>
+</h1>
+<h2 id="classification-performance">Classification Performance<a class="zola-anchor" href="#classification-performance" aria-label="Anchor link for: classification-performance" style="visibility: hidden;"></a>
+</h2>
+<p>The model achieved excellent predictive performance, with accuracy above 96% and AUC-ROC of 99.34%, indicating high discriminative capacity. The F1-Score of 97.22% demonstrates balance between precision and sensitivity. The AUPRC of 99.58% confirms robust performance even considering different decision thresholds.</p>
+<table style="margin: 0 auto; border-collapse: collapse;">
+  <caption style="caption-side: top; font-weight: 600; padding: 8px 0;">
+    GP-VI Model Results on Wisconsin Breast Cancer
+  </caption>
+  <thead>
+    <tr>
+      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Metric</th>
+      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Accuracy</td><td style="border: 1px solid #ccc; padding: 8px;">96.49%</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">F1-Score</td><td style="border: 1px solid #ccc; padding: 8px;">97.22%</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">AUC-ROC</td><td style="border: 1px solid #ccc; padding: 8px;">99.34%</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">AUPRC</td><td style="border: 1px solid #ccc; padding: 8px;">99.58%</td></tr>
+    <tr><td colspan="2" style="border: 0; padding: 0;"><hr style="border: none; border-top: 1px solid #ccc; margin: 0;"></td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Brier Score</td><td style="border: 1px solid #ccc; padding: 8px;">0.0355</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Log Loss</td><td style="border: 1px solid #ccc; padding: 8px;">0.1397</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">ECE</td><td style="border: 1px solid #ccc; padding: 8px;">0.3771</td></tr>
+    <tr><td colspan="2" style="border: 0; padding: 0;"><hr style="border: none; border-top: 1px solid #ccc; margin: 0;"></td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Training Time</td><td style="border: 1px solid #ccc; padding: 8px;">8.19s</td></tr>
+  </tbody>
+</table>
+<p>The confusion matrix reveals only 4 incorrect predictions out of 114 test samples.</p>
+<figure style="width:60%; height:auto; max-width:60%; display:block; margin: 0 auto;">
+  <img src="./matriz.png" style="border: 5px solid #ef5350; background-color: white">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Confusion matrix</figcaption>
+</figure>
+<h2 id="probability-calibration">Probability Calibration<a class="zola-anchor" href="#probability-calibration" aria-label="Anchor link for: probability-calibration" style="visibility: hidden;"></a>
+</h2>
+<p>The Brier score of 0.0355 indicates excellent quality of predictive probabilities, with low discrepancy between predicted probabilities and real observations. The log loss of 0.1397 confirms that the model assigns high probability to the correct classes.</p>
+<p>However, the ECE of 0.3771 reveals a significant calibration problem<sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">13</a></sup>. ECE values above 0.1 indicate poor calibration, and an ECE above 0.3 suggests that the model is systematically over or under-confident in its predictions. This discrepancy between the low Brier score and high ECE can be explained by the nature of each metric: the Brier score is a global measure sensitive to overall probability accuracy, while ECE specifically evaluates whether calibrated probabilities reflect the actual frequency of correct predictions within each confidence bin.</p>
+<p>The model’s high precision (96.49% accuracy) combined with poor calibration suggests that the model is overly confident in its predictions, a common phenomenon in deep learning models and variational methods<sup class="footnote-reference" id="fr-13-2"><a href="#fn-13">13</a></sup>. Post-hoc recalibration techniques, such as temperature scaling or isotonic regression, could significantly improve ECE without compromising predictive accuracy.</p>
+<h2 id="uncertainty-analysis">Uncertainty Analysis<a class="zola-anchor" href="#uncertainty-analysis" aria-label="Anchor link for: uncertainty-analysis" style="visibility: hidden;"></a>
+</h2>
+<p>The table below presents predictive uncertainty statistics, revealing an apparently counter-intuitive pattern: the average uncertainty of correct predictions (\(1{.}024\pm0{.}156\)) is slightly higher than that of incorrect predictions (\(0{.}915\pm0{.}033\)).</p>
+<table style="margin: 0 auto; border-collapse: collapse;">
+  <caption style="caption-side: top; font-weight: 600; padding: 8px 0;">
+    Predictive Uncertainty Statistics
+  </caption>
+  <thead>
+    <tr>
+      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Statistic</th>
+      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Value</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Global Mean Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">1.020</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Median Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">1.004</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Uncertainty Standard Deviation</td><td style="border: 1px solid #ccc; padding: 8px;">0.154</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Q1</td><td style="border: 1px solid #ccc; padding: 8px;">0.906</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Q3</td><td style="border: 1px solid #ccc; padding: 8px;">1.134</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">IQR</td><td style="border: 1px solid #ccc; padding: 8px;">0.228</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Minimum Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">0.736</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Maximum Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">1.357</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Mean Uncertainty (Correct Predictions)</td><td style="border: 1px solid #ccc; padding: 8px;">1.024 &plusmn; 0.156</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Mean Uncertainty (Incorrect Predictions)</td><td style="border: 1px solid #ccc; padding: 8px;">0.915 &plusmn; 0.033</td></tr>
+    <tr><td style="border: 1px solid #ccc; padding: 8px;">Two-tailed t-test</td><td style="border: 1px solid #ccc; padding: 8px;">t = 1.39, p = 0.168</td></tr>
+  </tbody>
+</table>
+<p>To assess the statistical significance of this difference, we performed an independent t-test comparing the uncertainty distributions. The test resulted in \(t = 1{.}39\) with \(p = 0{.}168\), indicating that there is no statistical evidence of a significant difference between the uncertainties of correct and incorrect predictions at the 5% significance level.</p>
+<p>This result, although apparently counter-intuitive, can be explained by several factors. First, the reduced number of incorrect predictions (\(n = 4\)) limits the statistical power of the test. Second, incorrect predictions may occur in high-confidence regions due to outliers, label ambiguity, or noise in the data. Third, the model may exhibit high uncertainty in regions close to the decision boundary, where it still classifies correctly due to the 0.5 threshold. Finally, uncertainty in the latent space captures both epistemic uncertainty (lack of knowledge about the true function) and aleatoric uncertainty (intrinsic noise), making the relationship between uncertainty and prediction correctness inherently complex and not necessarily monotonic.</p>
+<h2 id="training-convergence">Training Convergence<a class="zola-anchor" href="#training-convergence" aria-label="Anchor link for: training-convergence" style="visibility: hidden;"></a>
+</h2>
+<p>The ELBO loss converged smoothly from approximately 0.79 at epoch 10 to 0.202 at the final epoch, indicating stable optimization without significant oscillations. The total training time was 8.19 seconds, demonstrating the computational efficiency of the variational approach even when using all training points as inducers.</p>
+<h1 id="discussion">Discussion<a class="zola-anchor" href="#discussion" aria-label="Anchor link for: discussion" style="visibility: hidden;"></a>
+</h1>
+<p>The results demonstrate that Gaussian Processes with Variational Inference constitute a promising approach for binary classification with uncertainty quantification. The model showed high predictive accuracy on the Wisconsin Breast Cancer dataset, with metrics above 96% in accuracy, F1-Score, AUC-ROC, and AUPRC.</p>
+<p>The Brier score (0.0355) and log loss (0.1397) indicate good overall quality of predictive probabilities. However, the elevated ECE (0.3771) reveals a significant calibration problem, suggesting that the model is overly confident in its predictions. This is an important result that highlights the need for post-hoc recalibration techniques in applications where well-calibrated probabilities are critical.</p>
+<p>The uncertainty analysis revealed that there is no statistically significant difference between the uncertainties of correct and incorrect predictions, indicating that the relationship between epistemic uncertainty and accuracy is more complex than initially expected. This result underscores the importance of rigorous statistical analyses when interpreting uncertainty estimates.</p>
+<p>The variational approach with ELBO allows efficient training, with a training time of only 8.19 seconds even when using all 455 training points as inducers. This efficiency, however, does not scale well for much larger datasets.</p>
+<h1 id="conclusion">Conclusion<a class="zola-anchor" href="#conclusion" aria-label="Anchor link for: conclusion" style="visibility: hidden;"></a>
+</h1>
+<p>This work presented an implementation of Gaussian Processes with Variational Inference for binary classification, evaluated on the Wisconsin Breast Cancer dataset. The results demonstrate promising performance, with 96.49% accuracy and 99.34% AUC-ROC.</p>
+<p>We identified that, despite the low Brier score, the model presents poor calibration according to ECE, revealing overconfidence in predictions. This result highlights the risk of evaluating a single calibration metric.</p>
+<p>The statistical analysis of uncertainty revealed that there is no evidence of a significant difference between the uncertainties of correct and incorrect predictions (\(p = 0{.}168\)). This result emphasizes the complexity of the relationship between epistemic uncertainty and predictive performance, suggesting that simplistic interpretations of uncertainty can be misleading.</p>
+<p>We recognize important limitations of this study. First, the results are based on a single small dataset, limiting the generalization of conclusions. Second, the choice of \(M = N\) eliminates the scalability benefits of sparse approximation, making the approach impractical for datasets with tens of thousands of samples. Third, the elevated ECE indicates that the model requires recalibration before being used in critical applications where reliable probability estimates are essential.</p>
+<p>Future work should focus on validation across multiple datasets from different domains and sizes, and systematic comparison with other probabilistic methods, such as Bayesian Dropout and Deep Ensembles. Additionally, one could investigate methods for automatic selection of inducing points for scalability (\(M \ll N\)) and application of recalibration techniques to improve ECE. Finally, there is room for exploration of different kernels or combinations.</p>
+<h1 id="references">References<a class="zola-anchor" href="#references" aria-label="Anchor link for: references" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>Y. Gal, “Uncertainty in Deep Learning”, PhD Thesis, University of Cambridge, 2016. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>V. Kuleshov, N. Fenner, and S. Ermon, “Accurate uncertainties for deep learning using calibrated regression”, in <em>Proceedings of the 35th International Conference on Machine Learning</em>, vol. 80. PMLR, 2018, pp. 2796-2804. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>E. Hüllermeier and W. Waegeman, “Aleatoric and epistemic uncertainty in machine learning: an introduction to concepts and methods”, in <em>Machine Learning</em>, vol. 110. Springer, 2021, pp. 457-506. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>C. E. Rasmussen and C. K. I. Williams, <em>Gaussian Processes for Machine Learning</em>. MIT Press, 2006. <a href="#fr-4-1">↩</a> <a href="#fr-4-2">↩2</a></p>
+</li>
+<li id="fn-5">
+<p>K. P. Murphy, <em>Machine Learning: A Probabilistic Perspective</em>. MIT Press, 2012. <a href="#fr-5-1">↩</a> <a href="#fr-5-2">↩2</a></p>
+</li>
+<li id="fn-6">
+<p>J. Hensman, A. Matthews, and Z. Ghahramani, “Scalable Variational Gaussian Process Classification”, in <em>Proceedings of the 18th International Conference on Artificial Intelligence and Statistics</em>, vol. 38. PMLR, 2015, pp. 351-360. <a href="#fr-6-1">↩</a> <a href="#fr-6-2">↩2</a></p>
+</li>
+<li id="fn-7">
+<p>D. M. Blei, A. Kucukelbir, and J. D. McAuliffe, “Variational Inference: A Review for Statisticians”, in <em>Journal of the American Statistical Association</em>, vol. 112, no. 518. Taylor &amp; Francis, 2017, pp. 859-877. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>B. Matérn, <em>Spatial Variation</em>, vol. 36. Springer-Verlag, 1986. (Orig. 1960). <a href="#fr-8-1">↩</a> <a href="#fr-8-2">↩2</a></p>
+</li>
+<li id="fn-9">
+<p>M. K. Titsias, “Variational Learning of Inducing Variables in Sparse Gaussian Processes”, in <em>Proceedings of the 12th International Conference on Artificial Intelligence and Statistics</em>, vol. 5. PMLR, 2009, pp. 567-574. <a href="#fr-9-1">↩</a> <a href="#fr-9-2">↩2</a></p>
+</li>
+<li id="fn-10">
+<p>W. Wolberg, O. Mangasarian, N. Street and W. Street, “Breast Cancer Wisconsin (Diagnostic) [Data Set]”, UCI Machine Learning Repository [Online], 1993. Available at https://archive.ics.uci.edu/. Accessed November 2, 2025. <a href="#fr-10-1">↩</a> <a href="#fr-10-2">↩2</a></p>
+</li>
+<li id="fn-11">
+<p>S. Kullback and R. A. Leibler, “On information and sufficiency”, in <em>The Annals of Mathematical Statistics</em>, vol. 22, no. 1. Institute of Mathematical Statistics, 1951, pp. 79-86. <a href="#fr-11-1">↩</a></p>
+</li>
+<li id="fn-12">
+<p>W. H. Wolberg and O. L. Mangasarian, “Multisurface Method of Pattern Separation for Medical Diagnosis Applied to Breast Cytology”, in <em>Proceedings of the National Academy of Sciences</em>, vol. 87, no. 23. National Academy of Sciences, 1990, pp. 9193-9196. <a href="#fr-12-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>C. Guo, G. Pleiss, Y. Sun, and K. Q. Weinberger, “On Calibration of Modern Neural Networks”, in <em>Proceedings of the 34th International Conference on Machine Learning</em>, vol. 70. PMLR, 2017, pp. 1321-1330. <a href="#fr-13-1">↩</a> <a href="#fr-13-2">↩2</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Made with <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>

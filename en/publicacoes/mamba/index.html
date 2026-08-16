@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="An annotated reading of three papers on selective state space models: Mamba, Mamba-2&#x27;s SSD duality, and Mamba-3&#x27;s refinements">
+  <title>Notes on Mamba</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;publicacoes&#x2F;mamba&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;publicacoes&#x2F;mamba&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Notes on Mamba">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;publicacoes&#x2F;mamba&#x2F;">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;publicacoes&#x2F;mamba&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#why-these-notes">Why these notes</a></li>
+      
+      <li><a class="h2" href="#preliminaries-the-state-space-model">Preliminaries: the state space model</a></li>
+      
+      <li><a class="h2" href="#mamba-selection-as-a-mechanism">Mamba: selection as a mechanism</a><ul><li><a class="h3" href="#the-limitation-of-time-invariant-ssms">The limitation of time-invariant SSMs</a></li><li><a class="h3" href="#the-selection-mechanism-s6">The selection mechanism (S6)</a></li><li><a class="h3" href="#the-hardware-aware-parallel-scan">The hardware-aware parallel scan</a></li><li><a class="h3" href="#the-mamba-block">The Mamba block</a></li></ul></li>
+      
+      <li><a class="h2" href="#mamba-2-structured-state-space-duality">Mamba-2: structured state space duality</a><ul><li><a class="h3" href="#ssms-as-semiseparable-matrices">SSMs as semiseparable matrices</a></li><li><a class="h3" href="#the-dual-form-masked-attention">The dual form: masked attention</a></li><li><a class="h3" href="#the-ssd-algorithm">The SSD algorithm</a></li><li><a class="h3" href="#architectural-changes">Architectural changes</a></li></ul></li>
+      
+      <li><a class="h2" href="#mamba-3-refining-state-space-principles">Mamba-3: refining state space principles</a><ul><li><a class="h3" href="#trapezoidal-recurrence">Trapezoidal recurrence</a></li><li><a class="h3" href="#complex-states-and-state-tracking">Complex states and state tracking</a></li><li><a class="h3" href="#mimo-formulation">MIMO formulation</a></li></ul></li>
+      
+      <li><a class="h2" href="#synthesis">Synthesis</a></li>
+      
+      <li><a class="h2" href="#references">References</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;publicacoes&#x2F;">← Back</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;publicacoes&#x2F;mamba&#x2F;" hreflang="pt">PT</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Notes on Mamba</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">06-23-2026</span>
+            
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/en/tags/machine-learning/"><span>#</span>machine learning</a><a class="instant" href="https://rodolfoviana.com.br/en/tags/sequence-models/"><span>#</span>sequence models</a><a class="instant" href="https://rodolfoviana.com.br/en/tags/state-space-models/"><span>#</span>state space models</a><a class="instant" href="https://rodolfoviana.com.br/en/tags/mamba/"><span>#</span>mamba</a></div>
+        </div>
+        <h1 id="why-these-notes">Why these notes<a class="zola-anchor" href="#why-these-notes" aria-label="Anchor link for: why-these-notes" style="visibility: hidden;"></a>
+</h1>
+<p>I’ve been studying SSMs and Mamba for my master’s dissertation, and taking notes along the way. The main purpose of this text is to consolidate those readings.</p>
+<p>And why study SSMs and Mamba? Efficiency. The attention mechanism<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup> processes a sequence of length \(L\) by comparing every position against every other, which costs \(\mathcal{O}(L^2)\) in time and memory and makes very long contexts prohibitive. State space models (SSMs) offer an \(\mathcal{O}(L)\) alternative, but historically paid for that saving with a loss of content-dependent reasoning. The three papers below tell the story of how that gap was progressively closed:</p>
+<ol>
+<li><strong>Mamba</strong><sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup> introduces <em>selection</em> — letting the SSM’s parameters depend on the input — along with a hardware-aware scan algorithm that keeps the cost linear.</li>
+<li><strong>Mamba-2</strong><sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup> reveals that SSMs and attention are two faces of the same operation on structured matrices (<em>structured state space duality</em>, or SSD), and uses that equivalence to build an algorithm 2 to 8 times faster.</li>
+<li><strong>Mamba-3</strong><sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup> refines the recurrence with three principles drawn from SSM theory: trapezoidal discretization, complex states, and a multi-input multi-output (MIMO) formulation.</li>
+</ol>
+<h1 id="preliminaries-the-state-space-model">Preliminaries: the state space model<a class="zola-anchor" href="#preliminaries-the-state-space-model" aria-label="Anchor link for: preliminaries-the-state-space-model" style="visibility: hidden;"></a>
+</h1>
+<p>An SSM, in its continuous form, is a linear system mapping an input signal \(x(t) \in \mathbb{R}\) to an output \(y(t) \in \mathbb{R}\) through a latent state \(h(t) \in \mathbb{R}^{N}\):</p>
+<p>\[
+\begin{aligned}
+h’(t) &amp;= \mathbf{A},h(t) + \mathbf{B},x(t) \\
+y(t) &amp;= \mathbf{C}^\top h(t)
+\end{aligned}
+\]</p>
+<p>where \(\mathbf{A} \in \mathbb{R}^{N \times N}\) governs the state dynamics, \(\mathbf{B} \in \mathbb{R}^{N}\) injects the input, and \(\mathbf{C} \in \mathbb{R}^{N}\) projects the state onto the output. The state size \(N\) is the model’s “memory”: everything the sequence has seen up to time \(t\) must fit inside \(h(t)\).</p>
+<p>To operate on discrete sequences, the system is discretized with a step \(\Delta\). Zero-order hold (ZOH) discretization, which assumes the input is constant within each interval \(\Delta\), yields</p>
+<p>\[
+\begin{aligned}
+\bar{\mathbf{A}} &amp;= \exp(\Delta \mathbf{A}) \\
+\bar{\mathbf{B}} &amp;= (\Delta \mathbf{A})^{-1}\bigl(\exp(\Delta \mathbf{A}) - \mathbf{I}\bigr)\cdot \Delta \mathbf{B}
+\end{aligned}
+\]</p>
+<p>so that the discrete recurrence becomes</p>
+<p>\[
+\begin{aligned}
+h_t &amp;= \bar{\mathbf{A}},h_{t-1} + \bar{\mathbf{B}},x_t \\
+y_t &amp;= \mathbf{C}^\top h_t
+\end{aligned}
+\]</p>
+<p>One caveat worth recording right away, because it resurfaces in the Mamba-3 section: the Mamba-1 and Mamba-2 implementations do <strong>not</strong> use the full expression for \(\bar{\mathbf{B}}\) above. They adopt the first-order approximation \(\bar{\mathbf{B}}_t \approx \Delta_t \mathbf{B}_t\), which is what you get by solving the exponential part of the transition analytically and approximating the input integral with an Euler rule at the right endpoint. That is precisely the rule Mamba-3 names <em>exponential-Euler</em> and then generalizes.</p>
+<p>There is, here, a duality that underpins the whole SSM literature. If \(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}\) are fixed — that is, if the system is linear time-invariant (LTI) — then unrolling the recurrence shows that \(y\) is a <strong>convolution</strong> of \(x\) with a fixed kernel:</p>
+<p>\[
+y_t = \sum_{k=0}^{t} \mathbf{C}^\top \bar{\mathbf{A}}^{k},\bar{\mathbf{B}};x_{t-k} \quad\Longleftrightarrow\quad y = \bar{\mathbf{K}} \ast x, \qquad \bar{\mathbf{K}} = (\mathbf{C}^\top\bar{\mathbf{B}}, \mathbf{C}^\top\bar{\mathbf{A}}\bar{\mathbf{B}}, \dots, \mathbf{C}^\top\bar{\mathbf{A}}^{L-1}\bar{\mathbf{B}})
+\]</p>
+<p>This equivalence is the key to the performance of S4 models<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>: you can <strong>train</strong> in convolutional mode, parallelizing across the whole sequence with the Fourier transform, and <strong>infer</strong> in recurrent mode, generating one token at a time with constant-size state. The price, however, is that the kernel \(\bar{\mathbf{K}}\) is the same for the entire sequence: the model cannot treat one token differently from another based on its content. That is exactly the limitation Mamba attacks.</p>
+<p>The equivalence is easy to check numerically. With \(\mathbf{A}\) diagonal, the two paths — stepping through the recurrence or building the kernel and convolving — should agree to floating-point error:</p>
+<pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> discretize_zoh</span><span>(</span><span class="z-variable z-parameter z-function">A</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>,</span><span class="z-variable z-parameter z-function"> B</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>,</span><span class="z-variable z-parameter z-function"> delta</span><span>:</span><span class="z-support"> float</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">ZOH for a diagonal SSM. A is the diagonal vector, with negative entries.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    A_bar</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>exp</span><span>(</span><span>delta</span><span class="z-keyword"> *</span><span> A</span><span>)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">    #</span><span class="z-comment"> (ΔA)^{-1}(exp(ΔA) − I)·ΔB  simplifies to  A^{-1}(exp(ΔA) − I)B</span></span>
+<span class="giallo-l"><span>    B_bar</span><span class="z-keyword"> =</span><span> (</span><span>A_bar</span><span class="z-keyword"> -</span><span class="z-constant"> 1.0</span><span>)</span><span class="z-keyword"> /</span><span> A</span><span class="z-keyword"> *</span><span> B</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> A_bar</span><span>,</span><span> B_bar</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> via_recurrence</span><span>(</span><span class="z-variable z-parameter z-function">A_bar</span><span>,</span><span class="z-variable z-parameter z-function"> B_bar</span><span>,</span><span class="z-variable z-parameter z-function"> C</span><span>,</span><span class="z-variable z-parameter z-function"> x</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Recurrent mode: h_t = Ā h_{t-1} + B̄ x_t,  y_t = Cᵀ h_t.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    h</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros_like</span><span>(</span><span>A_bar</span><span>)</span></span>
+<span class="giallo-l"><span>    y</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>empty</span><span>(</span><span class="z-support">len</span><span>(</span><span>x</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> t</span><span>,</span><span> x_t</span><span class="z-keyword"> in</span><span class="z-support"> enumerate</span><span>(</span><span>x</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        h</span><span class="z-keyword"> =</span><span> A_bar</span><span class="z-keyword"> *</span><span> h</span><span class="z-keyword"> +</span><span> B_bar</span><span class="z-keyword"> *</span><span> x_t</span></span>
+<span class="giallo-l"><span>        y</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> =</span><span> C</span><span class="z-keyword"> @</span><span> h</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> y</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> via_convolution</span><span>(</span><span class="z-variable z-parameter z-function">A_bar</span><span>,</span><span class="z-variable z-parameter z-function"> B_bar</span><span>,</span><span class="z-variable z-parameter z-function"> C</span><span>,</span><span class="z-variable z-parameter z-function"> x</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Convolutional mode: y = K̄ ∗ x, with K̄_k = Cᵀ Ā^k B̄. Only valid in the LTI case.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    L</span><span class="z-keyword"> =</span><span class="z-support"> len</span><span>(</span><span>x</span><span>)</span></span>
+<span class="giallo-l"><span>    K</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>array</span><span>(</span><span>[</span><span>C</span><span class="z-keyword"> @</span><span> (</span><span>A_bar</span><span class="z-keyword">**</span><span>k</span><span class="z-keyword"> *</span><span> B_bar</span><span>)</span><span class="z-keyword"> for</span><span> k</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span>L</span><span>)</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> np</span><span>.</span><span>convolve</span><span>(</span><span>x</span><span>,</span><span> K</span><span>)</span><span>[</span><span>:</span><span>L</span><span>]</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>rng</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>random</span><span>.</span><span>default_rng</span><span>(</span><span class="z-constant">0</span><span>)</span></span>
+<span class="giallo-l"><span>N</span><span>,</span><span> L</span><span class="z-keyword"> =</span><span class="z-constant"> 8</span><span>,</span><span class="z-constant"> 64</span></span>
+<span class="giallo-l"><span>A</span><span class="z-keyword"> =</span><span class="z-keyword"> -</span><span>np</span><span>.</span><span>exp</span><span>(</span><span>rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>N</span><span>)</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> negative real eigenvalues</span></span>
+<span class="giallo-l"><span>B</span><span>,</span><span> C</span><span class="z-keyword"> =</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>N</span><span>)</span><span>,</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>N</span><span>)</span></span>
+<span class="giallo-l"><span>x</span><span class="z-keyword"> =</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>L</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>A_bar</span><span>,</span><span> B_bar</span><span class="z-keyword"> =</span><span> discretize_zoh</span><span>(</span><span>A</span><span>,</span><span> B</span><span>,</span><span class="z-variable"> delta</span><span class="z-keyword">=</span><span class="z-constant">0.1</span><span>)</span></span>
+<span class="giallo-l"><span>y_rec</span><span class="z-keyword"> =</span><span> via_recurrence</span><span>(</span><span>A_bar</span><span>,</span><span> B_bar</span><span>,</span><span> C</span><span>,</span><span> x</span><span>)</span></span>
+<span class="giallo-l"><span>y_conv</span><span class="z-keyword"> =</span><span> via_convolution</span><span>(</span><span>A_bar</span><span>,</span><span> B_bar</span><span>,</span><span> C</span><span>,</span><span> x</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-support">print</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-constant">{</span><span>np</span><span>.</span><span>abs</span><span>(</span><span>y_rec</span><span class="z-keyword"> -</span><span> y_conv</span><span>)</span><span>.</span><span>max</span><span>(</span><span>)</span><span class="z-storage z-type">:.2e</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> -&gt; 1.67e-16</span></span></code></pre>
+<p>What breaks this equality, as we’ll see, is precisely making \(\bar{\mathbf{A}}\), \(\bar{\mathbf{B}}\) and \(\mathbf{C}\) depend on \(t\): with no fixed kernel, there is no convolution to perform.</p>
+<h1 id="mamba-selection-as-a-mechanism">Mamba: selection as a mechanism<a class="zola-anchor" href="#mamba-selection-as-a-mechanism" aria-label="Anchor link for: mamba-selection-as-a-mechanism" style="visibility: hidden;"></a>
+</h1>
+<h2 id="the-limitation-of-time-invariant-ssms">The limitation of time-invariant SSMs<a class="zola-anchor" href="#the-limitation-of-time-invariant-ssms" aria-label="Anchor link for: the-limitation-of-time-invariant-ssms" style="visibility: hidden;"></a>
+</h2>
+<p>Gu and Dao’s paper<sup class="footnote-reference" id="fr-2-2"><a href="#fn-2">2</a></sup> starts from an observation about simple synthetic tasks, such as selective copying and induction heads. Solving them requires <em>ignoring</em> irrelevant tokens and <em>remembering</em> the relevant ones — that is, content-dependent behaviour. An LTI SSM cannot do this: since \(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}\) do not depend on the input, the model compresses context uniformly, without deciding what to retain. Attention, by contrast, solves these tasks trivially, because it compares contents — but at quadratic cost.</p>
+<p>The paper’s question is therefore: can an SSM be given content-dependent selection without giving up linear cost?</p>
+<h2 id="the-selection-mechanism-s6">The selection mechanism (S6)<a class="zola-anchor" href="#the-selection-mechanism-s6" aria-label="Anchor link for: the-selection-mechanism-s6" style="visibility: hidden;"></a>
+</h2>
+<p>The answer is to let the parameters vary with the input. In the selective SSM — named S6, being an S4 with a selection mechanism — the parameters stop being constants and become functions of the token \(x_t\):</p>
+<p>\[
+\begin{aligned}
+\mathbf{B}_t &amp;= \text{Linear}_B(x_t) \\
+\mathbf{C}_t &amp;= \text{Linear}_C(x_t) \\
+\Delta_t &amp;= \text{softplus}\bigl(\text{Linear}_\Delta(x_t) + \text{bias}\bigr)
+\end{aligned}
+\]</p>
+<p>The matrix \(\mathbf{A}\) stays input-independent, but because it is discretized by \(\Delta_t\), the effective transition \(\bar{\mathbf{A}}_t = \exp(\Delta_t \mathbf{A})\) also comes to depend on the input. In practice \(\mathbf{A}\) is kept diagonal and parameterized as \(\mathbf{A} = -\exp(\mathbf{A}_{\log})\), which guarantees negative real eigenvalues and therefore stable, contractive dynamics. The recurrence becomes time-varying:</p>
+<p>\[
+\begin{aligned}
+h_t &amp;= \bar{\mathbf{A}}_t,h_{t-1} + \bar{\mathbf{B}}_t,x_t \\
+y_t &amp;= \mathbf{C}_t^\top h_t
+\end{aligned}
+\]</p>
+<p>The role of \(\Delta_t\) deserves emphasis, because it is the heart of selection. It can be read as a gate: a large \(\Delta_t\) drives \(\bar{\mathbf{A}}_t \to 0\) and lets \(\bar{\mathbf{B}}_t\) dominate, so the state is “reset” and focuses on the current token; a small \(\Delta_t\) drives \(\bar{\mathbf{A}}_t \to \mathbf{I}\) and \(\bar{\mathbf{B}}_t \to 0\), so the current token is ignored and the state is preserved. The model learns, token by token, how much attention to pay to each input — and it is in this sense that selection generalizes the gating mechanisms of classical RNNs.</p>
+<p>Both regimes are evident in a single isolated step of the recurrence. Starting from a state \(h = \mathbf{1}\) and feeding \(x_t = 1\):</p>
+<pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> selective_step</span><span>(</span><span class="z-variable z-parameter z-function">h</span><span>,</span><span class="z-variable z-parameter z-function"> x_t</span><span>,</span><span class="z-variable z-parameter z-function"> A</span><span>,</span><span class="z-variable z-parameter z-function"> B_t</span><span>,</span><span class="z-variable z-parameter z-function"> delta_t</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">One S6 step. Note that Δ_t enters both Ā_t and B̄_t at once.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    A_bar</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>exp</span><span>(</span><span>delta_t</span><span class="z-keyword"> *</span><span> A</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> → 0 if Δ is large; → 1 if Δ is small</span></span>
+<span class="giallo-l"><span>    B_bar</span><span class="z-keyword"> =</span><span> delta_t</span><span class="z-keyword"> *</span><span> B_t</span><span class="z-punctuation z-definition z-comment">        #</span><span class="z-comment"> → 0 if Δ is small</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> A_bar</span><span class="z-keyword"> *</span><span> h</span><span class="z-keyword"> +</span><span> B_bar</span><span class="z-keyword"> *</span><span> x_t</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>A</span><span class="z-keyword"> =</span><span class="z-keyword"> -</span><span>np</span><span>.</span><span>ones</span><span>(</span><span class="z-constant">4</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> fixed, negative transition</span></span>
+<span class="giallo-l"><span>B_t</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>ones</span><span>(</span><span class="z-constant">4</span><span>)</span></span>
+<span class="giallo-l"><span>h</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>ones</span><span>(</span><span class="z-constant">4</span><span>)</span><span class="z-punctuation z-definition z-comment">   #</span><span class="z-comment"> whatever the model has accumulated so far</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-keyword">for</span><span> delta_t</span><span class="z-keyword"> in</span><span> (</span><span class="z-constant">5.0</span><span>,</span><span class="z-constant"> 0.01</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>    A_bar</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>exp</span><span>(</span><span>delta_t</span><span class="z-keyword"> *</span><span> A</span><span>)</span></span>
+<span class="giallo-l"><span>    h_new</span><span class="z-keyword"> =</span><span> selective_step</span><span>(</span><span>h</span><span>,</span><span class="z-constant"> 1.0</span><span>,</span><span> A</span><span>,</span><span> B_t</span><span>,</span><span> delta_t</span><span>)</span></span>
+<span class="giallo-l"><span class="z-support">    print</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-string">Δ=</span><span class="z-constant">{</span><span>delta_t</span><span class="z-storage z-type">:&lt;5</span><span class="z-constant">}</span><span class="z-string"> Ā=</span><span class="z-constant">{</span><span>A_bar</span><span>[</span><span class="z-constant">0</span><span>]</span><span class="z-storage z-type">:.4f</span><span class="z-constant">}</span><span class="z-string">  B̄=</span><span class="z-constant">{</span><span>delta_t</span><span class="z-storage z-type">:.4f</span><span class="z-constant">}</span><span class="z-string">  h=</span><span class="z-constant">{</span><span>h_new</span><span>[</span><span class="z-constant">0</span><span>]</span><span class="z-storage z-type">:.4f</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> Δ=5.0   Ā=0.0067  B̄=5.0000  h=5.0067   &lt;- forgets the past, absorbs the token</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> Δ=0.01  Ā=0.9900  B̄=0.0100  h=1.0000   &lt;- preserves the past, ignores the token</span></span></code></pre>
+<p>With \(\Delta_t = 5\), the previous state all but vanishes (\(\bar{\mathbf{A}}_t \approx 0.007\)) and the new state is essentially the current token. With \(\Delta_t = 0.01\), the state survives nearly intact and the token’s contribution is negligible. It is this continuous, content-dependent on-off behaviour that an LTI SSM has no way of expressing.</p>
+<h2 id="the-hardware-aware-parallel-scan">The hardware-aware parallel scan<a class="zola-anchor" href="#the-hardware-aware-parallel-scan" aria-label="Anchor link for: the-hardware-aware-parallel-scan" style="visibility: hidden;"></a>
+</h2>
+<p>Selection has a cost: by making the parameters input-dependent, the model loses the LTI property and, with it, the equivalence to convolution. There is no longer a fixed kernel \(\bar{\mathbf{K}}\) to apply via Fourier; what remains is the recurrence, which is sequential by nature.</p>
+<p>The paper’s solution is to compute the recurrence as a <strong>parallel associative scan</strong>. The recurrence \(h_t = \bar{\mathbf{A}}_t h_{t-1} + \bar{\mathbf{B}}_t x_t\) is an associative operation over the pairs \((\bar{\mathbf{A}}_t, \bar{\mathbf{B}}_t x_t)\), and associative scans admit parallel algorithms in \(\mathcal{O}(\log L)\) steps<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>. On top of that, the paper adds three hardware-aware engineering decisions:</p>
+<ul>
+<li><strong>Kernel fusion</strong>: the discretized parameters are materialized in the GPU’s fast memory (SRAM) rather than main memory (HBM), avoiding the traffic that would dominate runtime.</li>
+<li><strong>Scanning without materializing the expanded state</strong>: the \(N\)-dimensional state is kept in SRAM and only the output is written back.</li>
+<li><strong>Recomputation</strong>: intermediate states are not stored for the backward pass but recomputed, trading memory for operations — which pays off on modern GPUs.</li>
+</ul>
+<p>The result is a selective SSM that scales linearly in \(L\), generates tokens with constant-size state and reaches, according to the paper, roughly five times the inference throughput of a comparable Transformer.</p>
+<h2 id="the-mamba-block">The Mamba block<a class="zola-anchor" href="#the-mamba-block" aria-label="Anchor link for: the-mamba-block" style="visibility: hidden;"></a>
+</h2>
+<p>The final architecture is deliberately simple. Instead of alternating attention blocks and multilayer perceptron (MLP) blocks the way a Transformer does, Mamba stacks a single homogeneous block. That block combines, on one path, a projection that expands the dimension, a short depthwise convolution (capturing local context before the scan), a SiLU activation and the selective SSM; in parallel, a second path supplies a multiplicative gate (in the spirit of the Gated Linear Unit). The outputs of the two paths are combined and projected back to the original dimension. With no attention and no MLP, all sequence processing falls to the selective SSM — which gives the architecture its economy and its elegance.</p>
+<pre class="mermaid">flowchart TB
+    x["Input"] --> inproj["Input projection"]
+    inproj -->|"x branch"| conv["Short depthwise convolution"]
+    conv --> act["SiLU"]
+    act --> ssm["Selective SSM (S6)"]
+    inproj -->|"z branch (gate)"| gate["SiLU"]
+    ssm --> mul["⊙ multiply"]
+    gate --> mul
+    mul --> outproj["Output projection"]
+    outproj --> y["Output"]</pre>
+<h1 id="mamba-2-structured-state-space-duality">Mamba-2: structured state space duality<a class="zola-anchor" href="#mamba-2-structured-state-space-duality" aria-label="Anchor link for: mamba-2-structured-state-space-duality" style="visibility: hidden;"></a>
+</h1>
+<p>The second paper<sup class="footnote-reference" id="fr-3-2"><a href="#fn-3">3</a></sup>, by Dao and Gu, is more theoretical and, in a sense, more ambitious: it explains <em>why</em> Mamba works, placing it in a framework that also contains attention. The thesis, announced in the title itself — “Transformers are SSMs” — is that the two architectures are different factorizations of the same mathematical object.</p>
+<h2 id="ssms-as-semiseparable-matrices">SSMs as semiseparable matrices<a class="zola-anchor" href="#ssms-as-semiseparable-matrices" aria-label="Anchor link for: ssms-as-semiseparable-matrices" style="visibility: hidden;"></a>
+</h2>
+<p>The starting point is to write the SSM not as a recurrence but as a single matrix transformation. Unrolling the recurrence (with time-varying \(\mathbf{A}_t\)), each output is</p>
+<p>\[
+y_j = \sum_{i \le j} \mathbf{C}_j^\top \bigl(\bar{\mathbf{A}}_j \bar{\mathbf{A}}_{j-1}\cdots \bar{\mathbf{A}}_{i+1}\bigr)\bar{\mathbf{B}}_i,x_i
+\]</p>
+<p>that is, \(y = \mathbf{M}x\), where \(\mathbf{M}\) is the lower-triangular matrix with entries</p>
+<p>\[
+\mathbf{M}_{ji} = \mathbf{C}_j^\top \bar{\mathbf{A}}_{j:i},\bar{\mathbf{B}}_i, \qquad \bar{\mathbf{A}}_{j:i} = \prod_{k=i+1}^{j}\bar{\mathbf{A}}_k
+\]</p>
+<p>Matrices of this form are called <strong>semiseparable</strong> (more precisely, sequentially \(N\)-semiseparable): any submatrix entirely contained in the lower triangle has rank at most \(N\). This structure is what allows \(y = \mathbf{M}x\) to be computed in linear time, despite \(\mathbf{M}\) being an \(L \times L\) matrix.</p>
+<h2 id="the-dual-form-masked-attention">The dual form: masked attention<a class="zola-anchor" href="#the-dual-form-masked-attention" aria-label="Anchor link for: the-dual-form-masked-attention" style="visibility: hidden;"></a>
+</h2>
+<p>Mamba-2’s decisive architectural choice is to restrict \(\mathbf{A}_t\) to a <strong>scalar times the identity</strong>, \(\bar{\mathbf{A}}_t = a_t \mathbf{I}\). With that, the product of transitions becomes a product of scalars, and the matrix \(\mathbf{M}\) factors remarkably:</p>
+<p>\[
+\mathbf{M}_{ji} = \Bigl(\prod_{k=i+1}^{j} a_k\Bigr),\mathbf{C}_j^\top \mathbf{B}_i = \mathbf{L}_{ji},(\mathbf{C}_j^\top \mathbf{B}_i)
+\]</p>
+<p>where \(\mathbf{L}_{ji} = \prod_{k=i+1}^{j} a_k\) is a lower-triangular matrix of cumulative products. In compact notation,</p>
+<p>\[
+\mathbf{M} = \mathbf{L} \circ (\mathbf{C},\mathbf{B}^\top)
+\]</p>
+<p>where \(\circ\) is the Hadamard product. Here is the duality: \(\mathbf{C}\mathbf{B}^\top\) plays the role of \(\mathbf{Q}\mathbf{K}^\top\) in attention, and \(\mathbf{L}\) is a causal mask — except that, instead of a mask of zeros and ones, it is a <em>decay</em> mask whose entries are cumulative products of \(a_k\). Computing \(y = (\mathbf{L} \circ \mathbf{C}\mathbf{B}^\top)x\) directly is precisely a form of masked linear attention, quadratic in \(L\). Computing the same thing through the recurrence is the SSM, at linear cost. They are the same function computed along two paths — <strong>structured state space duality</strong> (SSD).</p>
+<p>“Same function, two paths” is a checkable claim. Below, the recurrent form (cost \(\mathcal{O}(L)\), state \(P \times N\)) and the quadratic form (cost \(\mathcal{O}(L^2)\), building the whole \(L \times L\) matrix) produce the same output:</p>
+<pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> ssd_recurrent</span><span>(</span><span class="z-variable z-parameter z-function">a</span><span>,</span><span class="z-variable z-parameter z-function"> B</span><span>,</span><span class="z-variable z-parameter z-function"> C</span><span>,</span><span class="z-variable z-parameter z-function"> X</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Linear form. State (P, N) updated by outer product, one token at a time.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    L</span><span>,</span><span> P</span><span class="z-keyword"> =</span><span> X</span><span>.</span><span>shape</span></span>
+<span class="giallo-l"><span>    h</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros</span><span>(</span><span>(</span><span>P</span><span>,</span><span> B</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">1</span><span>]</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    Y</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>empty</span><span>(</span><span>(</span><span>L</span><span>,</span><span> P</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> t</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span>L</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        h</span><span class="z-keyword"> =</span><span> a</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> h</span><span class="z-keyword"> +</span><span> np</span><span>.</span><span>outer</span><span>(</span><span>X</span><span>[</span><span>t</span><span>]</span><span>,</span><span> B</span><span>[</span><span>t</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>        Y</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> =</span><span> h</span><span class="z-keyword"> @</span><span> C</span><span>[</span><span>t</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> Y</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> ssd_quadratic</span><span>(</span><span class="z-variable z-parameter z-function">a</span><span>,</span><span class="z-variable z-parameter z-function"> B</span><span>,</span><span class="z-variable z-parameter z-function"> C</span><span>,</span><span class="z-variable z-parameter z-function"> X</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Dual form: Y = (L ∘ C Bᵀ) X, with L_ji = Π_{k=i+1}^{j} a_k.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    S</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>cumsum</span><span>(</span><span>np</span><span>.</span><span>log</span><span>(</span><span>a</span><span>)</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> cumulative products, in log space, for stability</span></span>
+<span class="giallo-l"><span>    mask</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>tril</span><span>(</span><span>np</span><span>.</span><span>exp</span><span>(</span><span>S</span><span>[</span><span>:</span><span>,</span><span class="z-constant"> None</span><span>]</span><span class="z-keyword"> -</span><span> S</span><span>[</span><span class="z-constant">None</span><span>,</span><span> :</span><span>]</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> (</span><span>mask</span><span class="z-keyword"> *</span><span> (</span><span>C</span><span class="z-keyword"> @</span><span> B</span><span>.</span><span>T</span><span>)</span><span>)</span><span class="z-keyword"> @</span><span> X</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>rng</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>random</span><span>.</span><span>default_rng</span><span>(</span><span class="z-constant">1</span><span>)</span></span>
+<span class="giallo-l"><span>L</span><span>,</span><span> N</span><span>,</span><span> P</span><span class="z-keyword"> =</span><span class="z-constant"> 32</span><span>,</span><span class="z-constant"> 16</span><span>,</span><span class="z-constant"> 8</span></span>
+<span class="giallo-l"><span>a</span><span class="z-keyword"> =</span><span> rng</span><span>.</span><span>uniform</span><span>(</span><span class="z-constant">0.85</span><span>,</span><span class="z-constant"> 0.99</span><span>,</span><span class="z-variable"> size</span><span class="z-keyword">=</span><span>L</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> the scalars Ā_t = a_t I</span></span>
+<span class="giallo-l"><span>B</span><span>,</span><span> C</span><span class="z-keyword"> =</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>(</span><span>L</span><span>,</span><span> N</span><span>)</span><span>)</span><span>,</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>(</span><span>L</span><span>,</span><span> N</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>X</span><span class="z-keyword"> =</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>(</span><span>L</span><span>,</span><span> P</span><span>)</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-support">print</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-constant">{</span><span>np</span><span>.</span><span>abs</span><span>(</span><span>ssd_recurrent</span><span>(</span><span>a</span><span>,</span><span> B</span><span>,</span><span> C</span><span>,</span><span> X</span><span>)</span><span class="z-keyword"> -</span><span> ssd_quadratic</span><span>(</span><span>a</span><span>,</span><span> B</span><span>,</span><span> C</span><span>,</span><span> X</span><span>)</span><span>)</span><span>.</span><span>max</span><span>(</span><span>)</span><span class="z-storage z-type">:.2e</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> -&gt; 9.44e-15</span></span></code></pre>
+<p>It’s worth noting what <code>mask</code> is: a lower-triangular matrix whose entries decay as \(j - i\) grows. Swapping that decay for a mask of zeros and ones gives ordinary causal attention; it is literally the same line of code with a different mask. The SSD algorithm, described next, does not choose between the two paths — it uses each where it is better.</p>
+<h2 id="the-ssd-algorithm">The SSD algorithm<a class="zola-anchor" href="#the-ssd-algorithm" aria-label="Anchor link for: the-ssd-algorithm" style="visibility: hidden;"></a>
+</h2>
+<p>The equivalence is not merely conceptual: it yields a better algorithm. The idea is to partition the sequence into chunks and handle each part of the matrix \(\mathbf{M}\) with whichever method suits it:</p>
+<ul>
+<li>The <strong>diagonal blocks</strong> — interactions within a single short chunk — are computed with the quadratic dual form, which is small and makes good use of the GPU’s matrix multiplication units (tensor cores).</li>
+<li>The <strong>off-diagonal blocks</strong> — the flow of information between chunks — are computed with the linear recurrent form, propagating a summary state from chunk to chunk.</li>
+</ul>
+<p>This “chunkwise” algorithm combines the best of both worlds: attention’s efficient parallelization within chunks and the SSM’s linear scaling across chunks. In practice it is 2 to 8 times faster than the original Mamba’s selective scan, and permits substantially larger states, because the scan’s memory bottleneck is relieved. The \(\mathcal{O}(L)\) cost is preserved, with far better hardware utilization.</p>
+<pre class="mermaid">flowchart TB
+    seq["Sequence of length L"] --> split["Partition into chunks"]
+    split --> diag["Diagonal blocks<br/>(within chunk):<br/>quadratic dual form, attention-like"]
+    split --> off["Off-diagonal blocks<br/>(across chunks):<br/>linear recurrent form, summary state"]
+    diag --> comb["Combine"]
+    off --> comb
+    comb --> out["Output y = M x"]</pre>
+<h2 id="architectural-changes">Architectural changes<a class="zola-anchor" href="#architectural-changes" aria-label="Anchor link for: architectural-changes" style="visibility: hidden;"></a>
+</h2>
+<p>Restricting \(\mathbf{A}\) to a scalar makes room for treating the SSM as a form of multi-head attention. Mamba-2 therefore introduces multiple heads and produces \(\mathbf{B}, \mathbf{C}, \Delta\) in parallel from the input (rather than sequentially, as in Mamba-1), which improves parallelization and the interaction with tensor parallelism in large-scale training. The result is a simpler, more scalable block, with no loss of language modelling quality.</p>
+<h1 id="mamba-3-refining-state-space-principles">Mamba-3: refining state space principles<a class="zola-anchor" href="#mamba-3-refining-state-space-principles" aria-label="Anchor link for: mamba-3-refining-state-space-principles" style="visibility: hidden;"></a>
+</h1>
+<p>The third paper<sup class="footnote-reference" id="fr-4-2"><a href="#fn-4">4</a></sup>, by Lahoti and colleagues, keeps the family’s recurrent thread but is not merely a spot adjustment to the previous block. It reorganizes the architecture around a recipe closer to Llama — alternating Mamba-3 blocks and SwiGLU blocks — and improves the SSM mechanism on three fronts, each derived from a principle of state space theory. The motivation is inference: since generating tokens with Transformers is expensive, it pays to extract more expressivity from each unit of SSM state without increasing decoding latency, or increasing it very little.</p>
+<h2 id="trapezoidal-recurrence">Trapezoidal recurrence<a class="zola-anchor" href="#trapezoidal-recurrence" aria-label="Anchor link for: trapezoidal-recurrence" style="visibility: hidden;"></a>
+</h2>
+<p>The first improvement is to change the discretization. Mamba-3 calls the rule used by Mamba-1 and Mamba-2 <strong>exponential-Euler</strong>: after analytically solving the exponential part of the transition, the input integral is approximated by an Euler rule at the right endpoint. This recovers the update</p>
+<p>\[
+h_t = \exp(\Delta_t A_t)h_{t-1} + \Delta_t B_t x_t.
+\]</p>
+<p>Mamba-3 replaces that approximation with a <strong>generalized exponential-trapezoidal discretization</strong>. The idea remains causal: the update does not look at \(x_{t+1}\). It mixes the previous and current endpoints of the interval,</p>
+<p>\[
+\begin{aligned}
+h_t
+&amp;= \exp(\Delta_t A_t)h_{t-1}
+{}+ (1-\lambda_t)\Delta_t\exp(\Delta_t A_t)B_{t-1}x_{t-1}
+{}+ \lambda_t\Delta_t B_t x_t \\
+&amp;= \alpha_t h_{t-1} + \beta_t B_{t-1}x_{t-1} + \gamma_t B_t x_t,
+\end{aligned}
+\]</p>
+<p>with</p>
+<p>\[
+\alpha_t = \exp(\Delta_t A_t), \qquad
+\beta_t = (1-\lambda_t)\Delta_t\exp(\Delta_t A_t), \qquad
+\gamma_t = \lambda_t\Delta_t.
+\]</p>
+<p>When \(\lambda_t = 1\), the rule falls back to the exponential-Euler case. When \(\lambda_t = 1/2\), it recovers the classical trapezoidal rule exactly. In the final model, however, \(\lambda_t\) is learned as a token-dependent gate, \(\lambda_t = \sigma(u_t)\), with \(u_t\) a linear projection of the current token. For that reason the gain should not be read as literally “parameter-free”: there is a small additional parameterization for the gate.</p>
+<p>Both limiting cases can be confirmed in a few lines — with \(\lambda_t = 1\) the two recurrences coincide, and with \(\lambda_t = 1/2\) they diverge:</p>
+<pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> trapezoidal</span><span>(</span><span class="z-variable z-parameter z-function">x</span><span>,</span><span class="z-variable z-parameter z-function"> A</span><span>,</span><span class="z-variable z-parameter z-function"> B</span><span>,</span><span class="z-variable z-parameter z-function"> delta</span><span>,</span><span class="z-variable z-parameter z-function"> lam</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">h_t = α_t h_{t-1} + β_t B_{t-1} x_{t-1} + γ_t B_t x_t.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    h</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros</span><span>(</span><span>A</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>    H</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>empty</span><span>(</span><span>(</span><span class="z-support">len</span><span>(</span><span>x</span><span>)</span><span>,</span><span> A</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    v_prev</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros</span><span>(</span><span>A</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span><span class="z-punctuation z-definition z-comment">  #</span><span class="z-comment"> B_{t-1} x_{t-1}</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> t</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-support">len</span><span>(</span><span>x</span><span>)</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        alpha</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>exp</span><span>(</span><span>delta</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> A</span><span>)</span></span>
+<span class="giallo-l"><span>        beta</span><span class="z-keyword"> =</span><span> (</span><span class="z-constant">1.0</span><span class="z-keyword"> -</span><span> lam</span><span>[</span><span>t</span><span>]</span><span>)</span><span class="z-keyword"> *</span><span> delta</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> alpha</span></span>
+<span class="giallo-l"><span>        gamma</span><span class="z-keyword"> =</span><span> lam</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> delta</span><span>[</span><span>t</span><span>]</span></span>
+<span class="giallo-l"><span>        v</span><span class="z-keyword"> =</span><span> B</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> x</span><span>[</span><span>t</span><span>]</span></span>
+<span class="giallo-l"><span>        h</span><span class="z-keyword"> =</span><span> alpha</span><span class="z-keyword"> *</span><span> h</span><span class="z-keyword"> +</span><span> beta</span><span class="z-keyword"> *</span><span> v_prev</span><span class="z-keyword"> +</span><span> gamma</span><span class="z-keyword"> *</span><span> v</span></span>
+<span class="giallo-l"><span>        H</span><span>[</span><span>t</span><span>]</span><span>,</span><span> v_prev</span><span class="z-keyword"> =</span><span> h</span><span>,</span><span> v</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> H</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> exponential_euler</span><span>(</span><span class="z-variable z-parameter z-function">x</span><span>,</span><span class="z-variable z-parameter z-function"> A</span><span>,</span><span class="z-variable z-parameter z-function"> B</span><span>,</span><span class="z-variable z-parameter z-function"> delta</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">The Mamba-1/-2 rule: h_t = exp(Δ_t A) h_{t-1} + Δ_t B_t x_t.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    h</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros</span><span>(</span><span>A</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>    H</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>empty</span><span>(</span><span>(</span><span class="z-support">len</span><span>(</span><span>x</span><span>)</span><span>,</span><span> A</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> t</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-support">len</span><span>(</span><span>x</span><span>)</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        h</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>exp</span><span>(</span><span>delta</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> A</span><span>)</span><span class="z-keyword"> *</span><span> h</span><span class="z-keyword"> +</span><span> delta</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> B</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> *</span><span> x</span><span>[</span><span>t</span><span>]</span></span>
+<span class="giallo-l"><span>        H</span><span>[</span><span>t</span><span>]</span><span class="z-keyword"> =</span><span> h</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> H</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>rng</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>random</span><span>.</span><span>default_rng</span><span>(</span><span class="z-constant">2</span><span>)</span></span>
+<span class="giallo-l"><span>L</span><span>,</span><span> N</span><span class="z-keyword"> =</span><span class="z-constant"> 24</span><span>,</span><span class="z-constant"> 6</span></span>
+<span class="giallo-l"><span>A</span><span class="z-keyword"> =</span><span class="z-keyword"> -</span><span>np</span><span>.</span><span>exp</span><span>(</span><span>rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>N</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>B</span><span>,</span><span> x</span><span class="z-keyword"> =</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>(</span><span>L</span><span>,</span><span> N</span><span>)</span><span>)</span><span>,</span><span> rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>L</span><span>)</span></span>
+<span class="giallo-l"><span>delta</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>exp</span><span>(</span><span>rng</span><span>.</span><span>normal</span><span>(</span><span class="z-variable">size</span><span class="z-keyword">=</span><span>L</span><span>)</span><span class="z-keyword"> *</span><span class="z-constant"> 0.3</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>euler</span><span class="z-keyword"> =</span><span> exponential_euler</span><span>(</span><span>x</span><span>,</span><span> A</span><span>,</span><span> B</span><span>,</span><span> delta</span><span>)</span></span>
+<span class="giallo-l"><span class="z-support">print</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-string">λ=1    </span><span class="z-constant">{</span><span>np</span><span>.</span><span>abs</span><span>(</span><span>trapezoidal</span><span>(</span><span>x</span><span>,</span><span> A</span><span>,</span><span> B</span><span>,</span><span> delta</span><span>,</span><span> np</span><span>.</span><span>ones</span><span>(</span><span>L</span><span>)</span><span>)</span><span class="z-keyword"> -</span><span> euler</span><span>)</span><span>.</span><span>max</span><span>(</span><span>)</span><span class="z-storage z-type">:.2e</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span class="z-support">print</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-string">λ=1/2  </span><span class="z-constant">{</span><span>np</span><span>.</span><span>abs</span><span>(</span><span>trapezoidal</span><span>(</span><span>x</span><span>,</span><span> A</span><span>,</span><span> B</span><span>,</span><span> delta</span><span>,</span><span> np</span><span>.</span><span>full</span><span>(</span><span>L</span><span>,</span><span class="z-constant"> 0.5</span><span>)</span><span>)</span><span class="z-keyword"> -</span><span> euler</span><span>)</span><span>.</span><span>max</span><span>(</span><span>)</span><span class="z-storage z-type">:.2e</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> λ=1    4.44e-16   &lt;- exactly the Mamba-1/-2 rule</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> λ=1/2  1.50e+00   &lt;- classical trapezoidal, genuinely different dynamics</span></span></code></pre>
+<p>The <code>v_prev</code> term is the width-two convolution mentioned below: the state now sees the pair \((B_{t-1}x_{t-1},, B_t x_t)\), not just the current endpoint.</p>
+<p>There is an irony here that the paper acknowledges openly. The theoretical motivation for the trapezoidal rule is second-order accuracy, with error \(\mathcal{O}(\Delta_t^3)\) instead of \(\mathcal{O}(\Delta_t^2)\) — but that guarantee only holds if \(\lambda_t = \tfrac{1}{2} + \mathcal{O}(\Delta_t)\), and the paper’s own ablations indicate that <strong>not</strong> enforcing that constraint works better in practice. The default parameterization therefore gives up the convergence order that motivated the rule, keeping the extra expressivity.</p>
+<p>The central point is different: the recurrence now contains a causal width-two convolution over the state-input stream, \(B_t x_t\), <em>inside</em> the recurrent core — distinct, therefore, from the usual short convolutions, which are independent operations applied to \(x_t\) <em>outside</em> the recurrence. The paper reports that this, combined with explicit bias terms in \(\mathbf{B}\) and \(\mathbf{C}\), empirically allows dropping the external short convolution used in Mamba-2.</p>
+<h2 id="complex-states-and-state-tracking">Complex states and state tracking<a class="zola-anchor" href="#complex-states-and-state-tracking" aria-label="Anchor link for: complex-states-and-state-tracking" style="visibility: hidden;"></a>
+</h2>
+<p>The second improvement attacks a known limitation of SSMs with real transitions. When the effective transition has non-negative real eigenvalues, the state dynamics are essentially scaling: each component grows or decays without rotation. This is useful for associative memory but poor for <strong>state tracking</strong> — tasks such as counting parity, following modular counters or tracking oscillating states, where the model needs periodic dynamics rather than mere decay.</p>
+<p>Mamba-3 introduces <strong>complex-valued states</strong>. Complex eigenvalues correspond to <em>rotational</em> dynamics: the state does not merely decay, it rotates, naturally encoding amplitude and phase. In the implementation, these dynamics can be written as a real SSM with \(2 \times 2\) rotation blocks, that is, as a form of data-dependent RoPE applied to the \(\mathbf{B}\) and \(\mathbf{C}\) projections. This restores the ability to represent periodic and oscillatory patterns and, with it, competence on the state-tracking tasks where real-valued models failed.</p>
+<h2 id="mimo-formulation">MIMO formulation<a class="zola-anchor" href="#mimo-formulation" aria-label="Anchor link for: mimo-formulation" style="visibility: hidden;"></a>
+</h2>
+<p>The third improvement concerns capacity per unit of state. Mamba-2’s SSD form, by restricting \(\mathbf{A}\) to a scalar, makes each update effectively <strong>single-input single-output</strong> (SISO): the interaction of \(\mathbf{B}_i\) with \(\mathbf{C}_j\) is rank-one per head. Mamba-3 generalizes to a <strong>multi-input multi-output</strong> (MIMO) formulation, in which the state processes several channels simultaneously and the \(\mathbf{B}\) and \(\mathbf{C}\) projections produce higher-rank interactions.</p>
+<p>The practical effect is to increase expressivity without increasing state size — and therefore without greatly increasing decoding latency, which is governed largely by the state that must be read and written for each token. Since SSM decoding tends to be memory-movement bound, the MIMO formulation raises arithmetic intensity: it performs more useful multiplications over essentially the same state traffic. The paper reports up to a 4× increase in decoding FLOPs at fixed state size while maintaining wall-clock latency similar to Mamba-2. And in the state-size experiments, Mamba-3 (MIMO) with state size 64 matches the perplexity of Mamba-2 with state size 128 — <strong>half</strong> the state for the same performance.</p>
+<h1 id="synthesis">Synthesis<a class="zola-anchor" href="#synthesis" aria-label="Anchor link for: synthesis" style="visibility: hidden;"></a>
+</h1>
+<p>The three improvements are complementary and, combined, push the frontier along three axes: retrieval, state tracking and language modelling. At the 1.5 billion parameter scale, the paper reports that Mamba-3 in its SISO variant beats the next best competing model (Gated DeltaNet) by 0.6 percentage points of accuracy, and that the MIMO variant adds another 1.2 points — 1.8 points in total over the same baseline, or 1.9 over Mamba-2 — while preserving the inference efficiency that is the whole family’s reason for being. The message is that there was still expressivity to extract from the SSM framework — it was enough to revisit the discretization, the domain of the eigenvalues and the structure of the projections.</p>
+<p>Read in sequence, the three papers form a coherent arc. <strong>Mamba</strong> identified time invariance as the cause of SSMs’ weakness on content-dependent tasks and removed it with the selection mechanism, paying the price with a hardware-aware scan algorithm. <strong>Mamba-2</strong> explained that success from a higher vantage point, showing that SSMs and attention are factorizations of the same computation with semiseparable matrices, and converted that duality into a far faster algorithm. <strong>Mamba-3</strong> went back to first principles — discretization, eigenvalues, rank of the projections — to squeeze more expressivity out of each unit of state, without compromising inference.</p>
+<p>The connecting thread is the permanent tension between two costs: attention’s quadratic cost, which gives full expressivity to the exchange of information between positions, and the SSMs’ linear cost, which compresses everything into a fixed-size state. The Mamba family is, to a large extent, a sequence of increasingly refined answers to the question of how much of attention’s expressivity can be recovered within a linear budget — and each paper recovers a little more.</p>
+<h1 id="references">References<a class="zola-anchor" href="#references" aria-label="Anchor link for: references" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>VASWANI, A.; SHAZEER, N.; PARMAR, N.; USZKOREIT, J.; JONES, L.; GOMEZ, A. N.; KAISER, Ł.; POLOSUKHIN, I. Attention is all you need. In: <em>Advances in Neural Information Processing Systems</em>, v. 30, 2017. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>GU, A.; DAO, T. Mamba: linear-time sequence modeling with selective state spaces. In: <em>Conference on Language Modeling (COLM)</em>, 2024. <em>arXiv preprint arXiv:2312.00752</em>, 2023. <a href="#fr-2-1">↩</a> <a href="#fr-2-2">↩2</a></p>
+</li>
+<li id="fn-3">
+<p>DAO, T.; GU, A. Transformers are SSMs: generalized models and efficient algorithms through structured state space duality. In: <em>International Conference on Machine Learning (ICML)</em>, 2024. <em>arXiv preprint arXiv:2405.21060</em>. <a href="#fr-3-1">↩</a> <a href="#fr-3-2">↩2</a></p>
+</li>
+<li id="fn-4">
+<p>LAHOTI, A.; LI, K. Y.; CHEN, B.; WANG, C.; BICK, A.; KOLTER, J. Z.; DAO, T.; GU, A. Mamba-3: improved sequence modeling using state space principles. In: <em>International Conference on Learning Representations (ICLR)</em>, 2026. <em>arXiv preprint arXiv:2603.15569</em>. <a href="#fr-4-1">↩</a> <a href="#fr-4-2">↩2</a></p>
+</li>
+<li id="fn-5">
+<p>GU, A.; GOEL, K.; RÉ, C. Efficiently modeling long sequences with structured state spaces. In: <em>International Conference on Learning Representations (ICLR)</em>, 2022. <em>arXiv preprint arXiv:2111.00396</em>. <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>BLELLOCH, G. E. Prefix sums and their applications. <em>Technical Report CMU-CS-90-190</em>, School of Computer Science, Carnegie Mellon University, 1990. <a href="#fr-6-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Made with <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad:true,theme:document.body.classList.contains('dark')?'dark':'default'});</script>
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>
