@@ -1,0 +1,68 @@
+{% extends "_base.html" %}
+
+{% block page %}blog articles{% endblock page %}
+{% block lang %}{{ section.lang }}{% endblock lang %}
+{% block title %}{{ section.title }}{% endblock title %}
+{% block desc %}<meta name="description" content="{% if section.description %}{{ section.description }}{% else %}{{ section.extra.subtitle }}{% endif %}">{% endblock desc %}
+
+{% block content %}
+{% set data = load_data(path="content/artigos/papers.toml", format="toml") %}
+{% set articles = data.articles | sort(attribute="date") | reverse %}
+{% set article_icon = load_data(path="icon/external-link.svg") %}
+{% set pdf_icon = load_data(path="icon/file-pdf.svg") %}
+{% set copy_icon = load_data(path="icon/copy.svg") %}
+{% set check_icon = load_data(path="icon/check.svg") %}
+<div id="wrapper">
+  <header><nav>
+    <a id="back-link" href="{{ get_url(path='/', lang=section.lang) }}">← {{ trans(key="back", lang=section.lang) }}</a>
+    {% for translation in section.translations %}{% if translation.lang != section.lang %}<a class="lang-switch" href="{{ translation.permalink }}" hreflang="{{ translation.lang }}">{{ trans(key="switch_label", lang=section.lang) }}</a>{% endif %}{% endfor %}
+  </nav></header>
+  {% include "_section_title.html" %}
+  <main class="article-list">
+    {% for article in articles %}
+    {% set first_author = article.authors | first %}
+    {% set author_key = first_author.family | slugify %}
+    {% set first_title_word = article.title | split(pat=" ") | first %}
+    {% set title_key = first_title_word | split(pat="-") | first | slugify %}
+    {% set cite_key = author_key ~ article.year ~ title_key %}
+    <article class="article-entry">
+      <div class="article-heading">
+        <div class="article-title">{{ article.title }}</div>
+        <nav class="article-actions" aria-label="{{ article.title }}">
+          <a class="article-action" href="{{ article.article_url }}" target="_blank" rel="noopener" aria-label="{{ trans(key='article_journal_link', lang=section.lang) }}" title="{{ trans(key='article_journal_link', lang=section.lang) }}">
+            <span aria-hidden="true">{{ article_icon | safe }}</span>
+          </a>
+          <a class="article-action" href="{{ article.pdf_url }}" target="_blank" rel="noopener" aria-label="{{ trans(key='article_pdf_link', lang=section.lang) }}" title="{{ trans(key='article_pdf_link', lang=section.lang) }}">
+            <span aria-hidden="true">{{ pdf_icon | safe }}</span>
+          </a>
+          <button class="article-action bibtex-copy" type="button" aria-label="{{ trans(key='article_copy_bibtex', lang=section.lang) }}" title="{{ trans(key='article_copy_bibtex', lang=section.lang) }}" data-copy-label="{{ trans(key='article_copy_bibtex', lang=section.lang) }}" data-copied-label="{{ trans(key='article_bibtex_copied', lang=section.lang) }}" data-error-label="{{ trans(key='article_bibtex_error', lang=section.lang) }}">
+            <span class="copy-icon" aria-hidden="true">{{ copy_icon | safe }}</span>
+            <span class="check-icon" aria-hidden="true">{{ check_icon | safe }}</span>
+          </button>
+        </nav>
+      </div>
+      <div class="article-authors">{% for author in article.authors %}{{ author.given }} {{ author.family }}{% if not loop.last %}, {% endif %}{% endfor %}</div>
+      <div class="article-meta">
+        <cite>{{ article.journal }}</cite>
+        <span aria-hidden="true">·</span>
+        <time datetime="{{ article.date }}">{{ article.date | date(format=section.extra.date_format) }}</time>
+      </div>
+      <pre class="article-bibtex" hidden>@article{ {{- cite_key -}},
+  author = {{ "{" }}{% for author in article.authors %}{{ author.family }}, {{ author.given }}{% if not loop.last %} and {% endif %}{% endfor %}{{ "}" }},
+  journal = { {{- article.journal -}} },
+  title = { {{- article.title -}} },
+  year = { {{- article.year -}} },
+  volume = { {{- article.volume -}} },
+  number = { {{- article.number -}} },
+  pages = { {{- article.pages -}} },
+  doi = { {{- article.doi -}} }
+}</pre>
+    </article>
+    {% endfor %}
+    <p id="bibtex-copy-status" class="visually-hidden" aria-live="polite"></p>
+  </main>
+  {% include "_footer.html" %}
+</div>
+{% endblock content %}
+
+{% block script %}<script src="{{ get_url(path='js/articles.js') }}"></script>{% endblock script %}

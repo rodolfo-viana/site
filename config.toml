@@ -35,11 +35,17 @@ switch_to = "Switch to English"
 switch_label = "EN"
 date_format = "%d-%m-%Y"
 menu_posts = "publicações"
+menu_papers = "artigos"
 menu_projects = "projetos"
 menu_classes = "aulas"
 menu_cv = "currículo"
 menu_tags = "tags"
 recent_more = "mais +"
+article_journal_link = "Abrir artigo no periódico"
+article_pdf_link = "Abrir PDF no periódico"
+article_copy_bibtex = "Copiar BibTeX"
+article_bibtex_copied = "BibTeX copiado"
+article_bibtex_error = "Não foi possível copiar o BibTeX"
 
 [languages.en]
 title = "rodolfo viana"
@@ -68,11 +74,17 @@ switch_to = "Voltar para Português"
 switch_label = "PT"
 date_format = "%m-%d-%Y"
 menu_posts = "posts"
+menu_papers = "papers"
 menu_projects = "projects"
 menu_classes = "classes"
 menu_cv = "résumé"
 menu_tags = "tags"
 recent_more = "more »"
+article_journal_link = "Open paper in journal"
+article_pdf_link = "Open PDF in journal"
+article_copy_bibtex = "Copy BibTeX"
+article_bibtex_copied = "BibTeX copied"
+article_bibtex_error = "Could not copy BibTeX"
 
 [markdown]
 render_emoji = false
@@ -97,6 +109,7 @@ anchors = "on"
 sections = [
     { key = "menu_posts", path = "publicacoes", is_external = false },
     { key = "menu_projects", path = "projetos", is_external = false },
+    # { key = "menu_papers", path = "artigos", is_external = false },
     { key = "menu_cv", path = "curriculo", is_external = false },
     { key = "menu_tags", path = "tags", is_external = false },
 ]

@@ -34,7 +34,7 @@ zola build
 Expected outputs include:
 
 - `public/index.html` and `public/en/index.html`
-- Portuguese and English pages under `public/projetos/`, `public/publicacoes/`, and `public/en/`
+- Portuguese and English pages under `public/artigos/`, `public/projetos/`, `public/publicacoes/`, and `public/en/`
 - Local images, fonts, videos, icons, JavaScript, and compiled theme CSS
 
 ## Content structure
@@ -42,12 +42,15 @@ Expected outputs include:
 Portuguese is the default language; English translations use Zola's `.en.md` naming convention. Page bundles keep their media next to each `index.md` file so Zola copies the assets to both localized output paths.
 
 - `content/publicacoes/`: posts and notes
+- `content/artigos/`: journal-paper metadata shared by the Portuguese and English indexes
 - `content/projetos/`: project reports and associated images
 - `content/curriculo*.md`: résumé pages
 - `content/aulas/`: class-material section
 - `static/assets/`: shared video files
 
 New posts and projects inherit Serene's `post.html` presentation from their section. Use `[extra] math = true`, `mermaid = true`, or `d3 = true` only on pages that need those libraries.
+
+Journal papers are records in `content/artigos/papers.toml`, not content pages. Each record supplies the title, journal, ISO publication date, authors, volume, issue, pages, DOI, journal-page URL, and official PDF endpoint. The `papers.html` template sorts records newest-first and generates the BibTeX citation and citation key from those fields, so no separate BibTeX string should be maintained.
 
 ## Theme maintenance
 
@@ -71,7 +74,8 @@ Before publishing, run a clean production build and check the generated site loc
 
 - [ ] `zola build` exits successfully with Zola 0.22.1
 - [ ] Portuguese and English home pages render and switch languages
-- [ ] Posts, projects, résumé pages, and tag pages preserve their localized URLs
+- [ ] Papers, posts, projects, résumé pages, and tag pages preserve their localized URLs
+- [ ] Each paper's journal, PDF, and BibTeX-copy actions work
 - [ ] Math, Mermaid diagrams, the D3 chart, images, and videos render
 - [ ] Light/dark theme switching works
 - [ ] `public/CNAME` contains `rodolfoviana.com.br`
