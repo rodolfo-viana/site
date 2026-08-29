@@ -15,19 +15,19 @@ toc = true
 
 # Why look beyond Dice
 
-My master's research concerns improving boundary detection in U-Net architectures for medical image segmentation. That forces an uncomfortable question: if I want to know whether a boundary improved, why should I accept that nearly all the evidence fits into an overlap coefficient?
+My master's research focuses on improving boundary detection in U-Net architectures for medical image segmentation. A comparison reduced to a single Dice column leaves the part I want to measure unanswered: where the boundary failed and by how many millimetres.
 
 In a [comparison of U-Net architectures](/en/projetos/unet-comparativo/) I published here, the standard U-Net achieved the highest mean Dice. Inspecting the masks, however, separated very different errors: leakage into the background, a peripheral halo, a missing lobe, a discontinuity, and failure on a small target. All of them change overlap, but the number does not say which one occurred, where it occurred, or how far the predicted boundary was from the reference.
 
-I do not conclude that Dice is a bad metric. It is simple, avoids counting the many true negatives in the background, and answers the question it was designed to answer: **how much do two regions overlap?** Trouble begins when that answer becomes the whole account of segmentation quality. The medical image validation literature documents precisely this mismatch between the selected metric and the actual interest of an application.[^1] [^2]
+Dice is simple, avoids counting the many true negatives in the background, and answers the question it was designed to answer: **how much do two regions overlap?** Its answer becomes incomplete when it represents segmentation quality on its own. The medical image validation literature documents this mismatch between the selected metric and the actual interest of an application.[^1] [^2]
 
-My aim, then, is not to retire Dice. It is to mark the edge of its field of view and decide which questions require other measures.
+I want to mark the edge of its field of view and identify the questions that require other measures.
 
 # What Dice measures
 
 ## An overlap statistic
 
-Let \\(G\\) be the binary reference mask and \\(P\\) the predicted mask. The coefficient proposed by Lee Dice in another context in 1945[^3] takes the following form in segmentation:
+Let \\(G\\) be the binary reference mask and \\(P\\) the predicted mask. Proposed by Lee Dice in 1945 to measure ecological association,[^3] the coefficient takes the following form in segmentation:
 
 \\[
 \operatorname{Dice}(P,G)
@@ -35,11 +35,11 @@ Let \\(G\\) be the binary reference mask and \\(P\\) the predicted mask. The coe
 = \frac{2TP}{2TP+FP+FN}.
 \\]
 
-When at least one mask is nonempty, the value lies between zero and one: it is one for identical nonempty masks and zero when there is no intersection. For binary masks, it is also the pixel- or voxel-level \\(F\_1\\): the harmonic mean of precision and recall. Three properties explain much of its popularity.
+When at least one mask is nonempty, the value lies between zero and one: it is one for identical nonempty masks and zero when there is no intersection. When \\(P\\) and \\(G\\) are nonempty, it is also the pixel- or voxel-level \\(F\_1\\): the harmonic mean of precision and recall. Three properties explain much of its popularity.
 
 First, true negatives are absent from the formula. In an image where the anatomy of interest occupies a small region, correctly classified background does not dominate the result as it would dominate accuracy. Second, the measure is symmetric: swapping reference and prediction leaves it unchanged. Third, its geometric interpretation is direct and does not depend on the physical unit of the image.
 
-Those strengths also define what has been compressed away. False positives and false negatives enter the same denominator, so Dice does not show whether a model tends to expand or contract a structure. Error coordinates are absent from the formula, so a false positive touching the boundary and one thirty millimetres away carry the same weight. Dividing by the sum of the volumes also makes the penalty relative to size: the same absolute error consumes a larger fraction of a small structure.[^1]
+The same formula omits error direction and location. False positives and false negatives enter the same denominator, so Dice does not show whether a model tends to expand or contract a structure. Coordinates are absent from the formula: a false positive touching the boundary and one thirty millimetres away carry the same weight. Dividing by the sum of the volumes also makes the penalty relative to size, so the same absolute error consumes a larger fraction of a small structure.[^1]
 
 ## Dice and IoU tell the same story on a different scale
 
@@ -50,7 +50,7 @@ Intersection over union, or IoU, is
 =\frac{TP}{TP+FP+FN}.
 \\]
 
-For the same pair of masks, Dice and IoU are linked exactly by
+For a pair of masks with a nonempty union, Dice and IoU are linked exactly by
 
 \\[
 \operatorname{Dice}=\frac{2\operatorname{IoU}}{1+\operatorname{IoU}},
@@ -78,7 +78,7 @@ By construction, all three predictions have
 \operatorname{IoU}=\frac{3968}{4224}\approx0.93939.
 \\]
 
-The code below reproduces the example using only NumPy. It uses a four-neighbour inner contour, distances between pixel centres, the maximum of the two directional percentiles for HD95, and a pooled mean for ASSD. Surface Dice is a teaching approximation that gives every boundary pixel the same weight. The code also materializes all pairwise distances, so it is neither a reference implementation nor a solution for real medical volumes.
+The code below reproduces the example using only NumPy. It uses a four-neighbour inner contour, distances between pixel centres, the maximum of the two directional percentiles for HD95, and a pooled mean for ASSD. Surface Dice is an illustrative approximation that gives every boundary pixel the same weight. The code also materializes all pairwise distances, so it is neither a reference implementation nor a solution for real medical volumes.
 
 ```python
 import numpy as np
@@ -178,7 +178,7 @@ for name, prediction in {
 # hole   Dice=0.969 IoU=0.939 HD95=27.000 ASSD=2.626 SD@2=0.914 RVE_pct=0.000 components=1.000 holes=1.000
 ```
 
-The results can be read alongside the topology imposed on each mask:
+The table adds boundary distances and topology to the overlap results:
 
 | Prediction | Dice ↑ | IoU ↑ | HD95 ↓ (px) | ASSD ↓ (px) | SD@2 ↑ | Volume error | Components / holes |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -186,9 +186,9 @@ The results can be read alongside the topology imposed on each mask:
 | Island | 0.969 | 0.939 | 57.347 | 4.887 | 0.919 | 0.0% | 2 / 0 |
 | Hole | 0.969 | 0.939 | 27.000 | 2.626 | 0.914 | 0.0% | 1 / 1 |
 
-The example was designed to isolate geometry, not to represent clinical risk. Even so, it exposes several losses of information. Dice, IoU, and volume error are identical and high. HD95 reacts to the remote island. Component counting records that the prediction split in two, while hole counting captures a change that component counting alone would miss.
+The example was designed to isolate geometry, not to represent clinical risk. Dice and IoU are identical and high, while volume error is zero in all three cases. HD95 reacts to the remote island. Component counting records the prediction's two objects, while hole counting captures a change that component count would miss.
 
-Surface Dice at two pixels considers the entire shift acceptable because no part of its boundary lies beyond the tolerance. Between the two structural defects, it gives the island a slightly higher value than the hole, whereas HD95 judges the island far worse because of the remote component. There is no arithmetic contradiction: one metric counts the fraction of surface within tolerance; the other summarizes the tail of the distances. Unless the task says what matters most&mdash;acceptable boundary extent, severe local error, connectivity, or another property&mdash;there is no single ordering for the three masks.
+Surface Dice at two pixels considers the entire shift acceptable because no part of its boundary lies beyond the tolerance. Between the two structural defects, it gives the island a slightly higher value than the hole, whereas HD95 judges the island far worse because of the remote component. One metric counts the fraction of surface within tolerance; the other summarizes the tail of the distances. The ordering depends on the property selected for the task: acceptable boundary extent, severe local error, connectivity, or something else.
 
 ## The relative price of a pixel
 
@@ -230,11 +230,11 @@ for radius in (10, 40):
 # radius=40 area=5024 removed=224 Dice=0.977
 ```
 
-The boundary operation is the same in both cases, but the Dice drop is much larger for the small disk. That does not make the coefficient inconsistent: it is measuring the fraction of overlap. It makes the same difference in Dice unsuitable as evidence of the same geometric difference across structures of different sizes.
+The boundary operation is the same in both cases, but the Dice drop is much larger for the small disk. The result is consistent with the coefficient's definition of overlap, but it prevents the same Dice difference from being interpreted as the same geometric difference across structures of different sizes.
 
 # Distance to the boundary
 
-If the contour is the interest, it needs a representation. Let \\(\partial P\\) and \\(\partial G\\) be the surfaces of the prediction and reference, and let
+To evaluate the contour, we first need to represent it. Let \\(\partial P\\) and \\(\partial G\\) be the surfaces of the prediction and reference, and let
 
 \\[
 d(x,S)=\inf\_{y\in S}\lVert x-y\rVert\_2
@@ -258,13 +258,13 @@ The symmetric Hausdorff distance takes the largest error in either direction:
 HD(P,G)=\max\bigl(\sup D\_{P\to G},\sup D\_{G\to P}\bigr).
 \\]
 
-It finds the point of greatest disagreement, so it reacts strongly to a remote island or a single stray pixel. That sensitivity may expose a serious failure or annotation noise. Replacing the maximum with the 95th percentile reduces the effect of extremes, but it also chooses to ignore the worst 5% of the surface. If a distant false component is small enough, HD95 may miss it.
+It finds the point of greatest disagreement, so it reacts strongly to a remote island or a single stray pixel. That sensitivity may expose a serious failure or annotation noise. Under a directional, area-weighted convention, replacing the maximum with the 95th percentile discards the upper 5% of each distance distribution; other conventions truncate a different tail. A distant false component may not appear in HD95 if it occupies a small enough fraction of the surface.
 
 Even the name "HD95" does not specify an implementation. One can take the maximum of the directional percentiles, as in the example above, or pool both collections before taking the percentile; one can measure between voxel centres or mesh elements; one can weight by physical surface area or not. A comparison of five libraries found systematic differences caused by choices of this kind.[^5] The percentile, boundary extraction, weighting, connectivity, library, and version therefore belong in the experimental method.
 
-## Average surface distance
+## Average symmetric surface distance
 
-One pooled, surface-element-weighted form of average symmetric surface distance, or ASSD, is
+One convention for average symmetric surface distance, or ASSD, pools both directions and weights each surface element:
 
 \\[
 \operatorname{ASSD}\_{\mathrm{pool}}=
@@ -276,9 +276,9 @@ One pooled, surface-element-weighted form of average symmetric surface distance,
 },
 \\]
 
-where \\(a\_p\\) and \\(a\_g\\) are lengths in 2-D or areas in 3-D. It describes typical contour separation and is less controlled by one extreme than Hausdorff. In return, a severe local failure can be diluted among thousands of elements close to the reference.
+where \\(a\_p\\) and \\(a\_g\\) are lengths in 2-D or areas in 3-D. It describes typical contour separation and is less dominated by a single extreme than Hausdorff. A severe local failure, however, can be diluted among thousands of elements close to the reference.
 
-Another convention also called ASSD first computes a mean in each direction and then averages the two. The formulas differ when the surfaces have unequal areas. The teaching code used the pooled form with \\(a=1\\); a paper should state the convention and preserve physical surface areas.
+Another convention also called ASSD first computes a mean in each direction and then averages the two. The formulas differ when the surfaces have unequal areas. The illustrative code used the pooled form with \\(a=1\\); a paper should state the convention and preserve physical surface areas.
 
 ## Surface Dice
 
@@ -292,9 +292,9 @@ A\bigl(\{p\in\partial P:d(p,\partial G)\le\tau\}\bigr)
 }{A(\partial P)+A(\partial G)}.
 \\]
 
-The metric was proposed for delineating organs at risk in radiotherapy, with structure-specific tolerances estimated from variation between specialists.[^6] The Medical Segmentation Decathlon also combined volumetric Dice with normalized surface Dice, using different physical tolerances for different anatomical regions.[^7]
+The metric was proposed for delineating organs at risk in radiotherapy, with structure-specific tolerances estimated from variation between specialists.[^6] The Medical Segmentation Decathlon also combined volumetric Dice with normalized surface Dice, using different physical tolerances by task and anatomy, selected through clinical feedback.[^7]
 
-The parameter \\(\tau\\) is not decoration. It states how much contour error will count as acceptable and must come from the task: annotation variability, editing tolerance, acquisition resolution, or a criterion defined with specialists. The value also creates a cutoff: points just below and above \\(\tau\\) receive different outcomes, while the metric does not say how far an error travelled after crossing the limit.
+The parameter \\(\tau\\) formalizes contour tolerance and must come from the task: annotation variability, editing tolerance, acquisition resolution, or a criterion defined with specialists. It also creates a cutoff: points just below and above \\(\tau\\) receive different outcomes, and the metric does not say how far beyond the limit an error lies.
 
 In three-dimensional medical images, all these distances must respect physical spacing. In a volume with \\(0.8\times0.8\times5.0\\) mm voxels, one step in the axial plane does not equal one step between slices. Reporting "3 voxels" without a direction, or computing on a resampled array without recording the transformation, answers a different question. For surface Dice, counting boundary voxels is also insufficient: surface elements should be weighted by their physical length or area.[^6]
 
@@ -318,7 +318,7 @@ If missing tissue and including background have unequal costs, that asymmetry sh
 RVE=\frac{V\_P-V\_G}{V\_G},
 \\]
 
-shows a tendency toward oversegmentation (positive) or undersegmentation (negative). It should only answer a volume question: two disjoint masks can have \\(RVE=0\\). If volumetry is the outcome, absolute error in millilitres or cubic centimetres and patient-level bias are more interpretable than expecting Dice to serve as a proxy.[^2]
+shows a tendency toward oversegmentation (positive) or undersegmentation (negative); multiply the result by 100 to express it as a percentage. Precision is undefined for an empty prediction; recall and RVE are undefined for an empty reference unless a declared convention is imposed. RVE should only answer a volume question: two disjoint masks can have \\(RVE=0\\). If volumetry is the outcome, absolute error in millilitres or cubic centimetres and patient-level bias are more interpretable measures; Dice is a poor proxy.[^2]
 
 ## Objects and topology
 
@@ -334,17 +334,17 @@ T\_{\mathrm{sens}}=\frac{|S\_G\cap P|}{|S\_G|},
 clDice=2\frac{T\_{\mathrm{prec}}T\_{\mathrm{sens}}}{T\_{\mathrm{prec}}+T\_{\mathrm{sens}}}.
 \\]
 
-It was designed to emphasize continuity in tubular structures and comes with guarantees under specific assumptions.[^9] It is not a universal replacement for compact tumours or organs. Depending on the anatomy, component count, hole count, Euler characteristic, Betti numbers, or an application-specific rule may be more appropriate. The relevant topology must be defined before its measure is selected.
+Those properties concern tubular structures under specific assumptions.[^9] For compact tumours or organs, component count, hole count, Euler characteristic, Betti numbers, or an application-specific rule may be more appropriate. The relevant topology must be defined before its measure is selected.
 
 # When implementation changes the question
 
-Part of what we call a "metric result" is actually a protocol result. The cases below are not programming details; each one changes the quantity being estimated.
+A metric value also depends on the protocol that produced it. Each case below changes the quantity being estimated.
 
-1. **Empty masks.** If reference and prediction are empty, the Dice formula gives \\(0/0\\). Some libraries return one and others `NaN`; if only one mask is empty, surface metrics do not have two surfaces to compare. In datasets where the structure may be absent, presence or absence should be reported separately as classification, and the result of each metric when either mask is empty should be specified in advance. Silently removing these cases also removes false positives and can inflate the result.[^10]
+1. **Empty masks.** If both reference and prediction are empty, the Dice formula gives \\(0/0\\); depending on the convention, the result may be one, zero, or `NaN`. If only one mask is empty, surface metrics do not have two surfaces to compare. In datasets where the structure may be absent, presence or absence should be assessed as a classification task, with delineation assessed in the applicable cases. Each metric's result for empty masks must be specified in advance. Silently removing these cases also removes false positives and can inflate the result.[^10]
 2. **Decision threshold.** Turning probabilities into a mask requires a threshold. Tuning it on the test set transfers information from the final set to the model; the threshold and any post-processing should be selected on validation data and frozen before evaluation.
 3. **Resampling.** Categorical masks require suitable interpolation, usually nearest neighbour. Orientation, origin, and spacing must remain aligned; resampling can smooth or move boundaries and alter precisely the metrics under study.
 4. **Two or three dimensions.** Averaging Dice per slice, computing one whole-volume mask, and pooling every voxel in the dataset estimate three different quantities. The unit should follow the use case: slice, scan, structure, or patient.
-5. **Aggregation.** A global Dice obtained by concatenating all voxels gives more weight to large volumes and structures. Computing by patient before summarizing respects the hierarchy of the data; classes and structures should also remain separate when an average would conceal a specific failure.[^2]
+5. **Aggregation.** A global Dice obtained by concatenating all voxels gives more weight to cases and classes with larger foreground masks, that is, larger \\(|P|+|G|\\). Computing by patient before summarizing respects the hierarchy of the data; classes and structures should also remain separate when an average would conceal a specific failure.[^2]
 6. **Uncertainty and hard cases.** A mean without a distribution does not show tails or heterogeneity. The median and interquartile range, a patient-level bootstrap confidence interval, and strata defined before analysis&mdash;such as structure size and acquisition centre&mdash;show where a gain occurred. Qualitative cases should follow a selection rule, not convenience.
 7. **Executable definition.** The name, formula, parameters, empty-case handling, unit, library, and version should be recorded. HD95 from two libraries should not be presumed identical.[^5]
 
@@ -355,24 +355,25 @@ The metric set should follow the decision that segmentation will support. An ini
 | Question | Candidate measure | What must be declared |
 |---|---|---|
 | How much do the regions overlap? | Dice **or** IoU | unit of analysis, classes, and per-case distribution |
-| Does the model tend to undersegment or oversegment? | recall, precision, and RVE | positive class and relevant asymmetry |
-| How far apart are the boundaries typically? | ASSD or surface Dice | physical spacing, weighting, and tolerance \\(\tau\\) |
-| How large are errors near the tail? | HD95 | percentile, directional convention, and empty-case rule |
+| Does the prediction tend to undersegment or oversegment? | recall, precision, and RVE | positive class and relevant asymmetry |
+| How far apart are the boundaries typically? | ASSD | spacing, surface extraction and weighting, and directional or pooled convention |
+| What fraction of the boundary is within tolerance? | surface Dice | spacing, surface weighting, \\(\tau\\), and the tolerance's provenance |
+| How large are the near-worst boundary errors? | HD95 | spacing, surface extraction and weighting, percentile, directional convention, and empty-case rule |
 | Were objects missed or invented? | lesion-wise recall and precision | connectivity and matching rule |
-| Was connectivity preserved? | clDice or a task-specific topology metric | why that property matters for the structure |
+| Was connectivity preserved? | clDice or a task-specific topology metric | skeletonization, foreground/background connectivity, empty-case rule, and why the property matters |
 | Is the final volume correct? | absolute and relative volume error | physical unit and downstream use |
 
-I would apply this framework in five steps. First, fix the unit of analysis, the presence rule, and what will be available at inference time. Second, select one overlap measure and only the families tied to the intended use&mdash;boundary, object, topology, or volume. Third, freeze the threshold, post-processing, tolerances, and empty-case rules using training and validation data only. Fourth, compute results by patient and class before aggregation, with uncertainty intervals and size-stratified analysis. Fifth, publish the implementation or, at minimum, the formula, parameters, version, and tests on known synthetic masks.
+I would begin with the analysis unit and presence rule. I would then choose one overlap measure and add only the families tied to the intended use. Contour tolerance would be prespecified from clinical acceptability, inter-annotator variation, or an external task protocol without examining test predictions. Decision threshold and post-processing would be selected using training and validation data; empty-case rules would also be frozen before testing. Results would be computed by patient and class, with uncertainty and size stratification. Finally, I would publish the implementation or, at minimum, its executable definition and tests on known synthetic masks.
 
-This protocol does not yield one convenient "overall score." It yields an error profile. Metrics Reloaded reaches a similar recommendation: select metrics from a problem fingerprint and combine complementary families instead of repeating the most popular metric.[^2] The cost is a wider table; the benefit is knowing why two models differ.
+The result is an error profile distributed across several measures. Metrics Reloaded similarly recommends selecting metrics from a problem fingerprint and combining complementary families.[^2] The table becomes wider, but it shows why two models differ.
 
 # Synthesis
 
-The three-square experiment changed how I would frame a comparison. All predictions tied exactly on Dice, IoU, and volume, yet no additional measure was sufficient: HD95 favoured one kind of error, surface Dice another, and only explicit descriptors recorded components and holes. The disagreement does not call for a vote between metrics. It calls for the task's interest to be stated.
+The three-mask experiment shows how I would frame a comparison. The predictions tied exactly on Dice, IoU, and volume, but the additional measures separated different properties: HD95 exposed the distance to the remote component, surface Dice quantified the fraction within tolerance, and the topological descriptors recorded components and holes. An ordering becomes meaningful only after the task's property of interest has been stated.
 
-For my problem, a claim that an architecture "improves boundaries" should answer at least three questions on the same test set: how much overlap changed, how many millimetres the surface distance fell, and which structure sizes benefited. If there are multiple lesions, I would add how many were actually found. A higher Dice answers only the first.
+For my problem, a claim that an architecture "improves boundaries" should answer at least three questions on the same test set: how much overlap changed, whether surface distance fell and by how many millimetres, and which structure sizes benefited. If there are multiple lesions, I would add how many were actually found. A higher Dice answers only the first.
 
-Two questions remain open. Do methods designed to refine contours reduce physical distances without losing lesion-wise recall? And do apparent gains persist after stratifying by size, or are they concentrated in the large structures for which Dice is more forgiving? These are empirical questions. The evaluation protocol has to let the data answer them.
+Two questions remain open. Do methods designed to refine contours reduce physical distances without losing lesion-wise recall? And do apparent gains persist after stratifying by size, or are they concentrated in the large structures for which Dice is more forgiving?
 
 # References
 

@@ -15,19 +15,19 @@ toc = true
 
 # Por que olhar além do Dice
 
-Minha pesquisa de mestrado trata do aprimoramento da detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas. Isso me obriga a fazer uma pergunta incômoda: se quero saber se uma borda melhorou, por que aceitaria que quase toda a evidência coubesse num coeficiente de sobreposição?
+Minha pesquisa de mestrado trata do aprimoramento da detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas. Uma comparação encerrada numa única coluna de Dice deixa sem resposta justamente o que quero medir: onde a borda falhou e por quantos milímetros.
 
 Em um [comparativo de arquiteturas U-Net](/projetos/unet-comparativo/) que publiquei aqui, a U-Net padrão obteve o maior Dice médio. A inspeção das máscaras, porém, separava erros muito diferentes: vazamento para o fundo, halo periférico, perda de um lóbulo, descontinuidade e falha em alvos pequenos. Todos alteram a sobreposição, mas o número não informa qual deles ocorreu, onde ocorreu ou quão longe a borda prevista ficou da referência.
 
-Não concluo daí que o Dice seja uma métrica ruim. Ele é simples, dispensa a contagem dos numerosos verdadeiros negativos do fundo e responde bem à pergunta para a qual foi definido: **quanto duas regiões se sobrepõem?** O problema começa quando essa resposta passa a representar sozinha a qualidade da segmentação. A literatura de validação em imagens médicas documenta justamente essa inadequação entre a métrica escolhida e o interesse real da aplicação.[^1] [^2]
+O Dice é simples, dispensa a contagem dos numerosos verdadeiros negativos do fundo e responde bem à pergunta para a qual foi definido: **quanto duas regiões se sobrepõem?** Sua resposta fica incompleta quando passa a representar sozinha a qualidade da segmentação. A literatura de validação em imagens médicas documenta essa inadequação entre a métrica escolhida e o interesse real da aplicação.[^1] [^2]
 
-Minha leitura, portanto, não é uma tentativa de aposentar o Dice. É uma tentativa de delimitar seu campo de visão e decidir quais perguntas precisam de outras medidas.
+Quero delimitar seu campo de visão e identificar as perguntas que exigem outras medidas.
 
 # O que o Dice mede
 
 ## Uma estatística de sobreposição
 
-Sejam \\(G\\) a máscara binária de referência e \\(P\\) a máscara predita. O coeficiente proposto por Lee Dice em outro contexto, ainda em 1945,[^3] assume em segmentação a forma
+Sejam \\(G\\) a máscara binária de referência e \\(P\\) a máscara predita. Proposto por Lee Dice em 1945 para medir associação ecológica,[^3] o coeficiente assume, em segmentação, a forma
 
 \\[
 \operatorname{Dice}(P,G)
@@ -35,11 +35,11 @@ Sejam \\(G\\) a máscara binária de referência e \\(P\\) a máscara predita. O
 = \frac{2TP}{2TP+FP+FN}.
 \\]
 
-Quando ao menos uma máscara não é vazia, o valor fica entre zero e um: é um para máscaras não vazias idênticas e zero quando não há interseção. Para máscaras binárias, ele também é o \\(F\_1\\) calculado no nível de pixel ou voxel: a média harmônica entre precisão e sensibilidade. Três propriedades explicam boa parte de sua popularidade.
+Quando ao menos uma máscara não é vazia, o valor fica entre zero e um: é um para máscaras não vazias idênticas e zero quando não há interseção. Quando \\(P\\) e \\(G\\) são não vazias, ele também é o \\(F\_1\\) calculado no nível de pixel ou voxel: a média harmônica entre precisão e sensibilidade. Três propriedades explicam boa parte de sua popularidade.
 
 Primeiro, verdadeiros negativos não aparecem na fórmula. Em uma imagem na qual a anatomia de interesse ocupa uma região pequena, o fundo corretamente classificado não domina o resultado como dominaria a acurácia. Segundo, a medida é simétrica: trocar referência e predição não muda o valor. Terceiro, sua interpretação geométrica é direta e independe da unidade física da imagem.
 
-Essas virtudes também delimitam o que foi comprimido. Falsos positivos e falsos negativos entram no mesmo denominador; o Dice não diz se o modelo tende a expandir ou a contrair a estrutura. As coordenadas dos erros não entram na fórmula; um falso positivo encostado na borda e outro a trinta milímetros dela têm o mesmo peso. A divisão pela soma dos volumes também torna a penalização relativa ao tamanho: o mesmo erro absoluto consome uma fração maior de uma estrutura pequena.[^1]
+A mesma fórmula omite a direção e a posição do erro. Falsos positivos e falsos negativos entram no mesmo denominador; o Dice não diz se o modelo tende a expandir ou contrair a estrutura. As coordenadas não entram na fórmula: um falso positivo encostado na borda e outro a trinta milímetros dela têm o mesmo peso. A divisão pela soma dos volumes também torna a penalização relativa ao tamanho, de modo que o mesmo erro absoluto consome uma fração maior de uma estrutura pequena.[^1]
 
 ## Dice e IoU contam a mesma história por outra escala
 
@@ -50,7 +50,7 @@ A interseção sobre união, ou IoU, é
 =\frac{TP}{TP+FP+FN}.
 \\]
 
-Para uma mesma dupla de máscaras, Dice e IoU estão ligados exatamente por
+Para uma dupla de máscaras com união não vazia, Dice e IoU estão ligados exatamente por
 
 \\[
 \operatorname{Dice}=\frac{2\operatorname{IoU}}{1 + \operatorname{IoU}},
@@ -78,7 +78,7 @@ Por construção, as três predições têm
 \operatorname{IoU}=\frac{3968}{4224}\approx0{,}93939.
 \\]
 
-O código abaixo reproduz o exemplo apenas com NumPy. Ele usa o contorno interno de quatro vizinhos, distância entre centros de pixels, o máximo dos dois percentis direcionais para HD95 e uma média agrupada para ASSD. O Dice de superfície é uma aproximação didática que atribui o mesmo peso a cada pixel de contorno. O código também materializa todas as distâncias entre pares de pontos, portanto não é uma implementação de referência nem uma solução para volumes médicos reais.
+O código abaixo reproduz o exemplo apenas com NumPy. Ele usa o contorno interno de quatro vizinhos, distância entre centros de pixels, o máximo dos dois percentis direcionais para HD95 e uma média agrupada para ASSD. O Dice de superfície é uma aproximação ilustrativa que atribui o mesmo peso a cada pixel de contorno. O código também materializa todas as distâncias entre pares de pontos, portanto não é uma implementação de referência nem uma solução para volumes médicos reais.
 
 ```python
 import numpy as np
@@ -178,7 +178,7 @@ for nome, predicao in {
 # buraco      Dice=0.969 IoU=0.939 HD95=27.000 ASSD=2.626 SD@2=0.914 RVE_pct=0.000 componentes=1.000 buracos=1.000
 ```
 
-Os resultados podem ser lidos em conjunto com a topologia que foi imposta a cada máscara:
+A tabela acrescenta à sobreposição as distâncias e a topologia de cada máscara:
 
 | Predição | Dice ↑ | IoU ↑ | HD95 ↓ (px) | ASSD ↓ (px) | SD@2 ↑ | Erro de volume | Componentes / buracos |
 |---|---:|---:|---:|---:|---:|---:|---:|
@@ -186,9 +186,9 @@ Os resultados podem ser lidos em conjunto com a topologia que foi imposta a cada
 | Ilha | 0,969 | 0,939 | 57,347 | 4,887 | 0,919 | 0,0% | 2 / 0 |
 | Buraco | 0,969 | 0,939 | 27,000 | 2,626 | 0,914 | 0,0% | 1 / 1 |
 
-O exemplo foi desenhado para isolar geometria, não para representar risco clínico. Ainda assim, ele expõe várias perdas de informação. Dice, IoU e erro de volume são idênticos. HD95 reage à ilha remota. A contagem de componentes identifica que a predição se partiu em dois, enquanto a contagem de buracos identifica uma alteração que a contagem de componentes sozinha perderia.
+O exemplo foi desenhado para isolar geometria, não para representar risco clínico. Dice e IoU são idênticos e altos; o erro de volume é zero nos três casos. HD95 reage à ilha remota. A contagem de componentes registra os dois objetos da predição, enquanto a contagem de buracos captura uma alteração que o número de componentes perderia.
 
-O Dice de superfície a dois pixels considera todo o deslocamento aceitável, pois nenhuma parte da borda se afasta mais que a tolerância. Entre os dois defeitos estruturais, ele atribui valor ligeiramente maior à ilha que ao buraco, enquanto o HD95 julga a ilha muito pior por causa da distância do componente remoto. Não há contradição aritmética: uma métrica conta a fração de superfície dentro da tolerância; a outra resume a cauda das distâncias. Sem definir o que importa mais &mdash; a extensão da borda aceitável, o pior erro local, a conectividade ou outra propriedade &mdash;, não há uma ordenação única para as três máscaras.
+O Dice de superfície a dois pixels considera todo o deslocamento aceitável, pois nenhuma parte da borda se afasta mais que a tolerância. Entre os dois defeitos estruturais, ele atribui valor ligeiramente maior à ilha que ao buraco, enquanto o HD95 julga a ilha muito pior por causa da distância do componente remoto. Uma métrica conta a fração de superfície dentro da tolerância; a outra resume a cauda das distâncias. A ordenação depende da propriedade escolhida para a tarefa: extensão da borda aceitável, erro local extremo, conectividade ou outra.
 
 ## O preço relativo de um pixel
 
@@ -230,11 +230,11 @@ for raio in (10, 40):
 # raio=40 área=5024 removidos=224 Dice=0.977
 ```
 
-A operação de borda é a mesma nos dois casos, mas a queda do Dice é muito maior no disco pequeno. Isso não torna o coeficiente inconsistente: ele está medindo a fração de sobreposição. Torna inadequada a interpretação de uma mesma diferença de Dice como uma mesma diferença geométrica em estruturas de tamanhos distintos.
+A operação de borda é a mesma nos dois casos, mas a queda do Dice é muito maior no disco pequeno. O resultado é coerente com a definição de sobreposição do coeficiente, mas impede interpretar a mesma diferença de Dice como a mesma diferença geométrica em estruturas de tamanhos distintos.
 
 # A distância até a borda
 
-Se o interesse está no contorno, é preciso representá-lo. Sejam \\(\partial P\\) e \\(\partial G\\) as superfícies da predição e da referência, e
+Para avaliar o contorno, primeiro é preciso representá-lo. Sejam \\(\partial P\\) e \\(\partial G\\) as superfícies da predição e da referência, e
 
 \\[
 d(x,S)=\inf\_{y\in S}\lVert x-y\rVert\_2
@@ -258,13 +258,13 @@ A distância de Hausdorff simétrica toma o maior erro nas duas direções:
 HD(P,G)=\max\bigl(\sup D\_{P\to G},\sup D\_{G\to P}\bigr).
 \\]
 
-Ela encontra o ponto de maior desacordo, por isso reage fortemente a uma ilha remota ou a um único pixel espúrio. Essa sensibilidade pode revelar uma falha grave ou apenas ruído de anotação. Trocar o máximo pelo percentil 95 reduz a influência dos extremos, mas também decide ignorar os piores 5% da superfície. Se um componente falso e distante for pequeno o bastante, o HD95 pode não vê-lo.
+Ela encontra o ponto de maior desacordo, por isso reage fortemente a uma ilha remota ou a um único pixel espúrio. Essa sensibilidade pode revelar uma falha grave ou apenas ruído de anotação. Numa convenção direcional e ponderada pela área, trocar o máximo pelo percentil 95 descarta os 5% superiores de cada distribuição de distâncias; outras convenções truncam uma cauda diferente. Um componente falso e distante pode não aparecer no HD95 se ocupar uma fração pequena o bastante da superfície.
 
 Mesmo o nome "HD95" não especifica uma implementação. Pode-se tomar o máximo dos percentis direcionais, como no exemplo acima, ou agrupar as duas coleções antes do percentil; pode-se medir entre centros de voxels ou entre elementos de uma malha; pode-se ponderar ou não pela área física da superfície. Uma comparação de cinco bibliotecas encontrou diferenças sistemáticas causadas por escolhas desse tipo.[^5] Por isso, percentil, extração da borda, ponderação, conectividade, biblioteca e versão pertencem ao método experimental.
 
-## Distância média de superfície
+## Distância média simétrica de superfície
 
-Uma forma agrupada e ponderada por elementos de superfície da distância média simétrica, ou ASSD, é
+Uma convenção para a distância média simétrica de superfície, ou ASSD, agrupa as duas direções e pondera cada elemento de superfície:
 
 \\[
 \operatorname{ASSD}\_{\mathrm{pool}}=
@@ -276,9 +276,9 @@ Uma forma agrupada e ponderada por elementos de superfície da distância média
 },
 \\]
 
-onde \\(a\_p\\) e \\(a\_g\\) são comprimentos em 2-D ou áreas em 3-D. Ela descreve o afastamento típico do contorno e é menos governada por um extremo que Hausdorff. Em troca, uma falha local severa pode se diluir entre milhares de elementos próximos da referência.
+onde \\(a\_p\\) e \\(a\_g\\) são comprimentos em 2-D ou áreas em 3-D. Ela descreve o afastamento típico do contorno e sofre menos influência de um único extremo que Hausdorff. Uma falha local severa, porém, pode se diluir entre milhares de elementos próximos da referência.
 
-Há outra convenção chamada ASSD que calcula primeiro a média em cada direção e depois tira a média das duas. As duas fórmulas divergem quando as superfícies têm áreas distintas. O código didático usou a forma agrupada com \\(a=1\\); um artigo precisa declarar a convenção e preservar as áreas físicas.
+Há outra convenção chamada ASSD que calcula primeiro a média em cada direção e depois tira a média das duas. As duas fórmulas divergem quando as superfícies têm áreas distintas. O código ilustrativo usou a forma agrupada com \\(a=1\\); um artigo precisa declarar a convenção e preservar as áreas físicas.
 
 ## Dice de superfície
 
@@ -292,11 +292,11 @@ A\bigl(\{p\in\partial P:d(p,\partial G)\le\tau\}\bigr)
 }{A(\partial P)+A(\partial G)}.
 \\]
 
-A métrica foi proposta no contexto de delineamento de órgãos de risco em radioterapia, com tolerâncias específicas por estrutura estimadas a partir da variação entre especialistas.[^6] O Medical Segmentation Decathlon também combinou Dice volumétrico e Dice de superfície normalizado, com tolerâncias físicas diferentes por região anatômica.[^7]
+A métrica foi proposta no contexto de delineamento de órgãos de risco em radioterapia, com tolerâncias específicas por estrutura estimadas a partir da variação entre especialistas.[^6] O Medical Segmentation Decathlon também combinou Dice volumétrico e Dice de superfície normalizado, com tolerâncias físicas diferentes por tarefa e anatomia, selecionadas com avaliação clínica.[^7]
 
-O parâmetro \\(\tau\\) não é decoração. Ele expressa quanto erro de contorno será tratado como aceitável e precisa vir da tarefa: variabilidade de anotação, tolerância de edição, resolução da aquisição ou critério definido com especialistas. O valor também cria um corte: dois pontos logo abaixo e logo acima de \\(\tau\\) recebem resultados diferentes, enquanto a métrica não informa quão longe foi um erro depois de ultrapassar o limite.
+O parâmetro \\(\tau\\) formaliza a tolerância de contorno e precisa vir da tarefa: variabilidade de anotação, tolerância de edição, resolução da aquisição ou um critério definido com especialistas. Ele também cria um corte: pontos logo abaixo e logo acima de \\(\tau\\) recebem resultados diferentes, e a métrica não informa quão longe do limite ficou o erro que o ultrapassou.
 
-Em imagens médicas tridimensionais, todas essas distâncias devem respeitar o espaçamento físico. Em um volume com voxels de \\(0{,}8\times0{,}8\times5{,}0\\) mm, um passo no eixo axial não equivale a um passo entre cortes. Reportar "3 voxels" sem a direção, ou calcular em uma matriz reamostrada sem registrar a transformação, responde a outra pergunta. Para Dice de superfície, contar voxels de borda também não basta: elementos da superfície devem ser ponderados por seu comprimento ou sua área física.[^6]
+Em imagens médicas tridimensionais, todas essas distâncias devem respeitar o espaçamento físico. Em um volume com voxels de \\(0{,}8\times0{,}8\times5{,}0\\) mm, um passo no plano axial não equivale a um passo entre cortes. Reportar "3 voxels" sem a direção, ou calcular em uma matriz reamostrada sem registrar a transformação, responde a outra pergunta. Para Dice de superfície, contar voxels de borda também não basta: elementos da superfície devem ser ponderados por seu comprimento ou sua área física.[^6]
 
 # O que as métricas de borda também deixam de fora
 
@@ -318,13 +318,13 @@ Se perder tecido e incluir fundo têm custos diferentes, essa assimetria deve ap
 RVE=\frac{V\_P-V\_G}{V\_G},
 \\]
 
-mostra tendência de supersegmentação (positivo) ou subsegmentação (negativo). Ele só deve ser usado para responder a uma pergunta de volume: duas máscaras disjuntas podem ter \\(RVE=0\\). Se volumetria for o desfecho, erro absoluto em mililitros ou centímetros cúbicos e viés por paciente são mais interpretáveis que esperar que o Dice sirva como aproximação.[^2]
+mostra tendência de supersegmentação (positivo) ou subsegmentação (negativo); para expressá-lo em porcentagem, multiplica-se o resultado por 100. Precisão é indefinida para uma predição vazia; sensibilidade e RVE são indefinidos para uma referência vazia, salvo se uma convenção declarada for imposta. O RVE só deve responder a uma pergunta de volume: duas máscaras disjuntas podem ter \\(RVE=0\\). Se a volumetria for o desfecho, o erro absoluto em mililitros ou centímetros cúbicos e o viés por paciente são mais interpretáveis; o Dice é uma aproximação inadequada.[^2]
 
 ## Objetos e topologia
 
 Em segmentação multifocal, um Dice calculado sobre o volume inteiro pondera implicitamente cada lesão pelo número de voxels. Uma massa grande corretamente segmentada pode esconder a ausência de várias lesões pequenas. Uma avaliação por objeto precisa primeiro parear componentes preditos e de referência por uma regra declarada; depois pode reportar sensibilidade por lesão, precisão ou falsos positivos por exame e qualidade de delineamento apenas nas lesões encontradas. Resultados recentes com metástases em PET/CT documentam o viés das métricas globais em favor dos maiores componentes.[^8]
 
-Para vasos, vias aéreas, neurônios e outras estruturas em rede, conectividade pode dominar a área. O *centerline Dice*, ou clDice, cruza os esqueletos morfológicos com as máscaras. Agora, \\(S\_P\\) e \\(S\_G\\) denotam os esqueletos da predição e da referência, não as superfícies usadas na seção anterior:
+Para vasos, vias aéreas, neurônios e outras estruturas em rede, a conectividade pode importar mais que a área. O *centerline Dice*, ou clDice, cruza os esqueletos morfológicos com as máscaras. Agora, \\(S\_P\\) e \\(S\_G\\) denotam os esqueletos da predição e da referência, não as superfícies usadas na seção anterior:
 
 \\[
 T\_{\mathrm{prec}}=\frac{|S\_P\cap G|}{|S\_P|},
@@ -334,17 +334,17 @@ T\_{\mathrm{sens}}=\frac{|S\_G\cap P|}{|S\_G|},
 clDice=2\frac{T\_{\mathrm{prec}}T\_{\mathrm{sens}}}{T\_{\mathrm{prec}}+T\_{\mathrm{sens}}}.
 \\]
 
-Ele foi construído para enfatizar continuidade em estruturas tubulares e vem com garantias sob hipóteses específicas.[^9] Não é uma substituição universal para tumores ou órgãos compactos. Dependendo da anatomia, número de componentes, número de buracos, característica de Euler, números de Betti ou uma regra própria da aplicação podem ser mais adequados. A topologia relevante precisa ser definida antes de escolher sua medida.
+Essas propriedades dizem respeito a estruturas tubulares e a hipóteses específicas.[^9] Para tumores ou órgãos compactos, número de componentes, número de buracos, característica de Euler, números de Betti ou uma regra própria da aplicação podem ser mais adequados. A topologia relevante precisa ser definida antes de escolher sua medida.
 
 # Quando a implementação muda a pergunta
 
-Parte do que chamamos "resultado da métrica" é, na verdade, resultado do protocolo. Os casos abaixo não são detalhes de programação; cada um altera a quantidade estimada.
+Um valor de métrica também depende do protocolo que o produziu. Cada caso abaixo altera a quantidade estimada.
 
-1. **Máscaras vazias.** Se referência e predição são vazias, a fórmula do Dice produz \\(0/0\\). Algumas bibliotecas devolvem um, outras `NaN`; se apenas uma é vazia, métricas de superfície não têm duas superfícies para comparar. Em conjuntos nos quais a estrutura pode estar ausente, convém reportar a classificação de presença ou ausência separadamente e definir de antemão o resultado de cada métrica quando uma das máscaras estiver vazia. Remover silenciosamente esses casos também remove falsos positivos e pode inflar o resultado.[^10]
+1. **Máscaras vazias.** Se a referência e a predição estiverem vazias, a fórmula do Dice produz \\(0/0\\); conforme a convenção, o resultado pode ser um, zero ou `NaN`. Se apenas uma delas estiver vazia, métricas de superfície não têm duas superfícies para comparar. Em conjuntos nos quais a estrutura pode estar ausente, presença ou ausência deve ser avaliada como tarefa de classificação, e o delineamento, nos casos pertinentes. O resultado de cada métrica para máscaras vazias precisa ser definido de antemão. Remover silenciosamente esses casos também remove falsos positivos e pode inflar o resultado.[^10]
 2. **Limiar de decisão.** Converter probabilidades em máscara exige um limiar. Ajustá-lo no teste transfere informação do conjunto final para o modelo; o limiar e qualquer pós-processamento devem ser escolhidos na validação e congelados antes da avaliação.
-3. **Reamostragem.** Máscaras categóricas pedem interpolação apropriada, em geral vizinho mais próximo. A matriz de orientação, a origem e o espaçamento precisam permanecer alinhados; uma reamostragem pode suavizar ou deslocar bordas e alterar precisamente as métricas que se pretende estudar.
+3. **Reamostragem.** Máscaras categóricas devem ser reamostradas com interpolação apropriada, em geral pelo método do vizinho mais próximo. A matriz de orientação, a origem e o espaçamento precisam permanecer alinhados; uma reamostragem pode suavizar ou deslocar bordas e alterar precisamente as métricas que se pretende estudar.
 4. **Duas ou três dimensões.** Tirar a média do Dice por corte, calcular uma máscara volumétrica inteira e agrupar todos os voxels do conjunto são três estimandos diferentes. A unidade deve acompanhar o uso: corte, exame, estrutura ou paciente.
-5. **Agregação.** Um Dice global obtido ao concatenar todos os voxels concede mais peso a volumes e estruturas grandes. Calcular por paciente e depois resumir respeita a hierarquia dos dados; classes e estruturas também devem permanecer separadas quando a média esconderia uma falha específica.[^2]
+5. **Agregação.** Um Dice global obtido ao concatenar todos os voxels concede mais peso aos casos e às classes com máscaras de primeiro plano maiores, isto é, com maior \\(|P|+|G|\\). Calcular por paciente e depois resumir respeita a hierarquia dos dados; classes e estruturas também devem permanecer separadas quando a média esconderia uma falha específica.[^2]
 6. **Incerteza e casos difíceis.** Uma média sem distribuição não mostra caudas nem heterogeneidade. Mediana e intervalo interquartil, intervalo de confiança por *bootstrap* no nível do paciente e estratos definidos antes da análise &mdash; por exemplo, tamanho da estrutura e centro de aquisição &mdash; tornam visível onde o ganho apareceu. Exemplos qualitativos devem seguir uma regra de seleção, não conveniência.
 7. **Definição executável.** Nome, fórmula, parâmetros, tratamento de vazios, unidade, biblioteca e versão precisam ser registrados. HD95 calculado por duas bibliotecas não deve ser presumido idêntico.[^5]
 
@@ -355,24 +355,25 @@ O conjunto de métricas deve nascer da decisão que a segmentação apoiará. Um
 | Pergunta | Medida candidata | O que precisa ser declarado |
 |---|---|---|
 | Quanto as regiões se sobrepõem? | Dice **ou** IoU | unidade de análise, classes e distribuição por caso |
-| O modelo tende a subsegmentar ou supersegmentar? | sensibilidade, precisão e RVE | qual classe é positiva e qual assimetria importa |
-| Quanto a borda costuma se afastar? | ASSD ou Dice de superfície | espaçamento físico, ponderação e tolerância \\(\tau\\) |
-| Quão grandes são os erros próximos da cauda? | HD95 | percentil, convenção direcional e regra para vazios |
+| A predição tende a subsegmentar ou supersegmentar? | sensibilidade, precisão e RVE | qual classe é positiva e qual assimetria importa |
+| Quanto a borda costuma se afastar? | ASSD | espaçamento, extração e ponderação da superfície, e convenção direcional ou agrupada |
+| Qual fração da borda respeita a tolerância? | Dice de superfície | espaçamento, ponderação da superfície, \\(\tau\\) e origem da tolerância |
+| Quão grandes são os erros de borda próximos do pior caso? | HD95 | espaçamento, extração e ponderação da superfície, percentil, convenção direcional e regra para vazios |
 | Objetos foram perdidos ou inventados? | sensibilidade e precisão por lesão | conectividade e regra de pareamento |
-| A conectividade foi preservada? | clDice ou métrica topológica específica | por que essa propriedade importa para a estrutura |
-| O volume final está correto? | erro absoluto e relativo de volume | unidade física e uso posterior |
+| A conectividade foi preservada? | clDice ou métrica topológica específica | esqueletização, conectividade do primeiro plano e do fundo, regra para vazios e relevância da propriedade |
+| O volume final está correto? | erro absoluto e relativo de volume | unidade física e uso na decisão subsequente |
 
-Eu usaria esse quadro em cinco passos. Primeiro, fixaria a unidade de análise, a regra de presença e o que estará disponível no momento da inferência. Segundo, escolheria uma medida de sobreposição e apenas as famílias ligadas ao uso pretendido &mdash; borda, objeto, topologia ou volume. Terceiro, congelaria limiar, pós-processamento, tolerâncias e regras de casos vazios usando apenas treinamento e validação. Quarto, calcularia resultados por paciente e por classe antes da agregação, com intervalos de incerteza e análise estratificada por tamanho. Quinto, publicaria a implementação ou, no mínimo, fórmula, parâmetros, versão e testes em máscaras sintéticas conhecidas.
+Eu começaria pela unidade de análise e pela regra de presença. Depois escolheria uma medida de sobreposição e acrescentaria apenas as famílias ligadas ao uso pretendido. A tolerância de contorno seria predefinida a partir da aceitabilidade clínica, da variação entre anotadores ou de um protocolo externo, sem consultar as predições de teste. Limiar de decisão e pós-processamento seriam escolhidos com treinamento e validação; as regras para vazios também seriam congeladas antes do teste. Os resultados seriam calculados por paciente e classe, com incerteza e estratificação por tamanho. Por fim, publicaria a implementação ou, no mínimo, sua definição executável e testes em máscaras sintéticas conhecidas.
 
-Esse protocolo não produz um "escore geral" fácil de ordenar. Ele produz um perfil de erro. O arcabouço Metrics Reloaded chega a uma recomendação semelhante: selecionar métricas a partir de um perfil estruturado do problema e combinar famílias complementares, em vez de repetir a métrica mais popular.[^2] O custo é uma tabela maior; o benefício é saber por que dois modelos diferem.
+O resultado é um perfil de erro distribuído por várias medidas. O Metrics Reloaded recomenda selecionar métricas a partir de uma impressão digital do problema e combinar famílias complementares.[^2] A tabela fica maior, mas passa a mostrar por que dois modelos diferem.
 
 # Síntese
 
-O experimento dos três quadrados mudou a maneira como eu formularia uma comparação. As três predições empataram exatamente em Dice, IoU e volume, mas nenhuma medida adicional foi suficiente: HD95 favoreceu um tipo de erro, Dice de superfície outro, e só descritores explícitos registraram componentes e buracos. A divergência não pede uma votação entre métricas. Pede que o interesse da tarefa seja declarado.
+O experimento das três máscaras mostra como eu formularia uma comparação. As predições empataram exatamente em Dice, IoU e volume, mas as medidas adicionais separaram propriedades diferentes: HD95 destacou a distância do componente remoto, o Dice de superfície quantificou a fração dentro da tolerância e os descritores topológicos registraram componentes e buracos. A ordenação só ganha sentido depois que a propriedade de interesse da tarefa é declarada.
 
-Para o meu problema, uma afirmação de que uma arquitetura "melhora bordas" deveria responder, no mesmo conjunto de teste, pelo menos a três perguntas: quanto mudou a sobreposição, quanto caiu a distância em milímetros e em quais tamanhos de estrutura o ganho apareceu. Se houver múltiplas lesões, acrescentaria quantas foram de fato encontradas. Um Dice maior responde apenas à primeira.
+Para o meu problema, uma afirmação de que uma arquitetura "melhora bordas" deveria responder, no mesmo conjunto de teste, pelo menos a três perguntas: quanto mudou a sobreposição, se a distância de superfície caiu e em quantos milímetros, e em quais tamanhos de estrutura o ganho apareceu. Se houver múltiplas lesões, acrescentaria quantas foram de fato encontradas. Um Dice maior responde apenas à primeira.
 
-Duas perguntas ficam abertas. Métodos desenhados para refinar contornos reduzem distâncias físicas sem perder sensibilidade por lesão? E os ganhos aparentes permanecem quando os resultados são estratificados por tamanho, ou concentram-se nas estruturas grandes para as quais o Dice é mais tolerante? São perguntas empíricas. O protocolo de avaliação precisa permitir que os dados as respondam.
+Duas perguntas ficam abertas. Métodos desenhados para refinar contornos reduzem distâncias físicas sem perder sensibilidade por lesão? E os ganhos aparentes permanecem quando os resultados são estratificados por tamanho, ou concentram-se nas estruturas grandes para as quais o Dice é mais tolerante?
 
 # Referências
 
