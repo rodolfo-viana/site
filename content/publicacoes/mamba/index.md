@@ -17,17 +17,17 @@ toc = true
 
 # Por que estas notas
 
-Tenho estudado SSMs e Mamba para minha dissertação de mestrado e venho tomando notas ao longo do caminho. Este texto nasceu da necessidade de organizar o que entendi e tornar explícito o fio que encontrei entre três gerações do modelo.
+Tenho estudado SSMs e Mamba para minha dissertação de mestrado e venho tomando notas ao longo do caminho. Este texto nasceu da necessidade de organizar o que consegui compreender até aqui e tornar explícito o fio que encontrei entre três gerações do modelo.
 
-Para organizar a leitura, parto de uma pergunta: o que uma arquitetura perde quando troca o acesso direto a todos os tokens por um estado de tamanho fixo? A economia linear só é interessante se vier acompanhada de uma explicação clara do que foi comprimido, do que foi esquecido e de como o modelo decide entre os dois. Essa pergunta orienta as notas abaixo.
+Para organizar a leitura, parto de uma pergunta: o que uma arquitetura perde ao substituir o acesso direto a todos os tokens por um estado de tamanho fixo? A economia linear só é interessante se vier acompanhada de uma explicação detalhada sobre o que foi comprimido, o que foi esquecido e como o modelo decide entre os dois. Essa questão orienta as notas a seguir.
 
-O ponto de partida é a eficiência. O mecanismo de atenção[^1] processa uma sequência de comprimento \\(L\\) comparando cada posição com todas as demais, o que custa \\(\mathcal{O}(L^2)\\) em tempo e memória e torna proibitivo o processamento de contextos muito longos. Modelos de espaço de estados (SSM, de _state space models_) oferecem uma alternativa com custo \\(\mathcal{O}(L)\\), mas historicamente pagavam esse barateamento com perda de capacidade de raciocínio dependente de conteúdo. Os três artigos a seguir contam a história de como essa lacuna foi sendo fechada:
+O ponto de partida é a eficiência. O mecanismo de atenção[^1] processa uma sequência de comprimento \\(L\\) comparando cada posição com todas as demais, o que custa \\(\mathcal{O}(L^2)\\) em tempo e memória, tornando proibitivo o processamento de contextos muito longos. Modelos de espaço de estados (SSM, de _state space models_) oferecem uma opção com custo \\(\mathcal{O}(L)\\), mas, historicamente, essa economia vinha acompanhada de uma perda de capacidade de raciocínio dependente de conteúdo. Os três textos a seguir narram como essa lacuna foi sendo fechada:
 
 1. **Mamba**[^2] introduz a _seleção_ &mdash; deixar os parâmetros do SSM dependerem da entrada &mdash; e um algoritmo de varredura ciente do hardware que mantém o custo linear.
-2. **Mamba-2**[^3] revela que SSMs e atenção são duas faces da mesma operação com matrizes estruturadas (a _dualidade de espaços de estados estruturados_, ou SSD), e usa essa equivalência para construir um algoritmo 2 a 8 vezes mais rápido.
-3. **Mamba-3**[^4] refina a recorrência com três princípios extraídos da teoria de SSMs: discretização trapezoidal, estados complexos e uma formulação de múltiplas entradas e saídas (MIMO).
+2. **Mamba-2**[^3] demonstra que SSMs e atenção são duas faces da mesma operação com matrizes estruturadas (a _dualidade de espaços de estados estruturados_, ou SSD) e utiliza essa equivalência para construir um algoritmo 2 a 8 vezes mais rápido.
+3. **Mamba-3**[^4] aprimora a recorrência com três princípios extraídos da teoria de SSMs: discretização trapezoidal, estados complexos e uma abordagem de múltiplas entradas e saídas (MIMO).
 
-# Preliminares: o modelo de espaço de estados
+# Introdução: o modelo de espaço de estados
 
 Um SSM, em sua forma contínua, é um sistema linear que mapeia um sinal de entrada \\(x(t) \in \mathbb{R}\\) em uma saída \\(y(t) \in \mathbb{R}\\) por meio de um estado latente \\(h(t) \in \mathbb{R}^{N}\\):
 
@@ -38,7 +38,7 @@ y(t) &= \mathbf{C}^\top h(t)
 \end{aligned}
 \\]
 
-onde \\(\mathbf{A} \in \mathbb{R}^{N \times N}\\) governa a dinâmica do estado, \\(\mathbf{B} \in \mathbb{R}^{N}\\) injeta a entrada e \\(\mathbf{C} \in \mathbb{R}^{N}\\) projeta o estado na saída. O tamanho \\(N\\) do estado é a "memória" do modelo: tudo o que a sequência viu até o instante \\(t\\) precisa caber em \\(h(t)\\).
+onde \\(\mathbf{A} \in \mathbb{R}^{N \times N}\\) controla a dinâmica do estado, \\(\mathbf{B} \in \mathbb{R}^{N}\\) injeta a entrada e \\(\mathbf{C} \in \mathbb{R}^{N}\\) projeta o estado na saída. O tamanho \\(N\\) do estado é a "memória" do modelo: tudo o que a sequência viu até o instante \\(t\\) precisa caber em \\(h(t)\\).
 
 Para operar sobre sequências discretas, o sistema é discretizado com um passo \\(\Delta\\). A discretização por retenção de ordem zero (ZOH, de _zero-order hold_), que assume a entrada constante dentro de cada intervalo \\(\Delta\\), produz
 
@@ -49,7 +49,7 @@ Para operar sobre sequências discretas, o sistema é discretizado com um passo 
 \end{aligned}
 \\]
 
-de modo que a recorrência discreta se torna
+e, assim, a recorrência discreta é transformada em
 
 \\[
 \begin{aligned}
@@ -58,9 +58,9 @@ y\_t &= \mathbf{C}^\top h\_t
 \end{aligned}
 \\]
 
-Uma ressalva que vale registrar desde já, porque reaparece na seção sobre o Mamba-3: a implementação do Mamba-1 e do Mamba-2 **não** usa a expressão completa de \\(\bar{\mathbf{B}}\\) acima. Ela adota a aproximação de primeira ordem \\(\bar{\mathbf{B}}\_t \approx \Delta\_t \mathbf{B}\_t\\), que é o que se obtém ao resolver analiticamente a parte exponencial da transição e aproximar a integral da entrada por Euler no endpoint direito. É exatamente essa regra que o Mamba-3 batiza de _exponential-Euler_ e generaliza.
+Desde já, vale fazer uma ressalva, pois essa questão volta à tona na seção sobre o Mamba-3: a implementação do Mamba-1 e do Mamba-2 **não** emprega a expressão completa de \\(\bar{\mathbf{B}}\\) mencionada anteriormente. Ela adota a aproximação de primeira ordem \\(\bar{\mathbf{B}}\_t \approx \Delta\_t \mathbf{B}\_t\\), que é o resultado obtido ao se resolver analiticamente a parte exponencial da transição e aproximar a integral da entrada por Euler no endpoint direito. É exatamente essa regra que o Mamba-3 denomina _exponential-Euler_ e generaliza.
 
-Há, aqui, uma dualidade que sustenta toda a literatura de SSMs. Se \\(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}\\) são fixos &mdash; isto é, se o sistema é invariante no tempo (LTI, de _linear time-invariant_) &mdash;, então desenrolar a recorrência mostra que \\(y\\) é uma **convolução** de \\(x\\) com um núcleo fixo:
+Existe, nesse contexto, uma dualidade que sustenta toda a literatura sobre SSMs. Se \\(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}\\) são constantes &mdash; isto é, se o sistema é invariante no tempo (LTI, de _linear time-invariant_) &mdash;, então, ao desenrolar a recorrência, podemos ver que \\(y\\) é uma **convolução** de \\(x\\) com um núcleo fixo:
 
 \\[
 y\_t = \sum\_{k=0}^{t} \mathbf{C}^\top \bar{\mathbf{A}}^{k}\,\bar{\mathbf{B}}\;x\_{t-k} \quad\Longleftrightarrow\quad y = \bar{\mathbf{K}} \ast x, \qquad \bar{\mathbf{K}} = (\mathbf{C}^\top\bar{\mathbf{B}}, \mathbf{C}^\top\bar{\mathbf{A}}\bar{\mathbf{B}}, \dots, \mathbf{C}^\top\bar{\mathbf{A}}^{L-1}\bar{\mathbf{B}})
