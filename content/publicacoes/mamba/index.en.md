@@ -2,6 +2,7 @@
 title = "Notes on Mamba"
 description = "An annotated reading of three papers on selective state space models: Mamba, Mamba-2's SSD duality, and Mamba-3's refinements"
 date = "2026-06-23"
+updated = "2026-08-29"
 weight = 1
 
 [taxonomies]
@@ -16,9 +17,11 @@ toc = true
 
 # Why these notes
 
-I've been studying SSMs and Mamba for my master's dissertation, and taking notes along the way. The main purpose of this text is to consolidate those readings.
+I've been studying SSMs and Mamba for my master's dissertation and taking notes along the way. This text grew out of a need to organize my understanding and make explicit the thread I found running through three generations of the model.
 
-And why study SSMs and Mamba? Efficiency. The attention mechanism[^1] processes a sequence of length \\(L\\) by comparing every position against every other, which costs \\(\mathcal{O}(L^2)\\) in time and memory and makes very long contexts prohibitive. State space models (SSMs) offer an \\(\mathcal{O}(L)\\) alternative, but historically paid for that saving with a loss of content-dependent reasoning. The three papers below tell the story of how that gap was progressively closed:
+To structure my reading, I start from a question: what does an architecture lose when it trades direct access to every token for a fixed-size state? Linear scaling is only compelling if it comes with a clear account of what was compressed, what was forgotten and how the model chooses between the two. This question guides the notes below.
+
+The starting point is efficiency. The attention mechanism[^1] processes a sequence of length \\(L\\) by comparing every position against every other, which costs \\(\mathcal{O}(L^2)\\) in time and memory and makes very long contexts prohibitive. State space models (SSMs) offer an \\(\mathcal{O}(L)\\) alternative, but historically paid for that saving with a loss of content-dependent reasoning. The three papers below tell the story of how that gap was progressively closed:
 
 1. **Mamba**[^2] introduces _selection_ &mdash; letting the SSM's parameters depend on the input &mdash; along with a hardware-aware scan algorithm that keeps the cost linear.
 2. **Mamba-2**[^3] reveals that SSMs and attention are two faces of the same operation on structured matrices (_structured state space duality_, or SSD), and uses that equivalence to build an algorithm 2 to 8 times faster.
@@ -201,6 +204,8 @@ flowchart TB
 
 {% end %}
 
+I see the original Mamba as a proposal in which modelling and implementation are inseparable. Making the state selective overcomes the lack of content dependence, but removes the convolutional path that had made SSMs attractive. The parallel scan is part of the proposal itself: without it, selection would regain capacity at the cost of the parallelism required for training. The contribution rests on the combination of the two ideas.
+
 # Mamba-2: structured state space duality
 
 The second paper[^3], by Dao and Gu, is more theoretical and, in a sense, more ambitious: it explains _why_ Mamba works, placing it in a framework that also contains attention. The thesis, announced in the title itself &mdash; "Transformers are SSMs" &mdash; is that the two architectures are different factorizations of the same mathematical object.
@@ -271,7 +276,7 @@ print(f"{np.abs(ssd_recurrent(a, B, C, X) - ssd_quadratic(a, B, C, X)).max():.2e
 # -> 9.44e-15
 ```
 
-It's worth noting what `mask` is: a lower-triangular matrix whose entries decay as \\(j - i\\) grows. Swapping that decay for a mask of zeros and ones gives ordinary causal attention; it is literally the same line of code with a different mask. The SSD algorithm, described next, does not choose between the two paths &mdash; it uses each where it is better.
+Note that `mask` is a lower-triangular matrix whose entries decay as \\(j - i\\) grows. Swapping that decay for a mask of zeros and ones gives ordinary causal attention; it is literally the same line of code with a different mask. The SSD algorithm, described next, does not choose between the two paths &mdash; it uses each where it is better.
 
 ## The SSD algorithm
 
@@ -297,6 +302,8 @@ flowchart TB
 ## Architectural changes
 
 Restricting \\(\mathbf{A}\\) to a scalar makes room for treating the SSM as a form of multi-head attention. Mamba-2 therefore introduces multiple heads and produces \\(\mathbf{B}, \mathbf{C}, \Delta\\) in parallel from the input (rather than sequentially, as in Mamba-1), which improves parallelization and the interaction with tensor parallelism in large-scale training. The result is a simpler, more scalable block, with no loss of language modelling quality.
+
+My reading of Mamba-2 begins with a change of perspective. Attention and recurrence initially appear as competing families: the former preserves explicit interactions between positions; the latter condenses the past into a state. The SSD formulation shows that this opposition is incomplete, because part of the difference lies in how the same structured matrix is factorized and executed. The chunkwise algorithm follows directly from that decomposition: each region of the matrix is evaluated in the way best suited to its structure.
 
 # Mamba-3: refining state space principles
 
@@ -381,6 +388,8 @@ The `v_prev` term is the width-two convolution mentioned below: the state now se
 
 There is an irony here that the paper acknowledges openly. The theoretical motivation for the trapezoidal rule is second-order accuracy, with error \\(\mathcal{O}(\Delta\_t^3)\\) instead of \\(\mathcal{O}(\Delta\_t^2)\\) &mdash; but that guarantee only holds if \\(\lambda\_t = \tfrac{1}{2} + \mathcal{O}(\Delta\_t)\\), and the paper's own ablations indicate that **not** enforcing that constraint works better in practice. The default parameterization therefore gives up the convergence order that motivated the rule, keeping the extra expressivity.
 
+This is where my reading of Mamba-3 becomes more guarded. Theory suggests a family of updates, but the configuration that performs best in the ablations does not fully preserve the guarantee used to motivate it. The derivation remains useful because it points to a productive parameterization; the empirical result, however, resists too tidy an explanation. The additional gate and width-two mixing may also account for the empirical gain; higher-order accuracy alone is not enough to explain it.
+
 The central point is different: the recurrence now contains a causal width-two convolution over the state-input stream, \\(B\_t x\_t\\), _inside_ the recurrent core &mdash; distinct, therefore, from the usual short convolutions, which are independent operations applied to \\(x\_t\\) _outside_ the recurrence. The paper reports that this, combined with explicit bias terms in \\(\mathbf{B}\\) and \\(\mathbf{C}\\), empirically allows dropping the external short convolution used in Mamba-2.
 
 ## Complex states and state tracking
@@ -402,6 +411,10 @@ The three improvements are complementary and, combined, push the frontier along 
 Read in sequence, the three papers form a coherent arc. **Mamba** identified time invariance as the cause of SSMs' weakness on content-dependent tasks and removed it with the selection mechanism, paying the price with a hardware-aware scan algorithm. **Mamba-2** explained that success from a higher vantage point, showing that SSMs and attention are factorizations of the same computation with semiseparable matrices, and converted that duality into a far faster algorithm. **Mamba-3** went back to first principles &mdash; discretization, eigenvalues, rank of the projections &mdash; to squeeze more expressivity out of each unit of state, without compromising inference.
 
 The connecting thread is the permanent tension between two costs: attention's quadratic cost, which gives full expressivity to the exchange of information between positions, and the SSMs' linear cost, which compresses everything into a fixed-size state. The Mamba family is, to a large extent, a sequence of increasingly refined answers to the question of how much of attention's expressivity can be recovered within a linear budget &mdash; and each paper recovers a little more.
+
+My final take is cautious: even with these results, the fixed-size state remains a bottleneck. The three papers show how much architectural design can be packed into it. Selection controls what enters the state and what stays there; SSD changes how the transformation is executed; and Mamba-3 broadens the dynamics and raises the rank of the interactions. I find the family most convincing as an investigation into when recurrent compression is sufficient, what it costs and which structures can recover capacity without pushing the cost back to \\(\mathcal{O}(L^2)\\).
+
+Two questions remain open for me. The first is empirical: at which sequence lengths and batch sizes, and on which devices, does the asymptotic advantage translate into lower latency or memory use? The second is representational: how does a fixed-size state fail as the amount of information that must be retrieved accurately grows? The numbers reported in the papers do not answer these questions on their own. I would like to see controlled comparisons that combine language modelling with retrieval and state-tracking tests, using hardware and sequence-length settings relevant to the application.
 
 # References
 

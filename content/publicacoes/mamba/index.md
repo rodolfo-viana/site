@@ -2,6 +2,7 @@
 title = "Notas sobre Mamba"
 description = "Leitura comentada de três artigos sobre modelos de espaço de estados seletivos: Mamba, a dualidade SSD do Mamba-2 e os refinamentos do Mamba-3"
 date = "2026-06-23"
+updated = "2026-08-29"
 weight = 1
 
 [taxonomies]
@@ -16,9 +17,11 @@ toc = true
 
 # Por que estas notas
 
-Tenho estudado SSM e Mamba para minha dissertação de mestrado, e ando tomando notas. A ideia central com este texto é sedimentar tais leituras. 
+Tenho estudado SSMs e Mamba para minha dissertação de mestrado e venho tomando notas ao longo do caminho. Este texto nasceu da necessidade de organizar o que entendi e tornar explícito o fio que encontrei entre três gerações do modelo.
 
-E por que estudar SSM e Mamba? Por eficiência. O mecanismo de atenção[^1] processa uma sequência de comprimento \\(L\\) comparando cada posição com todas as demais, o que custa \\(\mathcal{O}(L^2)\\) em tempo e memória e torna proibitivo o processamento de contextos muito longos. Modelos de espaço de estados (SSM, de _state space models_) oferecem uma alternativa com custo \\(\mathcal{O}(L)\\), mas historicamente pagavam esse barateamento com perda de capacidade de raciocínio dependente de conteúdo. Os três artigos a seguir contam a história de como essa lacuna foi sendo fechada:
+Para organizar a leitura, parto de uma pergunta: o que uma arquitetura perde quando troca o acesso direto a todos os tokens por um estado de tamanho fixo? A economia linear só é interessante se vier acompanhada de uma explicação clara do que foi comprimido, do que foi esquecido e de como o modelo decide entre os dois. Essa pergunta orienta as notas abaixo.
+
+O ponto de partida é a eficiência. O mecanismo de atenção[^1] processa uma sequência de comprimento \\(L\\) comparando cada posição com todas as demais, o que custa \\(\mathcal{O}(L^2)\\) em tempo e memória e torna proibitivo o processamento de contextos muito longos. Modelos de espaço de estados (SSM, de _state space models_) oferecem uma alternativa com custo \\(\mathcal{O}(L)\\), mas historicamente pagavam esse barateamento com perda de capacidade de raciocínio dependente de conteúdo. Os três artigos a seguir contam a história de como essa lacuna foi sendo fechada:
 
 1. **Mamba**[^2] introduz a _seleção_ &mdash; deixar os parâmetros do SSM dependerem da entrada &mdash; e um algoritmo de varredura ciente do hardware que mantém o custo linear.
 2. **Mamba-2**[^3] revela que SSMs e atenção são duas faces da mesma operação com matrizes estruturadas (a _dualidade de espaços de estados estruturados_, ou SSD), e usa essa equivalência para construir um algoritmo 2 a 8 vezes mais rápido.
@@ -201,6 +204,8 @@ flowchart TB
 
 {% end %}
 
+Percebo o primeiro Mamba como uma proposta em que modelagem e implementação são inseparáveis. Tornar o estado seletivo resolve a limitação de conteúdo, mas elimina o caminho convolucional que tornava os SSMs atraentes. A varredura paralela é parte da própria proposta: sem ela, a seleção recuperaria capacidade e perderia o paralelismo necessário ao treinamento. A contribuição se sustenta na combinação das duas ideias.
+
 # Mamba-2: a dualidade de espaços de estados estruturados
 
 O segundo artigo[^3], de Dao e Gu, é mais teórico e, em certo sentido, mais ambicioso: ele explica _por que_ o Mamba funciona, situando-o num arcabouço que também contém a atenção. A tese, anunciada já no título &mdash; "Transformers are SSMs" &mdash;, é que as duas arquiteturas são fatorizações diferentes do mesmo objeto matemático.
@@ -298,6 +303,8 @@ flowchart TB
 
 A restrição de \\(\mathbf{A}\\) a escalar abre espaço para tratar o SSM como uma forma de atenção multi-cabeça. O Mamba-2 introduz, então, cabeças múltiplas e produz \\(\mathbf{B}, \mathbf{C}, \Delta\\) em paralelo a partir da entrada (em vez de sequencialmente, como no Mamba-1), o que melhora a paralelização e a interação com o paralelismo de tensores em treinos de grande escala. O resultado é um bloco mais simples e mais escalável, sem perda de qualidade em modelagem de linguagem.
 
+Minha leitura do Mamba-2 parte de uma mudança de perspectiva. Atenção e recorrência aparecem inicialmente como famílias concorrentes: a primeira preserva interações explícitas entre posições; a segunda condensa o passado num estado. A formulação SSD mostra que essa oposição é incompleta, porque parte da diferença está na fatoração e na execução de uma mesma matriz estruturada. O algoritmo por blocos segue diretamente dessa decomposição: cada região da matriz é executada da forma mais adequada à sua estrutura.
+
 # Mamba-3: refinando os princípios de espaço de estados
 
 O terceiro artigo[^4], de Lahoti e colaboradores, mantém o fio recorrente da família Mamba, mas não é apenas um ajuste pontual do bloco anterior. Ele reorganiza a arquitetura em torno de uma receita mais próxima de Llama &mdash; alternando blocos Mamba-3 e blocos SwiGLU &mdash; e aperfeiçoa o mecanismo de SSM em três frentes, cada uma derivada de um princípio da teoria de espaços de estados. O motivador é a inferência: como o custo de gerar tokens com Transformers é alto, vale a pena extrair mais expressividade de cada unidade de estado de um SSM sem aumentar, ou aumentando muito pouco, a latência de decodificação.
@@ -381,6 +388,8 @@ O termo em `v_ant` é a convolução de largura dois mencionada adiante: o estad
 
 Há aqui uma ironia que o artigo assume abertamente. A motivação teórica da regra trapezoidal é a precisão de segunda ordem, com erro \\(\mathcal{O}(\Delta\_t^3)\\) em vez de \\(\mathcal{O}(\Delta\_t^2)\\) &mdash; mas essa garantia só vale se \\(\lambda\_t = \tfrac{1}{2} + \mathcal{O}(\Delta\_t)\\), e as ablações do próprio artigo indicam que **não** impor essa restrição funciona melhor na prática. A parametrização padrão, portanto, abre mão da ordem de convergência que motivou a regra, ficando com a expressividade extra.
 
+É nessa passagem que minha leitura do Mamba-3 fica mais reticente. A teoria sugere uma família de atualizações, mas a configuração que vence nas ablações não preserva integralmente a garantia usada para motivá-la. A derivação continua útil porque aponta uma parametrização produtiva; o resultado empírico, porém, impede uma explicação limpa demais. A porta adicional e a mistura de largura dois também podem explicar o ganho empírico; a maior ordem de precisão, sozinha, não basta como explicação.
+
 O ponto central é outro: a recorrência passa a conter uma convolução causal de largura dois sobre o fluxo de entrada do estado, \\(B\_t x\_t\\), _dentro_ do núcleo recorrente &mdash; distinta, portanto, das convoluções curtas usuais, que são operações independentes aplicadas sobre \\(x\_t\\) _fora_ da recorrência. O artigo relata que isso, combinado com termos de viés explícitos em \\(\mathbf{B}\\) e \\(\mathbf{C}\\), permite empiricamente dispensar a convolução curta externa usada em Mamba-2.
 
 ## Estados complexos e rastreamento de estado
@@ -402,6 +411,10 @@ As três melhorias são complementares e, combinadas, deslocam a fronteira em tr
 Lidos em sequência, os três artigos formam um arco coerente. O **Mamba** identificou que a invariância no tempo era a causa da fraqueza dos SSMs em tarefas dependentes de conteúdo e a removeu com o mecanismo de seleção, pagando o preço com um algoritmo de varredura ciente do hardware. O **Mamba-2** explicou esse sucesso de um ângulo mais alto, mostrando que SSMs e atenção são fatorizações do mesmo cálculo com matrizes semisseparáveis, e converteu essa dualidade em um algoritmo bem mais rápido. O **Mamba-3** voltou aos princípios &mdash; discretização, autovalores, posto das projeções &mdash; para espremer mais expressividade de cada unidade de estado, sem comprometer a inferência.
 
 O fio condutor é a tensão permanente entre dois custos: o quadrático da atenção, que dá expressividade plena à troca de informação entre posições, e o linear dos SSMs, que comprime tudo num estado de tamanho fixo. A família Mamba é, em larga medida, uma sequência de respostas cada vez mais refinadas à pergunta de quanto da expressividade da atenção se consegue recuperar dentro de um orçamento linear &mdash; e cada artigo recupera um pouco mais.
+
+Minha compreensão final é cautelosa: mesmo com esses resultados, o estado de tamanho fixo continua sendo um gargalo. Os três artigos mostram quantas decisões arquiteturais cabem dentro dele. A seleção decide o que entra e permanece, a SSD muda a forma de executar a transformação e o Mamba-3 amplia a dinâmica e o posto das interações. A família me parece mais convincente como uma investigação de quando a compressão recorrente basta, quanto ela custa e quais estruturas recuperam capacidade sem devolver o custo a \\(\mathcal{O}(L^2)\\).
+
+Duas perguntas continuam abertas para mim. A primeira é empírica: em quais comprimentos de sequência, tamanhos de lote e dispositivos a vantagem assintótica se traduz em menor latência ou uso de memória? A segunda é representacional: como o estado fixo falha à medida que cresce a quantidade de informação que precisa ser recuperada com precisão? Os números relatados pelos artigos não respondem sozinhos a essas perguntas. Eu gostaria de ver comparações controladas que combinem modelagem de linguagem com testes de recuperação e rastreamento de estado, sempre no hardware e no regime de sequência relevantes para a aplicação.
 
 # Referências
 
