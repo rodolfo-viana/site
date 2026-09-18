@@ -1,0 +1,1081 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Versão editada de artigo escrito em coautoria com Júlia Canedo para a disciplina Aprendizado Profundo, do Prof. Dr. Denis Henrique Pinheiro Salvadeo, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp">
+  <title>Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;bardin&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;bardin&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;bardin&#x2F;">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;bardin&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#introducao">Introdução</a></li>
+      
+      <li><a class="h2" href="#revisao-de-literatura">Revisão de Literatura</a><ul><li><a class="h3" href="#analise-de-conteudo-de-bardin">Análise de Conteúdo de Bardin</a></li><li><a class="h3" href="#topic-modeling-e-bertopic">Topic Modeling e BERTopic</a></li><li><a class="h3" href="#processamento-de-linguagem-natural-em-portugues">Processamento de Linguagem Natural em Português</a></li></ul></li>
+      
+      <li><a class="h2" href="#fundamentos-matematicos-dos-algoritmos">Fundamentos Matemáticos dos Algoritmos</a><ul><li><a class="h3" href="#processamento-linguistico-com-spacy">Processamento Linguístico com spaCy</a></li><li><a class="h3" href="#term-frequency-inverse-document-frequency-tf-idf">Term Frequency-Inverse Document Frequency (TF-IDF)</a></li><li><a class="h3" href="#embeddings-semanticos-sentence-transformers">Embeddings Semânticos (Sentence-Transformers)</a></li><li><a class="h3" href="#uniform-manifold-approximation-and-projection-umap">Uniform Manifold Approximation and Projection (UMAP)</a></li><li><a class="h3" href="#hierarchical-dbscan-hdbscan">Hierarchical DBSCAN (HDBSCAN)</a></li><li><a class="h3" href="#class-based-tf-idf-c-tf-idf">Class-based TF-IDF (c-TF-IDF)</a></li></ul></li>
+      
+      <li><a class="h2" href="#metodologia">Metodologia</a><ul><li><a class="h3" href="#arquitetura-do-sistema">Arquitetura do Sistema</a></li><li><a class="h3" href="#coleta-de-dados">Coleta de Dados</a></li><li><a class="h3" href="#implementacao-das-fases-de-bardin">Implementação das Fases de Bardin</a></li></ul></li>
+      
+      <li><a class="h2" href="#resultados-e-discussao">Resultados e Discussão</a><ul><li><a class="h3" href="#estatisticas-gerais-do-corpus">Estatísticas Gerais do Corpus</a></li><li><a class="h3" href="#identificacao-e-caracterizacao-de-topicos">Identificação e Caracterização de Tópicos</a></li><li><a class="h3" href="#analise-temporal-de-topicos">Análise Temporal de Tópicos</a></li><li><a class="h3" href="#analise-geografica">Análise Geográfica</a></li><li><a class="h3" href="#limitacoes-identificadas">Limitações Identificadas</a></li></ul></li>
+      
+      <li><a class="h2" href="#conclusoes">Conclusões</a></li>
+      
+      <li><a class="h2" href="#referencias">Referências</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;">← Voltar</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;bardin&#x2F;" hreflang="en">EN</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Análise automatizada de conteúdo de Bardin aplicada à produção acadêmica da Unesp</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">22-11-2025</span>
+            
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/tags/aprendizado-de-maquina/"><span>#</span>aprendizado de máquina</a><a class="instant" href="https://rodolfoviana.com.br/tags/processamento-de-linguagem-natural/"><span>#</span>processamento de linguagem natural</a><a class="instant" href="https://rodolfoviana.com.br/tags/unesp/"><span>#</span>unesp</a></div>
+        </div>
+        <h1 id="introducao">Introdução<a class="zola-anchor" href="#introducao" aria-label="Anchor link for: introducao" style="visibility: hidden;"></a>
+</h1>
+<p>A análise sistemática da produção acadêmica institucional representa um desafio fundamental para a compreensão das tendências de pesquisa, áreas de interesse e evolução do conhecimento em universidades. No contexto da Universidade Estadual Paulista (Unesp), com múltiplos campi distribuídos pelo estado de São Paulo, essa tarefa torna-se ainda mais complexa devido ao volume e diversidade da produção científica.</p>
+<p>O presente trabalho aborda a questão central: “O que os alunos de graduação da Unesp produziram nos últimos 10 anos?”. Esta pergunta desdobra-se em questões específicas sobre preferências disciplinares, evolução temporal de tópicos de pesquisa, distribuição geográfica de áreas de interesse e padrões emergentes na produção acadêmica.</p>
+<p>Para responder a essas questões, desenvolveu-se um sistema computacional que integra a metodologia clássica de Análise de Conteúdo proposta por Laurence Bardin<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup> com técnicas atuais de aprendizado profundo e processamento de linguagem natural (PLN). Esta abordagem híbrida permite manter o rigor metodológico da análise qualitativa tradicional, ao mesmo tempo em que viabiliza o processamento de grandes volumes de dados através de algoritmos automatizados.</p>
+<p>O objetivo principal deste trabalho é desenvolver e validar o sistema aplicado à produção acadêmica da Unesp, especificamente os trabalhos de conclusão de curso (TCCs) produzidos entre 2015 e 2024.</p>
+<p>De maneira específica, os autores buscam (a) implementar computacionalmente as três fases da metodologia de Bardin através de técnicas de PLN e aprendizado de máquina, (b) identificar e caracterizar os principais tópicos de pesquisa presentes nos TCCs através de modelagem automática de tópicos, (c) analisar a evolução temporal dos tópicos identificados, detectando tendências emergentes e declinantes, e (d) mapear a distribuição geográfica e disciplinar dos tópicos entre os diferentes campi e cursos.</p>
+<h1 id="revisao-de-literatura">Revisão de Literatura<a class="zola-anchor" href="#revisao-de-literatura" aria-label="Anchor link for: revisao-de-literatura" style="visibility: hidden;"></a>
+</h1>
+<h2 id="analise-de-conteudo-de-bardin">Análise de Conteúdo de Bardin<a class="zola-anchor" href="#analise-de-conteudo-de-bardin" aria-label="Anchor link for: analise-de-conteudo-de-bardin" style="visibility: hidden;"></a>
+</h2>
+<p>A Análise de Conteúdo, conforme sistematizada por Laurence Bardin<sup class="footnote-reference" id="fr-1-2"><a href="#fn-1">1</a></sup>, constitui-se como “um conjunto de técnicas de análise das comunicações visando obter por procedimentos sistemáticos e objetivos de descrição do conteúdo das mensagens indicadores (quantitativos ou não) que permitam a inferência de conhecimentos relativos às condições de produção/recepção (variáveis inferidas) dessas mensagens”.</p>
+<p>A metodologia estrutura-se em três fases fundamentais:</p>
+<ol>
+<li>
+<p>Pré-análise: Organização do material e sistematização das ideias iniciais. Inclui a leitura flutuante, escolha dos documentos, formulação de hipóteses e objetivos, e elaboração de indicadores.</p>
+</li>
+<li>
+<p>Exploração do material: Aplicação sistemática das decisões tomadas na pré-análise. Consiste essencialmente em operações de codificação, decomposição ou enumeração, em função de regras previamente formuladas.</p>
+</li>
+<li>
+<p>Tratamento dos resultados e interpretação: Os resultados brutos são tratados de maneira a serem significativos e válidos. Operações estatísticas simples ou complexas permitem estabelecer quadros de resultados, diagramas, figuras e modelos.</p>
+</li>
+</ol>
+<h2 id="topic-modeling-e-bertopic"><em>Topic Modeling</em> e BERTopic<a class="zola-anchor" href="#topic-modeling-e-bertopic" aria-label="Anchor link for: topic-modeling-e-bertopic" style="visibility: hidden;"></a>
+</h2>
+<p><em>Topic modeling</em> refere-se a uma família de algoritmos de aprendizado de máquina não supervisionado destinados a descobrir estruturas temáticas latentes em grandes coleções de documentos<sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>. Tradicionalmente, métodos como <em>Latent Dirichlet Allocation</em> (LDA) dominam o campo, modelando documentos como misturas probabilísticas de tópicos.</p>
+<p>BERTopic, introduzido por Grootendorst<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup>, representa uma evolução significativa nessa área, combinando embeddings de linguagem pré-treinados com técnicas de clustering para criar representações de tópicos mais coerentes e interpretáveis. O algoritmo segue uma pipeline modular:</p>
+<ol>
+<li>
+<p>Geração de Embeddings: Utilização de modelos de linguagem pré-treinados (BERT, Sentence-BERT) para criar representações vetoriais densas dos documentos.</p>
+</li>
+<li>
+<p>Redução Dimensional: Aplicação de <em>Uniform Manifold Approximation and Projection</em> (UMAP) para reduzir a dimensionalidade dos embeddings, preservando estruturas locais e globais<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup>.</p>
+</li>
+<li>
+<p>Clustering: Uso de <em>Hierarchical Density-Based Spatial Clustering of Applications with Noise</em> (HDBSCAN) para identificar clusters de documentos semanticamente similares<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>.</p>
+</li>
+<li>
+<p>Representação de Tópicos: Extração de palavras representativas através de <em>class-based TF-IDF</em> (c-TF-IDF), uma variação do TF-IDF tradicional<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup> adaptada para contextos de clustering<sup class="footnote-reference" id="fr-3-2"><a href="#fn-3">3</a></sup>.</p>
+</li>
+</ol>
+<h2 id="processamento-de-linguagem-natural-em-portugues">Processamento de Linguagem Natural em Português<a class="zola-anchor" href="#processamento-de-linguagem-natural-em-portugues" aria-label="Anchor link for: processamento-de-linguagem-natural-em-portugues" style="visibility: hidden;"></a>
+</h2>
+<p>O processamento de textos em português apresenta desafios específicos relacionados à morfologia rica da língua<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup>, incluindo conjugações verbais complexas, concordância de gênero e número, e uso extensivo de clíticos. Para este trabalho, utilizou-se o modelo spaCy <code>pt_core_news_lg</code>, treinado especificamente para português brasileiro, oferecendo capacidades de tokenização, lematização, análise morfossintática e reconhecimento de entidades nomeadas<sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup>.</p>
+<h1 id="fundamentos-matematicos-dos-algoritmos">Fundamentos Matemáticos dos Algoritmos<a class="zola-anchor" href="#fundamentos-matematicos-dos-algoritmos" aria-label="Anchor link for: fundamentos-matematicos-dos-algoritmos" style="visibility: hidden;"></a>
+</h1>
+<h2 id="processamento-linguistico-com-spacy">Processamento Linguístico com spaCy<a class="zola-anchor" href="#processamento-linguistico-com-spacy" aria-label="Anchor link for: processamento-linguistico-com-spacy" style="visibility: hidden;"></a>
+</h2>
+<p>O spaCy implementa um pipeline de processamento linguístico baseado em redes neurais convolucionais (CNN). As principais operações realizadas são:</p>
+<ul>
+<li>
+<p><strong>Tokenização:</strong> Segmentação do texto em tokens utilizando regras linguísticas específicas do português e padrões de expressões regulares. Cada documento \(D\) é transformado em uma sequência de tokens \(T = {t_1, t_2, …, t_n}\).</p>
+</li>
+<li>
+<p><strong>Lematização:</strong> Redução de cada token à sua forma canônica (lema) através de um modelo estatístico treinado. Para cada token \(t_i\), a lematização mapeia \(\text{lemma}(t_i) = l_i\), onde \(l_i\) representa a forma base da palavra, removendo flexões verbais, plurais e outras variações morfológicas.</p>
+</li>
+<li>
+<p><strong>Part-of-Speech (POS) Tagging:</strong> O spaCy utiliza uma rede neural convolucional para classificar cada token em categorias gramaticais. A probabilidade de um token \(t_i\) pertencer à classe POS \(c_j\) é calculada através de \(P(c_j \mid t_i) = \text{softmax}(\mathbf{W} \cdot \text{CNN}(t_i) + \mathbf{b})_j\), onde \(\mathbf{W}\) são os pesos da camada de classificação, \(\text{CNN}(t_i)\) é a representação vetorial do token, e \(\mathbf{b}\) é o vetor de bias.</p>
+</li>
+</ul>
+<h2 id="term-frequency-inverse-document-frequency-tf-idf">Term Frequency-Inverse Document Frequency (TF-IDF)<a class="zola-anchor" href="#term-frequency-inverse-document-frequency-tf-idf" aria-label="Anchor link for: term-frequency-inverse-document-frequency-tf-idf" style="visibility: hidden;"></a>
+</h2>
+<p>O TF-IDF é uma medida estatística que avalia a importância de um termo em um documento dentro de um corpus. É calculado como o produto de duas componentes:</p>
+<p><strong>Frequência do Termo (TF):</strong></p>
+<p>\[
+\text{TF}(t, d) = \frac{f_{t,d}}{\sum_{t’ \in d} f_{t’,d}}
+\]</p>
+<p>onde \(f_{t,d}\) é a frequência bruta do termo \(t\) no documento \(d\).</p>
+<p><strong>Frequência Inversa de Documento (IDF):</strong></p>
+<p>\[
+\text{IDF}(t, D) = \log\left(\frac{N}{\mid{d \in D : t \in d}\mid}\right)
+\]</p>
+<p>onde \(N\) é o número total de documentos e \(\mid{d \in D : t \in d}\mid\) é o número de documentos contendo o termo \(t\).</p>
+<p>O TF-IDF final, é, portanto, obtido com \(\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)\). Esta métrica penaliza termos muito frequentes (como stopwords) e valoriza termos distintivos de documentos específicos.</p>
+<h2 id="embeddings-semanticos-sentence-transformers">Embeddings Semânticos (Sentence-Transformers)<a class="zola-anchor" href="#embeddings-semanticos-sentence-transformers" aria-label="Anchor link for: embeddings-semanticos-sentence-transformers" style="visibility: hidden;"></a>
+</h2>
+<p>O modelo <code>paraphrase-multilingual-mpnet-base-v2</code> utiliza uma arquitetura transformer<sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">9</a></sup> com mean pooling para gerar representações vetoriais densas de sentenças. Para uma sequência de entrada \(\mathbf{X} = [\mathbf{x}_1, …, \mathbf{x}_n]\), o mecanismo de atenção multi-cabeças calcula:</p>
+<p>\[
+\text{Attention}(\mathbf{Q}, \mathbf{K}, \mathbf{V}) = \text{softmax}\left(\frac{\mathbf{Q}\mathbf{K}^T}{\sqrt{d_k}}\right)\mathbf{V}
+\]</p>
+<p>onde \(\mathbf{Q}\) (queries), \(\mathbf{K}\) (keys) e \(\mathbf{V}\) (values) são projeções lineares da entrada, e \(d_k\) é a dimensão das keys.</p>
+<p>A representação final do documento é obtida pela média das representações de todos os tokens,</p>
+<p>\[
+\mathbf{e}_d = \frac{1}{n}\sum_{i=1}^{n} \mathbf{h}_i
+\]</p>
+<p>onde \(\mathbf{h}_i\) é a representação contextualizada do token \(i\) na última camada do transformer, e \(\mathbf{e}_d \in \mathbb{R}^{384}\) é o embedding final do documento.</p>
+<h2 id="uniform-manifold-approximation-and-projection-umap">Uniform Manifold Approximation and Projection (UMAP)<a class="zola-anchor" href="#uniform-manifold-approximation-and-projection-umap" aria-label="Anchor link for: uniform-manifold-approximation-and-projection-umap" style="visibility: hidden;"></a>
+</h2>
+<p>O UMAP reduz a dimensionalidade dos embeddings preservando estruturas topológicas locais e globais. O algoritmo baseia-se na teoria de variedades Riemannianas e topologia algébrica<sup class="footnote-reference" id="fr-4-2"><a href="#fn-4">4</a></sup>. Para cada ponto \(x_i\), define-se uma distância normalizada aos \(k\) vizinhos mais próximos,</p>
+<p>\[
+d_i(x_i, x_j) = \max\left(0, \frac{\Vert x_i - x_j \Vert - \rho_i}{\sigma_i}\right)
+\]</p>
+<p>onde \(\rho_i\) é a distância ao vizinho mais próximo e \(\sigma_i\) é um fator de normalização.</p>
+<p>A probabilidade de conexão entre \(x_i\) e \(x_j\) no espaço de alta dimensão é</p>
+<p>\[
+w_{ij} = \exp(-d_i(x_i, x_j))
+\]</p>
+<p>O UMAP minimiza a divergência de entropia cruzada entre os grafos de alta e baixa dimensão via</p>
+<p>\[
+\mathcal{L} = \sum_{i,j} w_{ij} \log\left(\frac{w_{ij}}{v_{ij}}\right) + (1-w_{ij})\log\left(\frac{1-w_{ij}}{1-v_{ij}}\right)
+\]</p>
+<p>onde \(v_{ij}\) são os pesos no espaço de baixa dimensão, calculados analogamente.</p>
+<h2 id="hierarchical-dbscan-hdbscan">Hierarchical DBSCAN (HDBSCAN)<a class="zola-anchor" href="#hierarchical-dbscan-hdbscan" aria-label="Anchor link for: hierarchical-dbscan-hdbscan" style="visibility: hidden;"></a>
+</h2>
+<p>O HDBSCAN é um algoritmo de clustering hierárquico baseado em densidade que identifica clusters de diferentes densidades e tamanhos<sup class="footnote-reference" id="fr-5-2"><a href="#fn-5">5</a></sup>. Para dois pontos \(x_i\) e \(x_j\), a distância de alcance mútua é definida como</p>
+<p>\[
+d_{\text{mreach}-k}(x_i, x_j) = \max \left\{ \text{core}_k(x_i), \text{core}_k(x_j), d(x_i, x_j) \right\}
+\]</p>
+<p>onde \(\text{core}_k(x_i)\) é a distância ao \(k\)-ésimo vizinho mais próximo de \(x_i\) (com \(k\) = <code>min_cluster_size</code>).</p>
+<p>O algoritmo constrói uma árvore de spanning mínima (MST) sobre o grafo completo com pesos \(d_{\text{mreach}-k}\). A MST minimiza</p>
+<p>\[
+\sum_{(i,j) \in \text{MST}} d_{\text{mreach}-k}(x_i, x_j)
+\]</p>
+<p>Em seguida, remove-se iterativamente arestas da MST em ordem decrescente de peso, criando uma hierarquia de clusters. Para cada nível \(\epsilon\), um cluster é estável se sua “persistência” (número de pontos multiplicado pelo tempo de vida) é alta.</p>
+<p>O método Excess of Mass (EOM) seleciona clusters que maximizam:</p>
+<p>\[
+\text{Estabilidade}(C) = \sum_{x_i \in C} (\lambda_{x_i} - \lambda_{\text{birth}})
+\]</p>
+<p>onde \(\lambda = 1/\epsilon\) é o parâmetro de densidade inversa, e \(\lambda_{\text{birth}}\) é a densidade quando o cluster nasce na hierarquia.</p>
+<p>Pontos que não pertencem a nenhum cluster estável são classificados como outliers.</p>
+<h2 id="class-based-tf-idf-c-tf-idf">Class-based TF-IDF (c-TF-IDF)<a class="zola-anchor" href="#class-based-tf-idf-c-tf-idf" aria-label="Anchor link for: class-based-tf-idf-c-tf-idf" style="visibility: hidden;"></a>
+</h2>
+<p>O BERTopic utiliza uma variação do TF-IDF tradicional adaptada para contexto de clusters. Enquanto o TF-IDF tradicional opera em nível de documento, o c-TF-IDF trata cada cluster como um único “documento”:</p>
+<p>\[
+W_{t,c} = tf_{t,c} \times \log\left(\frac{m}{df_t}\right)
+\]</p>
+<p>onde \(W_{t,c}\) é peso do termo \(t\) no cluster \(c\), \(tf_{t,c}\) é a soma das frequências do termo em todos os documentos do cluster, \(m\) é o número total de clusters, e \(df_t\) é número de clusters contendo o termo \(t\).</p>
+<p>Esta abordagem permite extrair termos que são distintivos de cada cluster, gerando representações interpretáveis dos tópicos identificados.</p>
+<h1 id="metodologia">Metodologia<a class="zola-anchor" href="#metodologia" aria-label="Anchor link for: metodologia" style="visibility: hidden;"></a>
+</h1>
+<h2 id="arquitetura-do-sistema">Arquitetura do Sistema<a class="zola-anchor" href="#arquitetura-do-sistema" aria-label="Anchor link for: arquitetura-do-sistema" style="visibility: hidden;"></a>
+</h2>
+<p>O sistema desenvolvido implementa uma arquitetura modular baseada em pipeline, organizada em cinco estágios distintos que correspondem às fases da metodologia de Bardin adaptadas ao contexto computacional:</p>
+<pre class="mermaid">stateDiagram-v2
+    [*] --> Coleta
+    
+    Coleta: Coleta de dados
+    state Coleta {
+        [*] --> CriaDB
+        CriaDB --> Pagina
+        Pagina --> ExtraiMeta
+        ExtraiMeta --> Normaliza
+        Normaliza --> SalvaDB
+        Normaliza --> SalvaJSON
+        SalvaDB --> [*]
+        SalvaJSON --> [*]
+        
+        CriaDB: Cria database vazio
+        Pagina: Requisição HTTP com paginação e retry
+        ExtraiMeta: Extrai metadados JSON da API
+        Normaliza: Normaliza valores
+        SalvaDB: Salva metadados no database relacional
+        SalvaJSON: Salva backup de metadados em JSON
+    }
+    
+    Coleta --> Preprocessamento
+    
+    Preprocessamento: Pré-processamento
+    state Preprocessamento {
+        [*] --> CarregaDB
+        CarregaDB --> DetectaLingua
+        DetectaLingua --> FiltraPortugues
+        FiltraPortugues --> LimpezaTexto
+        LimpezaTexto --> Vetorizacao
+        Vetorizacao --> SalvaCorpus
+        SalvaCorpus --> [*]
+        
+        CarregaDB: Carrega TCCs do database
+        DetectaLingua: Detecta idioma com confiança
+        FiltraPortugues: Filtra apenas português
+        LimpezaTexto: Tokenização + Lematização + Remoção de stopwords
+        Vetorizacao: Cria matriz TF-IDF (unigramas, bigramas, trigramas)
+        SalvaCorpus: Salva corpus processado + vetorizador
+    }
+    
+    Preprocessamento --> PreAnalise
+    
+    PreAnalise: FASE 1 BARDIN - Pré-análise
+    state PreAnalise {
+        [*] --> CarregaCorpus1
+        CarregaCorpus1 --> EstatisticasDesc
+        EstatisticasDesc --> AnaliseTemp
+        EstatisticasDesc --> AnaliseGeo
+        EstatisticasDesc --> AnaliseLex
+        AnaliseTemp --> GeraViz1
+        AnaliseGeo --> GeraViz1
+        AnaliseLex --> GeraViz1
+        GeraViz1 --> GeraRelat1
+        GeraRelat1 --> [*]
+        
+        CarregaCorpus1: Carrega corpus processado
+        EstatisticasDesc: Calcula estatísticas descritivas
+        AnaliseTemp: Distribuição temporal por ano/curso
+        AnaliseGeo: Distribuição por campus e curso
+        AnaliseLex: Frequência de palavras e vocabulário
+        GeraViz1: Gera visualizações
+        GeraRelat1: Gera relatório textual de pré-análise
+    }
+    
+    PreAnalise --> TopicModeling
+    
+    TopicModeling: FASE 2 BARDIN - Exploração do Material
+    state TopicModeling {
+        [*] --> CarregaCorpus2
+        CarregaCorpus2 --> GeraEmbeddings
+        GeraEmbeddings --> ReducaoDim
+        ReducaoDim --> Clustering
+        Clustering --> ExtraiTopicos
+        ExtraiTopicos --> AtribuiTopicos
+        AtribuiTopicos --> GeraViz2
+        GeraViz2 --> SalvaModelo
+        SalvaModelo --> [*]
+        
+        CarregaCorpus2: Carrega corpus processado
+        GeraEmbeddings: Gera embeddings semânticos dos documentos
+        ReducaoDim: Redução dimensional com UMAP (5D, cosine)
+        Clustering: Clustering hierárquico com HDBSCAN
+        ExtraiTopicos: Extrai palavras-chave com c-TF-IDF
+        AtribuiTopicos: Atribui tópico a cada documento
+        GeraViz2: Gera visualizações
+        SalvaModelo: Salva modelo + corpus com tópicos
+    }
+    
+    TopicModeling --> Interpretacao
+    
+    Interpretacao: FASE 3 BARDIN - Interpretação
+    state Interpretacao {
+        [*] --> CarregaTopicos
+        CarregaTopicos --> AnaliseTemporal
+        CarregaTopicos --> AnaliseGeografica
+        CarregaTopicos --> AnaliseCurso
+        AnaliseTemporal --> IdentTendencias
+        IdentTendencias --> TestaSignificancia
+        AnaliseGeografica --> TestaSignificancia
+        AnaliseCurso --> SinteseInterpret
+        TestaSignificancia --> SinteseInterpret
+        SinteseInterpret --> GeraViz3
+        GeraViz3 --> GeraRelat3
+        GeraRelat3 --> [*]
+        
+        CarregaTopicos: Carrega corpus com tópicos + modelo
+        AnaliseTemporal: Agrupa por ano + tópico
+        IdentTendencias: Regressão linear (emergentes/declinantes)
+        AnaliseGeografica: Matriz contingência campus×tópico
+        TestaSignificancia: Teste chi-square de independência
+        AnaliseCurso: Análise de tópicos por curso específico
+        SinteseInterpret: Cruza análises temporais + geográficas
+        GeraViz3: Gera visualizações
+        GeraRelat3: Gera relatório interpretativo final
+    }
+    
+    Interpretacao --> [*]</pre>
+<h2 id="coleta-de-dados">Coleta de Dados<a class="zola-anchor" href="#coleta-de-dados" aria-label="Anchor link for: coleta-de-dados" style="visibility: hidden;"></a>
+</h2>
+<p>A coleta de dados foi realizada através da API do repositório institucional da Unesp, implementando-se um cliente HTTP com tratamento de erros e retry automático. Utilizamos exclusivamente os resumos dos trabalhos. Os parâmetros de busca incluíram:</p>
+<ul>
+<li><strong>Tipo de documento:</strong> “Trabalho de conclusão de curso”</li>
+<li><strong>Idioma:</strong> Português (por)</li>
+<li><strong>Período:</strong> 2015-2024</li>
+<li><strong>Campos extraídos:</strong> UUID, handle, título, resumo, data de publicação, campus, curso, autores, orientadores, palavras-chave</li>
+</ul>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./temporal_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição temporal dos TCCs coletados
+  </figcaption>
+</figure>
+<p>O processo resultou na coleta de 13.213 documentos, armazenados em banco de dados SQLite com esquema normalizado para garantir integridade referencial. Destes, 13.112 possuem resumos e títulos em português, e puderam ser utilizados neste estudo.</p>
+<h2 id="implementacao-das-fases-de-bardin">Implementação das Fases de Bardin<a class="zola-anchor" href="#implementacao-das-fases-de-bardin" aria-label="Anchor link for: implementacao-das-fases-de-bardin" style="visibility: hidden;"></a>
+</h2>
+<h3 id="pre-analise">Pré-Análise<a class="zola-anchor" href="#pre-analise" aria-label="Anchor link for: pre-analise" style="visibility: hidden;"></a>
+</h3>
+<p>A pré-análise computacional incluiu:</p>
+<ul>
+<li><strong>Estatísticas Descritivas:</strong> Total de documentos, período temporal, distribuição por campus/curso</li>
+<li><strong>Análise Exploratória:</strong> Visualizações de distribuições temporais, geográficas e disciplinares</li>
+<li><strong>Nuvem de Palavras:</strong> Representação visual das palavras mais frequentes no corpus</li>
+</ul>
+<h3 id="exploracao-do-material">Exploração do Material<a class="zola-anchor" href="#exploracao-do-material" aria-label="Anchor link for: exploracao-do-material" style="visibility: hidden;"></a>
+</h3>
+<p>A modelagem de tópicos foi realizada através do BERTopic com os seguintes hiperparâmetros:</p>
+<p><strong>Embeddings:</strong></p>
+<ul>
+<li>Modelo: <code>paraphrase-multilingual-mpnet-base-v2</code></li>
+<li>Dimensão: 384</li>
+</ul>
+<p><strong>UMAP:</strong></p>
+<ul>
+<li><code>n_neighbors</code> = 15</li>
+<li><code>n_components</code> = 5</li>
+<li><code>min_dist</code> = 0.0</li>
+<li><code>metric</code> = ‘cosine’</li>
+</ul>
+<p><strong>HDBSCAN:</strong></p>
+<ul>
+<li><code>min_cluster_size</code> = 10</li>
+<li><code>metric</code> = ‘euclidean’</li>
+<li><code>cluster_selection_method</code> = ‘eom’</li>
+</ul>
+<h3 id="tratamento-e-interpretacao">Tratamento e Interpretação<a class="zola-anchor" href="#tratamento-e-interpretacao" aria-label="Anchor link for: tratamento-e-interpretacao" style="visibility: hidden;"></a>
+</h3>
+<p>A interpretação dos resultados envolveu três análises principais:</p>
+<ol>
+<li>Análise Temporal: Identificação de tendências através de regressão linear para cada tópico. O coeficiente normalizado é calculado como</li>
+</ol>
+<p>\[
+\beta_{norm} = \frac{\beta_1}{\bar{y}}
+\]</p>
+<p>O sistema classifica os tópicos com base no coeficiente normalizado para identificar tendências emergentes, estáveis ou declinantes.</p>
+<ol start="2">
+<li>Análise Geográfica: teste qui-quadrado de independência entre campus e tópico:</li>
+</ol>
+<p>\[
+\chi^2 = \sum_{i,j} \frac{(O_{ij} - E_{ij})^2}{E_{ij}}
+\]</p>
+<p>onde \(O_{ij}\) é a frequência observada e \(E_{ij}\) é a frequência esperada sob a hipótese de independência.</p>
+<ol start="3">
+<li>Análise por Curso: Identificação dos tópicos predominantes em cada programa de graduação através de análise de frequências relativas.</li>
+</ol>
+<h1 id="resultados-e-discussao">Resultados e Discussão<a class="zola-anchor" href="#resultados-e-discussao" aria-label="Anchor link for: resultados-e-discussao" style="visibility: hidden;"></a>
+</h1>
+<h2 id="estatisticas-gerais-do-corpus">Estatísticas Gerais do Corpus<a class="zola-anchor" href="#estatisticas-gerais-do-corpus" aria-label="Anchor link for: estatisticas-gerais-do-corpus" style="visibility: hidden;"></a>
+</h2>
+<p>A análise do corpus revelou as seguintes características:</p>
+<ul>
+<li><strong>Total de documentos processados:</strong> 13.112</li>
+<li><strong>Período temporal:</strong> 2015-2024</li>
+<li><strong>Campi únicos:</strong> 27</li>
+<li><strong>Cursos únicos:</strong> 64</li>
+<li><strong>Autores únicos:</strong> 13.356</li>
+<li><strong>Orientadores únicos:</strong> 4.605</li>
+</ul>
+<p>A distribuição temporal dos TCCs mostra um crescimento significativo a partir de 2021, com picos em 2023 (2.771 documentos) e 2024 (2.311 documentos), sugerindo melhorias no processo de submissão ao repositório institucional.</p>
+<p>Os cinco principais institutos/faculdades em termos de produção foram:</p>
+<ol>
+<li><strong>Instituto de Biociências:</strong> 2.209 TCCs</li>
+<li><strong>Faculdade de Engenharia:</strong> 2.083 TCCs</li>
+<li><strong>Faculdade de Arquitetura, Artes, Comunicação e Design:</strong> 1.037 TCCs</li>
+<li><strong>Faculdade de Odontologia:</strong> 1031 TCCs</li>
+<li><strong>Instituto de Geociências e Ciências Exatas:</strong> 1005 TCCs</li>
+</ol>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./campus_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição de TCCs pelos principais campi da Unesp
+  </figcaption>
+</figure>
+<p>Os cursos com maior produção foram:</p>
+<ol>
+<li><strong>Ciências Biológicas:</strong> 1.249 TCCs</li>
+<li><strong>Odontologia:</strong> 1.208 TCCs</li>
+<li><strong>Educação Física:</strong> 701 TCCs</li>
+<li><strong>Geografia:</strong> 610 TCCs</li>
+<li><strong>Engenharia Agronômica:</strong> 593 TCCs</li>
+<li><strong>Pedagogia:</strong> 562 TCCs</li>
+<li><strong>Engenharia Mecânica:</strong> 510 TCCs</li>
+<li><strong>Medicina Veterinária:</strong> 425 TCCs</li>
+<li><strong>Comunicação: Rádio, Tv e Internet:</strong> 394 TCCs</li>
+<li><strong>Engenharia Ambiental:</strong> 377 TCCs</li>
+</ol>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./course_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Top 20 cursos por número de TCCs produzidos
+  </figcaption>
+</figure>
+<h2 id="identificacao-e-caracterizacao-de-topicos">Identificação e Caracterização de Tópicos<a class="zola-anchor" href="#identificacao-e-caracterizacao-de-topicos" aria-label="Anchor link for: identificacao-e-caracterizacao-de-topicos" style="visibility: hidden;"></a>
+</h2>
+<p>O modelo BERTopic identificou 188 tópicos distintos, cobrindo 66,1% do corpus (8.661 documentos). Os documentos restantes (33,9%) foram classificados como outliers (tópico -1), indicando conteúdo muito específico ou interdisciplinar que não se agrupa claramente.</p>
+<p>Os 10 tópicos mais prevalentes foram:</p>
+<table><thead><tr><th>Tópico</th><th>Documentos</th><th>Palavras-chave</th><th>Área Temática</th></tr></thead><tbody>
+<tr><td>0</td><td>527</td><td>arte, artístico, artista, teatro</td><td>Artes</td></tr>
+<tr><td>1</td><td>381</td><td>planta, produtividade, soja, dose</td><td>Agronomia</td></tr>
+<tr><td>2</td><td>344</td><td>urbano, cidade, espaço, bairro</td><td>Geografia Urbana</td></tr>
+<tr><td>3</td><td>190</td><td>empresa, lean, melhoria, gestão</td><td>Administração</td></tr>
+<tr><td>4</td><td>190</td><td>pandemia, covid, covid 19</td><td>Saúde Pública</td></tr>
+<tr><td>5</td><td>167</td><td>educação, escola, ensino, professor</td><td>Educação</td></tr>
+<tr><td>6</td><td>160</td><td>rocha, depósito, mineral, mina</td><td>Geologia</td></tr>
+<tr><td>7</td><td>159</td><td>musical, música, compositor</td><td>Música</td></tr>
+<tr><td>8</td><td>139</td><td>câncer, célula, tumoral, tumor</td><td>Oncologia</td></tr>
+<tr><td>9</td><td>131</td><td>ósseo, óssea, zol, rata</td><td>Odontologia/Medicina</td></tr>
+</tbody></table>
+
+<details >
+  <summary><span>Veja todos os tópicos</span></summary>
+  <table><thead><tr><th style="text-align: right">topico</th><th>quantidade_trabalhos</th><th>label_topico</th></tr></thead><tbody>
+<tr><td style="text-align: right">-1</td><td>4451</td><td>-utilizar realizar apresentar dado</td></tr>
+<tr><td style="text-align: right">0</td><td>527</td><td>arte artístico artista teatro</td></tr>
+<tr><td style="text-align: right">1</td><td>381</td><td>planta produtividade soja dose</td></tr>
+<tr><td style="text-align: right">2</td><td>344</td><td>urbano cidade espaço bairro</td></tr>
+<tr><td style="text-align: right">3</td><td>190</td><td>empresa lean melhoria gestão</td></tr>
+<tr><td style="text-align: right">4</td><td>190</td><td>pandemia covid covid 19</td></tr>
+<tr><td style="text-align: right">5</td><td>167</td><td>educação escola ensino professor</td></tr>
+<tr><td style="text-align: right">6</td><td>160</td><td>rocha depósito mineral mina</td></tr>
+<tr><td style="text-align: right">7</td><td>159</td><td>musical música compositor educação musical</td></tr>
+<tr><td style="text-align: right">8</td><td>139</td><td>câncer célula tumoral tumor</td></tr>
+<tr><td style="text-align: right">9</td><td>131</td><td>ósseo óssea zol rata</td></tr>
+<tr><td style="text-align: right">10</td><td>127</td><td>espécie conservação biodiversidade paisagem</td></tr>
+<tr><td style="text-align: right">11</td><td>127</td><td>propriedade material filme síntese</td></tr>
+<tr><td style="text-align: right">12</td><td>120</td><td>aço usinagem corte alumínio</td></tr>
+<tr><td style="text-align: right">13</td><td>117</td><td>construção construção civil civil concreto</td></tr>
+<tr><td style="text-align: right">14</td><td>115</td><td>biofilme extrato cepa antimicrobiano</td></tr>
+<tr><td style="text-align: right">15</td><td>97</td><td>ciência ensino científico didático</td></tr>
+<tr><td style="text-align: right">16</td><td>95</td><td>educação ambiental ambiental educação natureza</td></tr>
+<tr><td style="text-align: right">17</td><td>94</td><td>fotovoltaico energia solar elétrico</td></tr>
+<tr><td style="text-align: right">18</td><td>92</td><td>toxicidade concentração metal efluente</td></tr>
+<tr><td style="text-align: right">19</td><td>83</td><td>quântico partícula equação teoria</td></tr>
+<tr><td style="text-align: right">20</td><td>82</td><td>geografia ensino geografia ensino geográfico</td></tr>
+<tr><td style="text-align: right">21</td><td>82</td><td>biogás biodiesel metano biomassa</td></tr>
+<tr><td style="text-align: right">22</td><td>79</td><td>resina cor espécime rugosidade</td></tr>
+<tr><td style="text-align: right">23</td><td>78</td><td>aerodinâmico aeronave escoamento voo</td></tr>
+<tr><td style="text-align: right">24</td><td>78</td><td>água hídrico bacia recurso hídrico</td></tr>
+<tr><td style="text-align: right">25</td><td>78</td><td>energia elétrico energia elétrico energético</td></tr>
+<tr><td style="text-align: right">26</td><td>77</td><td>doença cruzi chaga leishmaniose</td></tr>
+<tr><td style="text-align: right">27</td><td>75</td><td>sexualidade gênero sexual mulher</td></tr>
+<tr><td style="text-align: right">28</td><td>74</td><td>espécie gênero família morfológico</td></tr>
+<tr><td style="text-align: right">29</td><td>73</td><td>paciente saúde enfermeiro internação</td></tr>
+<tr><td style="text-align: right">30</td><td>72</td><td>rural agricultura agricultor familiar</td></tr>
+<tr><td style="text-align: right">31</td><td>70</td><td>jurídico penal direito justiça</td></tr>
+<tr><td style="text-align: right">32</td><td>70</td><td>financeiro mercado carteira investimento</td></tr>
+<tr><td style="text-align: right">33</td><td>68</td><td>rata espermatozoide materno gestacional</td></tr>
+<tr><td style="text-align: right">34</td><td>68</td><td>criança infantil brincar educação infantil</td></tr>
+<tr><td style="text-align: right">35</td><td>67</td><td>paciente dente oclusão fratura</td></tr>
+<tr><td style="text-align: right">36</td><td>63</td><td>jornalismo documentário reportagem fotografia</td></tr>
+<tr><td style="text-align: right">37</td><td>63</td><td>radiação radioterapia dose feixe</td></tr>
+<tr><td style="text-align: right">38</td><td>62</td><td>país econômico china latino</td></tr>
+<tr><td style="text-align: right">39</td><td>62</td><td>resíduo resíduo sólido sólido resíduo sólir</td></tr>
+<tr><td style="text-align: right">40</td><td>60</td><td>leitura escrita criança infantil</td></tr>
+<tr><td style="text-align: right">41</td><td>59</td><td>mulher feminino feminismo feminista</td></tr>
+<tr><td style="text-align: right">42</td><td>53</td><td>elétrico rede distribuição energia</td></tr>
+<tr><td style="text-align: right">43</td><td>52</td><td>dança educação físico ginástica físico</td></tr>
+<tr><td style="text-align: right">44</td><td>52</td><td>físico atividade físico exercício exercício físico</td></tr>
+<tr><td style="text-align: right">45</td><td>51</td><td>cão cirúrgico clínico urinário</td></tr>
+<tr><td style="text-align: right">46</td><td>50</td><td>futebol jogador partida jogo</td></tr>
+<tr><td style="text-align: right">47</td><td>50</td><td>matemática matemático aluno ensino</td></tr>
+<tr><td style="text-align: right">48</td><td>49</td><td>veterinário estágio veterinária estágio curricular</td></tr>
+<tr><td style="text-align: right">49</td><td>47</td><td>vaca leiteiro leite nacional internacional</td></tr>
+<tr><td style="text-align: right">50</td><td>46</td><td>esmalte naf tmp dentifrício</td></tr>
+<tr><td style="text-align: right">51</td><td>44</td><td>empresa negócio inovação startup</td></tr>
+<tr><td style="text-align: right">52</td><td>44</td><td>carne frango ave peso</td></tr>
+<tr><td style="text-align: right">53</td><td>44</td><td>veterinário estágio estágio curricular medicina veterinário</td></tr>
+<tr><td style="text-align: right">54</td><td>43</td><td>peixe tilápia filé crescimento</td></tr>
+<tr><td style="text-align: right">55</td><td>42</td><td>comunicação público comunicação público bauru</td></tr>
+<tr><td style="text-align: right">56</td><td>42</td><td>cromossomo dna sequência genoma</td></tr>
+<tr><td style="text-align: right">57</td><td>41</td><td>atleta esporte ansiedade esportivo</td></tr>
+<tr><td style="text-align: right">58</td><td>41</td><td>professor afetividade aprendizagem aluno</td></tr>
+<tr><td style="text-align: right">59</td><td>40</td><td>cana açúcar cana açúcar cultivar</td></tr>
+<tr><td style="text-align: right">60</td><td>39</td><td>pesca espécie litoral encalhe</td></tr>
+<tr><td style="text-align: right">61</td><td>38</td><td>esporte educação físico esportivo atletismo</td></tr>
+<tr><td style="text-align: right">62</td><td>37</td><td>sorriso estético dente estética</td></tr>
+<tr><td style="text-align: right">63</td><td>37</td><td>tensão simulação suspensão sae</td></tr>
+<tr><td style="text-align: right">64</td><td>37</td><td>fungo inseto praga formiga</td></tr>
+<tr><td style="text-align: right">65</td><td>37</td><td>ambiental empresa esg sustentabilidade</td></tr>
+<tr><td style="text-align: right">66</td><td>36</td><td>arterial cardíaco cardiovascular doença cardiovascular</td></tr>
+<tr><td style="text-align: right">67</td><td>36</td><td>tecnologia aluno aprendizagem aula</td></tr>
+<tr><td style="text-align: right">68</td><td>36</td><td>violência mulher gênero obstétrico</td></tr>
+<tr><td style="text-align: right">69</td><td>36</td><td>anel órbita orbital satélite</td></tr>
+<tr><td style="text-align: right">70</td><td>35</td><td>fogo cerrado queimar queima</td></tr>
+<tr><td style="text-align: right">71</td><td>35</td><td>jogo jogo eletrônico game eletrônico</td></tr>
+<tr><td style="text-align: right">72</td><td>34</td><td>transporte rodovia rodoviário aviação</td></tr>
+<tr><td style="text-align: right">73</td><td>34</td><td>parkinson andar doença parkinson postural</td></tr>
+<tr><td style="text-align: right">74</td><td>34</td><td>enzima lipase enzimático lacase</td></tr>
+<tr><td style="text-align: right">75</td><td>33</td><td>semente dispersão ave espécie</td></tr>
+<tr><td style="text-align: right">76</td><td>33</td><td>lignina etanol celulose biomassa</td></tr>
+<tr><td style="text-align: right">77</td><td>33</td><td>estresse ansiedade depressão resposta</td></tr>
+<tr><td style="text-align: right">78</td><td>33</td><td>eucalipto altura árvore genótipo</td></tr>
+<tr><td style="text-align: right">79</td><td>32</td><td>obesidade obeso exercício exercício físico</td></tr>
+<tr><td style="text-align: right">80</td><td>32</td><td>extrato medicinal the planta</td></tr>
+<tr><td style="text-align: right">81</td><td>31</td><td>automação dispositivo automação residencial internet</td></tr>
+<tr><td style="text-align: right">82</td><td>31</td><td>periodontal periodontite doença periodontal doença</td></tr>
+<tr><td style="text-align: right">83</td><td>31</td><td>disponível disponível disponível</td></tr>
+<tr><td style="text-align: right">84</td><td>31</td><td>deficiência inclusivo deficiência visual aluno</td></tr>
+<tr><td style="text-align: right">85</td><td>30</td><td>reconhecimento voz biométrico reconhecimento facial</td></tr>
+<tr><td style="text-align: right">86</td><td>30</td><td>odontologia odontológico bucal dentista</td></tr>
+<tr><td style="text-align: right">87</td><td>29</td><td>compósito fadiga aeronáutico material</td></tr>
+<tr><td style="text-align: right">88</td><td>29</td><td>turístico turismo evento turista</td></tr>
+<tr><td style="text-align: right">89</td><td>29</td><td>liga titânio superfície implante</td></tr>
+<tr><td style="text-align: right">90</td><td>29</td><td>certificação construção sustentável ecotécnica</td></tr>
+<tr><td style="text-align: right">91</td><td>29</td><td>violência bullying escolar violência escolar</td></tr>
+<tr><td style="text-align: right">92</td><td>29</td><td>carne queijo bovino animal</td></tr>
+<tr><td style="text-align: right">93</td><td>28</td><td>tea autista espectro autista transtorno espectro</td></tr>
+<tr><td style="text-align: right">94</td><td>28</td><td>ninho reprodutivo ave ovo</td></tr>
+<tr><td style="text-align: right">95</td><td>28</td><td>dor lombar dor lombar tronco</td></tr>
+<tr><td style="text-align: right">96</td><td>28</td><td>hepatite hiv aids sífilis</td></tr>
+<tr><td style="text-align: right">97</td><td>26</td><td>climático coemissão mudança climático</td></tr>
+<tr><td style="text-align: right">98</td><td>26</td><td>ataque detecção aprendizado máquina malicioso</td></tr>
+<tr><td style="text-align: right">99</td><td>26</td><td>yoga marcial prática yoga prática</td></tr>
+<tr><td style="text-align: right">100</td><td>26</td><td>disponível disponível disponível</td></tr>
+<tr><td style="text-align: right">101</td><td>26</td><td>rede social meme social comunicação</td></tr>
+<tr><td style="text-align: right">102</td><td>26</td><td>design moda marca peça</td></tr>
+<tr><td style="text-align: right">103</td><td>26</td><td>circuito tensão simulação fator potência</td></tr>
+<tr><td style="text-align: right">104</td><td>25</td><td>negro racismo racial população negro</td></tr>
+<tr><td style="text-align: right">105</td><td>25</td><td>educação físico físico docente ensino</td></tr>
+<tr><td style="text-align: right">106</td><td>25</td><td>diabete mellitus diabete mellitus hemoglobina</td></tr>
+<tr><td style="text-align: right">107</td><td>25</td><td>inundação alagamento suscetibilidade córrego</td></tr>
+<tr><td style="text-align: right">108</td><td>25</td><td>madeira painel colagem destrutivo</td></tr>
+<tr><td style="text-align: right">109</td><td>24</td><td>cannabis droga psicoativo substância</td></tr>
+<tr><td style="text-align: right">110</td><td>24</td><td>imagem exame radiografia calcificação</td></tr>
+<tr><td style="text-align: right">111</td><td>23</td><td>leite raça rebanho produção leite</td></tr>
+<tr><td style="text-align: right">112</td><td>23</td><td>eclâmpsia endotelial pré eclâmpsia disfunção</td></tr>
+<tr><td style="text-align: right">113</td><td>23</td><td>ambiental sustentável política sustentabilidade</td></tr>
+<tr><td style="text-align: right">114</td><td>23</td><td>idoso envelhecimento flexibilidade andar</td></tr>
+<tr><td style="text-align: right">115</td><td>22</td><td>código óptico canal ruído</td></tr>
+<tr><td style="text-align: right">116</td><td>22</td><td>pfa resposta ventilatório neurônio</td></tr>
+<tr><td style="text-align: right">117</td><td>22</td><td>restauração resina resina composta composta</td></tr>
+<tr><td style="text-align: right">118</td><td>21</td><td>precipitação meteorológico chuva evento</td></tr>
+<tr><td style="text-align: right">119</td><td>21</td><td>imagem rede neural neural classificação</td></tr>
+<tr><td style="text-align: right">120</td><td>21</td><td>mta cimento tubo bio</td></tr>
+<tr><td style="text-align: right">121</td><td>21</td><td>dengue mosquito aede aegypti</td></tr>
+<tr><td style="text-align: right">122</td><td>21</td><td>muscular jmt músculo junção miotendíneo</td></tr>
+<tr><td style="text-align: right">123</td><td>21</td><td>robô robótico manipulador cinemática</td></tr>
+<tr><td style="text-align: right">124</td><td>21</td><td>cosmético produto pele formulação</td></tr>
+<tr><td style="text-align: right">125</td><td>20</td><td>guerra conflito israel internacional</td></tr>
+<tr><td style="text-align: right">126</td><td>20</td><td>luxo marca comunicação organização</td></tr>
+<tr><td style="text-align: right">127</td><td>20</td><td>antena diretividade arranjo lóbulo</td></tr>
+<tr><td style="text-align: right">128</td><td>20</td><td>inflamatório intestinal inflamatório intestinal tgi</td></tr>
+<tr><td style="text-align: right">129</td><td>19</td><td>ozônio ozonizar mitocondrial água</td></tr>
+<tr><td style="text-align: right">130</td><td>19</td><td>muscular treinamento hipertrofia força</td></tr>
+<tr><td style="text-align: right">131</td><td>18</td><td>hepático fígado fitossanitário metabolismo</td></tr>
+<tr><td style="text-align: right">132</td><td>18</td><td>tfd fotodinâmico terapia fotodinâmico azul</td></tr>
+<tr><td style="text-align: right">133</td><td>18</td><td>implante peri prótese paciente</td></tr>
+<tr><td style="text-align: right">134</td><td>18</td><td>aquífero água subterrâneo água subterrâneo</td></tr>
+<tr><td style="text-align: right">135</td><td>18</td><td>abelha inseticida clferrão</td></tr>
+<tr><td style="text-align: right">136</td><td>17</td><td>veneno serpente acidente toxina</td></tr>
+<tr><td style="text-align: right">137</td><td>17</td><td>saneamento ambiental esgoto solo</td></tr>
+<tr><td style="text-align: right">138</td><td>17</td><td>anti helmíntico helmíntico anti opg</td></tr>
+<tr><td style="text-align: right">139</td><td>17</td><td>ácido butírico butírico carvacrol timol</td></tr>
+<tr><td style="text-align: right">140</td><td>17</td><td>animal zoológico enriquecimento comportamento animal</td></tr>
+<tr><td style="text-align: right">141</td><td>17</td><td>biologia ciência ensino ciência biologia</td></tr>
+<tr><td style="text-align: right">142</td><td>17</td><td>africano afro racial afro brasileiro</td></tr>
+<tr><td style="text-align: right">143</td><td>17</td><td>data nuvem centers dado</td></tr>
+<tr><td style="text-align: right">144</td><td>17</td><td>eleitoral político partido eleição</td></tr>
+<tr><td style="text-align: right">145</td><td>17</td><td>china exportação brasil importação</td></tr>
+<tr><td style="text-align: right">146</td><td>17</td><td>idoso população idoso robô população</td></tr>
+<tr><td style="text-align: right">147</td><td>16</td><td>nascido bebê recém nascido recém</td></tr>
+<tr><td style="text-align: right">148</td><td>16</td><td>renal hemodiálise ira drc</td></tr>
+<tr><td style="text-align: right">149</td><td>16</td><td>alimentar insegurança alimentar insegurança alimentação escolar</td></tr>
+<tr><td style="text-align: right">150</td><td>16</td><td>radicular dente pino laser</td></tr>
+<tr><td style="text-align: right">151</td><td>16</td><td>sono obstrutivo apneia obstrutivo sono</td></tr>
+<tr><td style="text-align: right">152</td><td>16</td><td>aplicativo móvel tecnologia avc</td></tr>
+<tr><td style="text-align: right">153</td><td>16</td><td>adesivo resistência união união pino</td></tr>
+<tr><td style="text-align: right">154</td><td>15</td><td>erosão erosivo solo processo erosivo</td></tr>
+<tr><td style="text-align: right">155</td><td>15</td><td>café cafeeiro planta cobertura solo</td></tr>
+<tr><td style="text-align: right">156</td><td>15</td><td>criança adolescente adolescente acolhimento assistente social</td></tr>
+<tr><td style="text-align: right">157</td><td>15</td><td>direito sucessório adoção família</td></tr>
+<tr><td style="text-align: right">158</td><td>15</td><td>implante superfície implante superfície frequência ressonância</td></tr>
+<tr><td style="text-align: right">159</td><td>15</td><td>plástico bioplástico microplástico pellet</td></tr>
+<tr><td style="text-align: right">160</td><td>15</td><td>farmácia colorante recomendação farmácia vivo</td></tr>
+<tr><td style="text-align: right">161</td><td>14</td><td>cimento sílica ativo hidrogel areia</td></tr>
+<tr><td style="text-align: right">162</td><td>14</td><td>pe injeção rato indução</td></tr>
+<tr><td style="text-align: right">163</td><td>14</td><td>citri cancro cítrico bactéria</td></tr>
+<tr><td style="text-align: right">164</td><td>14</td><td>alfabetização estrangeiro texto pandemia</td></tr>
+<tr><td style="text-align: right">165</td><td>14</td><td>manguezal coral recifes branqueamento</td></tr>
+<tr><td style="text-align: right">166</td><td>14</td><td>futebol mulher esporte esportivo</td></tr>
+<tr><td style="text-align: right">167</td><td>14</td><td>comunicação público corporativo comunicação reticular</td></tr>
+<tr><td style="text-align: right">168</td><td>13</td><td>microhabitats animal fid comportamento</td></tr>
+<tr><td style="text-align: right">169</td><td>13</td><td>surdo libra ivc sinal</td></tr>
+<tr><td style="text-align: right">170</td><td>13</td><td>controlador realimentação lmi linear</td></tr>
+<tr><td style="text-align: right">171</td><td>13</td><td>sinal fuso ecg eeg</td></tr>
+<tr><td style="text-align: right">172</td><td>13</td><td>monetário crise política monetário inflação</td></tr>
+<tr><td style="text-align: right">173</td><td>13</td><td>fascismo francês refugiado adorno</td></tr>
+<tr><td style="text-align: right">174</td><td>13</td><td>calor trocador trocador calor transferência calor</td></tr>
+<tr><td style="text-align: right">175</td><td>12</td><td>índice vegetação vegetação variabilidade espacial</td></tr>
+<tr><td style="text-align: right">176</td><td>12</td><td>audiovisual produção pós produção produto audiovisual</td></tr>
+<tr><td style="text-align: right">177</td><td>12</td><td>pele creme cutâneo óleo</td></tr>
+<tr><td style="text-align: right">178</td><td>12</td><td>futebol aceleração atleta teste</td></tr>
+<tr><td style="text-align: right">179</td><td>12</td><td>direito direito autoral jurídico propriedade intelectual</td></tr>
+<tr><td style="text-align: right">180</td><td>12</td><td>vibração frequência filtro manutenção preditivo</td></tr>
+<tr><td style="text-align: right">181</td><td>12</td><td>tuberculose mycobacterium mycobacterium tuberculosi tuberculosi</td></tr>
+<tr><td style="text-align: right">182</td><td>11</td><td>algoritmo topologia radial fluxo potência</td></tr>
+<tr><td style="text-align: right">183</td><td>11</td><td>resíduo gerenciamento resíduo resíduo sólido resíduo sólir</td></tr>
+<tr><td style="text-align: right">184</td><td>11</td><td>pasto suplementação nitrogenar ruminal</td></tr>
+<tr><td style="text-align: right">185</td><td>10</td><td>esporte basquetebol voleibol lance livre</td></tr>
+<tr><td style="text-align: right">186</td><td>10</td><td>muscular músculo core crossfit</td></tr>
+<tr><td style="text-align: right">187</td><td>10</td><td>câncer colo colo útero útero</td></tr>
+</tbody></table>
+
+</details>
+
+<h2 id="analise-temporal-de-topicos">Análise Temporal de Tópicos<a class="zola-anchor" href="#analise-temporal-de-topicos" aria-label="Anchor link for: analise-temporal-de-topicos" style="visibility: hidden;"></a>
+</h2>
+<p>A análise temporal revelou padrões significativos de evolução dos tópicos ao longo do período estudado:</p>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./temporal_heatmap.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Heatmap da evolução temporal dos 20 principais tópicos
+  </figcaption>
+</figure>
+<p>É possível, ainda, determinar tópicos emergentes e declinantes. Os tópicos identificados com maior crescimento incluem:</p>
+<ol>
+<li><strong>Tópico 182 (Algoritmos e Redes Elétricas):</strong> Crescimento em otimização e topologia de sistemas elétricos</li>
+<li><strong>Tópico 60 (Pesca e Biodiversidade Marinha):</strong> Crescimento em estudos de ecologia marinha e conservação costeira</li>
+<li><strong>Tópico 138 (Parasitologia Veterinária):</strong> Crescimento em controle parasitário e saúde animal</li>
+<li><strong>Tópico 48 (Medicina Veterinária - Estágios):</strong> Crescimento em formação prática e estágios curriculares</li>
+<li><strong>Tópico 187 (Câncer Ginecológico):</strong> Crescimento em pesquisas sobre câncer de colo de útero</li>
+</ol>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./emerging_topics.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Evolução temporal dos 5 tópicos mais emergentes
+  </figcaption>
+</figure>
+<p>Entre os tópicos com tendência de declínio, sugerindo mudanças nas prioridades de pesquisa, estão:</p>
+<ol>
+<li><strong>Tópico 108 (Engenharia de Madeira):</strong> Declínio em estudos sobre painéis de madeira e ensaios destrutivos</li>
+<li><strong>Tópico 158 (Implantologia Avançada):</strong> Redução em pesquisas sobre superfície de implantes e osseointegração</li>
+<li><strong>Tópico 151 (Distúrbios do Sono):</strong> Declínio em estudos sobre apneia obstrutiva do sono</li>
+<li><strong>Tópico 145 (Comércio China-Brasil):</strong> Redução em análises de exportação e importação com a China</li>
+<li><strong>Tópico 63 (Engenharia Automotiva):</strong> Declínio em estudos de simulação de suspensão e projetos SAE</li>
+</ol>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./declining_topics.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Evolução temporal dos 5 tópicos declinantes
+  </figcaption>
+</figure>
+<h2 id="analise-geografica">Análise Geográfica<a class="zola-anchor" href="#analise-geografica" aria-label="Anchor link for: analise-geografica" style="visibility: hidden;"></a>
+</h2>
+<p>O teste qui-quadrado implementado no sistema avalia a independência entre campus e distribuição de tópicos, permitindo identificar especializações regionais:</p>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./geographic_heatmap.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição de tópicos pelos principais campi
+  </figcaption>
+</figure>
+<p>Alguns dos padrões de especialização identificados são:</p>
+<p><strong>Instituto de Biociências:</strong></p>
+<ul>
+<li><strong>Tópico 10 (5,9%):</strong> Espécie, conservação, biodiversidade, paisagem - forte pesquisa em ecologia e conservação</li>
+<li><strong>Tópico 5 (5,3%):</strong> Educação, escola, ensino, professor - formação de professores de ciências e biologia</li>
+<li><strong>Tópico 37 (3,5%):</strong> Radiação, radioterapia, dose, feixe - radiobiologia e efeitos biológicos da radiação</li>
+<li><strong>Tópico 16 (3,1%):</strong> Educação ambiental, ambiental, educação, natureza - interface entre biologia e educação ambiental</li>
+<li><strong>Tópico 28 (3,1%):</strong> Espécie, gênero, família, morfológico - estudos taxonômicos e sistemáticos</li>
+</ul>
+<p><strong>Faculdade de Engenharia:</strong></p>
+<ul>
+<li><strong>Tópico 3 (8,9%):</strong> Empresa, lean, melhoria, gestão - forte presença de engenharia de produção e gestão industrial</li>
+<li><strong>Tópico 1 (8,2%):</strong> Urbano, cidade, espaço, bairro - planejamento urbano e infraestrutura</li>
+<li><strong>Tópico 13 (7,5%):</strong> Construção, construção civil, civil, concreto - engenharia civil e materiais de construção</li>
+<li><strong>Tópico 12 (7,2%):</strong> Aço, usinagem, corte, alumínio - engenharia mecânica e processos de fabricação</li>
+<li><strong>Tópico 23 (5,5%):</strong> Aerodinâmico, aeronave, escoamento, voo - engenharia aeronáutica</li>
+</ul>
+<p><strong>Instituto de Geociências e Ciências Exatas:</strong></p>
+<ul>
+<li><strong>Tópico 6 (21,3%):</strong> Rocha, depósito, mineral, mina - predominância de geologia e mineralogia</li>
+<li><strong>Tópico 2 (8,9%):</strong> Urbano, cidade, espaço, bairro - geografia urbana e análise espacial</li>
+<li><strong>Tópico 11 (6,7%):</strong> Propriedade, material, filme, síntese - ciência dos materiais e física aplicada</li>
+<li><strong>Tópico 19 (6,0%):</strong> Quântico, partícula, equação, teoria - física teórica e quântica</li>
+<li><strong>Tópico 20 (5,3%):</strong> Geografia, ensino geografia, ensino, geográfico - ensino de geografia</li>
+</ul>
+<p><strong>Faculdade de Odontologia:</strong></p>
+<ul>
+<li><strong>Tópico 9 (15,9%):</strong> Ósseo, óssea, zol, rata - pesquisa em regeneração óssea e biomateriais</li>
+<li><strong>Tópico 35 (9,0%):</strong> Paciente, dente, oclusão, fratura - ortodontia e traumatologia bucomaxilofacial</li>
+<li><strong>Tópico 22 (7,8%):</strong> Resina, cor, espécime, rugosidade - materiais odontológicos restauradores</li>
+<li><strong>Tópico 62 (6,0%):</strong> Sorriso, estético, dente, estética - odontologia estética</li>
+<li><strong>Tópico 50 (5,5%):</strong> Esmalte, naf, tmp, dentifrício - prevenção e cariologia</li>
+</ul>
+<p><strong>Faculdade de Arquitetura, Artes, Comunicação e Design:</strong></p>
+<ul>
+<li><strong>Tópico 0 (37,6%):</strong> Arte, artístico, artista, teatro - predominância massiva de artes visuais e cênicas</li>
+<li><strong>Tópico 36 (9,0%):</strong> Jornalismo, documentário, reportagem, fotografia - comunicação social e jornalismo</li>
+<li><strong>Tópico 41 (6,6%):</strong> Mulher, feminino, feminismo, feminista - estudos de gênero na comunicação</li>
+<li><strong>Tópico 2 (6,3%):</strong> Urbano, cidade, espaço, bairro - urbanismo e arquitetura</li>
+<li><strong>Tópico 55 (5,9%):</strong> Comunicação, público, comunicação público, bauru - relações públicas e comunicação organizacional</li>
+</ul>
+<figure style="width:100%; height:auto; max-width:100%; display:block; margin: 0 auto;">
+  <img src="./campus_topic_distribution.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição proporcional de tópicos por campus
+  </figcaption>
+</figure>
+<h2 id="limitacoes-identificadas">Limitações Identificadas<a class="zola-anchor" href="#limitacoes-identificadas" aria-label="Anchor link for: limitacoes-identificadas" style="visibility: hidden;"></a>
+</h2>
+<p>Observamos três limitações relevantes. A primeira é a alta taxa de outliers, em 33,9%. Isso sugere necessidade de ajuste fino dos hiperparâmetros ou abordagem hierárquica. A segunda diz respeito ao viés temporal: a concentração de documentos em anos recentes pode distorcer tendências; por fim, a granularidade pode impactar os resultados, pois alguns tópicos são muito específicos, outros muito amplos.</p>
+<h1 id="conclusoes">Conclusões<a class="zola-anchor" href="#conclusoes" aria-label="Anchor link for: conclusoes" style="visibility: hidden;"></a>
+</h1>
+<p>Este trabalho demonstrou a viabilidade e eficácia da integração entre a metodologia clássica de Análise de Conteúdo de Bardin e técnicas modernas de Aprendizado Profundo para análise de grandes volumes de produção acadêmica. O sistema desenvolvido processou com sucesso 13.112 TCCs da Unesp, identificando 188 tópicos distintos e revelando padrões temporais, geográficos e disciplinares significativos.</p>
+<p>A análise revelou um panorama abrangente da produção acadêmica de graduação da Unesp na última década. Os 188 tópicos identificados cobriram 66,1% do corpus (8.661 documentos), demonstrando a eficácia do BERTopic na captura de estruturas temáticas latentes em textos acadêmicos em português. A distribuição dos tópicos revelou clara segmentação disciplinar, com o tópico mais prevalente (Artes) representando 527 documentos, seguido por Agronomia (381) e Geografia Urbana (344).</p>
+<p>A análise temporal demonstrou a capacidade do sistema em detectar tendências emergentes, sendo o caso mais emblemático o Tópico 4 (COVID-19), que apresentou crescimento explosivo a partir de 2020, capturando 190 documentos relacionados à pandemia. Os tópicos com maior crescimento identificados incluíram Algoritmos e Redes Elétricas (Tópico 182), Pesca e Biodiversidade Marinha (Tópico 60), Parasitologia Veterinária (Tópico 138), refletindo áreas emergentes de pesquisa e formação prática.</p>
+<p>A distribuição geográfica dos tópicos revelou especializações regionais distintas. O Instituto de Biociências demonstrou forte vocação para estudos de biodiversidade e conservação (5,9% dos documentos no Tópico 10), enquanto a Faculdade de Engenharia destacou-se em gestão industrial e lean manufacturing (8,9% no Tópico 3). Particularmente notável foi a concentração de estudos em artes na Faculdade de Arquitetura, Artes, Comunicação e Design (37,6% no Tópico 0), e a predominância de geologia no Instituto de Geociências e Ciências Exatas (21,3% no Tópico 6).</p>
+<p>Apesar dos resultados promissores, o trabalho apresenta limitações que devem ser consideradas. A taxa de outliers de 33,9% sugere que uma parcela significativa dos documentos possui conteúdo muito específico ou interdisciplinar que não se enquadra nos clusters identificados. Isso pode indicar a necessidade de ajustes nos hiperparâmetros ou a implementação de abordagens hierárquicas de clustering.</p>
+<p>O viés temporal, com concentração de documentos nos anos mais recentes (2.771 em 2023 e 2.311 em 2024), pode refletir melhorias no processo de submissão ao repositório, mas também pode distorcer a análise de tendências de longo prazo. Estudos futuros poderiam beneficiar-se de técnicas de normalização temporal ou análise de séries temporais mais sofisticadas.</p>
+<h1 id="referencias">Referências<a class="zola-anchor" href="#referencias" aria-label="Anchor link for: referencias" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>BARDIN, L. <em>Análise de conteúdo</em>. São Paulo: Edições 70, 2016. <a href="#fr-1-1">↩</a> <a href="#fr-1-2">↩2</a></p>
+</li>
+<li id="fn-2">
+<p>BLEI, D. M.; NG, A. Y.; JORDAN, M. I. “Latent Dirichlet Allocation”. <em>Journal of Machine Learning Research</em>, vol. 3, 993-1022, 2003. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>GROOTENDORST, M. “BERTopic: Neural topic modeling with a class-based TF-IDF procedure”. 10.48550/arXiv.2203.05794, 2022. <a href="#fr-3-1">↩</a> <a href="#fr-3-2">↩2</a></p>
+</li>
+<li id="fn-4">
+<p>McINNES, L.; HEALY, J.; MELVILLE, J. “UMAP: Uniform Manifold Approximation and Projection for Dimension Reduction”. arXiv preprint arXiv:1802.03426, 2018. <a href="#fr-4-1">↩</a> <a href="#fr-4-2">↩2</a></p>
+</li>
+<li id="fn-5">
+<p>CAMPELLO, R. J. G. B.; MOULAVI, D.; SANDER, J. “Density-Based Clustering Based on Hierarchical Density Estimates”. In: <em>Advances in Knowledge Discovery and Data Mining. PAKDD 2013. Lecture Notes in Computer Science</em>, vol. 7819. Berlim, Heidelberg: Springer, 2013. <a href="#fr-5-1">↩</a> <a href="#fr-5-2">↩2</a></p>
+</li>
+<li id="fn-6">
+<p>SALTON, G.; BUCKLEY, C. “Term-weighting approaches in automatic text retrieval”. <em>Information Processing &amp; Management</em>, vol. 24, no. 5, pp. 513-523, 1988. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-7">
+<p>AIRES, R. V. X. <em>Implementação, adaptação, combinação e avaliação de etiquetadores para o português do Brasil</em>. Dissertação (Mestrado). Universidade de São Paulo, São Carlos, 2000. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>HONNIBAL, M.; MONTANI, I.; VAN LANDEGHEM, S.; BOYD, A. “spaCy: Industrial-strength Natural Language Processing in Python”. Zenodo. https://doi.org/10.5281/zenodo.1212303, 2020. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>VASWANI, A.; SHAZEER, N.; PARMAR, N.; USZKOREIT, J.; JONES, L.; GOMEZ, A. N.; KAISER, Ł.; POLOSUKHIN, I. “Attention is all you need”. In: <em>Advances in Neural Information Processing Systems (NeurIPS)</em>, vol. 30, pp. 5998-6008, 2017. <a href="#fr-9-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+<script type="module">import mermaid from 'https://cdn.jsdelivr.net/npm/mermaid@10/dist/mermaid.esm.min.mjs';mermaid.initialize({startOnLoad:true,theme:document.body.classList.contains('dark')?'dark':'default'});</script>
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>
