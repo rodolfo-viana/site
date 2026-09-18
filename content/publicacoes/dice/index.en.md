@@ -15,13 +15,13 @@ toc = true
 
 # Why look beyond Dice
 
-My master's research focuses on improving boundary detection in U-Net architectures for medical image segmentation. A comparison reduced to a single Dice column leaves the part I want to measure unanswered: where the boundary failed and by how many millimetres.
+My master's research focuses on improving boundary detection in U-Net architectures for medical image segmentation. I approach each metric with that problem in mind, trying to understand what it can tell me. A comparison reduced to a single Dice column leaves my main questions unanswered: where the boundary failed and by how many millimetres.
 
-In a [comparison of U-Net architectures](/en/projetos/unet-comparativo/) I published here, the standard U-Net achieved the highest mean Dice. Inspecting the masks, however, separated very different errors: leakage into the background, a peripheral halo, a missing lobe, a discontinuity, and failure on a small target. All of them change overlap, but the number does not say which one occurred, where it occurred, or how far the predicted boundary was from the reference.
+In a [comparison of U-Net architectures](/en/projetos/unet-comparativo/) I published here, the standard U-Net achieved the highest mean Dice. When I inspected the masks, however, I found very different errors: leakage into the background, a peripheral halo, a missing lobe, a discontinuity, and failures on small targets. All of them change overlap, but the number does not say which one occurred, where it occurred, or how far the predicted boundary was from the reference. For the question driving my master's research, that comparison still leaves much unanswered.
 
 Dice is simple, avoids counting the many true negatives in the background, and answers the question it was designed to answer: **how much do two regions overlap?** Its answer becomes incomplete when it represents segmentation quality on its own. The medical image validation literature documents this mismatch between the selected metric and the actual interest of an application.[^1] [^2]
 
-I want to mark the edge of its field of view and identify the questions that require other measures.
+These notes are an attempt to organize the criteria I want to use to evaluate models for this problem. I want to understand how much I can learn from Dice and which measures I need to add to support a claim about improved boundaries.
 
 # What Dice measures
 
@@ -190,6 +190,8 @@ The example was designed to isolate geometry, not to represent clinical risk. Di
 
 Surface Dice at two pixels considers the entire shift acceptable because no part of its boundary lies beyond the tolerance. Between the two structural defects, it gives the island a slightly higher value than the hole, whereas HD95 judges the island far worse because of the remote component. One metric counts the fraction of surface within tolerance; the other summarizes the tail of the distances. The ordering depends on the property selected for the task: acceptable boundary extent, severe local error, connectivity, or something else.
 
+The tie in Dice is what interests me in this example. If I used that column alone to compare the predictions, I would treat a shift, a distant island, and a hole as equivalent. To study boundaries, I need to distinguish these failures and justify which ones I want to reduce. The other columns help describe them, but deciding what is acceptable still depends on the application.
+
 ## The relative price of a pixel
 
 Object size creates another effect. If a reference has area \\(n\\) and an erosion removes \\(e\\) pixels, the prediction is contained in the reference and \\(|P|=|P\cap G|=n-e\\). In that case,
@@ -230,7 +232,7 @@ for radius in (10, 40):
 # radius=40 area=5024 removed=224 Dice=0.977
 ```
 
-The boundary operation is the same in both cases, but the Dice drop is much larger for the small disk. The result is consistent with the coefficient's definition of overlap, but it prevents the same Dice difference from being interpreted as the same geometric difference across structures of different sizes.
+The boundary operation is the same in both cases, but the Dice drop is much larger for the small disk. The result is consistent with the coefficient's definition of overlap, but it prevents the same Dice difference from being interpreted as the same geometric difference across structures of different sizes. This is why I would also want to see the results of my comparison broken down by structure size. A mean alone would leave me unsure whether the gains reached small targets, which already featured among the failures in the U-Net comparison.
 
 # Distance to the boundary
 
@@ -261,6 +263,8 @@ HD(P,G)=\max\bigl(\sup D\_{P\to G},\sup D\_{G\to P}\bigr).
 It finds the point of greatest disagreement, so it reacts strongly to a remote island or a single stray pixel. That sensitivity may expose a serious failure or annotation noise. Under a directional, area-weighted convention, replacing the maximum with the 95th percentile discards the upper 5% of each distance distribution; other conventions truncate a different tail. A distant false component may not appear in HD95 if it occupies a small enough fraction of the surface.
 
 Even the name "HD95" does not specify an implementation. One can take the maximum of the directional percentiles, as in the example above, or pool both collections before taking the percentile; one can measure between voxel centres or mesh elements; one can weight by physical surface area or not. A comparison of five libraries found systematic differences caused by choices of this kind.[^5] The percentile, boundary extraction, weighting, connectivity, library, and version therefore belong in the experimental method.
+
+This also makes me cautious about comparisons between models. I would only interpret a difference in HD95 as evidence of improved boundaries after checking that both values were computed in the same way. Otherwise, some of the difference could come from the metric's implementation, and I could end up crediting the architecture for it.
 
 ## Average symmetric surface distance
 
@@ -300,7 +304,7 @@ In three-dimensional medical images, all these distances must respect physical s
 
 # What boundary metrics also leave out
 
-Replacing Dice with one column of HD95 does not solve the underlying problem. Contour distance remains only one family of answers; error direction, object count, topology, and volume may remain invisible.
+My interest in boundaries also means I need to be careful about what I leave out of the evaluation. Even if an architecture reduces contour distances, I would still need to know whether it missed small objects or broke a structure that should be continuous. Error direction, object count, topology, and volume may remain invisible in a comparison restricted to distances.
 
 ## Error direction and volume
 
@@ -367,13 +371,13 @@ I would begin with the analysis unit and presence rule. I would then choose one 
 
 The result is an error profile distributed across several measures. Metrics Reloaded similarly recommends selecting metrics from a problem fingerprint and combining complementary families.[^2] The table becomes wider, but it shows why two models differ.
 
-# Synthesis
+# What I take into my research
 
-The three-mask experiment shows how I would frame a comparison. The predictions tied exactly on Dice, IoU, and volume, but the additional measures separated different properties: HD95 exposed the distance to the remote component, surface Dice quantified the fraction within tolerance, and the topological descriptors recorded components and holes. An ordering becomes meaningful only after the task's property of interest has been stated.
+My reading so far is that I need to be clearer about what I expect from an architecture before deciding how to compare it with others.
 
 For my problem, a claim that an architecture "improves boundaries" should answer at least three questions on the same test set: how much overlap changed, whether surface distance fell and by how many millimetres, and which structure sizes benefited. If there are multiple lesions, I would add how many were actually found. A higher Dice answers only the first.
 
-Two questions remain open. Do methods designed to refine contours reduce physical distances without losing lesion-wise recall? And do apparent gains persist after stratifying by size, or are they concentrated in the large structures for which Dice is more forgiving?
+Two questions remain open for me. Do methods designed to refine contours reduce physical distances without losing lesion-wise recall? And do apparent gains persist after stratifying by size, or are they concentrated in the large structures for which Dice is more forgiving? These are questions I would like to take into my experiments, with the evaluation rules defined before looking at test results.
 
 # References
 

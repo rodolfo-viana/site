@@ -15,13 +15,13 @@ toc = true
 
 # Por que olhar além do Dice
 
-Minha pesquisa de mestrado trata do aprimoramento da detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas. Uma comparação encerrada numa única coluna de Dice deixa sem resposta justamente o que quero medir: onde a borda falhou e por quantos milímetros.
+Minha pesquisa de mestrado trata do aprimoramento da detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas. É a partir desse problema que tento entender o que cada métrica consegue me dizer. Uma comparação encerrada numa única coluna de Dice deixa sem resposta justamente o que quero medir: onde a borda falhou e por quantos milímetros.
 
-Em um [comparativo de arquiteturas U-Net](/projetos/unet-comparativo/) que publiquei aqui, a U-Net padrão obteve o maior Dice médio. A inspeção das máscaras, porém, separava erros muito diferentes: vazamento para o fundo, halo periférico, perda de um lóbulo, descontinuidade e falha em alvos pequenos. Todos alteram a sobreposição, mas o número não informa qual deles ocorreu, onde ocorreu ou quão longe a borda prevista ficou da referência.
+Em um [comparativo de arquiteturas U-Net](/projetos/unet-comparativo/) que publiquei aqui, a U-Net padrão obteve o maior Dice médio. Ao inspecionar as máscaras, porém, encontrei erros muito diferentes: vazamento para o fundo, halo periférico, perda de um lóbulo, descontinuidade e falha em alvos pequenos. Todos alteram a sobreposição, mas o número não informa qual deles ocorreu, onde ocorreu ou quão longe a borda prevista ficou da referência. Para a pergunta que orienta meu mestrado, essa comparação ainda deixa bastante coisa em aberto.
 
 O Dice é simples, dispensa a contagem dos numerosos verdadeiros negativos do fundo e responde bem à pergunta para a qual foi definido: **quanto duas regiões se sobrepõem?** Sua resposta fica incompleta quando passa a representar sozinha a qualidade da segmentação. A literatura de validação em imagens médicas documenta essa inadequação entre a métrica escolhida e o interesse real da aplicação.[^1] [^2]
 
-Quero delimitar seu campo de visão e identificar as perguntas que exigem outras medidas.
+Estas notas são uma tentativa de organizar os critérios com que quero avaliar esse problema. Quero compreender até onde o Dice me ajuda e quais medidas preciso acrescentar para sustentar uma afirmação sobre melhora de bordas.
 
 # O que o Dice mede
 
@@ -190,6 +190,8 @@ O exemplo foi desenhado para isolar geometria, não para representar risco clín
 
 O Dice de superfície a dois pixels considera todo o deslocamento aceitável, pois nenhuma parte da borda se afasta mais que a tolerância. Entre os dois defeitos estruturais, ele atribui valor ligeiramente maior à ilha que ao buraco, enquanto o HD95 julga a ilha muito pior por causa da distância do componente remoto. Uma métrica conta a fração de superfície dentro da tolerância; a outra resume a cauda das distâncias. A ordenação depende da propriedade escolhida para a tarefa: extensão da borda aceitável, erro local extremo, conectividade ou outra.
 
+O empate em Dice é o que me interessa nesse exemplo. Se eu usasse apenas essa coluna para comparar as predições, trataria como equivalentes um deslocamento, uma ilha distante e um buraco. Para estudar bordas, preciso conseguir distinguir essas falhas e justificar quais delas quero reduzir. As outras colunas ajudam a descrevê-las, mas a decisão sobre o que é aceitável continua dependendo da aplicação.
+
 ## O preço relativo de um pixel
 
 O tamanho do objeto cria outro efeito. Se uma referência tem área \\(n\\) e uma erosão remove \\(e\\) pixels, a predição fica contida na referência, com \\(|P|=|P\cap G|=n-e\\). Nesse caso,
@@ -230,7 +232,7 @@ for raio in (10, 40):
 # raio=40 área=5024 removidos=224 Dice=0.977
 ```
 
-A operação de borda é a mesma nos dois casos, mas a queda do Dice é muito maior no disco pequeno. O resultado é coerente com a definição de sobreposição do coeficiente, mas impede interpretar a mesma diferença de Dice como a mesma diferença geométrica em estruturas de tamanhos distintos.
+A operação de borda é a mesma nos dois casos, mas a queda do Dice é muito maior no disco pequeno. O resultado é coerente com a definição de sobreposição do coeficiente, mas impede interpretar a mesma diferença de Dice como a mesma diferença geométrica em estruturas de tamanhos distintos. Por isso, eu gostaria de ver os resultados da minha comparação separados também por tamanho de estrutura. Uma média sozinha deixaria sem resposta se o ganho alcançou os alvos pequenos, que já apareceram entre as falhas do comparativo de U-Nets.
 
 # A distância até a borda
 
@@ -261,6 +263,8 @@ HD(P,G)=\max\bigl(\sup D\_{P\to G},\sup D\_{G\to P}\bigr).
 Ela encontra o ponto de maior desacordo, por isso reage fortemente a uma ilha remota ou a um único pixel espúrio. Essa sensibilidade pode revelar uma falha grave ou apenas ruído de anotação. Numa convenção direcional e ponderada pela área, trocar o máximo pelo percentil 95 descarta os 5% superiores de cada distribuição de distâncias; outras convenções truncam uma cauda diferente. Um componente falso e distante pode não aparecer no HD95 se ocupar uma fração pequena o bastante da superfície.
 
 Mesmo o nome "HD95" não especifica uma implementação. Pode-se tomar o máximo dos percentis direcionais, como no exemplo acima, ou agrupar as duas coleções antes do percentil; pode-se medir entre centros de voxels ou entre elementos de uma malha; pode-se ponderar ou não pela área física da superfície. Uma comparação de cinco bibliotecas encontrou diferenças sistemáticas causadas por escolhas desse tipo.[^5] Por isso, percentil, extração da borda, ponderação, conectividade, biblioteca e versão pertencem ao método experimental.
+
+Aqui minha cautela se estende à própria comparação entre modelos. Uma diferença de HD95 só me permitiria discutir melhora de borda depois de verificar que os dois valores foram calculados da mesma maneira. Caso contrário, parte da diferença pode vir da implementação da métrica, e eu acabaria atribuindo à arquitetura um efeito que não consegui separar.
 
 ## Distância média simétrica de superfície
 
@@ -300,7 +304,7 @@ Em imagens médicas tridimensionais, todas essas distâncias devem respeitar o e
 
 # O que as métricas de borda também deixam de fora
 
-Trocar Dice por uma coluna de HD95 não resolve o problema de fundo. Distância de contorno continua sendo apenas uma família de respostas; direção do erro, número de objetos, topologia e volume podem continuar invisíveis.
+Meu interesse por bordas também exige cuidado com o que deixo de fora da avaliação. Mesmo que uma arquitetura reduza as distâncias de contorno, eu ainda precisaria saber se ela perdeu objetos pequenos ou rompeu uma estrutura que deveria ser contínua. Direção do erro, número de objetos, topologia e volume podem continuar invisíveis numa comparação restrita às distâncias.
 
 ## Direção e volume
 
@@ -367,13 +371,13 @@ Eu começaria pela unidade de análise e pela regra de presença. Depois escolhe
 
 O resultado é um perfil de erro distribuído por várias medidas. O Metrics Reloaded recomenda selecionar métricas a partir de uma impressão digital do problema e combinar famílias complementares.[^2] A tabela fica maior, mas passa a mostrar por que dois modelos diferem.
 
-# Síntese
+# O que levo para minha pesquisa
 
-O experimento das três máscaras mostra como eu formularia uma comparação. As predições empataram exatamente em Dice, IoU e volume, mas as medidas adicionais separaram propriedades diferentes: HD95 destacou a distância do componente remoto, o Dice de superfície quantificou a fração dentro da tolerância e os descritores topológicos registraram componentes e buracos. A ordenação só ganha sentido depois que a propriedade de interesse da tarefa é declarada.
+Minha leitura, até aqui, é que preciso formular melhor o que espero de uma arquitetura antes de decidir como compará-la.
 
 Para o meu problema, uma afirmação de que uma arquitetura "melhora bordas" deveria responder, no mesmo conjunto de teste, pelo menos a três perguntas: quanto mudou a sobreposição, se a distância de superfície caiu e em quantos milímetros, e em quais tamanhos de estrutura o ganho apareceu. Se houver múltiplas lesões, acrescentaria quantas foram de fato encontradas. Um Dice maior responde apenas à primeira.
 
-Duas perguntas ficam abertas. Métodos desenhados para refinar contornos reduzem distâncias físicas sem perder sensibilidade por lesão? E os ganhos aparentes permanecem quando os resultados são estratificados por tamanho, ou concentram-se nas estruturas grandes para as quais o Dice é mais tolerante?
+Duas perguntas ficam abertas para mim. Métodos desenhados para refinar contornos reduzem distâncias físicas sem perder sensibilidade por lesão? E os ganhos aparentes permanecem quando os resultados são estratificados por tamanho, ou concentram-se nas estruturas grandes para as quais o Dice é mais tolerante? São perguntas que eu gostaria de levar aos experimentos, com as regras de avaliação definidas antes de olhar os resultados de teste.
 
 # Referências
 
