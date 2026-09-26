@@ -20,12 +20,14 @@ recent = false
 
 Olá!
 
-Meu nome é Rodolfo Viana. Sou engenheiro de dados com mais de uma década de experiência. Também sou professor na Universidade de Marília, onde leciono Sistemas Autônomos e Agentes Inteligentes e Introdução à Inteligência Artificial.
+Eu sou Rodolfo Viana. Já fui office boy, ajudante em salão de cabeleireiro, pacoteiro em mercadinho de vila e tantas outras coisas.
 
-Tenho especialização em Ciência de Dados pela USP, sou mestrando em Ciência da Computação pela Unesp e integrante do [VISER](https://www.viser.com.br/) &mdash; Visualization, Image and Smart Energy Research Group. Minha pesquisa está concentrada em inteligência artificial aplicada à medicina, especialmente em métodos de segmentação de tumores cerebrais em imagens médicas.
+Hoje trabalho com engenharia de dados e inteligência artificial. Tenho especialização em aprendizado de máquina pela USP e estou terminando o mestrado na Unesp, onde estudo a confiabilidade da segmentação de tumores cerebrais em imagens de ressonância magnética.
 
-Neste site você encontrará alguns trabalhos que desenvolvi, anotações de estudos e, vez ou outra, opiniões sobre IA, machine learning, estatística e temas relacionados.
+Fora do trabalho, passeio com o Pitoco, meu cachorro, e brinco de bola com meu afilhado. Leio bastante não ficção e ouço discos &mdash; de System of a Down a Péricles. Antes de dormir, maratono vídeos que vão desde gameplays de Age of Empires II até construção de cabanas off-grid e restauração de relógios. Também cuido das minhas plantas e ando preocupado com uma orquídea que está demorando para pegar raiz.
 
-Meu currículo está disponível [aqui](/curriculo). Para contato direto, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
+Neste site você encontrará alguns trabalhos que desenvolvi, anotações de estudos... Enfim, textos sobre IA, machine learning, estatística e temas relacionados.
+
+Meu currículo está disponível [aqui](/curriculo). Para falar comigo, escreva para [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
 Boa leitura.

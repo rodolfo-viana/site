@@ -18,14 +18,16 @@ links = [
 recent = false
 +++
 
-Hi there!
+Hi!
 
-My name is Rodolfo Viana. I am a data engineer with more than a decade of experience. I am also a lecturer at the University of Marília, where I teach Autonomous Systems and Intelligent Agents and Introduction to Artificial Intelligence.
+I'm Rodolfo Viana. I've worked as an office messenger, helped out in a hair salon, bagged groceries at a neighborhood store, and done plenty of other jobs.
 
-I hold a postgraduate specialization in Data Science from the University of São Paulo (USP), am pursuing an M.Sc. in Computer Science at São Paulo State University (Unesp), and am a member of [VISER](https://www.viser.com.br/) &mdash; the Visualization, Image and Smart Energy Research Group. My research focuses on artificial intelligence applied to medicine, particularly brain tumor segmentation methods for medical images.
+These days, I work in data engineering and artificial intelligence. I have a postgraduate specialization in machine learning from the University of São Paulo (USP). I'm finishing my master's degree at São Paulo State University (UNESP), where I study the reliability of brain tumor segmentation in MRI scans.
 
-Here you'll find some of the work I've developed, study notes, and, every now and then, opinions on AI, machine learning, statistics, and related topics.
+Outside of work, I walk my dog, Pitoco, and kick a ball around with my godson. I read a lot of nonfiction and listen to albums &mdash; anything from System of a Down to Péricles. Before bed, I binge-watch videos ranging from Age of Empires II gameplay to off-grid cabin building and clock and watch restoration. I also look after my plants, and I'm worried about an orchid that's taking a long time to grow roots.
 
-My résumé is available [here](/en/curriculo). For direct contact, email me at [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
+On this site, you'll find some of my work and study notes on AI, machine learning, statistics, and related topics.
+
+My résumé is available [here](/en/curriculo). To get in touch, email me at [eu@rodolfoviana.com.br](mailto:eu@rodolfoviana.com.br).
 
 Happy reading!
