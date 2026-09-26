@@ -1,0 +1,517 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="aulas, estudos e publicações sobre ciência de dados">
+  <title>Currículo</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;curriculo&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;curriculo&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="Currículo">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;curriculo&#x2F;">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;curriculo&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#informacoes">Informações</a>
+        
+      </li>
+      
+      <li><a class="h2" href="#resumo">Resumo</a>
+        
+      </li>
+      
+      <li><a class="h2" href="#experiencia-profissional">Experiência profissional</a>
+        
+      </li>
+      
+      <li><a class="h2" href="#formacao">Formação</a>
+        
+      </li>
+      
+      <li><a class="h2" href="#habilidades-tecnicas">Habilidades Técnicas</a>
+        
+      </li>
+      
+      <li><a class="h2" href="#idiomas">Idiomas</a>
+        
+      </li>
+      
+      <li><a class="h2" href="#interesses">Interesses</a>
+        
+      </li>
+      
+    </ul></nav>
+    
+    
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+    
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https://rodolfoviana.com.br">← Voltar</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;curriculo&#x2F;" hreflang="en">EN</a>
+    </nav></header>
+    <div>
+      <article class="prose">
+        <h1>Currículo</h1>
+        <h1 id="informacoes">Informações</h1>
+<p>Rodolfo Viana<br /></p>
+<!--<span id="age"></span> anos<br />-->
+<p>São Paulo, Brasil<br />
+<a rel="noopener noreferrer external" target="_blank" href="https://www.linkedin.com/in/rodolfoviana/">Linkedin</a> / <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana">Github</a> / <a href="mailto:eu@rodolfoviana.com.br">E-mail</a></p>
+<h1 id="resumo">Resumo</h1>
+<p>Engenheiro de Dados com mais de <span id="working-age"></span> anos de experiência, atuando no desenvolvimento e manutenção de pipelines de ETL e na definição de arquitetura de dados de ponta a ponta. Experiência em gestão e evolução de data warehouses em diferentes provedores de nuvem, garantindo qualidade, governança, performance e confiabilidade. Liderança de projetos e iniciativas multidisciplinares, com foco em entrega de valor e escalabilidade. Especialista em Data Science pela Esalq-USP, atualmente cursa mestrado em Ciência da Computação na Unesp.</p>
+<h1 id="experiencia-profissional">Experiência profissional</h1>
+<p>⟶ Engenheiro de Dados Sr @ <a rel="noopener noreferrer external" target="_blank" href="https://www.stadiumgoods.com/">Farfetch</a><br />
+[agosto de 2021 — o momento]</p>
+<blockquote>
+<p>Responsabilidades:</p>
+<ul>
+<li>Projeta e implementa pipelines de ETL e automações para garantir a disponibilidade, integridade e eficiência dos dados, assegurando a operação de mais de 200 processos</li>
+<li>Cria aplicações como webscrapers e parsers para consumo de dados externos</li>
+<li>Conduz análises aprofundadas para verificar a consistência e confiabilidade dos dados</li>
+<li>Realiza estudos ad hoc e relatórios</li>
+</ul>
+<p>Principais contribuições:</p>
+<ul>
+<li>Liderou projeto de otimização da infraestrutura de dados, com ações que reduziram o tempo de processamento em 63%, aumentaram a performance (IOPS) em 88% e geraram 67% de economia nos custos mensais</li>
+<li>Deu mentoria e treinamento a mais de 10 profissionais, aprimorando suas habilidades técnicas</li>
+</ul>
+</blockquote>
+<p>⟶ Professor @ <a rel="noopener noreferrer external" target="_blank" href="https://oficial.unimar.br/bacharelado-em-inteligencia-artificial/">Universidade de Marília</a><br />
+[janeiro de 2026 — presente]</p>
+<blockquote>
+<p>Responsabilidades:</p>
+<ul>
+<li>Leciona a disciplina “Sistemas Autônomos e Agentes Inteligentes” para alunos de graduação em Inteligência Artificial</li>
+<li>Leciona a disciplina “Introdução à Inteligência Artificial” para alunos de todos os cursos de TI da instituição</li>
+<li>Planeja e elabora materiais didáticos das disciplinas, incluindo aulas, atividades avaliativas e materiais de apoio</li>
+</ul>
+</blockquote>
+<p>⟶ Professor @ <a rel="noopener noreferrer external" target="_blank" href="https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/">IDP</a><br />
+[julho de 2021 — dezembro de 2025]</p>
+<blockquote>
+<p>Responsabilidade:</p>
+<ul>
+<li>Lecionou “Introdução à Programação com Python” e “Web Scraping” em cursos de pós-graduação, tendo treinado mais de 100 profissionais</li>
+</ul>
+</blockquote>
+<p>⟶ Cientista de Dados Sr @ <a rel="noopener noreferrer external" target="_blank" href="https://redeglobo.globo.com/">Rede Globo</a><br />
+[dezembro de 2018 — agosto de 2021]</p>
+<blockquote>
+<p>Responsabilidades:</p>
+<ul>
+<li>Desenvolveu e implementou modelos preditivos —incluindo algoritmos de classificação e redes neurais— para business intelligence e personalização de conteúdo</li>
+<li>Realizou análises exploratórias de dados e modelagem estatística para gerar ideias de pautas e informar o planejamento editorial</li>
+<li>Liderou o design e a implementação de pipelines ETL e processos de web scraping em larga escala para ingestão de dados externos para análise</li>
+</ul>
+<p>Principal contribuição:</p>
+<ul>
+<li>Concebeu e implementou sistema responsável por fornecer estatísticas em tempo real de SARS-CoV-2 para mais de 500 jornalistas, expandindo a cobertura de notícias e aumentando o engajamento dos telespectadores em 41%</li>
+</ul>
+</blockquote>
+<h1 id="formacao">Formação</h1>
+<p>⟶ Mestrado em Ciência da Computação @ <a rel="noopener noreferrer external" target="_blank" href="https://www.ibilce.unesp.br/">Ibilce-Unesp</a><br />
+2025 — em andamento</p>
+<ul>
+<li>Trabalho em desenvolvimento: Aprimoramento em detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas</li>
+<li>Orientador: Prof Dr Wallace Correa de Oliveira Casaca</li>
+</ul>
+<p>⟶ MBA em Data Science e Analytics @ <a rel="noopener noreferrer external" target="_blank" href="https://www.esalq.usp.br/">Esalq-USP</a><br />
+2022 — 2023<br /></p>
+<ul>
+<li>Trabalho desenvolvido: <a href="/projetos/alesp-kmeans">Detecção de anomalias em gastos de deputados estaduais de São Paulo usando K-Means</a></li>
+<li>Orientadora: Profª Drª Ana Julia Righetto</li>
+</ul>
+<h1 id="habilidades-tecnicas">Habilidades Técnicas</h1>
+<ul>
+<li>
+<p>Plataformas de Nuvem</p>
+<blockquote>
+<p>Google Cloud Platform (GCP), AWS, Microsoft Azure</p>
+</blockquote>
+</li>
+<li>
+<p>Engenharia de Dados e Orquestração</p>
+<blockquote>
+<p>Docker, dbt, Databricks, Airflow, Spark, Google Cloud Functions, AWS Lambda, Apache NiFi, Pentaho, Git, Terraform</p>
+</blockquote>
+</li>
+<li>
+<p>Machine Learning e IA</p>
+<blockquote>
+<p>PyTorch, TensorFlow, Statsmodels, PyCaret, scikit-learn</p>
+</blockquote>
+</li>
+<li>
+<p>SQL e Bancos de Dados</p>
+<blockquote>
+<p>Google BigQuery, Amazon Redshift, Azure Synapse, Snowflake, Microsoft SQL Server, MySQL, PostgreSQL</p>
+</blockquote>
+</li>
+<li>
+<p>Visualização</p>
+<blockquote>
+<p>Looker, Google Data Studio, PowerBI, Tableau</p>
+</blockquote>
+</li>
+<li>
+<p>Programação</p>
+<blockquote>
+<p>Python, SQL, shell scripting</p>
+</blockquote>
+</li>
+</ul>
+<h1 id="idiomas">Idiomas</h1>
+<p>Português (nativo), Inglês (fluente)</p>
+<h1 id="interesses">Interesses</h1>
+<ul>
+<li>
+<p>Aprendizado de Máquina e IA</p>
+<blockquote>
+<p>Visão computacional, Scientific Machine Learning, Deep Reinforcement Learning</p>
+</blockquote>
+</li>
+<li>
+<p>Matemática e Modelagem</p>
+<blockquote>
+<p>Estatística bayesiana, processos gaussianos, modelagem baseada em equações diferenciais</p>
+</blockquote>
+</li>
+<li>
+<p>Ciência da Computação</p>
+<blockquote>
+<p>Estruturas de dados e algoritmos, computação bioinspirada, engenharia de software para data products</p>
+</blockquote>
+</li>
+<li>
+<p>Domínios</p>
+<blockquote>
+<p>Aplicações de IA em saúde (imagens médicas, diagnóstico assistido), transparência e ética em IA (responsabilidade, viés, governança)</p>
+</blockquote>
+</li>
+</ul>
+<script>
+    document.addEventListener("DOMContentLoaded", () => {
+      const today = new Date();
+      // const birthdate = new Date(1981, 2, 17);
+      const start = new Date(2018, 0, 1);
+
+      function yearsSince(d) {
+        let y = today.getFullYear() - d.getFullYear();
+        const m = today.getMonth() - d.getMonth();
+        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) y--;
+        return y;
+      }
+
+      // document.getElementById("age").textContent = yearsSince(birthdate);
+      document.getElementById("working-age").textContent = yearsSince(start);
+    });
+</script>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  <script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>

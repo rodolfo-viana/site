@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Versão editada de artigo escrito para a disciplina Aprendizado Profundo, do Prof. Dr. Denis Henrique Pinheiro Salvadeo, no curso de mestrado do Programa de Pós-Graduação em Ciência da Computação da Unesp">
+  <title>Análise comparativa de arquiteturas U-Net para segmentação de pólipo em colonoscopia</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;unet-comparativo&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;unet-comparativo&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Análise comparativa de arquiteturas U-Net para segmentação de pólipo em colonoscopia">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;unet-comparativo&#x2F;">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;unet-comparativo&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#introducao">Introdução</a></li>
+      
+      <li><a class="h2" href="#trabalhos-relacionados">Trabalhos Relacionados</a></li>
+      
+      <li><a class="h2" href="#fundamentos-teoricos-de-arquiteturas-u-net">Fundamentos Teóricos de Arquiteturas U-Net</a><ul><li><a class="h3" href="#u-net-conexoes-densas-aninhadas">U-Net++: Conexões Densas Aninhadas</a></li><li><a class="h3" href="#attention-u-net-mecanismos-de-atencao-espacial">Attention U-Net: Mecanismos de Atenção Espacial</a></li><li><a class="h3" href="#resu-net-conexoes-residuais-para-redes-mais-profundas">ResU-Net: Conexões Residuais para Redes Mais Profundas</a></li></ul></li>
+      
+      <li><a class="h2" href="#metodologia">Metodologia</a><ul><li><a class="h3" href="#conjunto-de-dados-e-pre-processamento">Conjunto de Dados e Pré-processamento</a></li><li><a class="h3" href="#implementacao-e-treinamento">Implementação e Treinamento</a></li><li><a class="h3" href="#metricas-de-avaliacao-e-analise-estatistica">Métricas de Avaliação e Análise Estatística</a></li></ul></li>
+      
+      <li><a class="h2" href="#resultados">Resultados</a><ul><li><a class="h3" href="#analise-comparativa-de-desempenho-por-contexto">Análise Comparativa de Desempenho por Contexto</a></li><li><a class="h3" href="#analise-qualitativa-dos-resultados-de-segmentacao">Análise Qualitativa dos Resultados de Segmentação</a></li></ul></li>
+      
+      <li><a class="h2" href="#conclusao">Conclusão</a></li>
+      
+      <li><a class="h2" href="#trabalhos-futuros">Trabalhos Futuros</a></li>
+      
+      <li><a class="h2" href="#nota-sobre-uso-de-ia">Nota sobre uso de IA</a></li>
+      
+      <li><a class="h2" href="#referencias">Referências</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;">← Voltar</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;unet-comparativo&#x2F;" hreflang="en">EN</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Análise comparativa de arquiteturas U-Net para segmentação de pólipo em colonoscopia</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">13-11-2025</span>
+            
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/tags/aprendizado-de-maquina/"><span>#</span>aprendizado de máquina</a><a class="instant" href="https://rodolfoviana.com.br/tags/u-net/"><span>#</span>u-net</a><a class="instant" href="https://rodolfoviana.com.br/tags/redes-neurais/"><span>#</span>redes neurais</a><a class="instant" href="https://rodolfoviana.com.br/tags/medicina/"><span>#</span>medicina</a></div>
+        </div>
+        <h1 id="introducao">Introdução<a class="zola-anchor" href="#introducao" aria-label="Anchor link for: introducao" style="visibility: hidden;"></a>
+</h1>
+<p>O câncer colorretal é um dos tumores mais prevalentes no mundo, correspondendo a cerca de 10% dos casos e mais de 930 mil mortes anuais<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>. A progressão de pólipos adenomatosos para carcinoma costuma levar entre 10 e 15 anos, oferecendo uma janela ampla para prevenção via detecção e remoção precoce<sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>; contudo, a taxa de detecção durante a realização de colonoscopias varia amplamente, sobretudo por diferenças de morfologia dos pólipos<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup>.</p>
+<p>Neste contexto, a ciência de dados, particularmente o aprendizado de máquina, muito tem a oferecer. A segmentação de pólipos pode ser tratada como um problema de classificação pixel a pixel. Tal trabalho é desafiador devido à heterogeneidade morfológica das lesões, baixo contraste entre tecido do pólipo e mucosa adjacente, e condições de iluminação variáveis na endoscopia; entretanto, avanços em redes neurais convolucionais têm impulsionado melhorias significativas na precisão de segmentação, superando métodos tradicionais baseados em atributos manuais<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup> <sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>.</p>
+<p>Neste cenário, U-Net se estabelece como o estado-da-arte para tal tarefa através de um esquema codificador-decodificador com <em>skip connections</em><sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>.</p>
+<img src="./unet.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<p>Suas limitações, porém, motivaram variantes que visam melhorar a fusão de representações e a seletividade de características. Este trabalho realiza comparações sistemáticas sob condições experimentais controladas, comparando cinco arquiteturas na segmentação de pólipos usando o conjunto Kvasir-SEG<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup>.</p>
+<h1 id="trabalhos-relacionados">Trabalhos Relacionados<a class="zola-anchor" href="#trabalhos-relacionados" aria-label="Anchor link for: trabalhos-relacionados" style="visibility: hidden;"></a>
+</h1>
+<p>A segmentação automatizada de pólipos evoluiu significativamente desde métodos clássicos até arquiteturas profundas especializadas. Abordagens iniciais baseavam-se em características manuais e técnicas tradicionais de visão computacional. Bernal et al.<sup class="footnote-reference" id="fr-3-2"><a href="#fn-3">3</a></sup> propuseram mapas WM-DOVA combinando informação de intensidade e forma, enquanto Tajbakhsh et al.<sup class="footnote-reference" id="fr-5-2"><a href="#fn-5">5</a></sup> empregaram redes convolucionais rasas com características contextuais para detecção em vídeos de colonoscopia.</p>
+<p>A introdução de redes totalmente convolucionais (FCN)<sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup> revolucionou a segmentação semântica ao eliminar camadas densas finais e permitir predições pixel a pixel. Brandão et al.<sup class="footnote-reference" id="fr-4-2"><a href="#fn-4">4</a></sup> adaptaram FCNs para segmentação de pólipos, demonstrando superioridade sobre métodos tradicionais mas ainda enfrentando dificuldades com bordas imprecisas e variações morfológicas. A arquitetura U-Net<sup class="footnote-reference" id="fr-6-2"><a href="#fn-6">6</a></sup>, com seu paradigma codificador-decodificador e <em>skip connections</em>, tornou-se referência para segmentação biomédica ao preservar informação espacial em múltiplas escalas.</p>
+<img src="./imagem.gif" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<p>Diversas extensões da U-Net têm sido propostas para segmentação de pólipos. Zhou et al.<sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">9</a></sup> introduziram conexões densas aninhadas para reduzir lacunas semânticas, enquanto Oktay et al.<sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">10</a></sup> incorporaram mecanismos de atenção espacial. Jha et al.<sup class="footnote-reference" id="fr-11-1"><a href="#fn-11">11</a></sup> propuseram DoubleU-Net, combinando dois caminhos codificador-decodificador com blocos ASPP (<em>Atrous Spatial Pyramid Pooling</em>), alcançando Dice score de 82,3% no Kvasir-SEG.</p>
+<p>Abordagens recentes exploram mecanismos sofisticados de atenção e agregação multi-escala. Fan et al.<sup class="footnote-reference" id="fr-12-1"><a href="#fn-12">12</a></sup> desenvolveram PraNet com atenção reversa paralela, reportando 89,8% de Dice no Kvasir-SEG. Fang et al.<sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">13</a></sup> propuseram agregação seletiva de características com restrições de área-fronteira, enquanto Zhang et al.<sup class="footnote-reference" id="fr-14-1"><a href="#fn-14">14</a></sup> introduziram seleção adaptativa de contexto para lidar com variabilidade morfológica. Srivastava et al.<sup class="footnote-reference" id="fr-15-1"><a href="#fn-15">15</a></sup> propuseram MSRF-Net com fusão residual multi-escala.</p>
+<p>Trabalhos mais recentes investigam <em>transformers</em> para segmentação médica. Valanarasu et al.<sup class="footnote-reference" id="fr-16-1"><a href="#fn-16">16</a></sup> introduziram Medical Transformer com atenção axial, demonstrando competitividade com CNNs. Huang et al.<sup class="footnote-reference" id="fr-17-1"><a href="#fn-17">17</a></sup> propuseram HarDNet-MSEG, alcançando Dice superior a 90% com 86 FPS, equilibrando precisão e eficiência computacional.</p>
+<p>Apesar dos avanços, comparações diretas são dificultadas por variações metodológicas: diferentes particionamentos de dados, estratégias de augmentação, funções de perda e hiperparâmetros. Muitos trabalhos reportam resultados em múltiplos conjuntos mas carecem de análise estatística rigorosa. Este estudo aborda essas lacunas através de comparação sistemática de cinco arquiteturas U-Net fundamentais sob condições experimentais controladas, com múltiplas sementes para análise de variância, fornecendo <em>benchmark</em> reproduzível para o domínio.</p>
+<h1 id="fundamentos-teoricos-de-arquiteturas-u-net">Fundamentos Teóricos de Arquiteturas U-Net<a class="zola-anchor" href="#fundamentos-teoricos-de-arquiteturas-u-net" aria-label="Anchor link for: fundamentos-teoricos-de-arquiteturas-u-net" style="visibility: hidden;"></a>
+</h1>
+<p>A U-Net estabelece o paradigma codificador-decodificador com <em>skip connections</em> para segmentação biomédica<sup class="footnote-reference" id="fr-6-3"><a href="#fn-6">6</a></sup>. O codificador captura informação semântica multi-escala através de convoluções e pooling sucessivos, enquanto <em>skip connections</em> concatenam características do codificador ao decodificador, preservando detalhes espaciais.</p>
+<p>Seja \(x\in\mathbb{R}^{H\times W\times C}\) uma imagem de entrada e \(y\in{{0,1}}^{H\times W}\) sua máscara binária de referência. A rede implementa um mapeamento \(f:\mathbb{R}^{H\times W\times C}\rightarrow[0,1]^{H\times W}\) cujo <em>threshold</em> em 0,5 produz \(\hat{y}\in{{0,1}}^{H\times W}\). Em cada nível \(l\) do codificador, o número de canais (largura) segue \(c_l = c_0\cdot 2^{l}\).</p>
+<h2 id="u-net-conexoes-densas-aninhadas">U-Net++: Conexões Densas Aninhadas<a class="zola-anchor" href="#u-net-conexoes-densas-aninhadas" aria-label="Anchor link for: u-net-conexoes-densas-aninhadas" style="visibility: hidden;"></a>
+</h2>
+<p>A U-Net++ aborda a lacuna semântica da U-Net através de blocos convolucionais aninhados<sup class="footnote-reference" id="fr-9-2"><a href="#fn-9">9</a></sup>. Na U-Net, <em>skip connections</em> concatenam características semanticamente distantes (baixo nível no codificador, alto nível no decodificador). A U-Net++ resolve isso conectando, de maneira gradual, características através de caminhos densos. Cada nó \(\mathbf{X}^{i,j}\) é</p>
+<p>\[
+\begin{aligned}
+\mathbf{X}^{i,j} = \begin{cases}
+\mathcal{H}(\mathbf{X}^{i,j-1}), &amp; j = 0 \\
+\mathcal{H}\left(\left[\left[\mathbf{X}^{i,k}\right]_{k=0}^{j-1}, \mathcal{U}(\mathbf{X}^{i+1,j-1})\right]\right), &amp; j &gt; 0,
+\end{cases}
+\end{aligned}
+\]</p>
+<p>onde \(i\) indexa resolução, \(j\) densidade de conexões, \(\mathcal{H}(\cdot)\) convolução, \(\mathcal{U}(\cdot)\) upsampling, \([[\cdot]]\) concatenação. Isso reduz progressivamente a lacuna semântica através de transformações sucessivas.</p>
+<p>Além de U-Net++, neste trabalho adotamos ainda uma versão com <em>deep supervision</em>, que adiciona supervisão multi-escala \(\mathcal{L}_{\text{total}} = \sum_{j=1}^{J} \omega_j \mathcal{L}(\mathbf{y}, \mathbf{\hat{y}}^{(j)})\), mitigando gradientes evanescentes e acelerando convergência.</p>
+<h2 id="attention-u-net-mecanismos-de-atencao-espacial">Attention U-Net: Mecanismos de Atenção Espacial<a class="zola-anchor" href="#attention-u-net-mecanismos-de-atencao-espacial" aria-label="Anchor link for: attention-u-net-mecanismos-de-atencao-espacial" style="visibility: hidden;"></a>
+</h2>
+<p>A Attention U-Net incorpora <em>attention gates</em> que ponderam espacialmente características antes da concatenação<sup class="footnote-reference" id="fr-10-2"><a href="#fn-10">10</a></sup>, suprimindo informações irrelevantes transmitidas pelas <em>skip connections</em>. Dado \(\mathbf{x}\) do codificador e sinal de <em>gating</em> \(\mathbf{g}\) do decodificador, os coeficientes de atenção são</p>
+<p>\[
+\hat{\mathbf{x}} = \sigma_2\left(\psi^T \sigma_1(\mathbf{W}_x^T \mathbf{x} + \mathbf{W}_g^T \mathbf{g})\right) \odot \mathbf{x}
+\]</p>
+<p>onde \(\sigma_1\) e \(\sigma_2\) são ReLU e sigmoide, respectivamente, permitindo suprimir regiões irrelevantes e enfatizar estruturas salientes.</p>
+<h2 id="resu-net-conexoes-residuais-para-redes-mais-profundas">ResU-Net: Conexões Residuais para Redes Mais Profundas<a class="zola-anchor" href="#resu-net-conexoes-residuais-para-redes-mais-profundas" aria-label="Anchor link for: resu-net-conexoes-residuais-para-redes-mais-profundas" style="visibility: hidden;"></a>
+</h2>
+<p>A ResU-Net integra a arquitetura U-Net com blocos residuais inspirados em ResNet<sup class="footnote-reference" id="fr-18-1"><a href="#fn-18">18</a></sup>, abordando a degradação de desempenho que ocorre ao treinar redes muito profundas<sup class="footnote-reference" id="fr-19-1"><a href="#fn-19">19</a></sup>. Enquanto a U-Net padrão utiliza blocos de convolução dupla, a ResU-Net substitui esses blocos por blocos residuais que implementam conexões de identidade. Um bloco residual aprende uma função residual \(\mathcal{F}(\mathbf{x})\) em vez do mapeamento direto desejado \(\mathcal{H}(\mathbf{x})\), através da conexão de atalho</p>
+<p>\[
+\mathbf{y} = \mathcal{F}(\mathbf{x}, {W_i}) + \mathbf{x},
+\]</p>
+<p>onde \(\mathbf{x}\) e \(\mathbf{y}\) são vetores de entrada e saída, e \(\mathcal{F}(\mathbf{x}, {W_i})\) representa a transformação residual a ser aprendida. Esta arquitetura facilita treinamento de redes mais profundas ao permitir que o modelo aprenda transformações incrementais em vez de mapeamentos completos, resultando em melhor propagação de gradientes e potencial para capturar representações mais ricas.</p>
+<h1 id="metodologia">Metodologia<a class="zola-anchor" href="#metodologia" aria-label="Anchor link for: metodologia" style="visibility: hidden;"></a>
+</h1>
+<h2 id="conjunto-de-dados-e-pre-processamento">Conjunto de Dados e Pré-processamento<a class="zola-anchor" href="#conjunto-de-dados-e-pre-processamento" aria-label="Anchor link for: conjunto-de-dados-e-pre-processamento" style="visibility: hidden;"></a>
+</h2>
+<p>O Kvasir-SEG<sup class="footnote-reference" id="fr-7-2"><a href="#fn-7">7</a></sup> contém 1.000 imagens de colonoscopia com máscaras de segmentação pixel a pixel e caixas delimitadoras, cobrindo ampla diversidade de tamanho e forma de pólipos. As imagens apresentam resoluções variadas (de 332\(\times\)487 a 1920\(\times\)1072), e são redimensionadas para 256\(\times\)256 pixels e normalizadas com estatísticas ImageNet. O particionamento considera 80% das imagens para treinamento, 10% para validação, 10% para teste.</p>
+<h2 id="implementacao-e-treinamento">Implementação e Treinamento<a class="zola-anchor" href="#implementacao-e-treinamento" aria-label="Anchor link for: implementacao-e-treinamento" style="visibility: hidden;"></a>
+</h2>
+<p>Nosso estudo examina cinco variantes da U-Net: U-Net padrão (blocos de dupla convolução 3\(\times\)3, <em>batch normalization</em>, ReLU, cinco níveis com \({64, 128, 256, 512, 512}\) canais); U-Net++ (caminhos densos aninhados, com e sem supervisão profunda); Attention U-Net (com <em>attention gates</em>); ResU-Net (blocos residuais com conexões de identidade, cinco níveis com \({64, 128, 256, 512, 512}\) canais).</p>
+<p>Todos os modelos foram treinados por no máximo 100 épocas, com <em>batch size</em> 8, usando otimizador AdamW (taxa de aprendizado inicial \(10^{-4}\), <em>weight decay</em> \(10^{-5}\)). O agendamento de taxa de aprendizado utilizou 5 épocas de <em>warmup</em> seguidas de redução no platô (fator 0,5, paciência 5, taxa mínima \(10^{-6}\)). A função de perda combinada é \(\mathcal{L} = 0{,}4 \mathcal{L}_{\text{BCE}} + 0{,}6 \mathcal{L}_{\text{Dice}}\). Augmentação contém flips, rotação, transformações afins, <em>color jitter</em>, desfoque Gaussiano. O treinamento adota <em>early stopping</em> monitorando o Dice score de validação com paciência de 10 épocas, interrompendo quando não há melhoria. Para garantir reprodutibilidade, cada arquitetura foi treinada com três sementes aleatórias (42, 123, 456).</p>
+<h2 id="metricas-de-avaliacao-e-analise-estatistica">Métricas de Avaliação e Análise Estatística<a class="zola-anchor" href="#metricas-de-avaliacao-e-analise-estatistica" aria-label="Anchor link for: metricas-de-avaliacao-e-analise-estatistica" style="visibility: hidden;"></a>
+</h2>
+<p>Nosso arcabouço de avaliação emprega cinco métricas complementares que capturam diferentes aspectos do desempenho de segmentação, fornecendo uma apreciação abrangente das capacidades do modelo em diversos cenários clínicos, utilizando informações de falsos negativos (FN), falsos positivos (FP), positivos verdadeiros (TP) e negativos verdadeiros (TN).</p>
+<p>O Coeficiente de Similaridade de Dice (Dice score) mede a sobreposição regional entre as segmentações predita \(P\) e verdadeira \(V\) — para segmentação binária por pixel, o Dice score equivale ao F1 score. É obtida com</p>
+<p>\[
+\frac{2 \mid P \cap V \mid}{\mid P \mid + \mid V \mid}.
+\]</p>
+<p>Já o Índice de Jaccard (<em>Intersection over Union</em>, ou IoU) fornece uma medida alternativa de sobreposição a partir de</p>
+<p>\[
+\frac{\mid P \cap V \mid}{\mid P \cup V \mid}.
+\]</p>
+<p>Além dessas métricas principais, calculamos sensibilidade, que mede a capacidade do modelo de detectar pixels de pólipo; especificidade, que quantifica a proporção de pixels não-pólipo corretamente identificados; e precisão, que avalia a proporção de predições positivas que são corretas.</p>
+<h1 id="resultados">Resultados<a class="zola-anchor" href="#resultados" aria-label="Anchor link for: resultados" style="visibility: hidden;"></a>
+</h1>
+<p>A U-Net padrão alcançou o melhor desempenho geral (Dice: 83,66\(\pm\)0,52%, IoU: 75,65\(\pm\)0,29%), demonstrando notável consistência com o menor desvio padrão entre as três sementes. U-Net++ com supervisão profunda obteve desempenho comparável (Dice: 83,48\(\pm\)0,89%), apresentando a maior sensibilidade (89,39\(\pm\)0,88%), indicando capacidade superior para detectar pixels de pólipo.</p>
+<table><thead><tr><th>Arquitetura</th><th style="text-align: center">Dice<br>(%)</th><th style="text-align: center">IoU<br>(%)</th><th style="text-align: center">Sensib.<br>(%)</th><th style="text-align: center">Especif.<br>(%)</th><th style="text-align: center">Precisão<br>(%)</th></tr></thead><tbody>
+<tr><td>U-Net</td><td style="text-align: center">83,66\(\pm\)0,52</td><td style="text-align: center">75,65\(\pm\)0,29</td><td style="text-align: center">88,36\(\pm\)0,83</td><td style="text-align: center">97,28\(\pm\)0,22</td><td style="text-align: center">84,76\(\pm\)0,27</td></tr>
+<tr><td>U-Net++</td><td style="text-align: center">82,24\(\pm\)1,33</td><td style="text-align: center">73,64\(\pm\)1,46</td><td style="text-align: center">87,52\(\pm\)2,51</td><td style="text-align: center">97,22\(\pm\)0,57</td><td style="text-align: center">83,24\(\pm\)1,03</td></tr>
+<tr><td>U-Net++ (DS)</td><td style="text-align: center">83,48\(\pm\)0,89</td><td style="text-align: center">75,46\(\pm\)1,03</td><td style="text-align: center">89,39\(\pm\)0,88</td><td style="text-align: center">97,13\(\pm\)0,30</td><td style="text-align: center">83,42\(\pm\)1,09</td></tr>
+<tr><td>Attention U-Net</td><td style="text-align: center">82,24\(\pm\)0,23</td><td style="text-align: center">73,63\(\pm\)0,16</td><td style="text-align: center">88,74\(\pm\)0,67</td><td style="text-align: center">96,82\(\pm\)0,06</td><td style="text-align: center">82,01\(\pm\)0,12</td></tr>
+<tr><td>ResU-Net</td><td style="text-align: center">82,43\(\pm\)0,52</td><td style="text-align: center">73,85\(\pm\)0,88</td><td style="text-align: center">86,60\(\pm\)0,63</td><td style="text-align: center">97,52\(\pm\)0,28</td><td style="text-align: center">84,35\(\pm\)1,06</td></tr>
+</tbody></table>
+<p>ResU-Net, incorporando conexões residuais, obteve Dice de 82,43\(\pm\)0,52% e destacou-se com a maior especificidade (97,52\(\pm\)0,28%), indicando excelente capacidade de rejeitar falsas detecções. U-Net++ padrão e Attention U-Net apresentaram desempenho similar (Dice: 82,24%), com a Attention U-Net exibindo especificidade ligeiramente inferior (96,82%), sugerindo que mecanismos de atenção podem ocasionalmente comprometer a discriminação de tecido não-pólipo.</p>
+<p>Todas as arquiteturas mantiveram especificidade superior a 96,8%, essencial para aplicações clínicas onde falsos positivos reduzem confiança do endoscopista. A U-Net padrão também alcançou a melhor precisão (84,76\(\pm\)0,27%), confirmando sua robustez. Os resultados revelam que arquiteturas mais simples podem oferecer desempenho competitivo com maior consistência, questionando o custo-benefício de modificações arquiteturais complexas para este domínio específico.</p>
+<h2 id="analise-comparativa-de-desempenho-por-contexto">Análise Comparativa de Desempenho por Contexto<a class="zola-anchor" href="#analise-comparativa-de-desempenho-por-contexto" aria-label="Anchor link for: analise-comparativa-de-desempenho-por-contexto" style="visibility: hidden;"></a>
+</h2>
+<p>A análise do desempenho das arquiteturas nos três contextos distintos (treinamento, validação e teste) apresentada na figura abaixo revela padrões fundamentais sobre o comportamento de generalização dos modelos. Todas as arquiteturas apresentam clara hierarquia de desempenho, confirmando a progressiva dificuldade das tarefas e adequada metodologia.</p>
+<img src="./graph.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<p>A U-Net padrão demonstra excelente consistência entre validação e teste, com gap mínimo (\(\sim\)1,5 pp.), indicando robusta capacidade de generalização. Sua baixa variabilidade entre sementes, visível nos boxplots compactos, sugere treinamento estável e previsível — característica desejável para aplicações clínicas onde reprodutibilidade é crítica.</p>
+<p>U-Net++ com supervisão profunda apresenta comportamento similar, mantendo boa consistência e gap reduzido entre validação e teste. A estratégia de supervisão multi-escala contribui efetivamente para estabilização do treinamento, resultando em sensibilidade elevada sem sacrificar significativamente outras métricas. ResU-Net exibe variabilidade intermediária, com as conexões residuais proporcionando treinamento estável mas sem vantagens decisivas em desempenho final.</p>
+<p>Attention U-Net e U-Net++ padrão mostram gaps ligeiramente maiores entre validação e teste, com a Attention U-Net apresentando ocasionalmente menor especificidade. Este comportamento questiona a efetividade dos mecanismos de atenção espacial para este domínio, sugerindo que a seletividade adicional pode não ser necessária ou pode até ser contraproducente quando o objeto de interesse apresenta grande variabilidade morfológica.</p>
+<h2 id="analise-qualitativa-dos-resultados-de-segmentacao">Análise Qualitativa dos Resultados de Segmentação<a class="zola-anchor" href="#analise-qualitativa-dos-resultados-de-segmentacao" aria-label="Anchor link for: analise-qualitativa-dos-resultados-de-segmentacao" style="visibility: hidden;"></a>
+</h2>
+<p>A inspeção visual das predições, como mostra a figura abaixo, revela diferenças significativas e clinicamente relevantes entre as arquiteturas, particularmente em casos desafiadores. A análise contempla cinco casos representativos que expõem características distintas de desempenho das arquiteturas.</p>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./mask_comparison.png" style="border: 5px solid #ef5350;">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Da esquerda para direita: imagem original, <i>ground truth</i>, predições de U-Net, U-Net++, U-Net++ com <i>deep supervision</i>, Attention U-Net, ResU-Net
+  </figcaption>
+</figure>
+<p>A primeira fileira mostra pólipo pediculado com lóbulo lateral direito; apenas U-Net++ e U-Net++ com <em>deep supervision</em> recuperam essa extensão, reproduzindo a morfologia completa. U-Net, Attention U-Net e ResU-Net restringem-se ao corpo principal; entre as que cobrem integralmente, a variante com <em>deep supervision</em> é a mais consistente, com halo periférico discreto.</p>
+<p>Na segunda fileira, com mucosa brilhante, baixo contraste e reflexos, todas as arquiteturas exibem algum grau de vazamento ou halo. U-Net e U-Net++ (padrão e com <em>deep supervision</em>) ampliam a área prevista, porém com contornos difusos; Attention U-Net e ResU-Net mitigam vazamentos, mas ainda perdem definição em bordas mal iluminadas. Nenhuma reproduz integralmente o contorno anotado.</p>
+<p>A terceira fileira apresenta alvo pequeno junto à parede e transição para lúmen escuro. U-Net subsegmenta; U-Net++ aproxima melhor a forma; U-Net++ com <em>deep supervision</em> estabiliza a máscara. Attention U-Net e ResU-Net fornecem as predições mais limpas, com menos falsos positivos no fundo.</p>
+<p>A quarta fileira representa um caso favorável: campo visual limpo, fundo relativamente homogêneo e fronteiras do pólipo bem definidas. Todas alcançam alto acerto, com ganhos apenas incrementais. U-Net++ (com e sem <em>deep supervision</em>) refina a regularidade; Attention U-Net evita vazamentos; ResU-Net praticamente coincide com o <em>ground truth</em>.</p>
+<p>Por fim, a quinta fileira inclui oclusão por instrumento e sombras profundas. U-Net subsegmenta na base; U-Net++ melhora continuidade, mas cria “colar” de sobre-segmentação; U-Net++ com <em>deep supervision</em> recupera volume, arredondando a região ocluída. Attention U-Net e ResU-Net se mostram mais robustas, preservando a massa lesional e a continuidade.</p>
+<p>As diferenças arquiteturais emergem sobretudo em casos desafiadores. U-Net e U-Net++ são mais suscetíveis a vazamentos e imprecisão de borda; a supervisão profunda atenua tais efeitos de modo modesto e não universal. Nos exemplos, a incidência de falsos positivos é baixa em fundos complexos, o que é promissor clinicamente; ainda assim, tais impressões devem ser corroboradas por métricas quantitativas no conjunto completo.</p>
+<h1 id="conclusao">Conclusão<a class="zola-anchor" href="#conclusao" aria-label="Anchor link for: conclusao" style="visibility: hidden;"></a>
+</h1>
+<p>Este estudo comparou cinco variantes de arquitetura U-Net para segmentação de pólipos em colonoscopia. A U-Net padrão alcançou o melhor desempenho geral (Dice: 83,66\(\pm\)0,52%), demonstrando que simplicidade arquitetural e consistência podem ser vantajosas. Seu baixo desvio padrão indica treinamento estável e reprodutível, característica essencial para aplicações clínicas onde previsibilidade é crucial.</p>
+<p>U-Net++ com supervisão profunda obteve desempenho comparável (Dice: 83,48\(\pm\)0,89%) e maior sensibilidade (89,39%), sugerindo que supervisão multi-escala pode melhorar detecção de pólipos sem comprometer outras métricas. ResU-Net destacou-se em especificidade (97,52%), indicando que conexões residuais contribuem para melhor discriminação de tecido não-pólipo, embora sem vantagens decisivas em Dice score.</p>
+<p>U-Net++ padrão e Attention U-Net apresentaram desempenho similar mas inferior (Dice: 82,24%). A ausência de ganhos significativos para Attention U-Net questiona a efetividade de mecanismos de atenção espacial neste domínio, especialmente considerando a complexidade adicional. Os resultados sugerem que características de pólipos — alta variabilidade morfológica e baixo contraste — podem não beneficiar de seletividade espacial adicional.</p>
+<p>Todas as arquiteturas mantiveram especificidade superior a 96,8%, essencial para aceitação clínica onde falsos positivos reduzem confiança do endoscopista. As diferenças primárias manifestam-se em sensibilidade e delineação de bordas, métricas críticas para intervenções endoscópicas precisas. Os resultados destacam o valor de arquiteturas fundamentais bem calibradas e questionam o custo-benefício de modificações arquiteturais complexas para segmentação de pólipos.</p>
+<h1 id="trabalhos-futuros">Trabalhos Futuros<a class="zola-anchor" href="#trabalhos-futuros" aria-label="Anchor link for: trabalhos-futuros" style="visibility: hidden;"></a>
+</h1>
+<p>Este estudo estabelece direções promissoras para pesquisas futuras em segmentação automatizada de pólipos. Primeiramente, a validação cruzada em conjuntos de dados adicionais (CVC-ClinicDB, ETIS-Larib, CVC-ColonDB) fortaleceria a generalização dos achados e revelaria possíveis vieses específicos do Kvasir-SEG. A avaliação em dados de múltiplos centros hospitalares, com diferentes equipamentos endoscópicos e protocolos de aquisição, é essencial para verificar robustez clínica.</p>
+<p>Trabalhos futuros devem incorporar análise de custo computacional, incluindo número de parâmetros, tempo de inferência e consumo de memória. Tais métricas são críticas para implantação em sistemas de auxílio diagnóstico em tempo real durante colonoscopia. A comparação com arquiteturas recentes baseadas em <em>transformers</em> e métodos híbridos CNN-<em>transformer</em> também merece investigação, considerando o equilíbrio entre precisão e eficiência computacional demonstrado por HarDNet-MSEG<sup class="footnote-reference" id="fr-17-2"><a href="#fn-17">17</a></sup>.</p>
+<p>A análise estatística pode ser expandida através de testes de significância pareados (teste t de Student, teste de Wilcoxon) para determinar se diferenças observadas entre arquiteturas são estatisticamente significativas. Intervalos de confiança complementariam a análise de variância entre sementes, fornecendo estimativas mais robustas de incerteza do modelo.</p>
+<p>Estratégias de treinamento alternativas merecem exploração sistemática. A investigação de diferentes funções de perda (Focal Loss, Tversky Loss, Boundary Loss) pode melhorar delineação de bordas, desafio persistente observado na análise qualitativa. Técnicas de <em>ensemble</em> combinando predições de múltiplas arquiteturas podem aumentar robustez, particularmente em casos desafiadores com baixo contraste ou oclusões.</p>
+<p>Por fim, estudos clínicos prospectivos com endoscopistas avaliando sistemas automáticos em cenários reais são fundamentais para validação translacional. Métricas centradas no usuário, incluindo tempo de procedimento, taxa de detecção de adenomas e aceitabilidade clínica, devem complementar métricas puramente técnicas para orientar desenvolvimento de sistemas clinicamente úteis e seguros.</p>
+<h1 id="nota-sobre-uso-de-ia">Nota sobre uso de IA<a class="zola-anchor" href="#nota-sobre-uso-de-ia" aria-label="Anchor link for: nota-sobre-uso-de-ia" style="visibility: hidden;"></a>
+</h1>
+<p>Os autores declaram que nenhuma ferramenta de inteligência artificial generativa foi utilizada para concepção do estudo, criação de códigos, análise de resultados, geração de ilustrações ou escrita do artigo, exceto revisão ortográfica e gramatical, em que se utilizou Claude Opus 4.1.</p>
+<h1 id="referencias">Referências<a class="zola-anchor" href="#referencias" aria-label="Anchor link for: referencias" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>World Health Organization, “Colorectal cancer”, https://www.who.int/news-room/fact-sheets/detail/colorectal-cancer, Jul. 2023, online. Acessado em 25 de setembro de 2025. <a href="#fr-1-1">↩</a></p>
+</li>
+<li id="fn-2">
+<p>D. A. Corley, C. D. Jensen, A. R. Marks, W. K. Zhao, J. K. Lee, C. A. Doubeni, A. G. Zauber, J. de Boer, B. H. Fireman, J. E. Schottinger, and T. R. Levin, “Adenoma detection rate and risk of colorectal cancer and death”, <em>The New England Journal of Medicine</em>, vol. 370, no. 14, pp. 1298—1306, 2014. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>J. Bernal, F. J. Sánchez, G. Fernández-Esparrach, D. Gil, C. Rodríguez, and F. Vilariño, “WM-DOVA maps for accurate polyp highlighting in colonoscopy: Validation vs. saliency maps from physicians”, <em>Computerized Medical Imaging and Graphics</em>, vol. 43, pp. 99—111, 2015. <a href="#fr-3-1">↩</a> <a href="#fr-3-2">↩2</a></p>
+</li>
+<li id="fn-4">
+<p>P. Brandão, E. Mazomenos, G. Ciuti, R. Caliò, F. Bianchi, A. Menciassi, P. Dario, A. Koulaouzidis, A. Arezzo, and D. Stoyanov, “Fully convolutional neural networks for polyp segmentation in colonoscopy”, in <em>Medical Imaging 2017: Computer-Aided Diagnosis, ser. Proceedings of SPIE</em>, vol. 10134, Orlando, FL, USA, 2017. <a href="#fr-4-1">↩</a> <a href="#fr-4-2">↩2</a></p>
+</li>
+<li id="fn-5">
+<p>N. Tajbakhsh, S. R. Gurudu, and J. Liang, “Automated polyp detection in colonoscopy videos using shape and context information”, <em>IEEE Transactions on Medical Imaging</em>, vol. 35, no. 2, pp. 630—644, 2016. <a href="#fr-5-1">↩</a> <a href="#fr-5-2">↩2</a></p>
+</li>
+<li id="fn-6">
+<p>O. Ronneberger, P. Fischer, and T. Brox, “U-net: Convolutional networks for biomedical image segmentation”, in <em>Medical Image Computing and Computer-Assisted Intervention - MICCAI 2015, ser. Lecture Notes in Computer Science</em>, vol. 9351. Cham: Springer, 2015, pp. 234—241. <a href="#fr-6-1">↩</a> <a href="#fr-6-2">↩2</a> <a href="#fr-6-3">↩3</a></p>
+</li>
+<li id="fn-7">
+<p>D. Jha, P. H. Smedsrud, M. A. Riegler, P. Halvorsen, T. de Lange, D. Johansen, and H. D. Johansen, “Kvasir-SEG: A segmented polyp dataset”, in <em>MultiMedia Modeling (MMM 2020), Proceedings, Part II, ser. Lecture Notes in Computer Science</em>, vol. 11962. Cham: Springer, 2020, pp. 451—462. <a href="#fr-7-1">↩</a> <a href="#fr-7-2">↩2</a></p>
+</li>
+<li id="fn-8">
+<p>E. Shelhamer, J. Long, and T. Darrell, “Fully convolutional networks for semantic segmentation”, <em>IEEE Transactions on Pattern Analysis and Machine Intelligence</em>, vol. 39, no. 4, pp. 640—651. 2017. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>Z. Zhou, M. M. Rahman Siddiquee, N. Tajbakhsh, and J. Liang, “Unet++: A nested u-net architecture for medical image segmentation”, in <em>4th International Workshop, DLMIA 2018, and 8th International Workshop, ML-CDS 2018, Held in Conjunction with MICCAI 2018</em>, vol. 11045, 2018, pp. 3—11. <a href="#fr-9-1">↩</a> <a href="#fr-9-2">↩2</a></p>
+</li>
+<li id="fn-10">
+<p>O. Oktay, J. Schlemper, L. L. Folgoc, M. Lee, M. Heinrich, K. Misawa, K. Mori, S. McDonagh, N. Y. Hammerla, B. Kainz et al., “Attention u-net: Learning where to look for the pancreas”, arXiv preprint arXiv:1804.03999, 2018. <a href="#fr-10-1">↩</a> <a href="#fr-10-2">↩2</a></p>
+</li>
+<li id="fn-11">
+<p>D. Jha, P. H. Smedsrud, M. A. Riegler, H. D. Johansen, T. de Lange, P. Halvorsen, and D. Johansen, “DoubleU-Net: A deep convolutional neural network for medical image segmentation”, in <em>2020 IEEE 33rd International Symposium on Computer-Based Medical Systems (CBMS)</em>. IEEE, 2020, pp. 558—564. <a href="#fr-11-1">↩</a></p>
+</li>
+<li id="fn-12">
+<p>D.-P. Fan, G.-P. Ji, T. Zhou, G. Chen, H. Fu, J. Shen, and L. Shao, “PraNet: Parallel reverse attention network for polyp segmentation”, in <em>Medical Image Computing and Computer-Assisted Intervention — MICCAI 2020</em>. Springer International Publishing, 2020, pp. 263—273. <a href="#fr-12-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>Y. Fang, C. Chen, Y. Yuan, and K.-y. Tong, “Selective feature aggregation network with area-boundary constraints for polyp segmentation”, in <em>Medical Image Computing and Computer-Assisted Intervention — MICCAI 2019</em>. Springer International Publishing, 2019, pp. 302—310. <a href="#fr-13-1">↩</a></p>
+</li>
+<li id="fn-14">
+<p>R. Zhang, G. Li, Z. Li, S. Cui, D. Qian, and Y. Yu, “Adaptive context selection for polyp segmentation”, in <em>Medical Image Computing and Computer-Assisted Intervention — MICCAI 2020</em>. Springer International Publishing, 2020, pp. 253—262. <a href="#fr-14-1">↩</a></p>
+</li>
+<li id="fn-15">
+<p>A. Srivastava, D. Jha, S. Chanda, U. Pal, H. D. Johansen, D. Johansen, M. A. Riegler, S. Ali, and P. Halvorsen, “MSRF-Net: A multi-scale residual fusion network for biomedical image segmentation”, <em>IEEE Journal of Biomedical and Health Informatics</em>, vol. 26, no. 5, pp. 2252—2263, 2022. <a href="#fr-15-1">↩</a></p>
+</li>
+<li id="fn-16">
+<p>J. M. J. Valanarasu, P. Oza, I. Hacihaliloglu, and V. M. Patel, “Medical transformer: Gated axial-attention for medical image segmentation”, in <em>Medical Image Computing and Computer-Assisted Intervention — MICCAI 2021</em>. Springer International Publishing, 2021, pp. 36—46. <a href="#fr-16-1">↩</a></p>
+</li>
+<li id="fn-17">
+<p>C.-H. Huang, H.-Y. Wu, and Y.-L. Lin, “HarDNet-MSEG: A simple encoder-decoder polyp segmentation neural network that achieves over 0.9 mean dice and 86 fps”, arXiv preprint arXiv:2101.07172, 2021. <a href="#fr-17-1">↩</a> <a href="#fr-17-2">↩2</a></p>
+</li>
+<li id="fn-18">
+<p>K. He, X. Zhang, S. Ren, and J. Sun, “Deep residual learning for image recognition”, in <em>2016 IEEE Conference on Computer Vision and Pattern Recognition (CVPR)</em>. IEEE, 2016, pp. 770—778. <a href="#fr-18-1">↩</a></p>
+</li>
+<li id="fn-19">
+<p>Z. Zhang, Q. Liu, and Y. Wang, “Road extraction by deep residual u-net”, <em>IEEE Geoscience and Remote Sensing Letters</em>, vol. 15, no. 5, pp. 749—753, 2018. <a href="#fr-19-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>
