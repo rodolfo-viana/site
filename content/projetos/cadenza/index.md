@@ -24,36 +24,29 @@ Ele roda no Linux, no macOS e no Windows, funciona offline e guarda cada apresen
 
 # Baixar
 
-**Versão 0.2.1**, de 14 de outubro de 2026 ([o que há de novo][novidades] · [versões anteriores][versoes]).
+Baixe a versão mais recente na [página de versões][versoes] do GitHub, que também mostra as novidades de cada versão. Escolha o arquivo do seu sistema (x.y.z é o número da versão):
 
-| Sistema | Download |
-|---------|----------|
-| Windows 10 e 11 | [Instalador (.exe)][exe] · [Pacote MSI][msi] |
-| macOS 12 ou mais recente (Apple Silicon e Intel) | [Imagem de disco (.dmg)][dmg] |
-| Ubuntu, Debian e derivados | [Pacote .deb][deb] |
-| Fedora e openSUSE | [Pacote .rpm][rpm] |
-| Qualquer Linux | [AppImage][appimage] |
+| Sistema | Arquivo |
+|---------|---------|
+| Windows 10 e 11 | `Cadenza_x.y.z_x64-setup.exe` (instalador) ou `Cadenza_x.y.z_x64_en-US.msi` (pacote MSI) |
+| macOS 12 ou mais recente (Apple Silicon e Intel) | `Cadenza_x.y.z_universal.dmg` |
+| Ubuntu, Debian e derivados | `Cadenza_x.y.z_amd64.deb` |
+| Fedora e openSUSE | `Cadenza-x.y.z-1.x86_64.rpm` |
+| Qualquer Linux | `Cadenza_x.y.z_amd64.AppImage` |
 
-[novidades]: https://github.com/rodolfo-viana/cadenza/releases/tag/v0.2.1
 [versoes]: https://github.com/rodolfo-viana/cadenza/releases
-[exe]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_x64-setup.exe
-[msi]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_x64_en-US.msi
-[dmg]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_universal.dmg
-[deb]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_amd64.deb
-[rpm]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza-0.2.1-1.x86_64.rpm
-[appimage]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_amd64.AppImage
 
 ## Instalação
 
 - **Windows:** execute o instalador. Ele instala o Microsoft WebView2 se for preciso.
 - **macOS:** abra o arquivo `.dmg` e arraste o **Cadenza** para a pasta **Aplicativos**.
-- **Linux:** instale o pacote pelo terminal, na pasta onde ele foi baixado. O AppImage não precisa de instalação: basta torná-lo executável e abri-lo.
+- **Linux:** instale o pacote pelo terminal, na pasta onde ele foi baixado, trocando x.y.z pela versão baixada. O AppImage não precisa de instalação: basta torná-lo executável e abri-lo.
 
 ```sh
-sudo apt install ./Cadenza_0.2.1_amd64.deb         # Ubuntu, Debian
-sudo dnf install ./Cadenza-0.2.1-1.x86_64.rpm      # Fedora
-sudo zypper install ./Cadenza-0.2.1-1.x86_64.rpm   # openSUSE
-chmod +x Cadenza_0.2.1_amd64.AppImage              # AppImage
+sudo apt install ./Cadenza_x.y.z_amd64.deb         # Ubuntu, Debian
+sudo dnf install ./Cadenza-x.y.z-1.x86_64.rpm      # Fedora
+sudo zypper install ./Cadenza-x.y.z-1.x86_64.rpm   # openSUSE
+chmod +x Cadenza_x.y.z_amd64.AppImage              # AppImage
 ```
 
 As versões para Linux e Windows são de 64 bits (x86-64). Os pacotes `.deb` e `.rpm` precisam do WebKitGTK 4.1, presente no Ubuntu 22.04, no Debian 12, no Fedora 37 e em versões mais recentes.
@@ -93,7 +86,7 @@ Os instaladores ainda não têm assinatura digital, então o sistema pede uma co
 
 ## Mídia
 
-- Biblioteca de mídia com fotos e GIFs de licença aberta do Openverse, além do Unsplash e do GIPHY com uma chave de API gratuita.
+- Biblioteca de mídia com fotos e GIFs de licença aberta do Openverse e do Wikimedia Commons, além do Pexels, do Pixabay e do GIPHY com uma chave de API gratuita.
 - Vídeos do YouTube e do Vimeo: navegue pelos sites como de costume e clique em **Inserir este vídeo**, ou simplesmente cole o link. Não é preciso chave.
 
 ## Apresentação e compartilhamento
