@@ -24,7 +24,7 @@ Ele roda no Linux, no macOS e no Windows, funciona offline e guarda cada apresen
 
 # Baixar
 
-**Versão 0.2.0**, de 13 de outubro de 2026 ([o que há de novo][novidades] · [versões anteriores][versoes]).
+**Versão 0.2.1**, de 14 de outubro de 2026 ([o que há de novo][novidades] · [versões anteriores][versoes]).
 
 | Sistema | Download |
 |---------|----------|
@@ -34,14 +34,14 @@ Ele roda no Linux, no macOS e no Windows, funciona offline e guarda cada apresen
 | Fedora e openSUSE | [Pacote .rpm][rpm] |
 | Qualquer Linux | [AppImage][appimage] |
 
-[novidades]: https://github.com/rodolfo-viana/cadenza/releases/tag/v0.2.0
+[novidades]: https://github.com/rodolfo-viana/cadenza/releases/tag/v0.2.1
 [versoes]: https://github.com/rodolfo-viana/cadenza/releases
-[exe]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.0/Cadenza_0.2.0_x64-setup.exe
-[msi]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.0/Cadenza_0.2.0_x64_en-US.msi
-[dmg]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.0/Cadenza_0.2.0_universal.dmg
-[deb]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.0/Cadenza_0.2.0_amd64.deb
-[rpm]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.0/Cadenza-0.2.0-1.x86_64.rpm
-[appimage]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.0/Cadenza_0.2.0_amd64.AppImage
+[exe]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_x64-setup.exe
+[msi]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_x64_en-US.msi
+[dmg]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_universal.dmg
+[deb]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_amd64.deb
+[rpm]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza-0.2.1-1.x86_64.rpm
+[appimage]: https://github.com/rodolfo-viana/cadenza/releases/download/v0.2.1/Cadenza_0.2.1_amd64.AppImage
 
 ## Instalação
 
@@ -50,10 +50,10 @@ Ele roda no Linux, no macOS e no Windows, funciona offline e guarda cada apresen
 - **Linux:** instale o pacote pelo terminal, na pasta onde ele foi baixado. O AppImage não precisa de instalação: basta torná-lo executável e abri-lo.
 
 ```sh
-sudo apt install ./Cadenza_0.2.0_amd64.deb         # Ubuntu, Debian
-sudo dnf install ./Cadenza-0.2.0-1.x86_64.rpm      # Fedora
-sudo zypper install ./Cadenza-0.2.0-1.x86_64.rpm   # openSUSE
-chmod +x Cadenza_0.2.0_amd64.AppImage              # AppImage
+sudo apt install ./Cadenza_0.2.1_amd64.deb         # Ubuntu, Debian
+sudo dnf install ./Cadenza-0.2.1-1.x86_64.rpm      # Fedora
+sudo zypper install ./Cadenza-0.2.1-1.x86_64.rpm   # openSUSE
+chmod +x Cadenza_0.2.1_amd64.AppImage              # AppImage
 ```
 
 As versões para Linux e Windows são de 64 bits (x86-64). Os pacotes `.deb` e `.rpm` precisam do WebKitGTK 4.1, presente no Ubuntu 22.04, no Debian 12, no Fedora 37 e em versões mais recentes.
@@ -99,6 +99,8 @@ Os instaladores ainda não têm assinatura digital, então o sistema pede uma co
 ## Apresentação e compartilhamento
 
 - Apresentação em tela cheia com uma tela do apresentador: notas, cronômetro, relógio e o próximo slide. Com dois monitores, o público vê os slides num deles e você vê a tela do apresentador no outro.
+- Um teleprompter na tela do apresentador, que rola as notas de cada slide enquanto você apresenta. Dá para colocá-lo em qualquer lugar da tela, mudar o tamanho e ajustar a velocidade, a fonte, o tamanho do texto e as cores. O público nunca o vê.
+- Com uma só tela, a tecla X alterna entre os slides e a tela do apresentador durante a apresentação. Numa videochamada, compartilhe só a janela da apresentação.
 - Subslides verticais, slides ocultos e avanço automático.
 - Exportação como página web, numa pasta para qualquer servidor ou num único arquivo `.html`, e impressão em PDF.
 - Importação de Markdown no estilo do reveal.js.
