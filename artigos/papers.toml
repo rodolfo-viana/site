@@ -1,0 +1,40 @@
+[[articles]]
+title = "Consistency-Aware Anchor Pyramid Network for Crowd Localization"
+journal = "IEEE Transactions on Pattern Analysis and Machine Intelligence"
+date = 2026-09-01
+year = 2026
+volume = "48"
+number = "9"
+pages = "10192--10206"
+doi = "10.1109/TPAMI.2024.3392013"
+article_url = "https://www.computer.org/csdl/journal/tp/2026/09/10510228/1WxkjCX6GR2"
+pdf_url = "https://www.computer.org/csdl/api/v1/periodical/trans/tp/2026/09/10510228/1WxkjCX6GR2/download-article/pdf"
+authors = [
+    { given = "Xinyan", family = "Liu" },
+    { given = "Guorong", family = "Li" },
+    { given = "Yuankai", family = "Qi" },
+    { given = "Zhenjun", family = "Han" },
+    { given = "Anton", family = "van den Hengel" },
+    { given = "Nicu", family = "Sebe" },
+    { given = "Ming-Hsuan", family = "Yang" },
+    { given = "Qingming", family = "Huang" },
+]
+
+[[articles]]
+title = "GSPNet: Graph Spectral Projection Network Using Learnable Spectral Transformation"
+journal = "IEEE Transactions on Pattern Analysis and Machine Intelligence"
+date = 2026-09-01
+year = 2026
+volume = "48"
+number = "9"
+pages = "10248--10265"
+doi = "10.1109/TPAMI.2026.3685759"
+article_url = "https://www.computer.org/csdl/journal/tp/2026/09/11489188/2fREVAofhVC"
+pdf_url = "https://www.computer.org/csdl/api/v1/periodical/trans/tp/2026/09/11489188/2fREVAofhVC/download-article/pdf"
+authors = [
+    { given = "Yangli-ao", family = "Geng" },
+    { given = "Yuxiao", family = "Dong" },
+    { given = "Wenzheng", family = "Feng" },
+    { given = "Qingyong", family = "Li" },
+    { given = "Jie", family = "Tang" },
+]

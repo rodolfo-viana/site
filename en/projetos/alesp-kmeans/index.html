@@ -1,0 +1,1004 @@
+<!DOCTYPE html>
+
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Edited version of my MBA final project in Data Science and Analytics at USP-Esalq, supervised by Prof. Ana Julia Righetto, PhD., presented in January 2024">
+  <title>Anomaly detection in São Paulo state deputies&#x27; expenses using K-Means</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+<script src="https://rodolfoviana.com.br/js/d3.min.js"></script>
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;alesp-kmeans&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;alesp-kmeans&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Anomaly detection in São Paulo state deputies&#x27; expenses using K-Means">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;alesp-kmeans&#x2F;">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;alesp-kmeans&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#introduction">Introduction</a></li>
+      
+      <li><a class="h2" href="#method">Method</a><ul><li><a class="h3" href="#exploratory-analysis">Exploratory analysis</a></li><li><a class="h3" href="#k-means-clustering-algorithm">K-Means clustering algorithm</a></li></ul></li>
+      
+      <li><a class="h2" href="#results">Results</a></li>
+      
+      <li><a class="h2" href="#commented-code">Commented code</a></li>
+      
+      <li><a class="h2" href="#references">References</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;">← Back</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;alesp-kmeans&#x2F;" hreflang="pt">PT</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Anomaly detection in São Paulo state deputies&#x27; expenses using K-Means</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">09-01-2023</span>
+            <span>Updated on <span id="updated">11-16-2023</span></span>
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/en/tags/machine-learning/"><span>#</span>machine learning</a><a class="instant" href="https://rodolfoviana.com.br/en/tags/k-means/"><span>#</span>k-means</a></div>
+        </div>
+        <h1 id="introduction">Introduction<a class="zola-anchor" href="#introduction" aria-label="Anchor link for: introduction" style="visibility: hidden;"></a>
+</h1>
+<p>Each of the 94 members of the Legislative Assembly of the State of São Paulo (Alesp) is entitled to General Office Expense Allowance and Lodging Allowance, jointly referred to as the “office allowance.” This right was granted by Resolution 783, Article 11, of July 1, 1997<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup>. It is a monthly amount owed by the State so that representatives can be reimbursed for office operation and maintenance costs, lodging, and other expenses inherent to the full exercise of parliamentary activities.</p>
+<p>These legally authorized expenses are grouped into 11 categories, including printing materials and services, consulting, fuel, car rental, lodging, and meals. In 2022, considering the maximum office-allowance limit of 1,250 São Paulo State Fiscal Units (Ufesp)<sup class="footnote-reference" id="fr-1-2"><a href="#fn-1">1</a></sup> and the Ufesp value of R$ 31.97<sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup>, the monthly reimbursement ceiling per representative was R$ 39,962.50.</p>
+<p>That year, the total amount committed to the office allowance was R$ 26,652,243.51<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup>. The sum was 24.43 % higher than in 2021 (R$ 21,419,316.88<sup class="footnote-reference" id="fr-3-2"><a href="#fn-3">3</a></sup>) and lower than the amount recorded for 2023 (R$ 28,607,099.96<sup class="footnote-reference" id="fr-3-3"><a href="#fn-3">3</a></sup>). If this budget is indeed reached this year, it will be the first time the figure tops R$ 28.5 million since 2018.</p>
+<p>These public funds are scrutinized by oversight bodies such as the State Court of Accounts and the São Paulo Public Prosecutor’s Office, which often open proceedings to verify the legitimacy of reimbursements. One example is Investigative Proceeding 29.0001.0246360.2021-54<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup>, initiated on 5 May 2022, concerning alleged misuse of the office allowance by Representative Murilo Felix, who supposedly paid rent on properties belonging to political allies that were never used. Another example is Criminal Case 0037174-14.2021.8.26.0000<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup>, which points, among other issues, to reimbursement of expenses never incurred by Representative Rogério Nogueira.</p>
+<p>Against this backdrop, the present work aims to be an instrument for evaluating expenses and detecting anomalies through unsupervised machine learning. Its objective is not to state categorically whether a given expense is fraudulent; its scope is to serve as a first-look tool by clustering the values.</p>
+<h1 id="method">Method<a class="zola-anchor" href="#method" aria-label="Anchor link for: method" style="visibility: hidden;"></a>
+</h1>
+<h2 id="exploratory-analysis">Exploratory analysis<a class="zola-anchor" href="#exploratory-analysis" aria-label="Anchor link for: exploratory-analysis" style="visibility: hidden;"></a>
+</h2>
+<p>The first step was to fetch data from Alesp’s Open Data Portal <sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup>, where <code>xml</code> files dating back to 2002 contain fields indicating the reference period (“Year,” “Month”) as well as information on both the representative (“Registration,” “Representative”) and the expense (“Vendor,” “CNPJ,” “Type,” “Value”). To avoid ideological bias, representatives’ names were ignored. Given the temporal nature of expenses, “Year” and “Month” were used solely to deflate the amounts to December 31, 2022 according to the Broad Consumer Price Index (IPCA)<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup>. The time dimension of the expenses was thus discarded.</p>
+<p>Only meal and lodging expenses from 2018 to 2022 were included. Vendors with fewer than 20 expenses in the five-year span were excluded because a significant count is needed for clustering.</p>
+<h2 id="k-means-clustering-algorithm">K-Means clustering algorithm<a class="zola-anchor" href="#k-means-clustering-algorithm" aria-label="Anchor link for: k-means-clustering-algorithm" style="visibility: hidden;"></a>
+</h2>
+<p>A K-Means clustering algorithm was implemented to process these records. In short, K-Means partitions a data set into a predefined number of non-overlapping clusters<sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup>. Each data point belongs to the cluster whose centroid is closest on average.</p>
+<p>Given a set of observations \(x = \{x_1, x_2, \ldots, x_n\}\), the algorithm divides the \(n\) observations into \(k\) (\(\ge n\)) sets \(S = \{S_1, S_2, \ldots, S_k\}\) so as to minimize the sum of squares within clusters,</p>
+<p>\[
+\sum_{i = 1}^{k}\sum_{x \in S_i} \lVert x - \mu_i \rVert^2
+\]</p>
+<p>where</p>
+<ul>
+<li>\(k\): number of clusters</li>
+<li>\(S_i\): cluster \(i\)</li>
+<li>\(x\): data point</li>
+<li>\(\mu_i\): mean distance of points in \(S_i\)</li>
+</ul>
+<p>Because our data set is univariate and the goal is anomaly detection,</p>
+<ol>
+<li>points are laid out according to their values;</li>
+<li>given the predefined number of clusters, centroids are calculated by minimizing squared distances;</li>
+<li>points near centroids form clusters;</li>
+<li>points outside clusters are considered anomalies.</li>
+</ol>
+<p>However, K-Means imposes some requirements such as prior determination of the number of clusters, a centroid-initialization method that seeks the global minimum and not the local minima, convergence criteria, and validation of results. These were addressed respectively with the elbow method, K-Means++, centroid-movement comparison, and validation via the silhouette method and the Davies–Bouldin index.</p>
+<h3 id="elbow-method">Elbow method<a class="zola-anchor" href="#elbow-method" aria-label="Anchor link for: elbow-method" style="visibility: hidden;"></a>
+</h3>
+<p>The algorithm must know the number of clusters in advance. The elbow method<sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">9</a></sup> provides that number by iterating over possible cluster centers and computing the sum of squared distances between them and the data points.</p>
+<p>The logic is that increasing the number of clusters reduces intra-cluster distances because points are closer to their centroids. At some point, the reduction becomes marginal—in a graph, the line drops sharply at first and then levels out, forming an “elbow.” That point is an estimate of the ideal number of clusters.number of clusters.</p>
+<div id="elbow-container" class="d3js"></div>
+<script>
+  (function() {
+      const points = [{
+              x: 1,
+              y: 9000
+          },
+          {
+              x: 2,
+              y: 4000
+          },
+          {
+              x: 3,
+              y: 2000
+          },
+          {
+              x: 4,
+              y: 1500
+          },
+          {
+              x: 5,
+              y: 1300
+          },
+          {
+              x: 6,
+              y: 1200
+          },
+          {
+              x: 7,
+              y: 1100
+          }
+      ];
+      const virtualWidth = 600;
+      const virtualHeight = 300;
+      const margin = {
+          top: 20,
+          right: 50,
+          bottom: 60,
+          left: 85
+      };
+      const width = virtualWidth - margin.left - margin.right;
+      const height = virtualHeight - margin.top - margin.bottom;
+      const svg = d3.select("#elbow-container")
+          .append("svg")
+          .attr("viewBox", `0 0 ${virtualWidth} ${virtualHeight}`)
+          .attr("preserveAspectRatio", "xMidYMid meet");
+      const chartArea = svg.append("g")
+          .attr("transform", `translate(${margin.left},${margin.top})`);
+      const xScale = d3.scaleLinear().domain([1, 7]).range([0, width]);
+      const yScale = d3.scaleLinear().domain([0, 10000]).range([height, 0]);
+      const xAxis = d3.axisBottom(xScale)
+          .tickValues([1, 2, 3, 4, 5, 6, 7])
+          .tickFormat(d3.format("d"));
+      const yAxis = d3.axisLeft(yScale)
+          .tickValues([0, 2000, 4000, 6000, 8000, 10000])
+          .tickFormat(d => d === 0 ? "" : d);
+      const xAxisGroup = chartArea.append("g")
+          .attr("transform", `translate(0, ${height})`)
+          .call(xAxis);
+      xAxisGroup.selectAll("path, line")
+          .attr("stroke", "#f0f0f0");
+      xAxisGroup.selectAll("text")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+      const yAxisGroup = chartArea.append("g")
+          .call(yAxis);
+      yAxisGroup.selectAll("path, line")
+          .attr("stroke", "#f0f0f0");
+      yAxisGroup.selectAll("text")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+      chartArea.append("text")
+          .attr("x", width / 2)
+          .attr("y", height + 50)
+          .attr("text-anchor", "middle")
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+          .text("Number of clusters");
+      chartArea.append("text")
+          .attr("text-anchor", "middle")
+          .attr("transform", `translate(${-70}, ${height / 2}) rotate(-90)`)
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "14px")
+          .text("Sum of squared distances");
+      const lineGenerator = d3.line()
+          .x(d => xScale(d.x))
+          .y(d => yScale(d.y));
+      chartArea.append("path")
+          .datum(points)
+          .attr("fill", "none")
+          .attr("stroke", "#ababab")
+          .attr("stroke-width", 2)
+          .attr("d", lineGenerator);
+      chartArea.selectAll("circle.point")
+          .data(points)
+          .enter()
+          .append("circle")
+          .attr("r", 5)
+          .attr("cx", d => xScale(d.x))
+          .attr("cy", d => yScale(d.y))
+          .attr("fill", "#ababab");
+      const elbowPoint = points[2]; // x=3, y=2000
+      chartArea.append("circle")
+          .attr("cx", xScale(elbowPoint.x))
+          .attr("cy", yScale(elbowPoint.y))
+          .attr("r", 10)
+          .attr("fill", "none")
+          .attr("stroke", "#ef5350")
+          .attr("stroke-width", 2);
+      chartArea.append("line")
+          .attr("x1", xScale(elbowPoint.x) + 10)
+          .attr("y1", yScale(elbowPoint.y) - 10)
+          .attr("x2", xScale(elbowPoint.x) + 60)
+          .attr("y2", yScale(elbowPoint.y) - 60)
+          .attr("stroke", "#ef5350")
+          .attr("stroke-width", 2)
+          .attr("stroke-dasharray", "5,5");
+      chartArea.append("text")
+          .attr("x", xScale(elbowPoint.x) + 70)
+          .attr("y", yScale(elbowPoint.y) - 70)
+          .attr("fill", "#f0f0f0")
+          .style("font-size", "12px")
+          .text("Elbow");
+  })();
+</script>
+<p>Considering merely the observation of a graph to measure results on the ideal number of clusters, statistical support is abdicated to ensure the robustness of the elbow method. Schubert<sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">10</a></sup> shows the method applied to datasets with more or less visually cohesive clusters, in which results are similar even in uniform sets or when data contains a single normal distribution. Problems associated with the elbow graph include lack of significant angle metric and axis scaling, which can alter human interpretation of an “elbow”.</p>
+<p>To mitigate such problems, a less subjective method could be used, such as the Variance Ratio Criterion (VRC). While the elbow method relies on the sum of squared distances between each point and the cluster centroid, the VRC measures the ratio between the sum of dispersion between clusters and the sum of dispersion within clusters<sup class="footnote-reference" id="fr-11-1"><a href="#fn-11">11</a></sup>. Since we have a data set that does not point to uniformity or normal distribution, the elbow method was chosen.</p>
+<h3 id="k-means">K-Means++<a class="zola-anchor" href="#k-means" aria-label="Anchor link for: k-means" style="visibility: hidden;"></a>
+</h3>
+<p>Defining the number of clusters, however, does not guarantee that the algorithm will find the best points to serve as centroids. When random initialization is used, where initial centroids are randomly selected within the cluster, points very close to each other may be chosen. The high sensitivity of the clustering technique can lead to a local minimum solution rather than a global one, generating suboptimal partitions<sup class="footnote-reference" id="fr-12-1"><a href="#fn-12">12</a></sup>.</p>
+<p>To overcome this limitation, this study used an initialization method called K-Means++<sup class="footnote-reference" id="fr-13-1"><a href="#fn-13">13</a></sup>, where the centroid goes through iterations and is selected based on the probability that a given point is the best centroid based on distance relative to other data points. The successive change between centroids reduces the chances of the K-Means algorithm converging to a suboptimal solution.</p>
+<p>Given a set of points \(D\) and a set of selected centroids \(C\), the probability of choosing point \(x\) as the next centroid is calculated by</p>
+<p>$$
+P(x) = \frac{D(x)^2}{\sum_{x^{\prime} \in D}D(x^{\prime})^2}
+$$</p>
+<p>where \(D(x)\): distance between point \(x\) and the nearest centroid in \(C\).</p>
+<p>With centroids initialized, each point is assigned to the nearest centroid. These points form clusters. Considering point \(x\) and a set of centroids \(C\), the cluster label \(l\) to which \(x\) belongs is computed by</p>
+<p>$$
+l(x) = \arg \min_{c \in C}\Vert x - c \Vert
+$$</p>
+<p>Next, each centroid is recalculated by taking the mean distance of all points assigned to it,</p>
+<p>$$
+c_i = \frac{1}{\vert S_i \vert}\sum_{x \in S_i} x
+$$</p>
+<p>where \(S_i\): set of all points assigned to centroid \(i\).</p>
+<p>At each centroid update iteration, inertia is computed. For a univariate set,</p>
+<p>$$
+\sum_{i=1}^{n}{\Vert {x_i} - {c_{l(x_i)}}\Vert}^2
+$$</p>
+<p>where \(c_{l(x_i)}\): centroid of the cluster to which \(x_i\) was assigned.</p>
+<h3 id="advanced-convergence-criteria">Advanced convergence criteria<a class="zola-anchor" href="#advanced-convergence-criteria" aria-label="Anchor link for: advanced-convergence-criteria" style="visibility: hidden;"></a>
+</h3>
+<p>In addition to K-Means++ initialization, the algorithm adopts advanced convergence criteria by comparing centroid movement between iterations. Let \(C_t\) be the set of centroids at iteration \(t\), the algorithm converges if</p>
+<p>$$
+\max_{c \in C_t}\Vert c - c_{t - 1} \Vert &lt; tol
+$$</p>
+<p>where,</p>
+<ul>
+<li>\(\Vert c - c_{t - 1} \Vert\): euclidean distance</li>
+<li>\(tol\): specified tolerance</li>
+</ul>
+<h3 id="validation-by-silhouette-method">Validation by silhouette method<a class="zola-anchor" href="#validation-by-silhouette-method" aria-label="Anchor link for: validation-by-silhouette-method" style="visibility: hidden;"></a>
+</h3>
+<p>Validation of results obtained from implementing these techniques was performed, first, by the silhouette method<sup class="footnote-reference" id="fr-14-1"><a href="#fn-14">14</a></sup>. This technique observes the similarity of a point with its cluster compared to other clusters from</p>
+<p>$$
+s_i = \frac{{b_i} - {a_i}}{\max({a_i},{b_i})}
+$$</p>
+<p>where,</p>
+<ul>
+<li>\(a_i\): average distance from \(i\) to all other intra-cluster points</li>
+<li>\(b_i\): smallest average distance from \(i\) to all points in different clusters</li>
+</ul>
+<p>The silhouette method returns results in the range -1 to 1. If the value is</p>
+<ul>
+<li>close to -1: the point is clustered incorrectly;</li>
+<li>close to 0: the point is between two clusters, so clustering can be improved;</li>
+<li>close to 1: the point is well clustered.</li>
+</ul>
+<h3 id="validation-by-davies-bouldin-index">Validation by Davies-Bouldin index<a class="zola-anchor" href="#validation-by-davies-bouldin-index" aria-label="Anchor link for: validation-by-davies-bouldin-index" style="visibility: hidden;"></a>
+</h3>
+<p>While the silhouette method compares a single point to clusters, the Davies-Bouldin index<sup class="footnote-reference" id="fr-15-1"><a href="#fn-15">15</a></sup>, the second measure used in result validation, observes cluster cohesion, given the logic that adequate clustering is dense in itself while distant from other clusters.</p>
+<p>The closer to 0 the index is, the better the clustering, a result obtained by</p>
+<p>$$
+\frac{1}{k}\sum_{i=1}^{k}\max_{i \ne j}\bigg(\frac{{S_i}+{S_j}}{M_{ij}}\bigg)
+$$</p>
+<p>where,</p>
+<ul>
+<li>\(k\): number of clusters</li>
+<li>\(i\), \(j\): different clusters</li>
+<li>\(S_i\), \(S_j\): internal dispersion of clusters \(i\) and \(j\), respectively</li>
+<li>\(M_{ij}\): distance between clusters \(i\) and \(j\)</li>
+</ul>
+<h1 id="results">Results<a class="zola-anchor" href="#results" aria-label="Anchor link for: results" style="visibility: hidden;"></a>
+</h1>
+<p>An exploratory analysis was performed to understand the data and its dispersion. In the observed five-year period, there were 4,453 expense records across 86 unique CNPJ numbers, totaling R$ 1,784,601.08 after inflation adjustment. Each expense had an average value of R$ 400.76, but with a coefficient of variation of 241.41%, indicating significant data dispersion relative to the mean.</p>
+<p>It was also noted that the mean is higher than the third quartile. This denotes data skewness toward lower values. The set thus presents a longer right tail than left, which is corroborated by the skewness of 5.21, while the kurtosis of 32.67 demonstrates a sharp peak compared to normal distribution.</p>
+<table><thead><tr><th>Measure</th><th>Value</th></tr></thead><tbody>
+<tr><td>Count</td><td>4,453</td></tr>
+<tr><td>Mean (R$)</td><td>400.763773</td></tr>
+<tr><td>Standard deviation (R$)</td><td>967.469752</td></tr>
+<tr><td>Minimum (R$)</td><td>6.49</td></tr>
+<tr><td>1st Quartile (R$)</td><td>55.75</td></tr>
+<tr><td>2nd Quartile (R$)</td><td>123.14</td></tr>
+<tr><td>3rd Quartile (R$)</td><td>276.18</td></tr>
+<tr><td>Maximum (R$)</td><td>10,250.41</td></tr>
+<tr><td>Coefficient of variation (%)</td><td>241.40648</td></tr>
+<tr><td>Skewness</td><td>5.21061</td></tr>
+<tr><td>Kurtosis</td><td>32.66851</td></tr>
+</tbody></table>
+<p>Expenses were grouped by company to maintain spending behavior within the variability of values for each CNPJ. The present K-Means algorithm implementation processed information for each establishment following these parameters:</p>
+<table><thead><tr><th>Parameter</th><th>Value</th></tr></thead><tbody>
+<tr><td>Minimum number of clusters</td><td>2</td></tr>
+<tr><td>Number of clusters used</td><td>2 to 10, selected by elbow method</td></tr>
+<tr><td>Maximum iterations</td><td>100</td></tr>
+<tr><td>Tolerance for convergence</td><td>0.0001</td></tr>
+<tr><td>Percentile for anomaly detection</td><td>95</td></tr>
+</tbody></table>
+<p>The result was 262 anomalies totaling R$ 197,697.24 —11.08% of total expense value. Anomalies are understood as patterns in data that do not fit a well-defined notion of normal behavior<sup class="footnote-reference" id="fr-16-1"><a href="#fn-16">16</a></sup> —in the context of this work, anomalies are expense values that do not fit into clusters created by the algorithm. By definition, not every anomaly can be treated as fraud: there are anomalies in the middle of all expenses for a given company, not being the highest values in the set. Such anomalies between clusters are treated here as false positives.</p>
+<p>Given the role of clusters in this algorithm and the K-Means++ implementation, there is great variability in the number of clusters. In the set of 86 companies, the number of clusters ranges from 2 to 10. We validated these values using the two aforementioned instruments:</p>
+<ol>
+<li>Silhouette method, whose acceptable results should be between 0.5 and 1 on a scale from -1 to 1;</li>
+<li>Davies-Bouldin index, with ideal results between 0 to 0.5, on a scale from 0 to 1.</li>
+</ol>
+<p>The number of clusters for each CNPJ was validated using the two aforementioned instruments: the silhouette method and the Davies-Bouldin index. An adequate result for the first would be between 0.5 and 1 on a scale of -1 to 1; the second, from 0 to 0.5 on the scale of 0 to 1.</p>
+<p>Given the set of 86 companies, all recorded ideal results for the silhouette method (values between 0.577 and 0.918); 79 showed ideal results for the Davies-Bouldin index (values between 0.166 and 0.489), while seven showed below-ideal results (values between 0.508 and 0.573).</p>
+<p>With expense clustering, algorithm-based anomaly detection, and validation of applied methods, a final analysis was performed to consider anomalies subject to oversight body inquiry as those whose values are greater than the largest non-anomaly value of the last cluster. This discarded anomalies positioned between clusters, and the result obtained was 46 anomalies in 32 companies, with a total value of R$ 44,348.88.</p>
+
+<details >
+  <summary><span>See companies and anomalies</span></summary>
+  <table><thead><tr><th>CNPJ</th><th>Original value (R$)</th><th>Corrected value (R$)</th><th>Number of clusters for CNPJ</th><th>Silhouette method result</th><th>Davies-Bouldin index</th></tr></thead><tbody>
+<tr><td>02.012.862/0001-60</td><td>9,525.39</td><td>9,584.44</td><td>6</td><td>0.5996</td><td>0.4816</td></tr>
+<tr><td>03.071.465/0001-21</td><td>1,340.00</td><td>1,658.78</td><td>3</td><td>0.6767</td><td>0.4664</td></tr>
+<tr><td>03.300.974/0049-23</td><td>229.12</td><td>298.95</td><td>2</td><td>0.6579</td><td>0.4856</td></tr>
+<tr><td>08.402.977/0001-47</td><td>266.51</td><td>269.26</td><td>4</td><td>0.7556</td><td>0.3117</td></tr>
+<tr><td>09.060.964/0106-77</td><td>360.91</td><td>448.74</td><td>6</td><td>0.6681</td><td>0.5129</td></tr>
+<tr><td>09.060.964/0106-77</td><td>314.57</td><td>389.17</td><td>6</td><td>0.6681</td><td>0.5129</td></tr>
+<tr><td>09.399.877/0001-71</td><td>1,398.26</td><td>1,788.63</td><td>4</td><td>0.6203</td><td>0.5162</td></tr>
+<tr><td>09.438.123/0001-83</td><td>445.86</td><td>570.85</td><td>3</td><td>0.6277</td><td>0.5329</td></tr>
+<tr><td>09.456.178/0001-16</td><td>229.75</td><td>285.66</td><td>4</td><td>0.6632</td><td>0.3914</td></tr>
+<tr><td>09.456.550/0001-94</td><td>379.80</td><td>487.44</td><td>3</td><td>0.6776</td><td>0.4350</td></tr>
+<tr><td>09.456.550/0001-94</td><td>354.59</td><td>453.99</td><td>3</td><td>0.6776</td><td>0.4350</td></tr>
+<tr><td>09.456.704/0001-48</td><td>432.16</td><td>438.34</td><td>4</td><td>0.6629</td><td>0.4534</td></tr>
+<tr><td>09.456.704/0001-48</td><td>326.36</td><td>405.21</td><td>4</td><td>0.6629</td><td>0.4534</td></tr>
+<tr><td>09.456.714/0001-83</td><td>458.39</td><td>567.66</td><td>4</td><td>0.6824</td><td>0.4745</td></tr>
+<tr><td>09.536.662/0001-55</td><td>403.31</td><td>407.22</td><td>3</td><td>0.7288</td><td>0.3667</td></tr>
+<tr><td>11.384.785/0001-60</td><td>678.58</td><td>840.34</td><td>3</td><td>0.6506</td><td>0.4524</td></tr>
+<tr><td>13.232.868/0001-69</td><td>1,360.75</td><td>1,683.45</td><td>3</td><td>0.6969</td><td>0.4445</td></tr>
+<tr><td>13.232.868/0001-69</td><td>1,209.82</td><td>1,498.23</td><td>3</td><td>0.6969</td><td>0.4445</td></tr>
+<tr><td>42.591.651/0612-82</td><td>110.60</td><td>134.45</td><td>6</td><td>0.6872</td><td>0.3487</td></tr>
+<tr><td>42.591.651/0612-82</td><td>118.80</td><td>119.93</td><td>6</td><td>0.6872</td><td>0.3487</td></tr>
+<tr><td>43.386.903/0001-65</td><td>1,361.20</td><td>1,361.20</td><td>2</td><td>0.9177</td><td>0.2157</td></tr>
+<tr><td>43.386.903/0001-65</td><td>1,030.60</td><td>1,036.99</td><td>2</td><td>0.9177</td><td>0.2157</td></tr>
+<tr><td>43.386.903/0001-65</td><td>249.27</td><td>308.69</td><td>2</td><td>0.9177</td><td>0.2157</td></tr>
+<tr><td>44.993.632/0001-79</td><td>2,004.54</td><td>2,621.23</td><td>6</td><td>0.6270</td><td>0.4621</td></tr>
+<tr><td>44.993.632/0001-79</td><td>1,700.39</td><td>2,218.63</td><td>6</td><td>0.6270</td><td>0.4621</td></tr>
+<tr><td>44.993.632/0001-79</td><td>1,441.83</td><td>1,887.10</td><td>6</td><td>0.6270</td><td>0.4621</td></tr>
+<tr><td>45.007.937/0001-27</td><td>1,189.20</td><td>1,556.45</td><td>5</td><td>0.7601</td><td>0.3129</td></tr>
+<tr><td>47.079.637/0001-89</td><td>1,800.00</td><td>1,805.09</td><td>2</td><td>0.7795</td><td>0.4130</td></tr>
+<tr><td>49.967.557/0001-95</td><td>1,395.16</td><td>1,777.74</td><td>4</td><td>0.7310</td><td>0.3074</td></tr>
+<tr><td>50.244.235/0001-05</td><td>93.50</td><td>108.86</td><td>3</td><td>0.7979</td><td>0.2713</td></tr>
+<tr><td>51.483.956/0001-22</td><td>140.59</td><td>184.01</td><td>3</td><td>0.6680</td><td>0.4331</td></tr>
+<tr><td>54.867.247/0001-39</td><td>361.15</td><td>447.56</td><td>4</td><td>0.6375</td><td>0.4426</td></tr>
+<tr><td>54.867.247/0001-39</td><td>336.96</td><td>359.06</td><td>4</td><td>0.6375</td><td>0.4426</td></tr>
+<tr><td>54.867.247/0001-39</td><td>174.04</td><td>216.09</td><td>4</td><td>0.6375</td><td>0.4426</td></tr>
+<tr><td>54.951.561/0001-03</td><td>236.00</td><td>239.37</td><td>8</td><td>0.6219</td><td>0.4354</td></tr>
+<tr><td>56.007.859/0001-87</td><td>453.85</td><td>593.48</td><td>3</td><td>0.8057</td><td>0.3859</td></tr>
+<tr><td>58.699.232/0001-60</td><td>168.16</td><td>218.54</td><td>5</td><td>0.6550</td><td>0.4581</td></tr>
+<tr><td>61.084.018/0001-03</td><td>1,073.17</td><td>1,372.78</td><td>4</td><td>0.6369</td><td>0.4892</td></tr>
+<tr><td>61.359.691/0001-09</td><td>180.10</td><td>181.82</td><td>5</td><td>0.5769</td><td>0.5270</td></tr>
+<tr><td>61.563.557/0001-25</td><td>238.45</td><td>242.33</td><td>4</td><td>0.7763</td><td>0.3427</td></tr>
+<tr><td>61.980.272/0012-42</td><td>172.88</td><td>219.43</td><td>3</td><td>0.7751</td><td>0.4507</td></tr>
+<tr><td>65.684.037/0003-93</td><td>636.78</td><td>790.71</td><td>5</td><td>0.6320</td><td>0.4574</td></tr>
+<tr><td>65.684.037/0003-93</td><td>513.97</td><td>647.51</td><td>5</td><td>0.6320</td><td>0.4574</td></tr>
+<tr><td>65.684.037/0003-93</td><td>422.30</td><td>525.07</td><td>5</td><td>0.6320</td><td>0.4574</td></tr>
+<tr><td>65.684.037/0003-93</td><td>399.87</td><td>495.19</td><td>5</td><td>0.6320</td><td>0.4574</td></tr>
+<tr><td>66.728.858/0001-85</td><td>482.40</td><td>603.21</td><td>7</td><td>0.6492</td><td>0.4156</td></tr>
+</tbody></table>
+
+</details>
+
+<h1 id="commented-code">Commented code<a class="zola-anchor" href="#commented-code" aria-label="Anchor link for: commented-code" style="visibility: hidden;"></a>
+</h1>
+
+<details >
+  <summary><span>Algorithm</span></summary>
+  <pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">from</span><span> typing</span><span class="z-keyword"> import</span><span> Tuple</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">class</span><span class="z-entity z-name"> KMeans</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">    k-means with enhanced convergence criteria.</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-string">    Attributes:</span></span>
+<span class="giallo-l"><span class="z-string">        k (int): Number of clusters.</span></span>
+<span class="giallo-l"><span class="z-string">        max_iters (int): Maximum number of iterations for k-means.</span></span>
+<span class="giallo-l"><span class="z-string">        tol (float): Convergence tolerance based on centroid movement.</span></span>
+<span class="giallo-l"><span class="z-string">        n_init (int): Number of times the algorithm will run with</span></span>
+<span class="giallo-l"><span class="z-string">            different centroid seeds.</span></span>
+<span class="giallo-l"><span class="z-string">        threshold (int): Percentile for anomaly detection.</span></span>
+<span class="giallo-l"><span class="z-string">        centroids (np.ndarray): Centroids for clusters.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">    def</span><span class="z-support"> __init__</span><span>(</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        self</span><span>,</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        k</span><span>:</span><span class="z-support"> int</span><span class="z-keyword"> =</span><span class="z-constant"> 2</span><span>,</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        max_iters</span><span>:</span><span class="z-support"> int</span><span class="z-keyword"> =</span><span class="z-constant"> 100</span><span>,</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        tol</span><span>:</span><span class="z-support"> float</span><span class="z-keyword"> =</span><span class="z-constant"> 1e-4</span><span>,</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        n_init</span><span>:</span><span class="z-support"> int</span><span class="z-keyword"> =</span><span class="z-constant"> 30</span><span>,</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        threshold</span><span>:</span><span class="z-support"> int</span><span class="z-keyword"> =</span><span class="z-constant"> 95</span><span>,</span></span>
+<span class="giallo-l"><span class="z-variable z-parameter z-function">        centroids</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span class="z-keyword"> =</span><span class="z-constant"> None</span><span>,</span></span>
+<span class="giallo-l"><span>    )</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">        Initialization with specified parameters.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>k</span><span class="z-keyword"> =</span><span> k</span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>max_iters</span><span class="z-keyword"> =</span><span> max_iters</span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>tol</span><span class="z-keyword"> =</span><span> tol</span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>n_init</span><span class="z-keyword"> =</span><span> n_init</span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>threshold</span><span class="z-keyword"> =</span><span> threshold</span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>centroids</span><span class="z-keyword"> =</span><span> centroids</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-entity z-name">    @</span><span class="z-support">staticmethod</span></span>
+<span class="giallo-l"><span class="z-storage z-type">    def</span><span class="z-entity z-name"> _kpp_init</span><span>(</span><span class="z-variable z-parameter z-function">data</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>,</span><span class="z-variable z-parameter z-function"> k</span><span>:</span><span class="z-support"> int</span><span>)</span><span> -&gt;</span><span> np</span><span>.</span><span>ndarray</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">        K-Means++ initialization for better centroid selection.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>        centroids</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros</span><span>(</span><span>(</span><span>k</span><span>,</span><span> data</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">1</span><span>]</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>        centroids</span><span>[</span><span class="z-constant">0</span><span>]</span><span class="z-keyword"> =</span><span> data</span><span>[</span><span>np</span><span>.</span><span>random</span><span>.</span><span>choice</span><span>(</span><span>data</span><span>.</span><span>shape</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span><span>]</span></span>
+<span class="giallo-l"><span>        </span></span>
+<span class="giallo-l"><span class="z-keyword">        for</span><span> i</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-constant">1</span><span>,</span><span> k</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>            distances</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>array</span><span>(</span><span>[</span><span class="z-support">min</span><span>(</span><span>[</span><span>np</span><span>.</span><span>linalg</span><span>.</span><span>norm</span><span>(</span><span>x</span><span class="z-keyword"> -</span><span> c</span><span>)</span><span class="z-keyword"> **</span><span class="z-constant"> 2</span><span> </span></span>
+<span class="giallo-l"><span class="z-keyword">                                     for</span><span> c</span><span class="z-keyword"> in</span><span> centroids</span><span>[</span><span>:</span><span>i</span><span>]</span><span>]</span><span>)</span><span class="z-keyword"> for</span><span> x</span><span class="z-keyword"> in</span><span> data</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>            probabilities</span><span class="z-keyword"> =</span><span> distances</span><span class="z-keyword"> /</span><span> distances</span><span>.</span><span>sum</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>            cumulative_prob</span><span class="z-keyword"> =</span><span> probabilities</span><span>.</span><span>cumsum</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>            r</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>random</span><span>.</span><span>rand</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>            </span></span>
+<span class="giallo-l"><span class="z-keyword">            for</span><span> j</span><span>,</span><span> p</span><span class="z-keyword"> in</span><span class="z-support"> enumerate</span><span>(</span><span>cumulative_prob</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-keyword">                if</span><span> r</span><span class="z-keyword"> &lt;</span><span> p</span><span>:</span></span>
+<span class="giallo-l"><span>                    centroids</span><span>[</span><span>i</span><span>]</span><span class="z-keyword"> =</span><span> data</span><span>[</span><span>j</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">                    break</span></span>
+<span class="giallo-l"><span>                    </span></span>
+<span class="giallo-l"><span class="z-keyword">        return</span><span> centroids</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">    def</span><span class="z-entity z-name"> fit</span><span>(</span><span class="z-variable z-parameter z-function">self</span><span>,</span><span class="z-variable z-parameter z-function"> data</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span class="z-constant"> None</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">        Fit K-Means to the data.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>        best_inertia</span><span class="z-keyword"> =</span><span class="z-support"> float</span><span>(</span><span class="z-punctuation z-definition z-string">&#39;</span><span class="z-string">inf</span><span class="z-punctuation z-definition z-string">&#39;</span><span>)</span></span>
+<span class="giallo-l"><span>        best_centroids</span><span class="z-keyword"> =</span><span class="z-constant"> None</span></span>
+<span class="giallo-l"><span>        </span></span>
+<span class="giallo-l"><span class="z-keyword">        for</span><span> _</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-variable z-language">self</span><span>.</span><span>n_init</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">            #</span><span class="z-comment"> Initialize centroids using K-Means++</span></span>
+<span class="giallo-l"><span>            centroids</span><span class="z-keyword"> =</span><span class="z-variable z-language"> self</span><span>.</span><span>_kpp_init</span><span>(</span><span>data</span><span>,</span><span class="z-variable z-language"> self</span><span>.</span><span>k</span><span>)</span></span>
+<span class="giallo-l"><span>            </span></span>
+<span class="giallo-l"><span class="z-keyword">            for</span><span> iteration</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-variable z-language">self</span><span>.</span><span>max_iters</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">                #</span><span class="z-comment"> Assign points to clusters</span></span>
+<span class="giallo-l"><span>                distances</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>sqrt</span><span>(</span><span>(</span><span>(</span><span>data</span><span class="z-keyword"> -</span><span> centroids</span><span>[</span><span>:</span><span>,</span><span> np</span><span>.</span><span>newaxis</span><span>]</span><span>)</span><span class="z-keyword">**</span><span class="z-constant">2</span><span>)</span><span>.</span><span>sum</span><span>(</span><span class="z-variable">axis</span><span class="z-keyword">=</span><span class="z-constant">2</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>                labels</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>argmin</span><span>(</span><span>distances</span><span>,</span><span class="z-variable"> axis</span><span class="z-keyword">=</span><span class="z-constant">0</span><span>)</span></span>
+<span class="giallo-l"><span>                </span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">                #</span><span class="z-comment"> Update centroids</span></span>
+<span class="giallo-l"><span>                new_centroids</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>array</span><span>(</span><span>[</span><span>data</span><span>[</span><span>labels</span><span class="z-keyword"> ==</span><span> i</span><span>]</span><span>.</span><span>mean</span><span>(</span><span class="z-variable">axis</span><span class="z-keyword">=</span><span class="z-constant">0</span><span>)</span><span> </span></span>
+<span class="giallo-l"><span class="z-keyword">                                        for</span><span> i</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-variable z-language">self</span><span>.</span><span>k</span><span>)</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>                </span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">                #</span><span class="z-comment"> Check for convergence</span></span>
+<span class="giallo-l"><span class="z-keyword">                if</span><span> np</span><span>.</span><span>max</span><span>(</span><span>np</span><span>.</span><span>linalg</span><span>.</span><span>norm</span><span>(</span><span>new_centroids</span><span class="z-keyword"> -</span><span> centroids</span><span>,</span><span class="z-variable"> axis</span><span class="z-keyword">=</span><span class="z-constant">1</span><span>)</span><span>)</span><span class="z-keyword"> &lt;</span><span class="z-variable z-language"> self</span><span>.</span><span>tol</span><span>:</span></span>
+<span class="giallo-l"><span class="z-keyword">                    break</span></span>
+<span class="giallo-l"><span>                    </span></span>
+<span class="giallo-l"><span>                centroids</span><span class="z-keyword"> =</span><span> new_centroids</span></span>
+<span class="giallo-l"><span>            </span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">            #</span><span class="z-comment"> Calculate inertia</span></span>
+<span class="giallo-l"><span>            inertia</span><span class="z-keyword"> =</span><span class="z-support"> sum</span><span>(</span><span>[</span><span>np</span><span>.</span><span>linalg</span><span>.</span><span>norm</span><span>(</span><span>data</span><span>[</span><span>labels</span><span class="z-keyword"> ==</span><span> i</span><span>]</span><span class="z-keyword"> -</span><span> centroids</span><span>[</span><span>i</span><span>]</span><span>)</span><span class="z-keyword">**</span><span class="z-constant">2</span><span> </span></span>
+<span class="giallo-l"><span class="z-keyword">                          for</span><span> i</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-variable z-language">self</span><span>.</span><span>k</span><span>)</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>            </span></span>
+<span class="giallo-l"><span class="z-keyword">            if</span><span> inertia</span><span class="z-keyword"> &lt;</span><span> best_inertia</span><span>:</span></span>
+<span class="giallo-l"><span>                best_inertia</span><span class="z-keyword"> =</span><span> inertia</span></span>
+<span class="giallo-l"><span>                best_centroids</span><span class="z-keyword"> =</span><span> centroids</span></span>
+<span class="giallo-l"><span>        </span></span>
+<span class="giallo-l"><span class="z-variable z-language">        self</span><span>.</span><span>centroids</span><span class="z-keyword"> =</span><span> best_centroids</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">    def</span><span class="z-entity z-name"> predict</span><span>(</span><span class="z-variable z-parameter z-function">self</span><span>,</span><span class="z-variable z-parameter z-function"> data</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span> Tuple</span><span>[</span><span>np</span><span>.</span><span>ndarray</span><span>,</span><span> np</span><span>.</span><span>ndarray</span><span>]</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">        Predict cluster labels and detect anomalies.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>        distances</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>sqrt</span><span>(</span><span>(</span><span>(</span><span>data</span><span class="z-keyword"> -</span><span class="z-variable z-language"> self</span><span>.</span><span>centroids</span><span>[</span><span>:</span><span>,</span><span> np</span><span>.</span><span>newaxis</span><span>]</span><span>)</span><span class="z-keyword">**</span><span class="z-constant">2</span><span>)</span><span>.</span><span>sum</span><span>(</span><span class="z-variable">axis</span><span class="z-keyword">=</span><span class="z-constant">2</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>        labels</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>argmin</span><span>(</span><span>distances</span><span>,</span><span class="z-variable"> axis</span><span class="z-keyword">=</span><span class="z-constant">0</span><span>)</span></span>
+<span class="giallo-l"><span>        </span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">        #</span><span class="z-comment"> Anomaly detection based on distance threshold</span></span>
+<span class="giallo-l"><span>        min_distances</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>min</span><span>(</span><span>distances</span><span>,</span><span class="z-variable"> axis</span><span class="z-keyword">=</span><span class="z-constant">0</span><span>)</span></span>
+<span class="giallo-l"><span>        threshold</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>percentile</span><span>(</span><span>min_distances</span><span>,</span><span class="z-variable z-language"> self</span><span>.</span><span>threshold</span><span>)</span></span>
+<span class="giallo-l"><span>        anomalies</span><span class="z-keyword"> =</span><span> min_distances</span><span class="z-keyword"> &gt;</span><span> threshold</span></span>
+<span class="giallo-l"><span>        </span></span>
+<span class="giallo-l"><span class="z-keyword">        return</span><span> labels</span><span>,</span><span> anomalies</span></span></code></pre>
+</details>
+
+
+<details >
+  <summary><span>Exec</span></summary>
+  <pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">import</span><span> os</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> asyncio</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> glob</span></span>
+<span class="giallo-l"><span class="z-keyword">from</span><span> typing</span><span class="z-keyword"> import</span><span> List</span><span>,</span><span> Dict</span><span>,</span><span> Union</span></span>
+<span class="giallo-l"><span class="z-keyword">from</span><span> itertools</span><span class="z-keyword"> import</span><span> groupby</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> xml</span><span>.</span><span>etree</span><span>.</span><span>ElementTree</span><span class="z-keyword"> as</span><span class="z-constant"> ET</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> aiohttp</span></span>
+<span class="giallo-l"><span class="z-keyword">from</span><span> aiolimiter</span><span class="z-keyword"> import</span><span> AsyncLimiter</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> pandas</span><span class="z-keyword"> as</span><span> pd</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"><span class="z-keyword">import</span><span> sys</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>sys</span><span>.</span><span>path</span><span>.</span><span>insert</span><span>(</span><span class="z-constant">0</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">..</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">from</span><span> src</span><span>.</span><span>kmeans</span><span class="z-keyword"> import</span><span> KMeans</span><span>,</span><span> Score</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">async</span><span class="z-storage z-type"> def</span><span class="z-entity z-name"> download_xml</span><span>(</span><span class="z-variable z-parameter z-function">year</span><span>:</span><span class="z-support"> int</span><span>,</span><span class="z-variable z-parameter z-function"> semaphore</span><span>:</span><span> asyncio</span><span>.</span><span>Semaphore</span><span>)</span><span> -&gt;</span><span class="z-constant"> None</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">    Async download of xml file for a given year.</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-string">    Args:</span></span>
+<span class="giallo-l"><span class="z-string">        year (int): Year.</span></span>
+<span class="giallo-l"><span class="z-string">        semaphore (asyncio.Semaphore): Concurrent access controller.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    limiter</span><span class="z-keyword"> =</span><span> AsyncLimiter</span><span>(</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 0.125</span><span>)</span></span>
+<span class="giallo-l"><span class="z-constant">    USER_AGENT</span><span class="z-keyword"> =</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-punctuation z-definition z-string">&quot;</span></span>
+<span class="giallo-l"><span>    headers</span><span class="z-keyword"> =</span><span> {</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">User-Agent</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span class="z-constant"> USER_AGENT</span><span>}</span></span>
+<span class="giallo-l"><span class="z-constant">    DATA_DIR</span><span class="z-keyword"> =</span><span> os</span><span>.</span><span>path</span><span>.</span><span>join</span><span>(</span><span>os</span><span>.</span><span>getcwd</span><span>(</span><span>)</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">../data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    if</span><span class="z-keyword"> not</span><span> os</span><span>.</span><span>path</span><span>.</span><span>exists</span><span>(</span><span class="z-constant">DATA_DIR</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        os</span><span>.</span><span>mkdir</span><span>(</span><span class="z-constant">DATA_DIR</span><span>)</span></span>
+<span class="giallo-l"><span>    url</span><span class="z-keyword"> =</span><span class="z-storage z-type"> f</span><span class="z-string">&quot;</span><span class="z-string">https://www.al.sp.gov.br/repositorioDados/deputados/despesas_gabinetes_</span><span class="z-constant">{</span><span class="z-support">str</span><span>(</span><span>year</span><span>)</span><span class="z-constant">}</span><span class="z-string">.xml</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-keyword">    async</span><span class="z-keyword"> with</span><span> aiohttp</span><span>.</span><span>ClientSession</span><span>(</span><span class="z-variable">headers</span><span class="z-keyword">=</span><span>headers</span><span>)</span><span class="z-keyword"> as</span><span> session</span><span>:</span></span>
+<span class="giallo-l"><span class="z-keyword">        await</span><span> semaphore</span><span>.</span><span>acquire</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">        async</span><span class="z-keyword"> with</span><span> limiter</span><span>:</span></span>
+<span class="giallo-l"><span class="z-keyword">            async</span><span class="z-keyword"> with</span><span> session</span><span>.</span><span>get</span><span>(</span><span>url</span><span>)</span><span class="z-keyword"> as</span><span> resp</span><span>:</span></span>
+<span class="giallo-l"><span>                content</span><span class="z-keyword"> =</span><span class="z-keyword"> await</span><span> resp</span><span>.</span><span>read</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>                semaphore</span><span>.</span><span>release</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span class="z-variable">                file</span><span class="z-keyword"> =</span><span class="z-storage z-type"> f</span><span class="z-string">&quot;</span><span class="z-string">despesas_gabinetes_</span><span class="z-constant">{</span><span class="z-support">str</span><span>(</span><span>year</span><span>)</span><span class="z-constant">}</span><span class="z-string">.xml</span><span class="z-string">&quot;</span></span>
+<span class="giallo-l"><span class="z-keyword">                with</span><span class="z-support"> open</span><span>(</span><span>os</span><span>.</span><span>path</span><span>.</span><span>join</span><span>(</span><span class="z-constant">DATA_DIR</span><span>,</span><span class="z-variable"> file</span><span>)</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">wb</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span><span class="z-keyword"> as</span><span> f</span><span>:</span></span>
+<span class="giallo-l"><span>                    f</span><span>.</span><span>write</span><span>(</span><span>content</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">async</span><span class="z-storage z-type"> def</span><span class="z-entity z-name"> fetch_expenses</span><span>(</span><span class="z-variable z-parameter z-function">year_start</span><span>:</span><span class="z-support"> int</span><span>,</span><span class="z-variable z-parameter z-function"> year_end</span><span>:</span><span class="z-support"> int</span><span>)</span><span> -&gt;</span><span class="z-constant"> None</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">    Async download of xml files for a given period of time.</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-string">    Args:</span></span>
+<span class="giallo-l"><span class="z-string">        year_start (int): Start of the period.</span></span>
+<span class="giallo-l"><span class="z-string">        year_end (int): End of the period.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    tasks</span><span class="z-keyword"> =</span><span class="z-support"> set</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>    semaphore</span><span class="z-keyword"> =</span><span> asyncio</span><span>.</span><span>Semaphore</span><span>(</span><span class="z-variable">value</span><span class="z-keyword">=</span><span class="z-constant">10</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> i</span><span class="z-keyword"> in</span><span class="z-support"> range</span><span>(</span><span class="z-support">int</span><span>(</span><span>year_start</span><span>)</span><span>,</span><span class="z-support"> int</span><span>(</span><span>year_end</span><span>)</span><span class="z-keyword"> +</span><span class="z-constant"> 1</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        task</span><span class="z-keyword"> =</span><span> asyncio</span><span>.</span><span>create_task</span><span>(</span><span>download_xml</span><span>(</span><span>i</span><span>,</span><span> semaphore</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>        tasks</span><span>.</span><span>add</span><span>(</span><span>task</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    await</span><span> asyncio</span><span>.</span><span>wait</span><span>(</span><span>tasks</span><span>,</span><span class="z-variable"> return_when</span><span class="z-keyword">=</span><span>asyncio</span><span>.</span><span class="z-constant">ALL_COMPLETED</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> parse_data</span><span>(</span><span class="z-variable z-parameter z-function">list_files</span><span>:</span><span> List</span><span>[</span><span class="z-support">str</span><span>]</span><span>)</span><span> -&gt;</span><span> List</span><span>[</span><span>Dict</span><span>[</span><span class="z-support">str</span><span>,</span><span> Union</span><span>[</span><span class="z-support">str</span><span>,</span><span class="z-constant"> None</span><span>]</span><span>]</span><span>]</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span class="z-string">    Parses xml files and extracts useful info.</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-string">    Args:</span></span>
+<span class="giallo-l"><span class="z-string">        list_files (list): List of paths for xml files.</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-string">    Retorna:</span></span>
+<span class="giallo-l"><span class="z-string">        data (list): List of reimbursement dicts.</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    data</span><span class="z-keyword"> =</span><span class="z-support"> list</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span class="z-variable"> file</span><span class="z-keyword"> in</span><span> list_files</span><span>:</span></span>
+<span class="giallo-l"><span>        tree</span><span class="z-keyword"> =</span><span class="z-constant"> ET</span><span>.</span><span>parse</span><span>(</span><span class="z-variable">file</span><span>)</span></span>
+<span class="giallo-l"><span>        xroot</span><span class="z-keyword"> =</span><span> tree</span><span>.</span><span>getroot</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">        for</span><span> child</span><span class="z-keyword"> in</span><span> xroot</span><span>.</span><span>iter</span><span>(</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">despesa</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>            cols</span><span class="z-keyword"> =</span><span> [</span><span>elem</span><span>.</span><span>tag</span><span class="z-keyword"> for</span><span> elem</span><span class="z-keyword"> in</span><span> child</span><span>]</span></span>
+<span class="giallo-l"><span>            values</span><span class="z-keyword"> =</span><span> [</span><span>elem</span><span>.</span><span>text</span><span class="z-keyword"> for</span><span> elem</span><span class="z-keyword"> in</span><span> child</span><span>]</span></span>
+<span class="giallo-l"><span>            data</span><span>.</span><span>append</span><span>(</span><span class="z-support">dict</span><span>(</span><span class="z-support">zip</span><span>(</span><span>cols</span><span>,</span><span> values</span><span>)</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> data</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>asyncio</span><span>.</span><span>run</span><span>(</span><span>fetch_expenses</span><span>(</span><span class="z-constant">2013</span><span>,</span><span class="z-constant"> 2022</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">if</span><span> os</span><span>.</span><span>path</span><span>.</span><span>exists</span><span>(</span><span>os</span><span>.</span><span>path</span><span>.</span><span>join</span><span>(</span><span>os</span><span>.</span><span>getcwd</span><span>(</span><span>)</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">../data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>    os</span><span>.</span><span>chdir</span><span>(</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">../data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span>    files</span><span class="z-keyword"> =</span><span> glob</span><span>.</span><span>glob</span><span>(</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">*.xml</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span>    load</span><span class="z-keyword"> =</span><span> parse_data</span><span>(</span><span>files</span><span>)</span></span>
+<span class="giallo-l"><span>    despesas</span><span class="z-keyword"> =</span><span> pd</span><span>.</span><span>DataFrame</span><span>.</span><span>from_dict</span><span>(</span><span>load</span><span>)</span></span>
+<span class="giallo-l"><span>ipca</span><span class="z-keyword"> =</span><span> pd</span><span>.</span><span>read_csv</span><span>(</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">../data/ipca.csv</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span>ipca</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span class="z-keyword"> =</span><span> pd</span><span>.</span><span>to_datetime</span><span>(</span><span>ipca</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>despesas</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span class="z-keyword"> =</span><span> pd</span><span>.</span><span>to_datetime</span><span>(</span></span>
+<span class="giallo-l"><span>    despesas</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Ano</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>astype</span><span>(</span><span class="z-support">str</span><span>)</span><span class="z-keyword"> +</span><span> (</span><span>despesas</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Mes</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>astype</span><span>(</span><span class="z-support">str</span><span>)</span><span>)</span><span>.</span><span>str</span><span>.</span><span>zfill</span><span>(</span><span class="z-constant">2</span><span>)</span><span class="z-keyword"> +</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">01</span><span class="z-punctuation z-definition z-string">&quot;</span></span>
+<span class="giallo-l"><span>)</span></span>
+<span class="giallo-l"><span>despesas</span><span class="z-keyword"> =</span><span> despesas</span><span>[</span></span>
+<span class="giallo-l"><span>    despesas</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Tipo</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span class="z-keyword"> ==</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">I - HOSPEDAGEM, ALIMENTAÇÃO E DESPESAS DE LOCOMOÇÃO</span><span class="z-punctuation z-definition z-string">&quot;</span></span>
+<span class="giallo-l"><span>]</span></span>
+<span class="giallo-l"><span>despesas</span><span class="z-keyword"> =</span><span> despesas</span><span>[</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">CNPJ</span><span class="z-punctuation z-definition z-string">&quot;</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">Valor</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>]</span></span>
+<span class="giallo-l"><span>despesas</span><span class="z-keyword"> =</span><span> despesas</span><span>[</span><span>despesas</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>dt</span><span>.</span><span>year</span><span class="z-keyword"> &gt;</span><span class="z-constant"> 2017</span><span>]</span></span>
+<span class="giallo-l"><span>data</span><span class="z-keyword"> =</span><span> pd</span><span>.</span><span>merge</span><span>(</span><span class="z-variable">left</span><span class="z-keyword">=</span><span>despesas</span><span>,</span><span class="z-variable"> right</span><span class="z-keyword">=</span><span>ipca</span><span>,</span><span class="z-variable"> on</span><span class="z-keyword">=</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>,</span><span class="z-variable"> how</span><span class="z-keyword">=</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">inner</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"><span>data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor_ref</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span class="z-keyword"> =</span><span> ipca</span><span>[</span><span>ipca</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Data</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span class="z-keyword"> ==</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">2022-12-01</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>values</span><span>[</span><span class="z-constant">0</span><span>]</span></span>
+<span class="giallo-l"><span>data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor_corrigido</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span class="z-keyword"> =</span><span class="z-support"> round</span><span>(</span></span>
+<span class="giallo-l"><span>    (</span><span>data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor_ref</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>astype</span><span>(</span><span class="z-support">float</span><span>)</span><span class="z-keyword"> /</span><span> data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor_y</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>astype</span><span>(</span><span class="z-support">float</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    *</span><span> data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor_x</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>astype</span><span>(</span><span class="z-support">float</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-constant">    2</span><span>,</span></span>
+<span class="giallo-l"><span>)</span></span>
+<span class="giallo-l"><span>data</span><span class="z-keyword"> =</span><span> data</span><span>[</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">CNPJ</span><span class="z-punctuation z-definition z-string">&quot;</span><span>,</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-string">Valor_corrigido</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>]</span></span>
+<span class="giallo-l"><span>data</span><span class="z-keyword"> =</span><span> data</span><span>[</span><span>data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">CNPJ</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>.</span><span>notnull</span><span>(</span><span>)</span><span>]</span></span>
+<span class="giallo-l"><span>data</span><span class="z-keyword"> =</span><span> data</span><span>.</span><span>groupby</span><span>(</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">CNPJ</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span><span>.</span><span>filter</span><span>(</span><span class="z-storage z-type">lambda</span><span class="z-variable z-parameter z-function"> x</span><span>:</span><span class="z-support"> len</span><span>(</span><span>x</span><span>)</span><span class="z-keyword"> &gt;=</span><span class="z-constant"> 20</span><span>)</span></span>
+<span class="giallo-l"><span>sils</span><span>,</span><span> dbs</span><span class="z-keyword"> =</span><span class="z-support"> list</span><span>(</span><span>)</span><span>,</span><span class="z-support"> list</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>kmeans</span><span class="z-keyword"> =</span><span> KMeans</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>selecao_dados</span><span class="z-keyword"> =</span><span class="z-support"> sorted</span><span>(</span><span class="z-support">zip</span><span>(</span><span>data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">CNPJ</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>,</span><span> data</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">Valor_corrigido</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>)</span><span>,</span><span class="z-variable"> key</span><span class="z-keyword">=</span><span class="z-storage z-type">lambda</span><span class="z-variable z-parameter z-function"> x</span><span>:</span><span> x</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>resultados_lista</span><span class="z-keyword"> =</span><span> [</span><span>]</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-keyword">for</span><span> cnpj</span><span>,</span><span> grupo</span><span class="z-keyword"> in</span><span> groupby</span><span>(</span><span>selecao_dados</span><span>,</span><span class="z-variable"> key</span><span class="z-keyword">=</span><span class="z-storage z-type">lambda</span><span class="z-variable z-parameter z-function"> x</span><span>:</span><span> x</span><span>[</span><span class="z-constant">0</span><span>]</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>    centroids_list</span><span class="z-keyword"> =</span><span> [</span><span>]</span></span>
+<span class="giallo-l"><span>    values</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>array</span><span>(</span><span>[</span><span>item</span><span>[</span><span class="z-constant">1</span><span>]</span><span class="z-keyword"> for</span><span> item</span><span class="z-keyword"> in</span><span> grupo</span><span>]</span><span>)</span></span>
+<span class="giallo-l"><span>    kmeans</span><span>.</span><span>k</span><span class="z-keyword"> =</span><span> kmeans</span><span>.</span><span>get_optimal_k</span><span>(</span><span>values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    kmeans</span><span>.</span><span>fit</span><span>(</span><span>values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    anomalies_kmeans</span><span class="z-keyword"> =</span><span> kmeans</span><span>.</span><span>detect</span><span>(</span><span>values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    silhouette_score</span><span class="z-keyword"> =</span><span> Score</span><span>.</span><span>silhouette</span><span>(</span></span>
+<span class="giallo-l"><span>        values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>,</span><span> kmeans</span><span>.</span><span>get_labels</span><span>(</span><span>values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    )</span></span>
+<span class="giallo-l"><span>    db_score</span><span class="z-keyword"> =</span><span> Score</span><span>.</span><span>daviesbouldin</span><span>(</span></span>
+<span class="giallo-l"><span>        values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>,</span><span> kmeans</span><span>.</span><span>get_labels</span><span>(</span><span>values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    )</span></span>
+<span class="giallo-l"><span>    labels</span><span class="z-keyword"> =</span><span> kmeans</span><span>.</span><span>get_labels</span><span>(</span><span>values</span><span>.</span><span>reshape</span><span>(</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> value</span><span>,</span><span> label</span><span class="z-keyword"> in</span><span class="z-support"> zip</span><span>(</span><span>values</span><span>,</span><span> labels</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>        centroids_list</span><span>.</span><span>append</span><span>(</span><span>{</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">centroid</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> kmeans</span><span>.</span><span>centroids</span><span>[</span><span>label</span><span>]</span><span>[</span><span class="z-constant">0</span><span>]</span><span>}</span><span>)</span></span>
+<span class="giallo-l"><span>    centroid_idx</span><span class="z-keyword"> =</span><span class="z-constant"> 0</span></span>
+<span class="giallo-l"><span class="z-keyword">    for</span><span> value</span><span class="z-keyword"> in</span><span> values</span><span>:</span></span>
+<span class="giallo-l"><span>        is_anomaly</span><span class="z-keyword"> =</span><span class="z-constant"> 1</span><span class="z-keyword"> if</span><span> value</span><span class="z-keyword"> in</span><span> anomalies_kmeans</span><span class="z-keyword"> else</span><span class="z-constant"> 0</span></span>
+<span class="giallo-l"><span>        resultados_lista</span><span>.</span><span>append</span><span>(</span></span>
+<span class="giallo-l"><span>            {</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">CNPJ</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> cnpj</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">Valor</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> value</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">Anomalia</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> is_anomaly</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">Centroide</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> centroids_list</span><span>[</span><span>centroid_idx</span><span>]</span><span>[</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">centroid</span><span class="z-punctuation z-definition z-string">&quot;</span><span>]</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">Clusters</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> kmeans</span><span>.</span><span>k</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">Silhueta</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> silhouette_score</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">                &quot;</span><span class="z-string">Davies_Bouldin</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> db_score</span><span>,</span></span>
+<span class="giallo-l"><span>            }</span></span>
+<span class="giallo-l"><span>        )</span></span>
+<span class="giallo-l"><span>        centroid_idx</span><span class="z-keyword"> +=</span><span class="z-constant"> 1</span></span>
+<span class="giallo-l"><span>        </span></span>
+<span class="giallo-l"><span>resultados</span><span class="z-keyword"> =</span><span> pd</span><span>.</span><span>DataFrame</span><span>(</span><span>resultados_lista</span><span>)</span></span>
+<span class="giallo-l"><span>resultados</span><span>.</span><span>to_csv</span><span>(</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">../prd/resultado.csv</span><span class="z-punctuation z-definition z-string">&quot;</span><span>,</span><span class="z-variable"> index</span><span class="z-keyword">=</span><span class="z-constant">False</span><span>,</span><span class="z-variable"> encoding</span><span class="z-keyword">=</span><span class="z-punctuation z-definition z-string">&quot;</span><span class="z-string">utf-8</span><span class="z-punctuation z-definition z-string">&quot;</span><span>)</span></span></code></pre>
+</details>
+
+<h1 id="references">References<a class="zola-anchor" href="#references" aria-label="Anchor link for: references" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>Legislative Assembly of the State of São Paulo [Alesp]. 1997. Resolution n. 783, of July 1, 1997. Amends Resolution n° 776, of October 14, 1996, which implemented the new administrative structure, creates the Quality Center and institutes the office allowance. Available at: https://www.al.sp.gov.br/repositorio/legislacao/resolucao.alesp/1997/original-resolucao.alesp-783-01.07.1997.html. Accessed: March 19, 2023. <a href="#fr-1-1">↩</a> <a href="#fr-1-2">↩2</a></p>
+</li>
+<li id="fn-2">
+<p>São Paulo State Government Treasury and Planning Secretariat. 2023. Indices. Available at: https://portal.fazenda.sp.gov.br/Paginas/Indices.aspx. Accessed: March 26, 2023. <a href="#fr-2-1">↩</a></p>
+</li>
+<li id="fn-3">
+<p>São Paulo State Government Treasury and Planning Secretariat. 2023. Budget and financial execution. Available at: https://www.fazenda.sp.gov.br/sigeolei131/paginas/flexconsdespesa.aspx. Accessed: March 19, 2023. <a href="#fr-3-1">↩</a> <a href="#fr-3-2">↩2</a> <a href="#fr-3-3">↩3</a></p>
+</li>
+<li id="fn-4">
+<p>São Paulo Public Prosecutor’s Office. 2022. Electronic Information System. Available at: https://www.mpsp.mp.br/sei-sistema-eletronico-de-informacoes Accessed: March 26, 2023. <a href="#fr-4-1">↩</a></p>
+</li>
+<li id="fn-5">
+<p>São Paulo State Court of Justice. 2023. E-SAJ. Available at: https://esaj.tjsp.jus.br/esaj/portal.do?servico=190090 Accessed: September 24, 2023. <a href="#fr-5-1">↩</a></p>
+</li>
+<li id="fn-6">
+<p>Legislative Assembly of the State of São Paulo. 2023. Open Data Portal. Available at: https://www.al.sp.gov.br/dados-abertos/recurso/21 Accessed: March 26, 2023. <a href="#fr-6-1">↩</a></p>
+</li>
+<li id="fn-7">
+<p>Brazilian Institute of Geography and Statistics. IPCA. Available at: https://www.ibge.gov.br/estatisticas/economicas/precos-e-custos/9256-indice-nacional-de-precos-ao-consumidor-amplo.html?=&amp;t=series-historicas Accessed: March 26, 2023. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>MacQueen, J. 1967. Some methods for classification and analysis of multivariate observations. In: 5th Berkeley Symposium on Mathematical Statistics and Probability, 1967, Los Angeles, LA, United States, Proceedings… p. 281-297. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>Joshi, K.D.; Nalwade, P.S. 2012. Modified K-Means for better initial cluster centres. International Journal of Computer Science and Mobile Computing 7: 219-223. <a href="#fr-9-1">↩</a></p>
+</li>
+<li id="fn-10">
+<p>Schubert, E. 2023. Stop using the elbow criterion for k-means and how to choose the number of clusters instead. SIGKDD Explorations Newsletter 25: 36-42. <a href="#fr-10-1">↩</a></p>
+</li>
+<li id="fn-11">
+<p>Caliński, T.; Harabasz, J. 1974. A dendrite method for cluster analysis. Communications in Statistics 3: 1-27. <a href="#fr-11-1">↩</a></p>
+</li>
+<li id="fn-12">
+<p>Morissette, L.; Chartier, S. 2013. The K-Means clustering technique: General considerations and implementation in Mathematica. Tutorials in Quantitative Methods for Psychology 9: 15-24. <a href="#fr-12-1">↩</a></p>
+</li>
+<li id="fn-13">
+<p>Arthur, D.; Vassilvitskii, S. 2007. K-Means++: The advantages of careful seeding. Proceedings of Annual ACM-SIAM Symposium on Discrete Algorithms: 1027-1035. <a href="#fr-13-1">↩</a></p>
+</li>
+<li id="fn-14">
+<p>Rousseeuw, P.J. 1987. Silhouettes: A graphical aid to the interpretation and validation of cluster analysis. Journal of Computational and Applied Mathematics 20: 53-65. <a href="#fr-14-1">↩</a></p>
+</li>
+<li id="fn-15">
+<p>Davies, D.L.; Bouldin, D.W. 1979. A cluster separation measure. IEEE Transactions on Pattern Analysis and Machine Intelligence 2: 224–227. <a href="#fr-15-1">↩</a></p>
+</li>
+<li id="fn-16">
+<p>Chandola, V; Banerjee, A.; Kumar, V. 2009. Anomaly detection: a survey. Association for Computing Machinery Computing Surveys 41: 1-58. <a href="#fr-16-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Made with <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>

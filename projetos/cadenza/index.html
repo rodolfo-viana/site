@@ -1,0 +1,531 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Apresentações para Linux e Windows, com editor visual, gráficos, LaTeX, Mermaid, teleprompter e diversos recursos">
+  <title>Cadenza</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;cadenza&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;cadenza&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="Cadenza">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;cadenza&#x2F;">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;cadenza&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#baixar">Baixar</a><ul><li><a class="h3" href="#instalacao">Instalação</a></li><li><a class="h3" href="#atualizacao">Atualização</a></li></ul></li>
+      
+      <li><a class="h2" href="#recursos">Recursos</a><ul><li><a class="h3" href="#edicao">Edição</a></li><li><a class="h3" href="#graficos-e-mapas">Gráficos e mapas</a></li><li><a class="h3" href="#codigo-equacoes-e-diagramas">Código, equações e diagramas</a></li><li><a class="h3" href="#design">Design</a></li><li><a class="h3" href="#midia">Mídia</a></li><li><a class="h3" href="#apresentacao-e-compartilhamento">Apresentação e compartilhamento</a></li><li><a class="h3" href="#idiomas">Idiomas</a></li></ul></li>
+      
+      <li><a class="h2" href="#cadenza-keynote-powerpoint-e-google-slides">Cadenza, Keynote, PowerPoint e Google Slides</a><ul><li><a class="h3" href="#o-que-o-cadenza-ainda-nao-oferece">O que o Cadenza ainda não oferece</a></li></ul></li>
+      
+      <li><a class="h2" href="#privacidade">Privacidade</a></li>
+      
+      <li><a class="h2" href="#arquivos">Arquivos</a></li>
+      
+      <li><a class="h2" href="#codigo-fonte">Código-fonte</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;projetos&#x2F;">← Voltar</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;projetos&#x2F;cadenza&#x2F;" hreflang="en">EN</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>Cadenza</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">13-10-2026</span>
+            <span>Atualizado em <span id="updated">17-10-2026</span></span>
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/tags/rust/"><span>#</span>rust</a><a class="instant" href="https://rodolfoviana.com.br/tags/reveal-js/"><span>#</span>reveal.js</a><a class="instant" href="https://rodolfoviana.com.br/tags/apresentacoes/"><span>#</span>apresentações</a><a class="instant" href="https://rodolfoviana.com.br/tags/software-livre/"><span>#</span>software livre</a></div>
+        </div>
+        <p>O <strong>Cadenza</strong> é um aplicativo de apresentações para Linux e Windows, construído sobre o <a rel="noopener noreferrer external" target="_blank" href="https://revealjs.com">reveal.js</a>. Você monta os slides num editor visual, com layouts prontos, temas, gráficos, diagramas e equações, apresenta em tela cheia com uma tela do apresentador e exporta o resultado como página web ou PDF. Não é preciso escrever HTML ou JavaScript para preparar uma apresentação.</p>
+<p>O trabalho fica em arquivos locais. Uma apresentação pode levar consigo as imagens, os vídeos importados e as fontes incorporadas, sem exigir uma conta ou o envio do material para um serviço de nuvem. O aplicativo é software livre, desenvolvido em Rust e tecnologias web com <a rel="noopener noreferrer external" target="_blank" href="https://tauri.app">Tauri</a>, sob a licença MIT.</p>
+<p>Essa combinação é especialmente útil em aulas, seminários e apresentações técnicas. Dá para explicar um algoritmo destacando suas linhas, corrigir uma fórmula pelo código LaTeX, alterar um fluxograma em Mermaid e publicar os slides no próprio site. Também há os recursos de uma apresentação convencional: texto, fotografias, tabelas, transições e notas de fala.</p>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./editor-pt.png" alt="O editor com um diagrama Mermaid no slide e a lista de slides ao lado">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Editando um slide com um diagrama Mermaid. Foto do slide 9: "Life is Beautiful", de Gabe Kronisch, <a href="https://creativecommons.org/licenses/by/2.0/">CC BY 2.0</a>
+  </figcaption>
+</figure>
+<h1 id="baixar">Baixar<a class="zola-anchor" href="#baixar" aria-label="Anchor link for: baixar" style="visibility: hidden;"></a>
+</h1>
+<p>Baixe a versão mais recente na <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/releases">página de versões</a> do GitHub, que também mostra as novidades de cada versão. Escolha o arquivo do seu sistema (x.y.z é o número da versão):</p>
+<div role="region" aria-label="Downloads por sistema operacional" tabindex="0" style="overflow-x: auto;">
+<table><thead><tr><th>Sistema</th><th>Arquivo</th></tr></thead><tbody>
+<tr><td>Windows 10 e 11</td><td><code>Cadenza_x.y.z_x64-setup.exe</code> (instalador) ou <code>Cadenza_x.y.z_x64_en-US.msi</code> (pacote MSI)</td></tr>
+<tr><td>Ubuntu, Debian e derivados</td><td><code>Cadenza_x.y.z_amd64.deb</code></td></tr>
+<tr><td>Fedora e openSUSE</td><td><code>Cadenza-x.y.z-1.x86_64.rpm</code></td></tr>
+<tr><td>Linux (AppImage)</td><td><code>Cadenza_x.y.z_amd64.AppImage</code></td></tr>
+</tbody></table>
+</div>
+<p>Não há mais versão para macOS. As versões 0.2.0 a 0.3.2 tinham uma, mas não era possível testá-la regularmente num Mac.</p>
+<h2 id="instalacao">Instalação<a class="zola-anchor" href="#instalacao" aria-label="Anchor link for: instalacao" style="visibility: hidden;"></a>
+</h2>
+<p>Os pacotes incluem o aplicativo; o procedimento muda conforme o sistema. No Linux, escolha uma das alternativas abaixo, de acordo com a distribuição ou o formato baixado.</p>
+<ul>
+<li><strong>Windows:</strong> execute o instalador. Ele instala o Microsoft WebView2 se for preciso.</li>
+<li><strong>Linux:</strong> instale o pacote pelo terminal, na pasta onde ele foi baixado, trocando x.y.z pela versão baixada. O AppImage não precisa de instalação: basta torná-lo executável e abri-lo.</li>
+</ul>
+<pre class="giallo z-code"><code data-lang="shellscript"><span class="giallo-l"><span class="z-entity z-name">sudo</span><span class="z-string"> apt</span><span class="z-string"> install</span><span class="z-string"> ./Cadenza_x.y.z_amd64.deb</span><span class="z-punctuation z-definition z-comment">         #</span><span class="z-comment"> Ubuntu, Debian</span></span>
+<span class="giallo-l"><span class="z-entity z-name">sudo</span><span class="z-string"> dnf</span><span class="z-string"> install</span><span class="z-string"> ./Cadenza-x.y.z-1.x86_64.rpm</span><span class="z-punctuation z-definition z-comment">      #</span><span class="z-comment"> Fedora</span></span>
+<span class="giallo-l"><span class="z-entity z-name">sudo</span><span class="z-string"> zypper</span><span class="z-string"> install</span><span class="z-string"> ./Cadenza-x.y.z-1.x86_64.rpm</span><span class="z-punctuation z-definition z-comment">   #</span><span class="z-comment"> openSUSE</span></span>
+<span class="giallo-l"><span class="z-entity z-name">chmod</span><span class="z-string"> +x</span><span class="z-string"> Cadenza_x.y.z_amd64.AppImage</span><span class="z-punctuation z-definition z-comment">              #</span><span class="z-comment"> AppImage</span></span></code></pre>
+<p>As versões para Linux e Windows são de 64 bits (x86-64). Os pacotes <code>.deb</code> e <code>.rpm</code> precisam do WebKitGTK 4.1, presente no Ubuntu 22.04, no Debian 12, no Fedora 37 e em versões mais recentes.</p>
+
+<blockquote class="callout note has-title">
+  <p class="title"><strong>Na primeira vez que você abrir</strong></p>
+  <div class="content"><p>Os instaladores ainda não têm assinatura digital, então, no Windows, o SmartScreen pode avisar que o aplicativo não é reconhecido. Clique em <strong>Mais informações &gt; Executar assim mesmo</strong>.</p>
+</div>
+</blockquote>
+
+<h2 id="atualizacao">Atualização<a class="zola-anchor" href="#atualizacao" aria-label="Anchor link for: atualizacao" style="visibility: hidden;"></a>
+</h2>
+<p>A partir da versão 0.3.3, o <strong>Cadenza</strong> se mantém atualizado. Ao abrir, ele procura uma versão mais recente e oferece baixá-la e instalá-la com o mesmo tipo de pacote; no Linux, as atualizações dos pacotes <code>.deb</code> e <code>.rpm</code> pedem sua senha. Depois, o aplicativo reinicia e reabre as apresentações que estavam abertas, inclusive com as alterações não salvas. As versões anteriores não fazem isso, então instale a 0.3.3 ou uma mais recente manualmente uma vez.</p>
+<h1 id="recursos">Recursos<a class="zola-anchor" href="#recursos" aria-label="Anchor link for: recursos" style="visibility: hidden;"></a>
+</h1>
+<p>O editor reúne a preparação do conteúdo e a apresentação ao vivo. Você pode começar com um layout, ajustar os objetos livremente e manter no mesmo arquivo o material visual e as notas que usará para falar.</p>
+<h2 id="edicao">Edição<a class="zola-anchor" href="#edicao" aria-label="Anchor link for: edicao" style="visibility: hidden;"></a>
+</h2>
+<p>Há <strong>12 layouts</strong>, incluindo título, seção, duas colunas, citação, número em destaque e código. Eles oferecem um ponto de partida, e os objetos podem ser movidos, redimensionados, duplicados, alinhados e bloqueados. Réguas, guias arrastáveis, guias inteligentes e grade com encaixe ajudam a manter o alinhamento entre elementos.</p>
+<p>A formatação pode valer para uma caixa de texto inteira ou apenas para o trecho selecionado: fonte, tamanho, cor, negrito, itálico e sublinhado. Tabelas têm células editáveis e permitem ajustar o número de linhas e colunas. Desfazer, refazer e a paleta de comandos (<strong>Ctrl+K</strong>) ajudam nas operações do dia a dia.</p>
+<h2 id="graficos-e-mapas">Gráficos e mapas<a class="zola-anchor" href="#graficos-e-mapas" aria-label="Anchor link for: graficos-e-mapas" style="visibility: hidden;"></a>
+</h2>
+<p>Os gráficos são editados numa grade de dados e desenhados em SVG, que mantém a nitidez ao mudar de tamanho. São <strong>19 tipos</strong>: colunas, colunas empilhadas, barras, barras empilhadas, linhas, pontos, área, área empilhada, streamgraph, pizza, rosca, treemap, parlamento, dispersão, mapa de calor, candlestick, Sankey, rede e mapa geográfico.</p>
+<p>Isso permite mostrar desde uma comparação entre categorias até fluxos entre entidades ou a distribuição de assentos num parlamento. Sankey e rede usam relações de origem, destino e valor. Nos mapas, você escolhe o mundo, um continente ou as divisões administrativas de um país e associa valores às regiões por nome ou código. Os limites geográficos vêm do <a rel="noopener noreferrer external" target="_blank" href="https://www.naturalearthdata.com">Natural Earth</a>.</p>
+<p>Também dá para começar pelos dados: cole células de uma planilha ou abra um arquivo CSV, e o Cadenza mostra uma prévia de cada gráfico que os dados permitem. Ele identifica as colunas de rótulos, valores, grupos e barras de erro, e você pode mudar o papel de cada coluna. Para figuras científicas, os gráficos também aceitam barras de erro (± um valor, valores separados abaixo e acima, ou extremos inferior e superior), limites próprios para o eixo de valores, títulos dos eixos, linhas de referência e formatos de ponto.</p>
+<p>Durante a apresentação, um gráfico pode aparecer por etapas: uma série de cada vez, uma fatia de pizza ou um partido no gráfico de parlamento. É uma forma de acompanhar a explicação sem colocar todos os dados na tela de uma só vez.</p>
+<h2 id="codigo-equacoes-e-diagramas">Código, equações e diagramas<a class="zola-anchor" href="#codigo-equacoes-e-diagramas" aria-label="Anchor link for: codigo-equacoes-e-diagramas" style="visibility: hidden;"></a>
+</h2>
+<p>Blocos de código têm destaque de sintaxe, numeração de linhas e realce de linhas passo a passo. Numa aula de programação, por exemplo, você pode manter o mesmo trecho no slide e conduzir a atenção para partes diferentes a cada avanço.</p>
+<p>As equações usam <strong>LaTeX com KaTeX</strong>, como objetos separados ou dentro do texto, como em <code>$e^{i\pi}+1=0$</code>. A expressão continua editável pelo seu código. O suporte é o do KaTeX, voltado à composição matemática; não se trata de um compilador de documentos LaTeX completos.</p>
+<p>Os diagramas usam <a rel="noopener noreferrer external" target="_blank" href="https://mermaid.js.org">Mermaid</a>: fluxogramas, sequências, linhas do tempo, mapas mentais e outros formatos. Alterar um rótulo ou uma relação significa editar a descrição do diagrama e renderizá-lo novamente. Isso facilita revisar uma explicação técnica sem reconstruir uma imagem em outro programa.</p>
+<h2 id="design">Design<a class="zola-anchor" href="#design" aria-label="Anchor link for: design" style="visibility: hidden;"></a>
+</h2>
+<p>O <strong>Cadenza</strong> inclui <strong>22 temas</strong>: oito próprios e os temas clássicos do reveal.js. O construtor de temas permite definir a aparência, reutilizá-la em outras apresentações e compartilhar um arquivo <code>.cadenza-theme</code>, com suas fontes incorporadas. Também é possível exportar o tema como CSS do reveal.js ou acrescentar CSS específico a uma apresentação.</p>
+<p>As animações incluem entradas por etapas, transições e <strong>Magic Move</strong>, baseado no <em>auto-animate</em> do reveal.js. Há ainda trajetórias de movimento desenhadas no slide, com segmentos retos ou curvas. Esses recursos permitem revelar uma explicação aos poucos ou acompanhar a mudança de posição de um objeto.</p>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./themes-pt.png" alt="Tela inicial, com a escolha de tema para uma nova apresentação">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">A escolha de tema ao criar uma apresentação, com a interface no modo claro
+  </figcaption>
+</figure>
+<h2 id="midia">Mídia<a class="zola-anchor" href="#midia" aria-label="Anchor link for: midia" style="visibility: hidden;"></a>
+</h2>
+<p>Você pode inserir imagens e vídeos do computador ou buscar material na biblioteca de mídia. Openverse e Wikimedia Commons dispensam chave de API; Pexels, Pixabay e GIPHY usam chaves configuradas no aplicativo. As condições de uso variam conforme a fonte e o arquivo: confira a licença e mantenha os créditos necessários.</p>
+<p>A busca também aceita um endereço de imagem, uma página de arquivo do Wikimedia Commons ou da Wikipedia, ou uma página web com imagem de prévia. No caso dos arquivos do Wikimedia, as informações de autoria e licença acompanham a importação. Para YouTube e Vimeo, é possível colar o link ou navegar pelo serviço e inserir o vídeo escolhido. Esses vídeos continuam dependendo do serviço e da conexão; não viram arquivos locais ao salvar a apresentação.</p>
+<p>O recurso <strong>Câmera ao vivo</strong> coloca a imagem da câmera num slide, em formato retangular ou circular, com opção de espelhamento. Ele funciona na janela do público durante a apresentação no Cadenza.</p>
+<h2 id="apresentacao-e-compartilhamento">Apresentação e compartilhamento<a class="zola-anchor" href="#apresentacao-e-compartilhamento" aria-label="Anchor link for: apresentacao-e-compartilhamento" style="visibility: hidden;"></a>
+</h2>
+<p>A tela do apresentador reúne slide atual, próximo slide, notas, cronômetro e relógio. Com dois monitores, você pode manter esses controles numa tela e mostrar os slides ao público na outra. Com uma só tela, a tecla <strong>X</strong> alterna entre a apresentação e a tela do apresentador. Numa videochamada, compartilhe apenas a janela da apresentação para manter as notas fora da transmissão.</p>
+<p>O <strong>teleprompter</strong> usa as notas do slide atual e acompanha a troca de slides. Você pode movê-lo, redimensioná-lo, pausar a rolagem e ajustar velocidade, fonte, tamanho do texto, espaçamento, cores e transparência. Há espelhamento para uso com vidro de teleprompter e uma linha de leitura. Ele pertence à tela do apresentador e não é desenhado na janela do público.</p>
+<p>Além da sequência horizontal, há <strong>subslides verticais</strong>: um tópico pode ter uma sequência de aprofundamento abaixo dele. Slides ocultos permitem manter material de apoio no arquivo, e o avanço automático atende apresentações que devem seguir sem intervenção. Quem começa pelo texto pode importar Markdown no estilo do reveal.js e continuar a edição visual.</p>
+<figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
+  <img src="./presenter-pt.png" alt="A tela do apresentador, com o slide atual, o próximo slide, as notas e o cronômetro">
+  <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">A tela do apresentador, com o slide atual, o próximo, as notas e o cronômetro
+  </figcaption>
+</figure>
+<h2 id="idiomas">Idiomas<a class="zola-anchor" href="#idiomas" aria-label="Anchor link for: idiomas" style="visibility: hidden;"></a>
+</h2>
+<p>A interface está disponível em alemão, árabe, bengali, chinês (simplificado), espanhol, francês, hindi, holandês, inglês, italiano, japonês, polonês, português, português do Brasil, russo e turco. O inglês é o idioma padrão; para trocar, use <strong>Ajustes &gt; Idioma</strong>.</p>
+<h1 id="cadenza-keynote-powerpoint-e-google-slides">Cadenza, Keynote, PowerPoint e Google Slides<a class="zola-anchor" href="#cadenza-keynote-powerpoint-e-google-slides" aria-label="Anchor link for: cadenza-keynote-powerpoint-e-google-slides" style="visibility: hidden;"></a>
+</h1>
+<p>Os quatro aplicativos atendem ao trabalho básico de montar e apresentar slides. As diferenças ficam mais claras ao considerar onde o arquivo vive, como o conteúdo técnico é editado, como a apresentação será distribuída e se outras pessoas precisam trabalhar nela ao mesmo tempo.</p>
+<p>A comparação abaixo foi revisada em <strong>15 de outubro de 2026</strong>. Ela considera o <strong>Cadenza 0.3.3</strong>, o <strong>Keynote para Mac</strong>, o <strong>PowerPoint para desktop do Microsoft 365</strong> e o <strong>Google Slides no navegador</strong>; os editores web e móveis de cada família aparecem numa linha própria. <strong>Sim</strong> indica suporte integrado; <strong>--</strong> indica que não há suporte nativo documentado para aquela função nesse recorte. Condições de plano, plataforma, serviço ou complemento são indicadas nas células. Isso não impede reproduzir um resultado com imagens, ferramentas externas ou extensões.</p>
+<style>
+.cadenza-comparison table { min-width: 44rem; font-size: 0.85em; }
+.cadenza-comparison th, .cadenza-comparison td { padding: 0.5rem 0.65rem; line-height: 1.5; text-align: left; }
+</style>
+<div class="cadenza-comparison" role="region" aria-label="Comparação de recursos entre Cadenza, Keynote, PowerPoint e Google Slides" tabindex="0" style="overflow-x: auto;">
+<table><thead><tr><th style="text-align: left">Recurso</th><th style="text-align: left">Cadenza</th><th style="text-align: left">Keynote</th><th style="text-align: left">PowerPoint</th><th style="text-align: left">Google Slides</th></tr></thead><tbody>
+<tr><td style="text-align: left">Texto, imagens, formas e tabelas</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td></tr>
+<tr><td style="text-align: left">Temas e layouts</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td></tr>
+<tr><td style="text-align: left">Gráficos com dados editáveis</td><td style="text-align: left">Sim; 19 tipos</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim; dados no <a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/docs/answer/7009814?hl=en">Sheets</a></td></tr>
+<tr><td style="text-align: left">Transições e animação de objetos</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td></tr>
+<tr><td style="text-align: left">Notas e tela do apresentador</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td></tr>
+<tr><td style="text-align: left">PDF</td><td style="text-align: left">Sim; impressão</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td></tr>
+<tr><td style="text-align: left">Aplicativo de desktop</td><td style="text-align: left">Linux e Windows</td><td style="text-align: left">macOS</td><td style="text-align: left">Windows e macOS</td><td style="text-align: left">Editor no navegador</td></tr>
+<tr><td style="text-align: left">Edição offline</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim; após instalação e ativação<sup class="footnote-reference" id="fr-offline-1"><a href="#fn-offline">1</a></sup></td><td style="text-align: left">Sim; exige configuração prévia<sup class="footnote-reference" id="fr-offline-2"><a href="#fn-offline">1</a></sup></td></tr>
+<tr><td style="text-align: left">Software livre</td><td style="text-align: left">Sim; MIT</td><td style="text-align: left">--; proprietário</td><td style="text-align: left">--; proprietário</td><td style="text-align: left">--; proprietário</td></tr>
+<tr><td style="text-align: left">Equações a partir de LaTeX</td><td style="text-align: left">Sim; KaTeX</td><td style="text-align: left">Sim; LaTeX e MathML<sup class="footnote-reference" id="fr-math-1"><a href="#fn-math">2</a></sup></td><td style="text-align: left">--; editor com UnicodeMath<sup class="footnote-reference" id="fr-math-2"><a href="#fn-math">2</a></sup></td><td style="text-align: left">--; por complemento, como MathType<sup class="footnote-reference" id="fr-math-3"><a href="#fn-math">2</a></sup></td></tr>
+<tr><td style="text-align: left">Código com sintaxe colorida e realce de linhas por etapas</td><td style="text-align: left">Sim</td><td style="text-align: left">--</td><td style="text-align: left">--</td><td style="text-align: left">--</td></tr>
+<tr><td style="text-align: left">Mermaid com código editável</td><td style="text-align: left">Sim</td><td style="text-align: left">--</td><td style="text-align: left">--</td><td style="text-align: left">--</td></tr>
+<tr><td style="text-align: left">Importação de Markdown no estilo reveal.js</td><td style="text-align: left">Sim</td><td style="text-align: left">--</td><td style="text-align: left">--</td><td style="text-align: left">--</td></tr>
+<tr><td style="text-align: left">Subslides com navegação vertical</td><td style="text-align: left">Sim</td><td style="text-align: left">--</td><td style="text-align: left">--</td><td style="text-align: left">--</td></tr>
+<tr><td style="text-align: left">CSS próprio por apresentação</td><td style="text-align: left">Sim</td><td style="text-align: left">--</td><td style="text-align: left">--</td><td style="text-align: left">--</td></tr>
+<tr><td style="text-align: left">Teleprompter com rolagem automática</td><td style="text-align: left">Sim; durante a apresentação</td><td style="text-align: left">--; notas com leitura manual</td><td style="text-align: left">Na gravação no Windows<sup class="footnote-reference" id="fr-teleprompter-1"><a href="#fn-teleprompter">3</a></sup></td><td style="text-align: left">No Google Vids, para gravação<sup class="footnote-reference" id="fr-teleprompter-2"><a href="#fn-teleprompter">3</a></sup></td></tr>
+<tr><td style="text-align: left">Câmera ao vivo dentro do slide</td><td style="text-align: left">Sim; ao apresentar no app</td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/en-au/guide/keynote/tan6a7b90433/mac">Sim</a></td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-us/powerpoint/presenting-with-cameo">Sim; Cameo</a></td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/docs/answer/14260821?hl=en">Speaker spotlight; contas elegíveis</a></td></tr>
+<tr><td style="text-align: left">HTML para hospedar por conta própria</td><td style="text-align: left">Sim; arquivo único ou pasta</td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/guide/keynote/export-to-powerpoint-or-another-file-format-tana0d19882a/mac">Sim; exportação HTML</a></td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-us/powerpoint/publish-your-presentation-to-the-web">--; sem exportação HTML direta</a></td><td style="text-align: left">--; publicação hospedada pelo Google<sup class="footnote-reference" id="fr-html-1"><a href="#fn-html">4</a></sup></td></tr>
+<tr><td style="text-align: left">Abrir e exportar PPTX</td><td style="text-align: left">--</td><td style="text-align: left">Sim; conversão</td><td style="text-align: left">Sim; formato nativo</td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/a/users/answer/9283194?hl=en">Sim; importação/exportação</a></td></tr>
+<tr><td style="text-align: left">Edição simultânea por várias pessoas</td><td style="text-align: left">--</td><td style="text-align: left">Sim; iCloud<sup class="footnote-reference" id="fr-collaboration-1"><a href="#fn-collaboration">5</a></sup></td><td style="text-align: left">Sim; OneDrive/SharePoint<sup class="footnote-reference" id="fr-collaboration-2"><a href="#fn-collaboration">5</a></sup></td><td style="text-align: left">Sim<sup class="footnote-reference" id="fr-collaboration-3"><a href="#fn-collaboration">5</a></sup></td></tr>
+<tr><td style="text-align: left">Comentários de revisão</td><td style="text-align: left">--</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td><td style="text-align: left">Sim</td></tr>
+<tr><td style="text-align: left">Editor web ou móvel</td><td style="text-align: left">--</td><td style="text-align: left">iCloud; iPhone e iPad</td><td style="text-align: left">Web; Android e iOS</td><td style="text-align: left">Web; Android e iOS</td></tr>
+<tr><td style="text-align: left">Gravar a apresentação em vídeo</td><td style="text-align: left">--</td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/guide/keynote/export-to-powerpoint-or-another-file-format-tana0d19882a/mac">Sim</a></td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-gb/powerpoint/record-your-presentation">Sim</a></td><td style="text-align: left"><a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/docs/answer/17570752?hl=en">Via Google Vids; contas elegíveis</a></td></tr>
+</tbody></table>
+</div>
+<p>As funções gerais e a disponibilidade por plataforma estão documentadas nos guias do <a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/guide/keynote/welcome/mac">Keynote</a>, do <a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-us/powerpoint/compare-powerpoint-features-on-different-platforms">PowerPoint</a> e do <a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/a/users/answer/9300133?hl=en">Google Slides</a>. Para abrir arquivos PowerPoint no Keynote e exportá-los novamente, veja também os <a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/en-gb/105050">formatos aceitos pela Apple</a>.</p>
+<h2 id="o-que-o-cadenza-ainda-nao-oferece">O que o Cadenza ainda não oferece<a class="zola-anchor" href="#o-que-o-cadenza-ainda-nao-oferece" aria-label="Anchor link for: o-que-o-cadenza-ainda-nao-oferece" style="visibility: hidden;"></a>
+</h2>
+<p>As limitações de formato e colaboração pesam na escolha tanto quanto os recursos de edição. Na versão 0.3.3, não há importação ou exportação de <strong>PPTX</strong>, coedição em tempo real, comentários de revisão ou histórico compartilhado na nuvem. Enviar um <code>.cadenza</code> a outra pessoa permite que ela trabalhe numa cópia; isso não equivale a editar o mesmo documento em conjunto.</p>
+<p>Também não há editor web ou aplicativo móvel, nem gravação integrada da apresentação em vídeo. O HTML exportado pode ser apresentado num navegador, mas não oferece o editor do Cadenza. Para gravar uma aula, é necessário usar uma ferramenta de captura de tela. A câmera ao vivo e o teleprompter do aplicativo não constituem um gravador.</p>
+<h1 id="privacidade">Privacidade<a class="zola-anchor" href="#privacidade" aria-label="Anchor link for: privacidade" style="visibility: hidden;"></a>
+</h1>
+<p>O <strong>Cadenza</strong> não exige conta para criar, editar, salvar ou apresentar arquivos locais. Os recursos on-line, como download de fontes, busca de mídia e reprodução de vídeos externos, acessam os respectivos serviços quando usados. A única exceção é a busca por atualizações: ao abrir, o Cadenza baixa do GitHub um pequeno arquivo com o número da versão mais recente, sem enviar nada sobre você ou suas apresentações. Ela pode ser desligada em <strong>Ajustes &gt; Atualizações</strong>.</p>
+<p>As chaves de API ficam no cofre de senhas do sistema: Secret Service no Linux e Gerenciador de Credenciais no Windows. Elas não são gravadas nas apresentações.</p>
+<h1 id="arquivos">Arquivos<a class="zola-anchor" href="#arquivos" aria-label="Anchor link for: arquivos" style="visibility: hidden;"></a>
+</h1>
+<p>O arquivo de edição e os formatos de distribuição têm funções diferentes. Guarde o <code>.cadenza</code> para continuar o trabalho; escolha HTML para distribuir uma apresentação navegável e PDF para uma cópia estática.</p>
+<ul>
+<li><strong><code>.cadenza</code></strong>: uma apresentação, guardada como um arquivo zip com o <code>deck.json</code> e as mídias e fontes que ela usa.</li>
+<li><strong><code>.cadenza-theme</code></strong>: um tema criado no construtor de temas (JSON, com as fontes incluídas).</li>
+<li><strong>HTML em um arquivo</strong>: reúne a apresentação e seus recursos incorporados num <code>.html</code>, que pode ser aberto num navegador sem instalar o Cadenza. Referências a serviços externos ainda dependem de rede.</li>
+<li><strong>HTML em uma pasta</strong>: separa a página e os recursos, para publicação num servidor próprio ou serviço de hospedagem estática.</li>
+<li><strong>PDF</strong>: usa a impressão do sistema para produzir páginas estáticas. Vídeos, transições e interações não são preservados como recursos executáveis.</li>
+</ul>
+<p>O HTML mantém a navegação e os recursos de apresentação compatíveis com o navegador. Ele não substitui o <code>.cadenza</code> como formato de edição, e não há importação de um HTML arbitrário para reconstruir o projeto. Para material com vídeos ou fontes específicas, vale conferir o resultado no computador e no navegador em que será apresentado.</p>
+<h1 id="codigo-fonte">Código-fonte<a class="zola-anchor" href="#codigo-fonte" aria-label="Anchor link for: codigo-fonte" style="visibility: hidden;"></a>
+</h1>
+<p>O código do <strong>Cadenza</strong> está no <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza">GitHub</a>, com as instruções para <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza#building-from-source">compilar a partir do código-fonte</a>, o <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/blob/main/CHANGELOG.md">histórico de mudanças</a> e o <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/blob/main/CONTRIBUTING.md">guia de contribuição</a>. Relatos de erro, sugestões e traduções são bem-vindos nas <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/issues">issues</a>.</p>
+<p>O <strong>Cadenza</strong> é distribuído sob a <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/blob/main/LICENSE">licença MIT</a>. Ele inclui reveal.js, KaTeX, Mermaid, highlight.js, Preact, htm e ícones Lucide, cada um sob a própria licença.</p>
+<p>As descrições do Cadenza nesta página seguem o <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/blob/main/README.md">README</a> e o <a rel="noopener noreferrer external" target="_blank" href="https://github.com/rodolfo-viana/cadenza/blob/main/CHANGELOG.md#033--2026-10-17">histórico da versão 0.3.3</a>. As referências abaixo detalham as condições da comparação.</p>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-offline">
+<p>A Microsoft documenta o <a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-us/office/lifecycle/lc-account/what-s-the-difference-between-microsoft-365-and-office-2024">uso offline após instalação e ativação</a>, com reconexão periódica para o Microsoft 365. O Google Slides exige <a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/docs/answer/6388102?hl=en">preparação do acesso offline</a>, incluindo Chrome ou Edge e a extensão Google Docs Offline no computador. <a href="#fr-offline-1">↩</a> <a href="#fr-offline-2">↩2</a></p>
+</li>
+<li id="fn-math">
+<p>O Keynote aceita <a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/guide/keynote/add-mathematical-equations-tan72a69d01f/mac">LaTeX e MathML</a>. A Microsoft distingue o LaTeX do Word do <a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-gb/word/linear-format-equations-using-unicodemath-and-latex-in-word">UnicodeMath disponível nos demais aplicativos do Office</a>. No Google Slides, <a rel="noopener noreferrer external" target="_blank" href="https://workspace.google.com/marketplace/app/mathtype/742924286153">MathType</a> é um complemento de terceiros, com condições próprias de assinatura. <a href="#fr-math-1">↩</a> <a href="#fr-math-2">↩2</a> <a href="#fr-math-3">↩3</a></p>
+</li>
+<li id="fn-teleprompter">
+<p>A Microsoft descreve a rolagem automática no <a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-gb/powerpoint/record-your-presentation">modo Teleprompter da gravação no Windows</a>. O <a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/docs/answer/14956207?hl=en">estúdio do Google Vids</a> também oferece rolagem, mas é outro aplicativo e não o modo de apresentação ao vivo do Slides; a disponibilidade dos serviços depende da conta. <a href="#fr-teleprompter-1">↩</a> <a href="#fr-teleprompter-2">↩2</a></p>
+</li>
+<li id="fn-html">
+<p>O <a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/a/users/answer/13004062?hl=en">Publish to the web do Google</a> publica uma apresentação no serviço ou fornece sua incorporação numa página. O <a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-us/powerpoint/embed-a-presentation-in-a-web-page-or-blog">PowerPoint também pode ser incorporado via OneDrive</a>. Esses caminhos dependem da hospedagem do fornecedor; não equivalem a exportar a apresentação completa para um servidor próprio. <a href="#fr-html-1">↩</a></p>
+</li>
+<li id="fn-collaboration">
+<p>Veja a <a rel="noopener noreferrer external" target="_blank" href="https://support.apple.com/en-ie/guide/icloud/mm94c7734855/icloud">colaboração no Keynote com iCloud</a>, a <a rel="noopener noreferrer external" target="_blank" href="https://support.microsoft.com/en-gb/office/collaborate-with-others-b85eef71-e96b-4325-9501-228588728bc9">coautoria, os comentários e o histórico do Microsoft 365</a> e os <a rel="noopener noreferrer external" target="_blank" href="https://support.google.com/a/users/answer/9300133?hl=en">recursos de compartilhamento e histórico do Slides</a>. Sincronização de arquivos e recuperação local não equivalem a coedição. <a href="#fr-collaboration-1">↩</a> <a href="#fr-collaboration-2">↩2</a> <a href="#fr-collaboration-3">↩3</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>

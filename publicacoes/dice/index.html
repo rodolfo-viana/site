@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+
+<html lang="pt">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="color-scheme" content="light dark">
+  <meta name="description" content="Uma leitura crítica do coeficiente de Dice e das métricas que revelam erros de borda, distância, topologia, objetos e volume em segmentação de imagens médicas">
+  <title>O que o Dice não vê</title>
+  <link rel="icon" type="image/png" sizes="32x32" href="https://rodolfoviana.com.br/img/favicon-32x32.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="https://rodolfoviana.com.br/img/favicon-16x16.png">
+  <link rel="apple-touch-icon" sizes="180x180" href="https://rodolfoviana.com.br/img/apple-touch-icon.png">
+  <style>
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Space Grotesk";
+    src: url("https://rodolfoviana.com.br/fonts/SpaceGrotesk/SpaceGrotesk-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Regular.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 400;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "JetBrains Mono";
+    src: url("https://rodolfoviana.com.br/fonts/JetbrainsMono/JetBrainsMono-Bold.ttf") format("truetype");
+    font-style: normal;
+    font-weight: 700;
+    font-display: swap;
+  }
+</style>
+
+  <style>
+  body {
+    --primary-color: #476aa1;
+    --primary-pale-color: #476aa133;
+    --primary-decoration-color: #476aa112;
+    --bg-color: #ffffff;
+    --text-color: #2f3030;
+    --text-pale-color: #717171;
+    --text-decoration-color: #a9a9a9;
+    --highlight-mark-color: #5f75b020;
+    --callout-note-color: #476aa1;
+    --callout-tip-color: #268556;
+    --callout-important-color: #885fc9;
+    --callout-warning-color: #ab6632;
+    --callout-caution-color: #c64e4e;
+  }
+
+  body.dark {
+    --primary-color: #7e9bd6;
+    --primary-pale-color: #7e9bd666;
+    --primary-decoration-color: #7e9bd612;
+    --bg-color: #1c1c1c;
+    --text-color: #c8c8c8;
+    --text-pale-color: #8d8d8d;
+    --text-decoration-color: #5f5f5f;
+    --highlight-mark-color: #8296cb3b;
+    --callout-note-color: #7e9bd6;
+    --callout-tip-color: #47976f;
+    --callout-important-color: #9776cd;
+    --callout-warning-color: #ad7a52;
+    --callout-caution-color: #d06161;
+  }
+
+  body {
+    --main-font: "Space Grotesk", ui-sans-serif, system-ui, sans-serif;
+    --code-font: "JetBrains Mono", ui-monospace, monospace;
+    --homepage-max-width: 768px;
+    --main-max-width: 768px;
+    --avatar-size: 60px;
+    --font-size: 16px;
+    --line-height: 1.75;
+    --img-border-radius: 0;
+    --detail-border-radius: 0;
+    --dark-mode-img-brightness: 0.82;
+    --dark-mode-chart-brightness: 0.82;
+    --inline-code-border-radius: 2px;
+    --inline-code-bg-color: var(--primary-decoration-color);
+    --block-code-border-radius: 0;
+    --block-code-border-color: var(--primary-color);
+    --detail-border-color: var(--primary-color);
+  }
+
+  header nav {
+    display: flex;
+    justify-content: space-between;
+  }
+
+  header .lang-switch {
+    padding-right: 0;
+  }
+
+  .d3js {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 800px;
+    margin: 0 auto;
+    padding: 20px;
+    background: var(--bg-color);
+    font-family: var(--main-font);
+  }
+
+  .d3js svg {
+    display: block;
+    width: 100%;
+    height: auto;
+    font-family: inherit;
+  }
+
+  .prose video {
+    box-sizing: border-box;
+    display: block;
+    width: 100%;
+    height: auto;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  body.articles .article-list {
+    padding: 0 15px;
+  }
+
+  body.articles .article-entry {
+    padding: 0.75em 0;
+    border-bottom: 1px solid var(--primary-decoration-color);
+  }
+
+  body.articles .article-entry:last-of-type {
+    border-bottom: 0;
+  }
+
+  body.articles .article-title {
+    line-height: 1.5;
+  }
+
+  body.articles .article-heading {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1.25em;
+  }
+
+  body.articles .article-authors {
+    margin-top: 0.15em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.15em 0.45em;
+    color: var(--text-pale-color);
+    font-size: 0.85em;
+    line-height: 1.5;
+  }
+
+  body.articles .article-meta cite {
+    font-style: normal;
+  }
+
+  body.articles .article-meta time {
+    white-space: nowrap;
+  }
+
+  body.articles .article-actions {
+    display: flex;
+    flex-shrink: 0;
+    gap: 0.25em;
+  }
+
+  body.articles .article-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 7px;
+    border: 0;
+    color: var(--primary-color);
+    background: transparent;
+    text-decoration: none;
+    cursor: pointer;
+  }
+
+  body.articles .article-action:hover,
+  body.articles .article-action.copied {
+    background: var(--primary-decoration-color);
+  }
+
+  body.articles .article-action span,
+  body.articles .article-action svg {
+    display: block;
+    width: 18px;
+    height: 18px;
+  }
+
+  body.articles .article-action .check-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .copy-icon {
+    display: none;
+  }
+
+  body.articles .article-action.copied .check-icon {
+    display: block;
+  }
+
+  @media (max-width: 425px) {
+    body.articles .article-entry {
+      padding: 1em 0;
+    }
+
+    body.articles .article-heading {
+      gap: 0.5em;
+    }
+  }
+</style>
+
+  <link rel="stylesheet" href="https://rodolfoviana.com.br/main.css">
+  
+<link id="hl" rel="stylesheet" type="text/css" href="https://rodolfoviana.com.br/giallo-light.css">
+
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css" integrity="sha384-nB0miv6/jRmo5UMMR1wu3Gz6NLsoTkbqJghGIsx//Rlm+ZU03BU6SQNC66uf4l5+" crossorigin="anonymous">
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js" integrity="sha384-7zkQWkzuo3B5mTepMUcHkMB5jZaolc2xDwL6VFqjFALcbeS9Ggm/Yr2r3Dy4lfFg" crossorigin="anonymous"></script>
+<script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js" integrity="sha384-43gviWU0YVjaDtb/GhzOouOXtZMP/7XUzwPTstBeZFe/+rCMvRwr4yROQP43s0Xk" crossorigin="anonymous"></script>
+<script>document.addEventListener("DOMContentLoaded",function(){renderMathInElement(document.body,{delimiters:[{left:"$$",right:"$$",display:true},{left:"\\(",right:"\\)",display:false},{left:"\\[",right:"\\]",display:true}],throwOnError:false});});</script>
+
+
+
+  
+<link rel="canonical" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;publicacoes&#x2F;dice&#x2F;">
+<meta property="og:url" content="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;publicacoes&#x2F;dice&#x2F;">
+
+<meta property="og:site_name" content="rodolfo viana">
+<meta property="og:image" content="https://rodolfoviana.com.br/image.png">
+
+  <meta property="og:type" content="article">
+  <meta property="og:title" content="O que o Dice não vê">
+  
+  <link rel="alternate" hreflang="en" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;publicacoes&#x2F;dice&#x2F;">
+  
+  <link rel="alternate" hreflang="pt" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;publicacoes&#x2F;dice&#x2F;">
+  
+
+
+</head>
+
+<body class="post">
+  
+  <script>
+    const theme = sessionStorage.getItem('theme');
+    const match = window.matchMedia("(prefers-color-scheme: dark)").matches;
+    if ((theme && theme == 'dark') || (!theme && match)) {
+      document.body.classList.add('dark');
+      const hl = document.querySelector('link#hl');
+      if (hl) hl.href = 'https://rodolfoviana.com.br/giallo-dark.css';
+    }
+  </script>
+  
+  
+
+
+<div id="wrapper">
+  <div id="blank"></div>
+  <aside>
+    
+    
+    <nav><ul>
+      
+      <li><a class="h2" href="#por-que-olhar-alem-do-dice">Por que olhar além do Dice</a></li>
+      
+      <li><a class="h2" href="#o-que-o-dice-mede">O que o Dice mede</a><ul><li><a class="h3" href="#uma-estatistica-de-sobreposicao">Uma estatística de sobreposição</a></li><li><a class="h3" href="#dice-e-iou-contam-a-mesma-historia-por-outra-escala">Dice e IoU contam a mesma história por outra escala</a></li></ul></li>
+      
+      <li><a class="h2" href="#o-mesmo-dice-erros-diferentes">O mesmo Dice, erros diferentes</a><ul><li><a class="h3" href="#o-preco-relativo-de-um-pixel">O preço relativo de um pixel</a></li></ul></li>
+      
+      <li><a class="h2" href="#a-distancia-ate-a-borda">A distância até a borda</a><ul><li><a class="h3" href="#hausdorff-e-hd95">Hausdorff e HD95</a></li><li><a class="h3" href="#distancia-media-simetrica-de-superficie">Distância média simétrica de superfície</a></li><li><a class="h3" href="#dice-de-superficie">Dice de superfície</a></li></ul></li>
+      
+      <li><a class="h2" href="#o-que-as-metricas-de-borda-tambem-deixam-de-fora">O que as métricas de borda também deixam de fora</a><ul><li><a class="h3" href="#direcao-e-volume">Direção e volume</a></li><li><a class="h3" href="#objetos-e-topologia">Objetos e topologia</a></li></ul></li>
+      
+      <li><a class="h2" href="#quando-a-implementacao-muda-a-pergunta">Quando a implementação muda a pergunta</a></li>
+      
+      <li><a class="h2" href="#um-protocolo-minimo-de-avaliacao">Um protocolo mínimo de avaliação</a></li>
+      
+      <li><a class="h2" href="#o-que-levo-para-minha-pesquisa">O que levo para minha pesquisa</a></li>
+      
+      <li><a class="h2" href="#referencias">Referências</a></li>
+      
+    </ul></nav>
+    
+    <button id="back-to-top" aria-label="back to top"><svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="feather feather-arrow-up"><line x1="12" y1="19" x2="12" y2="5"></line><polyline points="5 12 12 5 19 12"></polyline></svg>
+</button>
+  </aside>
+  <main>
+    <header><nav>
+      <a id="back-link" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;publicacoes&#x2F;">← Voltar</a>
+      <a class="lang-switch" href="https:&#x2F;&#x2F;rodolfoviana.com.br&#x2F;en&#x2F;publicacoes&#x2F;dice&#x2F;" hreflang="en">EN</a>
+    </nav></header>
+    <div>
+      
+      <div id="copy-cfg" style="display:none" data-copy-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M6.9998 6V3C6.9998 2.44772 7.44752 2 7.9998 2H19.9998C20.5521 2 20.9998 2.44772 20.9998 3V17C20.9998 17.5523 20.5521 18 19.9998 18H16.9998V20.9991C16.9998 21.5519 16.5499 22 15.993 22H4.00666C3.45059 22 3 21.5554 3 20.9991L3.0026 7.00087C3.0027 6.44811 3.45264 6 4.00942 6H6.9998ZM5.00242 8L5.00019 20H14.9998V8H5.00242ZM8.9998 6H16.9998V16H18.9998V4H8.9998V6Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+" data-check-icon="&lt;svg xmlns=&quot;http:&#x2F;&#x2F;www.w3.org&#x2F;2000&#x2F;svg&quot; viewBox=&quot;0 0 24 24&quot; width=&quot;18&quot; height=&quot;18&quot;&gt;&lt;path d=&quot;M10.0007 15.1709L19.1931 5.97852L20.6073 7.39273L10.0007 17.9993L3.63672 11.6354L5.05093 10.2212L10.0007 15.1709Z&quot; fill=&quot;currentColor&quot;&gt;&lt;&#x2F;path&gt;&lt;&#x2F;svg&gt;
+"></div>
+      <article class="prose">
+        <h1>O que o Dice não vê</h1>
+        <div id="post-info">
+          <div id="date">
+            <span id="publish">29-08-2026</span>
+            
+          </div>
+          <div id="tags"><a class="instant" href="https://rodolfoviana.com.br/tags/aprendizado-de-maquina/"><span>#</span>aprendizado de máquina</a><a class="instant" href="https://rodolfoviana.com.br/tags/segmentacao-de-imagens/"><span>#</span>segmentação de imagens</a><a class="instant" href="https://rodolfoviana.com.br/tags/imagens-medicas/"><span>#</span>imagens médicas</a><a class="instant" href="https://rodolfoviana.com.br/tags/metricas-de-avaliacao/"><span>#</span>métricas de avaliação</a><a class="instant" href="https://rodolfoviana.com.br/tags/u-net/"><span>#</span>u-net</a></div>
+        </div>
+        <h1 id="por-que-olhar-alem-do-dice">Por que olhar além do Dice<a class="zola-anchor" href="#por-que-olhar-alem-do-dice" aria-label="Anchor link for: por-que-olhar-alem-do-dice" style="visibility: hidden;"></a>
+</h1>
+<p>Minha pesquisa de mestrado trata do aprimoramento da detecção de bordas em arquiteturas U-Net para segmentação de imagens médicas. É a partir desse problema que tento entender o que cada métrica consegue me dizer. Uma comparação encerrada numa única coluna de Dice deixa sem resposta justamente o que quero medir: onde a borda falhou e por quantos milímetros.</p>
+<p>Em um <a href="/projetos/unet-comparativo/">comparativo de arquiteturas U-Net</a> que publiquei aqui, a U-Net padrão obteve o maior Dice médio. Ao inspecionar as máscaras, porém, encontrei erros muito diferentes: vazamento para o fundo, halo periférico, perda de um lóbulo, descontinuidade e falha em alvos pequenos. Todos alteram a sobreposição, mas o número não informa qual deles ocorreu, onde ocorreu ou quão longe a borda prevista ficou da referência. Para a pergunta que orienta meu mestrado, essa comparação ainda deixa bastante coisa em aberto.</p>
+<p>O Dice é simples, dispensa a contagem dos numerosos verdadeiros negativos do fundo e responde bem à pergunta para a qual foi definido: <strong>quanto duas regiões se sobrepõem?</strong> Sua resposta fica incompleta quando passa a representar sozinha a qualidade da segmentação. A literatura de validação em imagens médicas documenta essa inadequação entre a métrica escolhida e o interesse real da aplicação.<sup class="footnote-reference" id="fr-1-1"><a href="#fn-1">1</a></sup> <sup class="footnote-reference" id="fr-2-1"><a href="#fn-2">2</a></sup></p>
+<p>Estas notas são uma tentativa de organizar os critérios com que quero avaliar esse problema. Quero compreender até onde o Dice me ajuda e quais medidas preciso acrescentar para sustentar uma afirmação sobre melhora de bordas.</p>
+<h1 id="o-que-o-dice-mede">O que o Dice mede<a class="zola-anchor" href="#o-que-o-dice-mede" aria-label="Anchor link for: o-que-o-dice-mede" style="visibility: hidden;"></a>
+</h1>
+<h2 id="uma-estatistica-de-sobreposicao">Uma estatística de sobreposição<a class="zola-anchor" href="#uma-estatistica-de-sobreposicao" aria-label="Anchor link for: uma-estatistica-de-sobreposicao" style="visibility: hidden;"></a>
+</h2>
+<p>Sejam \(G\) a máscara binária de referência e \(P\) a máscara predita. Proposto por Lee Dice em 1945 para medir associação ecológica,<sup class="footnote-reference" id="fr-3-1"><a href="#fn-3">3</a></sup> o coeficiente assume, em segmentação, a forma</p>
+<p>\[
+\operatorname{Dice}(P,G)
+= \frac{2|P\cap G|}{|P|+|G|}
+= \frac{2TP}{2TP+FP+FN}.
+\]</p>
+<p>Quando ao menos uma máscara não é vazia, o valor fica entre zero e um: é um para máscaras não vazias idênticas e zero quando não há interseção. Quando \(P\) e \(G\) são não vazias, ele também é o \(F_1\) calculado no nível de pixel ou voxel: a média harmônica entre precisão e sensibilidade. Três propriedades explicam boa parte de sua popularidade.</p>
+<p>Primeiro, verdadeiros negativos não aparecem na fórmula. Em uma imagem na qual a anatomia de interesse ocupa uma região pequena, o fundo corretamente classificado não domina o resultado como dominaria a acurácia. Segundo, a medida é simétrica: trocar referência e predição não muda o valor. Terceiro, sua interpretação geométrica é direta e independe da unidade física da imagem.</p>
+<p>A mesma fórmula omite a direção e a posição do erro. Falsos positivos e falsos negativos entram no mesmo denominador; o Dice não diz se o modelo tende a expandir ou contrair a estrutura. As coordenadas não entram na fórmula: um falso positivo encostado na borda e outro a trinta milímetros dela têm o mesmo peso. A divisão pela soma dos volumes também torna a penalização relativa ao tamanho, de modo que o mesmo erro absoluto consome uma fração maior de uma estrutura pequena.<sup class="footnote-reference" id="fr-1-2"><a href="#fn-1">1</a></sup></p>
+<h2 id="dice-e-iou-contam-a-mesma-historia-por-outra-escala">Dice e IoU contam a mesma história por outra escala<a class="zola-anchor" href="#dice-e-iou-contam-a-mesma-historia-por-outra-escala" aria-label="Anchor link for: dice-e-iou-contam-a-mesma-historia-por-outra-escala" style="visibility: hidden;"></a>
+</h2>
+<p>A interseção sobre união, ou IoU, é</p>
+<p>\[
+\operatorname{IoU}(P,G)=\frac{|P\cap G|}{|P\cup G|}
+=\frac{TP}{TP+FP+FN}.
+\]</p>
+<p>Para uma dupla de máscaras com união não vazia, Dice e IoU estão ligados exatamente por</p>
+<p>\[
+\operatorname{Dice}=\frac{2\operatorname{IoU}}{1 + \operatorname{IoU}},
+\qquad
+\operatorname{IoU}=\frac{\operatorname{Dice}}{2 - \operatorname{Dice}}.
+\]</p>
+<p>Logo, uma máscara com Dice maior também tem IoU maior. Reportar as duas não fornece duas leituras geométricas independentes; fornece uma transformação monotônica do mesmo conjunto de contagens.<sup class="footnote-reference" id="fr-4-1"><a href="#fn-4">4</a></sup> Há uma ressalva: como a transformação é não linear, médias de Dice e de IoU calculadas caso a caso não precisam preservar diferenças ou ordenações depois da agregação. Isso é um efeito do resumo estatístico, não informação espacial nova.</p>
+<p>Também convém separar métrica e função de perda. O Dice acima compara máscaras binárias após uma regra de decisão. A chamada <em>soft Dice loss</em> opera sobre probabilidades, depende de redução entre classes e lotes e costuma incluir um termo de suavização. Treinar com uma dessas versões não determina como a avaliação final deve ser feita; apenas define parte do problema de otimização.</p>
+<h1 id="o-mesmo-dice-erros-diferentes">O mesmo Dice, erros diferentes<a class="zola-anchor" href="#o-mesmo-dice-erros-diferentes" aria-label="Anchor link for: o-mesmo-dice-erros-diferentes" style="visibility: hidden;"></a>
+</h1>
+<p>Considere uma referência quadrada de \(64\times64\) pixels, com área \(4096\). Construí três predições, todas também com \(4096\) pixels e com a mesma interseção de \(3968\) pixels com a referência:</p>
+<ol>
+<li><strong>Deslocamento</strong>: o quadrado inteiro é movido dois pixels para a direita.</li>
+<li><strong>Ilha</strong>: uma faixa de \(128\) pixels é retirada da borda e recolocada longe do objeto, formando um segundo componente.</li>
+<li><strong>Buraco</strong>: \(128\) pixels são retirados do interior e recolocados como uma faixa ligada à borda externa.</li>
+</ol>
+<p>Por construção, as três predições têm</p>
+<p>\[
+\operatorname{Dice}=\frac{2\cdot3968}{4096+4096}=0{,}96875,
+\qquad
+\operatorname{IoU}=\frac{3968}{4224}\approx0{,}93939.
+\]</p>
+<p>O código abaixo reproduz o exemplo apenas com NumPy. Ele usa o contorno interno de quatro vizinhos, distância entre centros de pixels, o máximo dos dois percentis direcionais para HD95 e uma média agrupada para ASSD. O Dice de superfície é uma aproximação ilustrativa que atribui o mesmo peso a cada pixel de contorno. O código também materializa todas as distâncias entre pares de pontos, portanto não é uma implementação de referência nem uma solução para volumes médicos reais.</p>
+<pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-keyword">import</span><span> numpy</span><span class="z-keyword"> as</span><span> np</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> contorno</span><span>(</span><span class="z-variable z-parameter z-function">mascara</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span> np</span><span>.</span><span>ndarray</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Contorno interno de quatro vizinhos de uma máscara binária 2-D.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    m</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>pad</span><span>(</span><span>mascara</span><span>,</span><span class="z-constant"> 1</span><span>,</span><span class="z-variable"> constant_values</span><span class="z-keyword">=</span><span class="z-constant">False</span><span>)</span></span>
+<span class="giallo-l"><span>    interior</span><span class="z-keyword"> =</span><span> (</span></span>
+<span class="giallo-l"><span>        m</span><span>[</span><span class="z-constant">1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">2</span><span>,</span><span class="z-constant"> 1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span class="z-constant">2</span><span>:</span><span>,</span><span class="z-constant"> 1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span class="z-constant">1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span> :</span><span class="z-keyword">-</span><span class="z-constant">2</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span class="z-constant">1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 2</span><span>:</span><span>]</span></span>
+<span class="giallo-l"><span>    )</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> mascara</span><span class="z-keyword"> &amp;</span><span class="z-keyword"> ~</span><span>interior</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> distancias_direcionais</span><span>(</span><span class="z-variable z-parameter z-function">origem</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>,</span><span class="z-variable z-parameter z-function"> destino</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span> np</span><span>.</span><span>ndarray</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Distância euclidiana de cada pixel de contorno de origem ao destino.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    a</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>argwhere</span><span>(</span><span>contorno</span><span>(</span><span>origem</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    b</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>argwhere</span><span>(</span><span>contorno</span><span>(</span><span>destino</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    quadrados</span><span class="z-keyword"> =</span><span> (</span><span>(</span><span>a</span><span>[</span><span>:</span><span>,</span><span class="z-constant"> None</span><span>,</span><span> :</span><span>]</span><span class="z-keyword"> -</span><span> b</span><span>[</span><span class="z-constant">None</span><span>,</span><span> :</span><span>,</span><span> :</span><span>]</span><span>)</span><span class="z-keyword"> **</span><span class="z-constant"> 2</span><span>)</span><span>.</span><span>sum</span><span>(</span><span class="z-variable">axis</span><span class="z-keyword">=</span><span class="z-constant">2</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> np</span><span>.</span><span>sqrt</span><span>(</span><span>quadrados</span><span>.</span><span>min</span><span>(</span><span class="z-variable">axis</span><span class="z-keyword">=</span><span class="z-constant">1</span><span>)</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> contar_componentes</span><span>(</span><span class="z-variable z-parameter z-function">mascara</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span class="z-support"> int</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Número de componentes de primeiro plano com quatro vizinhos.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    restantes</span><span class="z-keyword"> =</span><span class="z-support"> set</span><span>(</span><span class="z-support">map</span><span>(</span><span class="z-support">tuple</span><span>,</span><span> np</span><span>.</span><span>argwhere</span><span>(</span><span>mascara</span><span>)</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    total</span><span class="z-keyword"> =</span><span class="z-constant"> 0</span></span>
+<span class="giallo-l"><span class="z-keyword">    while</span><span> restantes</span><span>:</span></span>
+<span class="giallo-l"><span>        total</span><span class="z-keyword"> +=</span><span class="z-constant"> 1</span></span>
+<span class="giallo-l"><span>        pilha</span><span class="z-keyword"> =</span><span> [</span><span>restantes</span><span>.</span><span>pop</span><span>(</span><span>)</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        while</span><span> pilha</span><span>:</span></span>
+<span class="giallo-l"><span>            linha</span><span>,</span><span> coluna</span><span class="z-keyword"> =</span><span> pilha</span><span>.</span><span>pop</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">            for</span><span> vizinho</span><span class="z-keyword"> in</span><span> (</span></span>
+<span class="giallo-l"><span>                (</span><span>linha</span><span class="z-keyword"> -</span><span class="z-constant"> 1</span><span>,</span><span> coluna</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span>                (</span><span>linha</span><span class="z-keyword"> +</span><span class="z-constant"> 1</span><span>,</span><span> coluna</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span>                (</span><span>linha</span><span>,</span><span> coluna</span><span class="z-keyword"> -</span><span class="z-constant"> 1</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span>                (</span><span>linha</span><span>,</span><span> coluna</span><span class="z-keyword"> +</span><span class="z-constant"> 1</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span>            )</span><span>:</span></span>
+<span class="giallo-l"><span class="z-keyword">                if</span><span> vizinho</span><span class="z-keyword"> in</span><span> restantes</span><span>:</span></span>
+<span class="giallo-l"><span>                    restantes</span><span>.</span><span>remove</span><span>(</span><span>vizinho</span><span>)</span></span>
+<span class="giallo-l"><span>                    pilha</span><span>.</span><span>append</span><span>(</span><span>vizinho</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> total</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> contar_buracos</span><span>(</span><span class="z-variable z-parameter z-function">mascara</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span class="z-support"> int</span><span>:</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;&quot;&quot;</span><span class="z-string">Componentes de fundo que não alcançam a margem da imagem.</span><span class="z-punctuation z-definition z-string">&quot;&quot;&quot;</span></span>
+<span class="giallo-l"><span>    fundo_com_margem</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>pad</span><span>(</span><span class="z-keyword">~</span><span>mascara</span><span>,</span><span class="z-constant"> 1</span><span>,</span><span class="z-variable"> constant_values</span><span class="z-keyword">=</span><span class="z-constant">True</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> contar_componentes</span><span>(</span><span>fundo_com_margem</span><span>)</span><span class="z-keyword"> -</span><span class="z-constant"> 1</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> metricas</span><span>(</span><span class="z-variable z-parameter z-function">referencia</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>,</span><span class="z-variable z-parameter z-function"> predicao</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>,</span><span class="z-variable z-parameter z-function"> tolerancia</span><span class="z-keyword">=</span><span class="z-constant">2.0</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>    intersecao</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>logical_and</span><span>(</span><span>referencia</span><span>,</span><span> predicao</span><span>)</span><span>.</span><span>sum</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>    uniao</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>logical_or</span><span>(</span><span>referencia</span><span>,</span><span> predicao</span><span>)</span><span>.</span><span>sum</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>    ref_pred</span><span class="z-keyword"> =</span><span> distancias_direcionais</span><span>(</span><span>referencia</span><span>,</span><span> predicao</span><span>)</span></span>
+<span class="giallo-l"><span>    pred_ref</span><span class="z-keyword"> =</span><span> distancias_direcionais</span><span>(</span><span>predicao</span><span>,</span><span> referencia</span><span>)</span></span>
+<span class="giallo-l"><span>    agrupadas</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>concatenate</span><span>(</span><span>(</span><span>ref_pred</span><span>,</span><span> pred_ref</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> {</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">Dice</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span class="z-constant"> 2</span><span class="z-keyword"> *</span><span> intersecao</span><span class="z-keyword"> /</span><span> (</span><span>referencia</span><span>.</span><span>sum</span><span>(</span><span>)</span><span class="z-keyword"> +</span><span> predicao</span><span>.</span><span>sum</span><span>(</span><span>)</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">IoU</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> intersecao</span><span class="z-keyword"> /</span><span> uniao</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">HD95</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span class="z-support"> max</span><span>(</span><span>np</span><span>.</span><span>percentile</span><span>(</span><span>ref_pred</span><span>,</span><span class="z-constant"> 95</span><span>)</span><span>,</span><span> np</span><span>.</span><span>percentile</span><span>(</span><span>pred_ref</span><span>,</span><span class="z-constant"> 95</span><span>)</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">ASSD</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> agrupadas</span><span>.</span><span>mean</span><span>(</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">SD@2</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> np</span><span>.</span><span>mean</span><span>(</span><span>agrupadas</span><span class="z-keyword"> &lt;=</span><span> tolerancia</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">RVE_pct</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span class="z-constant"> 100</span><span class="z-keyword"> *</span><span> (</span><span>predicao</span><span>.</span><span>sum</span><span>(</span><span>)</span><span class="z-keyword"> -</span><span> referencia</span><span>.</span><span>sum</span><span>(</span><span>)</span><span>)</span><span class="z-keyword"> /</span><span> referencia</span><span>.</span><span>sum</span><span>(</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">componentes</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> contar_componentes</span><span>(</span><span>predicao</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">        &quot;</span><span class="z-string">buracos</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> contar_buracos</span><span>(</span><span>predicao</span><span>)</span><span>,</span></span>
+<span class="giallo-l"><span>    }</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>referencia</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros</span><span>(</span><span>(</span><span class="z-constant">192</span><span>,</span><span class="z-constant"> 192</span><span>)</span><span>,</span><span class="z-variable"> dtype</span><span class="z-keyword">=</span><span class="z-support">bool</span><span>)</span></span>
+<span class="giallo-l"><span>referencia</span><span>[</span><span class="z-constant">48</span><span>:</span><span class="z-constant">112</span><span>,</span><span class="z-constant"> 48</span><span>:</span><span class="z-constant">112</span><span>]</span><span class="z-keyword"> =</span><span class="z-constant"> True</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>deslocamento</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>zeros_like</span><span>(</span><span>referencia</span><span>)</span></span>
+<span class="giallo-l"><span>deslocamento</span><span>[</span><span class="z-constant">48</span><span>:</span><span class="z-constant">112</span><span>,</span><span class="z-constant"> 50</span><span>:</span><span class="z-constant">114</span><span>]</span><span class="z-keyword"> =</span><span class="z-constant"> True</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>ilha</span><span class="z-keyword"> =</span><span> referencia</span><span>.</span><span>copy</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>ilha</span><span>[</span><span class="z-constant">48</span><span>:</span><span class="z-constant">112</span><span>,</span><span class="z-constant"> 110</span><span>:</span><span class="z-constant">112</span><span>]</span><span class="z-keyword"> =</span><span class="z-constant"> False</span></span>
+<span class="giallo-l"><span>ilha</span><span>[</span><span class="z-constant">144</span><span>:</span><span class="z-constant">152</span><span>,</span><span class="z-constant"> 144</span><span>:</span><span class="z-constant">160</span><span>]</span><span class="z-keyword"> =</span><span class="z-constant"> True</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span>buraco</span><span class="z-keyword"> =</span><span> referencia</span><span>.</span><span>copy</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>buraco</span><span>[</span><span class="z-constant">76</span><span>:</span><span class="z-constant">84</span><span>,</span><span class="z-constant"> 72</span><span>:</span><span class="z-constant">88</span><span>]</span><span class="z-keyword"> =</span><span class="z-constant"> False</span></span>
+<span class="giallo-l"><span>buraco</span><span>[</span><span class="z-constant">48</span><span>:</span><span class="z-constant">112</span><span>,</span><span class="z-constant"> 112</span><span>:</span><span class="z-constant">114</span><span>]</span><span class="z-keyword"> =</span><span class="z-constant"> True</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-keyword">for</span><span> nome</span><span>,</span><span> predicao</span><span class="z-keyword"> in</span><span> {</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;</span><span class="z-string">deslocamento</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> deslocamento</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;</span><span class="z-string">ilha</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> ilha</span><span>,</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-string">    &quot;</span><span class="z-string">buraco</span><span class="z-punctuation z-definition z-string">&quot;</span><span>:</span><span> buraco</span><span>,</span></span>
+<span class="giallo-l"><span>}</span><span>.</span><span>items</span><span>(</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>    valores</span><span class="z-keyword"> =</span><span> metricas</span><span>(</span><span>referencia</span><span>,</span><span> predicao</span><span>)</span></span>
+<span class="giallo-l"><span>    texto</span><span class="z-keyword"> =</span><span class="z-punctuation z-definition z-string"> &quot;</span><span class="z-punctuation z-definition z-string"> &quot;</span><span>.</span><span>join</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-constant">{</span><span>chave</span><span class="z-constant">}</span><span class="z-string">=</span><span class="z-constant">{</span><span>valor</span><span class="z-storage z-type">:.3f</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span class="z-keyword"> for</span><span> chave</span><span>,</span><span> valor</span><span class="z-keyword"> in</span><span> valores</span><span>.</span><span>items</span><span>(</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span class="z-support">    print</span><span>(</span><span>nome</span><span>,</span><span> texto</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> deslocamento Dice=0.969 IoU=0.939 HD95=2.000  ASSD=1.000 SD@2=1.000 RVE_pct=0.000 componentes=1.000 buracos=0.000</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> ilha        Dice=0.969 IoU=0.939 HD95=57.347 ASSD=4.887 SD@2=0.919 RVE_pct=0.000 componentes=2.000 buracos=0.000</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> buraco      Dice=0.969 IoU=0.939 HD95=27.000 ASSD=2.626 SD@2=0.914 RVE_pct=0.000 componentes=1.000 buracos=1.000</span></span></code></pre>
+<p>A tabela acrescenta à sobreposição as distâncias e a topologia de cada máscara:</p>
+<table><thead><tr><th>Predição</th><th style="text-align: right">Dice ↑</th><th style="text-align: right">IoU ↑</th><th style="text-align: right">HD95 ↓ (px)</th><th style="text-align: right">ASSD ↓ (px)</th><th style="text-align: right">SD@2 ↑</th><th style="text-align: right">Erro de volume</th><th style="text-align: right">Componentes / buracos</th></tr></thead><tbody>
+<tr><td>Deslocamento</td><td style="text-align: right">0,969</td><td style="text-align: right">0,939</td><td style="text-align: right">2,000</td><td style="text-align: right">1,000</td><td style="text-align: right">1,000</td><td style="text-align: right">0,0%</td><td style="text-align: right">1 / 0</td></tr>
+<tr><td>Ilha</td><td style="text-align: right">0,969</td><td style="text-align: right">0,939</td><td style="text-align: right">57,347</td><td style="text-align: right">4,887</td><td style="text-align: right">0,919</td><td style="text-align: right">0,0%</td><td style="text-align: right">2 / 0</td></tr>
+<tr><td>Buraco</td><td style="text-align: right">0,969</td><td style="text-align: right">0,939</td><td style="text-align: right">27,000</td><td style="text-align: right">2,626</td><td style="text-align: right">0,914</td><td style="text-align: right">0,0%</td><td style="text-align: right">1 / 1</td></tr>
+</tbody></table>
+<p>O exemplo foi desenhado para isolar geometria, não para representar risco clínico. Dice e IoU são idênticos e altos; o erro de volume é zero nos três casos. HD95 reage à ilha remota. A contagem de componentes registra os dois objetos da predição, enquanto a contagem de buracos captura uma alteração que o número de componentes perderia.</p>
+<p>O Dice de superfície a dois pixels considera todo o deslocamento aceitável, pois nenhuma parte da borda se afasta mais que a tolerância. Entre os dois defeitos estruturais, ele atribui valor ligeiramente maior à ilha que ao buraco, enquanto o HD95 julga a ilha muito pior por causa da distância do componente remoto. Uma métrica conta a fração de superfície dentro da tolerância; a outra resume a cauda das distâncias. A ordenação depende da propriedade escolhida para a tarefa: extensão da borda aceitável, erro local extremo, conectividade ou outra.</p>
+<p>O empate em Dice é o que me interessa nesse exemplo. Se eu usasse apenas essa coluna para comparar as predições, trataria como equivalentes um deslocamento, uma ilha distante e um buraco. Para estudar bordas, preciso conseguir distinguir essas falhas e justificar quais delas quero reduzir. As outras colunas ajudam a descrevê-las, mas a decisão sobre o que é aceitável continua dependendo da aplicação.</p>
+<h2 id="o-preco-relativo-de-um-pixel">O preço relativo de um pixel<a class="zola-anchor" href="#o-preco-relativo-de-um-pixel" aria-label="Anchor link for: o-preco-relativo-de-um-pixel" style="visibility: hidden;"></a>
+</h2>
+<p>O tamanho do objeto cria outro efeito. Se uma referência tem área \(n\) e uma erosão remove \(e\) pixels, a predição fica contida na referência, com \(|P|=|P\cap G|=n-e\). Nesse caso,</p>
+<p>\[
+\operatorname{Dice}=\frac{2(n-e)}{2n-e}.
+\]</p>
+<p>A razão \(e/n\) tende a ser maior em estruturas pequenas, nas quais a borda representa uma fração maior da área. Aplicar uma única erosão de quatro vizinhos a dois discos na mesma grade torna o efeito visível:</p>
+<pre class="giallo z-code"><code data-lang="python"><span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> disco</span><span>(</span><span class="z-variable z-parameter z-function">raio</span><span>:</span><span class="z-support"> int</span><span>,</span><span class="z-variable z-parameter z-function"> tamanho</span><span class="z-keyword">=</span><span class="z-constant">128</span><span>)</span><span> -&gt;</span><span> np</span><span>.</span><span>ndarray</span><span>:</span></span>
+<span class="giallo-l"><span>    y</span><span>,</span><span> x</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>ogrid</span><span>[</span><span>:</span><span>tamanho</span><span>,</span><span> :</span><span>tamanho</span><span>]</span></span>
+<span class="giallo-l"><span>    centro</span><span class="z-keyword"> =</span><span> (</span><span>tamanho</span><span class="z-keyword"> -</span><span class="z-constant"> 1</span><span>)</span><span class="z-keyword"> /</span><span class="z-constant"> 2</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> (</span><span>y</span><span class="z-keyword"> -</span><span> centro</span><span>)</span><span class="z-keyword"> **</span><span class="z-constant"> 2</span><span class="z-keyword"> +</span><span> (</span><span>x</span><span class="z-keyword"> -</span><span> centro</span><span>)</span><span class="z-keyword"> **</span><span class="z-constant"> 2</span><span class="z-keyword"> &lt;=</span><span> raio</span><span class="z-keyword">**</span><span class="z-constant">2</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-storage z-type">def</span><span class="z-entity z-name"> erosao_quatro_vizinhos</span><span>(</span><span class="z-variable z-parameter z-function">mascara</span><span>:</span><span> np</span><span>.</span><span>ndarray</span><span>)</span><span> -&gt;</span><span> np</span><span>.</span><span>ndarray</span><span>:</span></span>
+<span class="giallo-l"><span>    m</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>pad</span><span>(</span><span>mascara</span><span>,</span><span class="z-constant"> 1</span><span>,</span><span class="z-variable"> constant_values</span><span class="z-keyword">=</span><span class="z-constant">False</span><span>)</span></span>
+<span class="giallo-l"><span class="z-keyword">    return</span><span> (</span></span>
+<span class="giallo-l"><span>        m</span><span>[</span><span class="z-constant">1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">2</span><span>,</span><span class="z-constant"> 1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span class="z-constant">2</span><span>:</span><span>,</span><span class="z-constant"> 1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span class="z-constant">1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span> :</span><span class="z-keyword">-</span><span class="z-constant">2</span><span>]</span></span>
+<span class="giallo-l"><span class="z-keyword">        &amp;</span><span> m</span><span>[</span><span class="z-constant">1</span><span>:</span><span class="z-keyword">-</span><span class="z-constant">1</span><span>,</span><span class="z-constant"> 2</span><span>:</span><span>]</span></span>
+<span class="giallo-l"><span>    )</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-keyword">for</span><span> raio</span><span class="z-keyword"> in</span><span> (</span><span class="z-constant">10</span><span>,</span><span class="z-constant"> 40</span><span>)</span><span>:</span></span>
+<span class="giallo-l"><span>    referencia</span><span class="z-keyword"> =</span><span> disco</span><span>(</span><span>raio</span><span>)</span></span>
+<span class="giallo-l"><span>    predicao</span><span class="z-keyword"> =</span><span> erosao_quatro_vizinhos</span><span>(</span><span>referencia</span><span>)</span></span>
+<span class="giallo-l"><span>    intersecao</span><span class="z-keyword"> =</span><span> np</span><span>.</span><span>logical_and</span><span>(</span><span>referencia</span><span>,</span><span> predicao</span><span>)</span><span>.</span><span>sum</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span>    dice</span><span class="z-keyword"> =</span><span class="z-constant"> 2</span><span class="z-keyword"> *</span><span> intersecao</span><span class="z-keyword"> /</span><span> (</span><span>referencia</span><span>.</span><span>sum</span><span>(</span><span>)</span><span class="z-keyword"> +</span><span> predicao</span><span>.</span><span>sum</span><span>(</span><span>)</span><span>)</span></span>
+<span class="giallo-l"><span>    removidos</span><span class="z-keyword"> =</span><span> referencia</span><span>.</span><span>sum</span><span>(</span><span>)</span><span class="z-keyword"> -</span><span> predicao</span><span>.</span><span>sum</span><span>(</span><span>)</span></span>
+<span class="giallo-l"><span class="z-support">    print</span><span>(</span><span class="z-storage z-type">f</span><span class="z-string">&quot;</span><span class="z-string">raio=</span><span class="z-constant">{</span><span>raio</span><span class="z-storage z-type">:2d</span><span class="z-constant">}</span><span class="z-string"> área=</span><span class="z-constant">{</span><span>referencia</span><span>.</span><span>sum</span><span>(</span><span>)</span><span class="z-storage z-type">:4d</span><span class="z-constant">}</span><span class="z-string"> removidos=</span><span class="z-constant">{</span><span>removidos</span><span class="z-storage z-type">:3d</span><span class="z-constant">}</span><span class="z-string"> Dice=</span><span class="z-constant">{</span><span>dice</span><span class="z-storage z-type">:.3f</span><span class="z-constant">}</span><span class="z-string">&quot;</span><span>)</span></span>
+<span class="giallo-l"></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> raio=10 área= 316 removidos= 56 Dice=0.903</span></span>
+<span class="giallo-l"><span class="z-punctuation z-definition z-comment">#</span><span class="z-comment"> raio=40 área=5024 removidos=224 Dice=0.977</span></span></code></pre>
+<p>A operação de borda é a mesma nos dois casos, mas a queda do Dice é muito maior no disco pequeno. O resultado é coerente com a definição de sobreposição do coeficiente, mas impede interpretar a mesma diferença de Dice como a mesma diferença geométrica em estruturas de tamanhos distintos. Por isso, eu gostaria de ver os resultados da minha comparação separados também por tamanho de estrutura. Uma média sozinha deixaria sem resposta se o ganho alcançou os alvos pequenos, que já apareceram entre as falhas do comparativo de U-Nets.</p>
+<h1 id="a-distancia-ate-a-borda">A distância até a borda<a class="zola-anchor" href="#a-distancia-ate-a-borda" aria-label="Anchor link for: a-distancia-ate-a-borda" style="visibility: hidden;"></a>
+</h1>
+<p>Para avaliar o contorno, primeiro é preciso representá-lo. Sejam \(\partial P\) e \(\partial G\) as superfícies da predição e da referência, e</p>
+<p>\[
+d(x,S)=\inf_{y\in S}\lVert x-y\rVert_2
+\]</p>
+<p>a distância do ponto \(x\) ao ponto mais próximo da superfície \(S\). As duas coleções direcionais,</p>
+<p>\[
+D_{P\to G}={d(p,\partial G):p\in\partial P},
+\qquad
+D_{G\to P}={d(g,\partial P):g\in\partial G},
+\]</p>
+<p>guardam informação que as contagens de pixels descartam. Diferentes resumos dessas coleções respondem a perguntas diferentes.<sup class="footnote-reference" id="fr-4-2"><a href="#fn-4">4</a></sup></p>
+<h2 id="hausdorff-e-hd95">Hausdorff e HD95<a class="zola-anchor" href="#hausdorff-e-hd95" aria-label="Anchor link for: hausdorff-e-hd95" style="visibility: hidden;"></a>
+</h2>
+<p>A distância de Hausdorff simétrica toma o maior erro nas duas direções:</p>
+<p>\[
+HD(P,G)=\max\bigl(\sup D_{P\to G},\sup D_{G\to P}\bigr).
+\]</p>
+<p>Ela encontra o ponto de maior desacordo, por isso reage fortemente a uma ilha remota ou a um único pixel espúrio. Essa sensibilidade pode revelar uma falha grave ou apenas ruído de anotação. Numa convenção direcional e ponderada pela área, trocar o máximo pelo percentil 95 descarta os 5% superiores de cada distribuição de distâncias; outras convenções truncam uma cauda diferente. Um componente falso e distante pode não aparecer no HD95 se ocupar uma fração pequena o bastante da superfície.</p>
+<p>Mesmo o nome “HD95” não especifica uma implementação. Pode-se tomar o máximo dos percentis direcionais, como no exemplo acima, ou agrupar as duas coleções antes do percentil; pode-se medir entre centros de voxels ou entre elementos de uma malha; pode-se ponderar ou não pela área física da superfície. Uma comparação de cinco bibliotecas encontrou diferenças sistemáticas causadas por escolhas desse tipo.<sup class="footnote-reference" id="fr-5-1"><a href="#fn-5">5</a></sup> Por isso, percentil, extração da borda, ponderação, conectividade, biblioteca e versão pertencem ao método experimental.</p>
+<p>Aqui minha cautela se estende à própria comparação entre modelos. Uma diferença de HD95 só me permitiria discutir melhora de borda depois de verificar que os dois valores foram calculados da mesma maneira. Caso contrário, parte da diferença pode vir da implementação da métrica, e eu acabaria atribuindo à arquitetura um efeito que não consegui separar.</p>
+<h2 id="distancia-media-simetrica-de-superficie">Distância média simétrica de superfície<a class="zola-anchor" href="#distancia-media-simetrica-de-superficie" aria-label="Anchor link for: distancia-media-simetrica-de-superficie" style="visibility: hidden;"></a>
+</h2>
+<p>Uma convenção para a distância média simétrica de superfície, ou ASSD, agrupa as duas direções e pondera cada elemento de superfície:</p>
+<p>\[
+\operatorname{ASSD}_{\mathrm{pool}}=
+\frac{
+\sum_{p\in\partial P} a_p d(p,\partial G)
+{}+\sum_{g\in\partial G} a_g d(g,\partial P)
+}{
+\sum_{p\in\partial P}a_p+\sum_{g\in\partial G}a_g
+},
+\]</p>
+<p>onde \(a_p\) e \(a_g\) são comprimentos em 2-D ou áreas em 3-D. Ela descreve o afastamento típico do contorno e sofre menos influência de um único extremo que Hausdorff. Uma falha local severa, porém, pode se diluir entre milhares de elementos próximos da referência.</p>
+<p>Há outra convenção chamada ASSD que calcula primeiro a média em cada direção e depois tira a média das duas. As duas fórmulas divergem quando as superfícies têm áreas distintas. O código ilustrativo usou a forma agrupada com \(a=1\); um artigo precisa declarar a convenção e preservar as áreas físicas.</p>
+<h2 id="dice-de-superficie">Dice de superfície<a class="zola-anchor" href="#dice-de-superficie" aria-label="Anchor link for: dice-de-superficie" style="visibility: hidden;"></a>
+</h2>
+<p>O Dice de superfície na tolerância \(\tau\) pergunta qual fração das duas superfícies está a uma distância considerada aceitável da outra. Com \(A(\cdot)\) denotando área de superfície,</p>
+<p>\[
+SD_{\tau}(P,G)=
+\frac{
+A\bigl({p\in\partial P:d(p,\partial G)\le\tau}\bigr)
+{}+A\bigl({g\in\partial G:d(g,\partial P)\le\tau}\bigr)
+}{A(\partial P)+A(\partial G)}.
+\]</p>
+<p>A métrica foi proposta no contexto de delineamento de órgãos de risco em radioterapia, com tolerâncias específicas por estrutura estimadas a partir da variação entre especialistas.<sup class="footnote-reference" id="fr-6-1"><a href="#fn-6">6</a></sup> O Medical Segmentation Decathlon também combinou Dice volumétrico e Dice de superfície normalizado, com tolerâncias físicas diferentes por tarefa e anatomia, selecionadas com avaliação clínica.<sup class="footnote-reference" id="fr-7-1"><a href="#fn-7">7</a></sup></p>
+<p>O parâmetro \(\tau\) formaliza a tolerância de contorno e precisa vir da tarefa: variabilidade de anotação, tolerância de edição, resolução da aquisição ou um critério definido com especialistas. Ele também cria um corte: pontos logo abaixo e logo acima de \(\tau\) recebem resultados diferentes, e a métrica não informa quão longe do limite ficou o erro que o ultrapassou.</p>
+<p>Em imagens médicas tridimensionais, todas essas distâncias devem respeitar o espaçamento físico. Em um volume com voxels de \(0{,}8\times0{,}8\times5{,}0\) mm, um passo no plano axial não equivale a um passo entre cortes. Reportar “3 voxels” sem a direção, ou calcular em uma matriz reamostrada sem registrar a transformação, responde a outra pergunta. Para Dice de superfície, contar voxels de borda também não basta: elementos da superfície devem ser ponderados por seu comprimento ou sua área física.<sup class="footnote-reference" id="fr-6-2"><a href="#fn-6">6</a></sup></p>
+<h1 id="o-que-as-metricas-de-borda-tambem-deixam-de-fora">O que as métricas de borda também deixam de fora<a class="zola-anchor" href="#o-que-as-metricas-de-borda-tambem-deixam-de-fora" aria-label="Anchor link for: o-que-as-metricas-de-borda-tambem-deixam-de-fora" style="visibility: hidden;"></a>
+</h1>
+<p>Meu interesse por bordas também exige cuidado com o que deixo de fora da avaliação. Mesmo que uma arquitetura reduza as distâncias de contorno, eu ainda precisaria saber se ela perdeu objetos pequenos ou rompeu uma estrutura que deveria ser contínua. Direção do erro, número de objetos, topologia e volume podem continuar invisíveis numa comparação restrita às distâncias.</p>
+<h2 id="direcao-e-volume">Direção e volume<a class="zola-anchor" href="#direcao-e-volume" aria-label="Anchor link for: direcao-e-volume" style="visibility: hidden;"></a>
+</h2>
+<p>Precisão e sensibilidade separam os dois termos que o Dice combina:</p>
+<p>\[
+\operatorname{Precisão}=\frac{TP}{TP+FP},
+\qquad
+\operatorname{Sensibilidade}=\frac{TP}{TP+FN}.
+\]</p>
+<p>Se perder tecido e incluir fundo têm custos diferentes, essa assimetria deve aparecer no relatório ou numa medida ponderada definida de antemão. O erro relativo de volume com sinal,</p>
+<p>\[
+RVE=\frac{V_P-V_G}{V_G},
+\]</p>
+<p>mostra tendência de supersegmentação (positivo) ou subsegmentação (negativo); para expressá-lo em porcentagem, multiplica-se o resultado por 100. Precisão é indefinida para uma predição vazia; sensibilidade e RVE são indefinidos para uma referência vazia, salvo se uma convenção declarada for imposta. O RVE só deve responder a uma pergunta de volume: duas máscaras disjuntas podem ter \(RVE=0\). Se a volumetria for o desfecho, o erro absoluto em mililitros ou centímetros cúbicos e o viés por paciente são mais interpretáveis; o Dice é uma aproximação inadequada.<sup class="footnote-reference" id="fr-2-2"><a href="#fn-2">2</a></sup></p>
+<h2 id="objetos-e-topologia">Objetos e topologia<a class="zola-anchor" href="#objetos-e-topologia" aria-label="Anchor link for: objetos-e-topologia" style="visibility: hidden;"></a>
+</h2>
+<p>Em segmentação multifocal, um Dice calculado sobre o volume inteiro pondera implicitamente cada lesão pelo número de voxels. Uma massa grande corretamente segmentada pode esconder a ausência de várias lesões pequenas. Uma avaliação por objeto precisa primeiro parear componentes preditos e de referência por uma regra declarada; depois pode reportar sensibilidade por lesão, precisão ou falsos positivos por exame e qualidade de delineamento apenas nas lesões encontradas. Resultados recentes com metástases em PET/CT documentam o viés das métricas globais em favor dos maiores componentes.<sup class="footnote-reference" id="fr-8-1"><a href="#fn-8">8</a></sup></p>
+<p>Para vasos, vias aéreas, neurônios e outras estruturas em rede, a conectividade pode importar mais que a área. O <em>centerline Dice</em>, ou clDice, cruza os esqueletos morfológicos com as máscaras. Agora, \(S_P\) e \(S_G\) denotam os esqueletos da predição e da referência, não as superfícies usadas na seção anterior:</p>
+<p>\[
+T_{\mathrm{prec}}=\frac{|S_P\cap G|}{|S_P|},
+\qquad
+T_{\mathrm{sens}}=\frac{|S_G\cap P|}{|S_G|},
+\qquad
+clDice=2\frac{T_{\mathrm{prec}}T_{\mathrm{sens}}}{T_{\mathrm{prec}}+T_{\mathrm{sens}}}.
+\]</p>
+<p>Essas propriedades dizem respeito a estruturas tubulares e a hipóteses específicas.<sup class="footnote-reference" id="fr-9-1"><a href="#fn-9">9</a></sup> Para tumores ou órgãos compactos, número de componentes, número de buracos, característica de Euler, números de Betti ou uma regra própria da aplicação podem ser mais adequados. A topologia relevante precisa ser definida antes de escolher sua medida.</p>
+<h1 id="quando-a-implementacao-muda-a-pergunta">Quando a implementação muda a pergunta<a class="zola-anchor" href="#quando-a-implementacao-muda-a-pergunta" aria-label="Anchor link for: quando-a-implementacao-muda-a-pergunta" style="visibility: hidden;"></a>
+</h1>
+<p>Um valor de métrica também depende do protocolo que o produziu. Cada caso abaixo altera a quantidade estimada.</p>
+<ol>
+<li><strong>Máscaras vazias.</strong> Se a referência e a predição estiverem vazias, a fórmula do Dice produz \(0/0\); conforme a convenção, o resultado pode ser um, zero ou <code>NaN</code>. Se apenas uma delas estiver vazia, métricas de superfície não têm duas superfícies para comparar. Em conjuntos nos quais a estrutura pode estar ausente, presença ou ausência deve ser avaliada como tarefa de classificação, e o delineamento, nos casos pertinentes. O resultado de cada métrica para máscaras vazias precisa ser definido de antemão. Remover silenciosamente esses casos também remove falsos positivos e pode inflar o resultado.<sup class="footnote-reference" id="fr-10-1"><a href="#fn-10">10</a></sup></li>
+<li><strong>Limiar de decisão.</strong> Converter probabilidades em máscara exige um limiar. Ajustá-lo no teste transfere informação do conjunto final para o modelo; o limiar e qualquer pós-processamento devem ser escolhidos na validação e congelados antes da avaliação.</li>
+<li><strong>Reamostragem.</strong> Máscaras categóricas devem ser reamostradas com interpolação apropriada, em geral pelo método do vizinho mais próximo. A matriz de orientação, a origem e o espaçamento precisam permanecer alinhados; uma reamostragem pode suavizar ou deslocar bordas e alterar precisamente as métricas que se pretende estudar.</li>
+<li><strong>Duas ou três dimensões.</strong> Tirar a média do Dice por corte, calcular uma máscara volumétrica inteira e agrupar todos os voxels do conjunto são três estimandos diferentes. A unidade deve acompanhar o uso: corte, exame, estrutura ou paciente.</li>
+<li><strong>Agregação.</strong> Um Dice global obtido ao concatenar todos os voxels concede mais peso aos casos e às classes com máscaras de primeiro plano maiores, isto é, com maior \(|P|+|G|\). Calcular por paciente e depois resumir respeita a hierarquia dos dados; classes e estruturas também devem permanecer separadas quando a média esconderia uma falha específica.<sup class="footnote-reference" id="fr-2-3"><a href="#fn-2">2</a></sup></li>
+<li><strong>Incerteza e casos difíceis.</strong> Uma média sem distribuição não mostra caudas nem heterogeneidade. Mediana e intervalo interquartil, intervalo de confiança por <em>bootstrap</em> no nível do paciente e estratos definidos antes da análise — por exemplo, tamanho da estrutura e centro de aquisição — tornam visível onde o ganho apareceu. Exemplos qualitativos devem seguir uma regra de seleção, não conveniência.</li>
+<li><strong>Definição executável.</strong> Nome, fórmula, parâmetros, tratamento de vazios, unidade, biblioteca e versão precisam ser registrados. HD95 calculado por duas bibliotecas não deve ser presumido idêntico.<sup class="footnote-reference" id="fr-5-2"><a href="#fn-5">5</a></sup></li>
+</ol>
+<h1 id="um-protocolo-minimo-de-avaliacao">Um protocolo mínimo de avaliação<a class="zola-anchor" href="#um-protocolo-minimo-de-avaliacao" aria-label="Anchor link for: um-protocolo-minimo-de-avaliacao" style="visibility: hidden;"></a>
+</h1>
+<p>O conjunto de métricas deve nascer da decisão que a segmentação apoiará. Uma configuração inicial, a ser reduzida ou ampliada conforme a anatomia e o uso, pode ser organizada pelas perguntas abaixo.</p>
+<table><thead><tr><th>Pergunta</th><th>Medida candidata</th><th>O que precisa ser declarado</th></tr></thead><tbody>
+<tr><td>Quanto as regiões se sobrepõem?</td><td>Dice <strong>ou</strong> IoU</td><td>unidade de análise, classes e distribuição por caso</td></tr>
+<tr><td>A predição tende a subsegmentar ou supersegmentar?</td><td>sensibilidade, precisão e RVE</td><td>qual classe é positiva e qual assimetria importa</td></tr>
+<tr><td>Quanto a borda costuma se afastar?</td><td>ASSD</td><td>espaçamento, extração e ponderação da superfície, e convenção direcional ou agrupada</td></tr>
+<tr><td>Qual fração da borda respeita a tolerância?</td><td>Dice de superfície</td><td>espaçamento, ponderação da superfície, \(\tau\) e origem da tolerância</td></tr>
+<tr><td>Quão grandes são os erros de borda próximos do pior caso?</td><td>HD95</td><td>espaçamento, extração e ponderação da superfície, percentil, convenção direcional e regra para vazios</td></tr>
+<tr><td>Objetos foram perdidos ou inventados?</td><td>sensibilidade e precisão por lesão</td><td>conectividade e regra de pareamento</td></tr>
+<tr><td>A conectividade foi preservada?</td><td>clDice ou métrica topológica específica</td><td>esqueletização, conectividade do primeiro plano e do fundo, regra para vazios e relevância da propriedade</td></tr>
+<tr><td>O volume final está correto?</td><td>erro absoluto e relativo de volume</td><td>unidade física e uso na decisão subsequente</td></tr>
+</tbody></table>
+<p>Eu começaria pela unidade de análise e pela regra de presença. Depois escolheria uma medida de sobreposição e acrescentaria apenas as famílias ligadas ao uso pretendido. A tolerância de contorno seria predefinida a partir da aceitabilidade clínica, da variação entre anotadores ou de um protocolo externo, sem consultar as predições de teste. Limiar de decisão e pós-processamento seriam escolhidos com treinamento e validação; as regras para vazios também seriam congeladas antes do teste. Os resultados seriam calculados por paciente e classe, com incerteza e estratificação por tamanho. Por fim, publicaria a implementação ou, no mínimo, sua definição executável e testes em máscaras sintéticas conhecidas.</p>
+<p>O resultado é um perfil de erro distribuído por várias medidas. O Metrics Reloaded recomenda selecionar métricas a partir de uma impressão digital do problema e combinar famílias complementares.<sup class="footnote-reference" id="fr-2-4"><a href="#fn-2">2</a></sup> A tabela fica maior, mas passa a mostrar por que dois modelos diferem.</p>
+<h1 id="o-que-levo-para-minha-pesquisa">O que levo para minha pesquisa<a class="zola-anchor" href="#o-que-levo-para-minha-pesquisa" aria-label="Anchor link for: o-que-levo-para-minha-pesquisa" style="visibility: hidden;"></a>
+</h1>
+<p>Minha leitura, até aqui, é que preciso formular melhor o que espero de uma arquitetura antes de decidir como compará-la.</p>
+<p>Para o meu problema, uma afirmação de que uma arquitetura “melhora bordas” deveria responder, no mesmo conjunto de teste, pelo menos a três perguntas: quanto mudou a sobreposição, se a distância de superfície caiu e em quantos milímetros, e em quais tamanhos de estrutura o ganho apareceu. Se houver múltiplas lesões, acrescentaria quantas foram de fato encontradas. Um Dice maior responde apenas à primeira.</p>
+<p>Duas perguntas ficam abertas para mim. Métodos desenhados para refinar contornos reduzem distâncias físicas sem perder sensibilidade por lesão? E os ganhos aparentes permanecem quando os resultados são estratificados por tamanho, ou concentram-se nas estruturas grandes para as quais o Dice é mais tolerante? São perguntas que eu gostaria de levar aos experimentos, com as regras de avaliação definidas antes de olhar os resultados de teste.</p>
+<h1 id="referencias">Referências<a class="zola-anchor" href="#referencias" aria-label="Anchor link for: referencias" style="visibility: hidden;"></a>
+</h1>
+<section class="footnotes">
+<ol class="footnotes-list">
+<li id="fn-1">
+<p>REINKE, A.; TIZABI, M. D.; BAUMGARTNER, M.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.1038/s41592-023-02150-0">Understanding metric-related pitfalls in image analysis validation</a>. <em>Nature Methods</em>, v. 21, p. 182–194, 2024. <a href="#fr-1-1">↩</a> <a href="#fr-1-2">↩2</a></p>
+</li>
+<li id="fn-2">
+<p>MAIER-HEIN, L.; REINKE, A.; GODAU, P.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.1038/s41592-023-02151-z">Metrics reloaded: recommendations for image analysis validation</a>. <em>Nature Methods</em>, v. 21, p. 195–212, 2024. <a href="#fr-2-1">↩</a> <a href="#fr-2-2">↩2</a> <a href="#fr-2-3">↩3</a> <a href="#fr-2-4">↩4</a></p>
+</li>
+<li id="fn-3">
+<p>DICE, L. R. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.2307/1932409">Measures of the amount of ecologic association between species</a>. <em>Ecology</em>, v. 26, n. 3, p. 297–302, 1945. <a href="#fr-3-1">↩</a></p>
+</li>
+<li id="fn-4">
+<p>TAHA, A. A.; HANBURY, A. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.1186/s12880-015-0068-x">Metrics for evaluating 3D medical image segmentation: analysis, selection, and tool</a>. <em>BMC Medical Imaging</em>, v. 15, art. 29, 2015. <a href="#fr-4-1">↩</a> <a href="#fr-4-2">↩2</a></p>
+</li>
+<li id="fn-5">
+<p>PODOBNIK, G.; VRTOVEC, T. <a rel="noopener noreferrer external" target="_blank" href="https://papers.miccai.org/miccai-2024/375-Paper2469.html">HDilemma: are open-source Hausdorff distance implementations equivalent?</a>. In: <em>Medical Image Computing and Computer Assisted Intervention — MICCAI 2024</em>, p. 308–317, 2024. <a href="#fr-5-1">↩</a> <a href="#fr-5-2">↩2</a></p>
+</li>
+<li id="fn-6">
+<p>NIKOLOV, S.; BLACKWELL, S.; ZVEROVITCH, A.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.2196/26151">Clinically applicable segmentation of head and neck anatomy for radiotherapy: deep learning algorithm development and validation study</a>. <em>Journal of Medical Internet Research</em>, v. 23, n. 7, e26151, 2021. <a href="#fr-6-1">↩</a> <a href="#fr-6-2">↩2</a></p>
+</li>
+<li id="fn-7">
+<p>ANTONELLI, M.; REINKE, A.; BAKAS, S.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.1038/s41467-022-30695-9">The Medical Segmentation Decathlon</a>. <em>Nature Communications</em>, v. 13, art. 4128, 2022. <a href="#fr-7-1">↩</a></p>
+</li>
+<li id="fn-8">
+<p>JAUS, A.; SEIBOLD, C. M.; REIß, S.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.1609/aaai.v39i4.32408">Every component counts: rethinking the measure of success for medical semantic segmentation in multi-instance segmentation tasks</a>. In: <em>Proceedings of the AAAI Conference on Artificial Intelligence</em>, v. 39, n. 4, p. 3904–3912, 2025. <a href="#fr-8-1">↩</a></p>
+</li>
+<li id="fn-9">
+<p>SHIT, S.; PAETZOLD, J. C.; SEKUBOYINA, A.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://openaccess.thecvf.com/content/CVPR2021/html/Shit_clDice_-_A_Novel_Topology-Preserving_Loss_Function_for_Tubular_Structure_CVPR_2021_paper.html">clDice — a novel topology-preserving loss function for tubular structure segmentation</a>. In: <em>Proceedings of the IEEE/CVF Conference on Computer Vision and Pattern Recognition</em>, p. 16560–16569, 2021. <a href="#fr-9-1">↩</a></p>
+</li>
+<li id="fn-10">
+<p>OSTMEIER, S.; AXELROD, B.; ISENSEE, F.; et al. <a rel="noopener noreferrer external" target="_blank" href="https://doi.org/10.1016/j.media.2023.102927">USE-Evaluator: performance metrics for medical image segmentation models supervised by uncertain, small or empty reference annotations in neuroimaging</a>. <em>Medical Image Analysis</em>, v. 90, art. 102927, 2023. <a href="#fr-10-1">↩</a></p>
+</li>
+</ol>
+</section>
+
+      </article>
+    </div>
+    <footer>
+  <div class="left">
+    <div class="copyright">
+      © 2026 Rodolfo Viana
+      
+      <span>|</span>
+      Feito com <a href="https://www.getzola.org" rel="noreferrer" target="_blank">Zola</a> + <a href="https://github.com/isunjn/serene" rel="noreferrer" target="_blank">Serene</a>
+      
+    </div>
+  </div>
+  <div class="right">
+    
+    
+    
+    <button id="theme-toggle" aria-label="theme switch">
+      <span class="moon-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M10 7C10 10.866 13.134 14 17 14C18.9584 14 20.729 13.1957 21.9995 11.8995C22 11.933 22 11.9665 22 12C22 17.5228 17.5228 22 12 22C6.47715 22 2 17.5228 2 12C2 6.47715 6.47715 2 12 2C12.0335 2 12.067 2 12.1005 2.00049C10.8043 3.27098 10 5.04157 10 7ZM4 12C4 16.4183 7.58172 20 12 20C15.0583 20 17.7158 18.2839 19.062 15.7621C18.3945 15.9187 17.7035 16 17 16C12.0294 16 8 11.9706 8 7C8 6.29648 8.08133 5.60547 8.2379 4.938C5.71611 6.28423 4 8.9417 4 12Z" fill="currentColor"></path></svg>
+</span>
+      <span class="sun-icon"><svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="18" height="18"><path d="M12 18C8.68629 18 6 15.3137 6 12C6 8.68629 8.68629 6 12 6C15.3137 6 18 8.68629 18 12C18 15.3137 15.3137 18 12 18ZM12 16C14.2091 16 16 14.2091 16 12C16 9.79086 14.2091 8 12 8C9.79086 8 8 9.79086 8 12C8 14.2091 9.79086 16 12 16ZM11 1H13V4H11V1ZM11 20H13V23H11V20ZM3.51472 4.92893L4.92893 3.51472L7.05025 5.63604L5.63604 7.05025L3.51472 4.92893ZM16.9497 18.364L18.364 16.9497L20.4853 19.0711L19.0711 20.4853L16.9497 18.364ZM19.0711 3.51472L20.4853 4.92893L18.364 7.05025L16.9497 5.63604L19.0711 3.51472ZM5.63604 16.9497L7.05025 18.364L4.92893 20.4853L3.51472 19.0711L5.63604 16.9497ZM23 11V13H20V11H23ZM4 11V13H1V11H4Z" fill="currentColor"></path></svg>
+</span>
+    </button>
+    
+  </div>
+</footer>
+
+  </main>
+</div>
+
+  
+<script src="https://rodolfoviana.com.br/js/lightense.min.js"></script>
+
+
+  <script src="https://rodolfoviana.com.br/js/main.js"></script>
+</body>
+
+</html>
