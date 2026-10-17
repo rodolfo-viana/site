@@ -1,8 +1,8 @@
 +++
 title = "Cadenza"
-description = "Presentations for Linux, macOS and Windows, with a visual editor, charts, LaTeX, Mermaid, a teleprompter, and plenty of features"
+description = "Presentations for Linux and Windows, with a visual editor, charts, LaTeX, Mermaid, a teleprompter, and plenty of features"
 date = "2026-10-13"
-updated = "2026-10-15"
+updated = "2026-10-17"
 weight = 0
 
 [taxonomies]
@@ -13,7 +13,7 @@ toc = true
 
 +++
 
-**Cadenza** is a presentation app for Linux, macOS and Windows, built on [reveal.js](https://revealjs.com). You build slides in a visual editor, using layouts, themes, charts, diagrams and equations, present them full screen with a presenter display, and export the result as a web page or PDF. You do not need to write HTML or JavaScript to prepare a presentation.
+**Cadenza** is a presentation app for Linux and Windows, built on [reveal.js](https://revealjs.com). You build slides in a visual editor, using layouts, themes, charts, diagrams and equations, present them full screen with a presenter display, and export the result as a web page or PDF. You do not need to write HTML or JavaScript to prepare a presentation.
 
 Your work stays in local files. A presentation can carry its images, imported videos and embedded fonts without requiring an account or an upload to a cloud service. The app is open source, built with Rust and web technologies using [Tauri](https://tauri.app), and released under the MIT License.
 
@@ -34,12 +34,13 @@ Download the latest version from the [Releases page][releases] on GitHub, which 
 | System | File |
 |--------|------|
 | Windows 10 and 11 | `Cadenza_x.y.z_x64-setup.exe` (installer) or `Cadenza_x.y.z_x64_en-US.msi` (MSI package) |
-| macOS 12 or newer (Apple Silicon and Intel) | `Cadenza_x.y.z_universal.dmg` |
 | Ubuntu, Debian and derivatives | `Cadenza_x.y.z_amd64.deb` |
 | Fedora and openSUSE | `Cadenza-x.y.z-1.x86_64.rpm` |
 | Linux (AppImage) | `Cadenza_x.y.z_amd64.AppImage` |
 
 </div>
+
+There is no macOS version any longer. Versions 0.2.0 to 0.3.2 had one, but it could not be tested on a Mac on a regular basis.
 
 [releases]: https://github.com/rodolfo-viana/cadenza/releases
 
@@ -48,7 +49,6 @@ Download the latest version from the [Releases page][releases] on GitHub, which 
 The packages contain the app; the installation steps depend on your system. On Linux, choose one of the alternatives below for your distribution or the package you downloaded.
 
 - **Windows:** run the installer. It installs Microsoft WebView2 if needed.
-- **macOS:** open the `.dmg` file and drag **Cadenza** to the **Applications** folder.
 - **Linux:** install the package from a terminal, in the folder you downloaded it to, replacing x.y.z with the version you downloaded. The AppImage needs no installation: make it executable and run it.
 
 ```sh
@@ -61,11 +61,12 @@ chmod +x Cadenza_x.y.z_amd64.AppImage              # AppImage
 The Linux and Windows versions are 64-bit (x86-64). The `.deb` and `.rpm` packages need WebKitGTK 4.1, which comes with Ubuntu 22.04, Debian 12, Fedora 37 and newer.
 
 {% note(header="The first time you open it") %}
-The installers aren't code-signed yet, so your system asks you to confirm:
-
-- **Windows:** SmartScreen may warn that the app isn't recognized. Click **More info > Run anyway**.
-- **macOS:** macOS says it can't verify the app. Open **System Settings > Privacy & Security**, scroll down to the message about **Cadenza** and click **Open Anyway**. You only need to do this once per version.
+The installers aren't code-signed yet, so on Windows SmartScreen may warn that the app isn't recognized. Click **More info > Run anyway**.
 {% end %}
+
+## Updating
+
+From version 0.3.3 on, **Cadenza** keeps itself up to date. When it starts, it looks for a newer version and offers to download and install it with the same kind of package; on Linux, the `.deb` and `.rpm` updates ask for your password. The app then restarts and reopens the presentations you had open, unsaved changes included. Earlier versions can't do this, so install 0.3.3 or newer by hand once.
 
 # Features
 
@@ -75,13 +76,15 @@ The editor covers both preparing content and presenting it live. You can start w
 
 There are **12 layouts**, including title, section, two columns, quote, big number and code. They provide a starting point, and objects can be moved, resized, duplicated, aligned and locked. Rulers, draggable guides, smart guides and a snapping grid help keep elements aligned.
 
-Formatting can apply to an entire text box or just the selected passage: font, size, color, bold, italic and underline. Tables have editable cells and adjustable row and column counts. Undo, redo and the command palette (**Ctrl+K**, or **⌘K** on a Mac) support everyday editing.
+Formatting can apply to an entire text box or just the selected passage: font, size, color, bold, italic and underline. Tables have editable cells and adjustable row and column counts. Undo, redo and the command palette (**Ctrl+K**) support everyday editing.
 
 ## Charts and maps
 
-Charts are edited in a data grid and drawn as SVG, which stays sharp when resized. There are **18 types**: column, stacked column, bar, stacked bar, line, area, stacked area, streamgraph, pie, donut, treemap, parliament, scatterplot, heatmap, candlestick, Sankey, network and geographic map.
+Charts are edited in a data grid and drawn as SVG, which stays sharp when resized. There are **19 types**: column, stacked column, bar, stacked bar, line, dot plot, area, stacked area, streamgraph, pie, donut, treemap, parliament, scatterplot, heatmap, candlestick, Sankey, network and geographic map.
 
 They cover anything from comparing categories to showing flows between entities or the distribution of seats in a parliament. Sankey and network charts use source, target and value relationships. For maps, you choose the world, a continent or a country's administrative divisions, then assign values to regions by name or code. Geographic boundaries come from [Natural Earth](https://www.naturalearthdata.com).
+
+You can also start from the data: paste cells from a spreadsheet or open a CSV file, and Cadenza shows a preview of every chart the data can make. It guesses which columns hold labels, values, groups and error bars, and you can change what each column means. For scientific figures, charts also take error bars (± an amount, separate amounts below and above, or lower and upper ends), value axes with ends of your own, axis titles, reference lines and point shapes.
 
 During a presentation, a chart can build in stages: one series at a time, one pie slice or one party in a parliament chart. This lets the visual follow the explanation without showing every data point at once.
 
@@ -135,7 +138,7 @@ The interface is available in Arabic, Bengali, Chinese (Simplified), Dutch, Engl
 
 All four apps cover the basic work of building and presenting slides. The differences become clearer when you consider where the file lives, how technical content is edited, how the presentation will be distributed, and whether other people need to work on it at the same time.
 
-This comparison was reviewed on **October 15, 2026**. It covers **Cadenza 0.3.1**, **Keynote for Mac**, **Microsoft 365 PowerPoint for desktop**, and **Google Slides in the browser**; each product family's web and mobile editors have their own row. **Yes** means built-in support; **&#45;&#45;** means no native support is documented for that function within this scope. Plan, platform, service and add-on requirements are noted in the cells. You may still be able to reproduce a result using images, external tools or extensions.
+This comparison was reviewed on **October 15, 2026**. It covers **Cadenza 0.3.3**, **Keynote for Mac**, **Microsoft 365 PowerPoint for desktop**, and **Google Slides in the browser**; each product family's web and mobile editors have their own row. **Yes** means built-in support; **&#45;&#45;** means no native support is documented for that function within this scope. Plan, platform, service and add-on requirements are noted in the cells. You may still be able to reproduce a result using images, external tools or extensions.
 
 <style>
 .cadenza-comparison table { min-width: 44rem; font-size: 0.85em; }
@@ -148,11 +151,11 @@ This comparison was reviewed on **October 15, 2026**. It covers **Cadenza 0.3.1*
 |:--|:--|:--|:--|:--|
 | Text, images, shapes and tables | Yes | Yes | Yes | Yes |
 | Themes and layouts | Yes | Yes | Yes | Yes |
-| Charts with editable data | Yes; 18 types | Yes | Yes | Yes; data in [Sheets][google-charts] |
+| Charts with editable data | Yes; 19 types | Yes | Yes | Yes; data in [Sheets][google-charts] |
 | Transitions and object animations | Yes | Yes | Yes | Yes |
 | Speaker notes and presenter view | Yes | Yes | Yes | Yes |
 | PDF | Yes; printing | Yes | Yes | Yes |
-| Desktop app | Linux, macOS and Windows | macOS | Windows and macOS | Browser editor |
+| Desktop app | Linux and Windows | macOS | Windows and macOS | Browser editor |
 | Offline editing | Yes | Yes | Yes; after installation and activation[^offline] | Yes; requires setup beforehand[^offline] |
 | Open-source software | Yes; MIT | &#45;&#45;; proprietary | &#45;&#45;; proprietary | &#45;&#45;; proprietary |
 | Equations from LaTeX | Yes; KaTeX | Yes; LaTeX and MathML[^math] | &#45;&#45;; equation editor with UnicodeMath[^math] | &#45;&#45;; through an add-on such as MathType[^math] |
@@ -176,15 +179,15 @@ General features and platform availability are documented in the [Keynote][keyno
 
 ## What Cadenza does not yet offer
 
-Format and collaboration limits matter as much as editing features when choosing a tool. Version 0.3.1 has no **PPTX** import or export, real-time coauthoring, review comments or shared cloud version history. Sending someone a `.cadenza` file lets them work on a copy; it is not the same as editing one document together.
+Format and collaboration limits matter as much as editing features when choosing a tool. Version 0.3.3 has no **PPTX** import or export, real-time coauthoring, review comments or shared cloud version history. Sending someone a `.cadenza` file lets them work on a copy; it is not the same as editing one document together.
 
 There is also no web editor, mobile app or built-in video recording of a presentation. Exported HTML can be presented in a browser, but does not provide the Cadenza editor. Recording a class requires a screen capture tool. The app's live camera and teleprompter do not constitute a recorder.
 
 # Privacy
 
-**Cadenza** does not require an account to create, edit, save or present local files. Online features, such as font downloads, media searches and playback of external videos, contact their respective services when used.
+**Cadenza** does not require an account to create, edit, save or present local files. Online features, such as font downloads, media searches and playback of external videos, contact their respective services when used. The one exception is the check for updates: when it starts, Cadenza downloads a small file from GitHub naming the latest version, and sends nothing about you or your presentations. You can turn it off in **Settings > Updates**.
 
-API keys stay in your system's credential store: Secret Service on Linux, Keychain on macOS and Credential Manager on Windows. They are not saved inside presentations.
+API keys stay in your system's credential store: Secret Service on Linux and Credential Manager on Windows. They are not saved inside presentations.
 
 # Files
 
@@ -204,7 +207,7 @@ HTML keeps the navigation and presentation features supported by the browser. It
 
 **Cadenza** is released under the [MIT License](https://github.com/rodolfo-viana/cadenza/blob/main/LICENSE). It includes reveal.js, KaTeX, Mermaid, highlight.js, Preact, htm and Lucide icons, each under its own license.
 
-The descriptions of Cadenza on this page follow its [README](https://github.com/rodolfo-viana/cadenza/blob/main/README.md) and [version 0.3.1 changelog](https://github.com/rodolfo-viana/cadenza/blob/main/CHANGELOG.md#031--2026-10-15). The references below explain the conditions in the comparison.
+The descriptions of Cadenza on this page follow its [README](https://github.com/rodolfo-viana/cadenza/blob/main/README.md) and [version 0.3.3 changelog](https://github.com/rodolfo-viana/cadenza/blob/main/CHANGELOG.md#033--2026-10-17). The references below explain the conditions in the comparison.
 
 [^offline]: Microsoft documents [offline use after installation and activation][powerpoint-offline], with periodic reconnection for Microsoft 365. Google Slides requires [offline access to be set up beforehand][google-offline], including Chrome or Edge and the Google Docs Offline extension on a computer.
 [^math]: Keynote accepts [LaTeX and MathML][keynote-math]. Microsoft distinguishes Word's LaTeX support from the [UnicodeMath available in other Office apps][powerpoint-math]. In Google Slides, [MathType][google-math] is a third-party add-on with its own subscription terms.

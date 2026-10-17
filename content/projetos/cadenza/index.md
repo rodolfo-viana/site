@@ -1,8 +1,8 @@
 +++
 title = "Cadenza"
-description = "Apresentações para Linux, macOS e Windows, com editor visual, gráficos, LaTeX, Mermaid, teleprompter e diversos recursos"
+description = "Apresentações para Linux e Windows, com editor visual, gráficos, LaTeX, Mermaid, teleprompter e diversos recursos"
 date = "2026-10-13"
-updated = "2026-10-15"
+updated = "2026-10-17"
 weight = 0
 
 [taxonomies]
@@ -13,7 +13,7 @@ toc = true
 
 +++
 
-O **Cadenza** é um aplicativo de apresentações para Linux, macOS e Windows, construído sobre o [reveal.js](https://revealjs.com). Você monta os slides num editor visual, com layouts prontos, temas, gráficos, diagramas e equações, apresenta em tela cheia com uma tela do apresentador e exporta o resultado como página web ou PDF. Não é preciso escrever HTML ou JavaScript para preparar uma apresentação.
+O **Cadenza** é um aplicativo de apresentações para Linux e Windows, construído sobre o [reveal.js](https://revealjs.com). Você monta os slides num editor visual, com layouts prontos, temas, gráficos, diagramas e equações, apresenta em tela cheia com uma tela do apresentador e exporta o resultado como página web ou PDF. Não é preciso escrever HTML ou JavaScript para preparar uma apresentação.
 
 O trabalho fica em arquivos locais. Uma apresentação pode levar consigo as imagens, os vídeos importados e as fontes incorporadas, sem exigir uma conta ou o envio do material para um serviço de nuvem. O aplicativo é software livre, desenvolvido em Rust e tecnologias web com [Tauri](https://tauri.app), sob a licença MIT.
 
@@ -34,12 +34,13 @@ Baixe a versão mais recente na [página de versões][versoes] do GitHub, que ta
 | Sistema | Arquivo |
 |---------|---------|
 | Windows 10 e 11 | `Cadenza_x.y.z_x64-setup.exe` (instalador) ou `Cadenza_x.y.z_x64_en-US.msi` (pacote MSI) |
-| macOS 12 ou mais recente (Apple Silicon e Intel) | `Cadenza_x.y.z_universal.dmg` |
 | Ubuntu, Debian e derivados | `Cadenza_x.y.z_amd64.deb` |
 | Fedora e openSUSE | `Cadenza-x.y.z-1.x86_64.rpm` |
 | Linux (AppImage) | `Cadenza_x.y.z_amd64.AppImage` |
 
 </div>
+
+Não há mais versão para macOS. As versões 0.2.0 a 0.3.2 tinham uma, mas não era possível testá-la regularmente num Mac.
 
 [versoes]: https://github.com/rodolfo-viana/cadenza/releases
 
@@ -48,7 +49,6 @@ Baixe a versão mais recente na [página de versões][versoes] do GitHub, que ta
 Os pacotes incluem o aplicativo; o procedimento muda conforme o sistema. No Linux, escolha uma das alternativas abaixo, de acordo com a distribuição ou o formato baixado.
 
 - **Windows:** execute o instalador. Ele instala o Microsoft WebView2 se for preciso.
-- **macOS:** abra o arquivo `.dmg` e arraste o **Cadenza** para a pasta **Aplicativos**.
 - **Linux:** instale o pacote pelo terminal, na pasta onde ele foi baixado, trocando x.y.z pela versão baixada. O AppImage não precisa de instalação: basta torná-lo executável e abri-lo.
 
 ```sh
@@ -61,11 +61,12 @@ chmod +x Cadenza_x.y.z_amd64.AppImage              # AppImage
 As versões para Linux e Windows são de 64 bits (x86-64). Os pacotes `.deb` e `.rpm` precisam do WebKitGTK 4.1, presente no Ubuntu 22.04, no Debian 12, no Fedora 37 e em versões mais recentes.
 
 {% note(header="Na primeira vez que você abrir") %}
-Os instaladores ainda não têm assinatura digital, então o sistema pede uma confirmação:
-
-- **Windows:** o SmartScreen pode avisar que o aplicativo não é reconhecido. Clique em **Mais informações > Executar assim mesmo**.
-- **macOS:** o sistema avisa que não consegue verificar o aplicativo. Abra **Ajustes do Sistema > Privacidade e Segurança**, role até a mensagem sobre o **Cadenza** e clique em **Abrir Mesmo Assim**. É preciso fazer isso só uma vez por versão.
+Os instaladores ainda não têm assinatura digital, então, no Windows, o SmartScreen pode avisar que o aplicativo não é reconhecido. Clique em **Mais informações > Executar assim mesmo**.
 {% end %}
+
+## Atualização
+
+A partir da versão 0.3.3, o **Cadenza** se mantém atualizado. Ao abrir, ele procura uma versão mais recente e oferece baixá-la e instalá-la com o mesmo tipo de pacote; no Linux, as atualizações dos pacotes `.deb` e `.rpm` pedem sua senha. Depois, o aplicativo reinicia e reabre as apresentações que estavam abertas, inclusive com as alterações não salvas. As versões anteriores não fazem isso, então instale a 0.3.3 ou uma mais recente manualmente uma vez.
 
 # Recursos
 
@@ -75,13 +76,15 @@ O editor reúne a preparação do conteúdo e a apresentação ao vivo. Você po
 
 Há **12 layouts**, incluindo título, seção, duas colunas, citação, número em destaque e código. Eles oferecem um ponto de partida, e os objetos podem ser movidos, redimensionados, duplicados, alinhados e bloqueados. Réguas, guias arrastáveis, guias inteligentes e grade com encaixe ajudam a manter o alinhamento entre elementos.
 
-A formatação pode valer para uma caixa de texto inteira ou apenas para o trecho selecionado: fonte, tamanho, cor, negrito, itálico e sublinhado. Tabelas têm células editáveis e permitem ajustar o número de linhas e colunas. Desfazer, refazer e a paleta de comandos (**Ctrl+K**, ou **⌘K** no Mac) ajudam nas operações do dia a dia.
+A formatação pode valer para uma caixa de texto inteira ou apenas para o trecho selecionado: fonte, tamanho, cor, negrito, itálico e sublinhado. Tabelas têm células editáveis e permitem ajustar o número de linhas e colunas. Desfazer, refazer e a paleta de comandos (**Ctrl+K**) ajudam nas operações do dia a dia.
 
 ## Gráficos e mapas
 
-Os gráficos são editados numa grade de dados e desenhados em SVG, que mantém a nitidez ao mudar de tamanho. São **18 tipos**: colunas, colunas empilhadas, barras, barras empilhadas, linhas, área, área empilhada, streamgraph, pizza, rosca, treemap, parlamento, dispersão, mapa de calor, candlestick, Sankey, rede e mapa geográfico.
+Os gráficos são editados numa grade de dados e desenhados em SVG, que mantém a nitidez ao mudar de tamanho. São **19 tipos**: colunas, colunas empilhadas, barras, barras empilhadas, linhas, pontos, área, área empilhada, streamgraph, pizza, rosca, treemap, parlamento, dispersão, mapa de calor, candlestick, Sankey, rede e mapa geográfico.
 
 Isso permite mostrar desde uma comparação entre categorias até fluxos entre entidades ou a distribuição de assentos num parlamento. Sankey e rede usam relações de origem, destino e valor. Nos mapas, você escolhe o mundo, um continente ou as divisões administrativas de um país e associa valores às regiões por nome ou código. Os limites geográficos vêm do [Natural Earth](https://www.naturalearthdata.com).
+
+Também dá para começar pelos dados: cole células de uma planilha ou abra um arquivo CSV, e o Cadenza mostra uma prévia de cada gráfico que os dados permitem. Ele identifica as colunas de rótulos, valores, grupos e barras de erro, e você pode mudar o papel de cada coluna. Para figuras científicas, os gráficos também aceitam barras de erro (± um valor, valores separados abaixo e acima, ou extremos inferior e superior), limites próprios para o eixo de valores, títulos dos eixos, linhas de referência e formatos de ponto.
 
 Durante a apresentação, um gráfico pode aparecer por etapas: uma série de cada vez, uma fatia de pizza ou um partido no gráfico de parlamento. É uma forma de acompanhar a explicação sem colocar todos os dados na tela de uma só vez.
 
@@ -135,7 +138,7 @@ A interface está disponível em alemão, árabe, bengali, chinês (simplificado
 
 Os quatro aplicativos atendem ao trabalho básico de montar e apresentar slides. As diferenças ficam mais claras ao considerar onde o arquivo vive, como o conteúdo técnico é editado, como a apresentação será distribuída e se outras pessoas precisam trabalhar nela ao mesmo tempo.
 
-A comparação abaixo foi revisada em **15 de outubro de 2026**. Ela considera o **Cadenza 0.3.1**, o **Keynote para Mac**, o **PowerPoint para desktop do Microsoft 365** e o **Google Slides no navegador**; os editores web e móveis de cada família aparecem numa linha própria. **Sim** indica suporte integrado; **&#45;&#45;** indica que não há suporte nativo documentado para aquela função nesse recorte. Condições de plano, plataforma, serviço ou complemento são indicadas nas células. Isso não impede reproduzir um resultado com imagens, ferramentas externas ou extensões.
+A comparação abaixo foi revisada em **15 de outubro de 2026**. Ela considera o **Cadenza 0.3.3**, o **Keynote para Mac**, o **PowerPoint para desktop do Microsoft 365** e o **Google Slides no navegador**; os editores web e móveis de cada família aparecem numa linha própria. **Sim** indica suporte integrado; **&#45;&#45;** indica que não há suporte nativo documentado para aquela função nesse recorte. Condições de plano, plataforma, serviço ou complemento são indicadas nas células. Isso não impede reproduzir um resultado com imagens, ferramentas externas ou extensões.
 
 <style>
 .cadenza-comparison table { min-width: 44rem; font-size: 0.85em; }
@@ -148,11 +151,11 @@ A comparação abaixo foi revisada em **15 de outubro de 2026**. Ela considera o
 |:--|:--|:--|:--|:--|
 | Texto, imagens, formas e tabelas | Sim | Sim | Sim | Sim |
 | Temas e layouts | Sim | Sim | Sim | Sim |
-| Gráficos com dados editáveis | Sim; 18 tipos | Sim | Sim | Sim; dados no [Sheets][google-charts] |
+| Gráficos com dados editáveis | Sim; 19 tipos | Sim | Sim | Sim; dados no [Sheets][google-charts] |
 | Transições e animação de objetos | Sim | Sim | Sim | Sim |
 | Notas e tela do apresentador | Sim | Sim | Sim | Sim |
 | PDF | Sim; impressão | Sim | Sim | Sim |
-| Aplicativo de desktop | Linux, macOS e Windows | macOS | Windows e macOS | Editor no navegador |
+| Aplicativo de desktop | Linux e Windows | macOS | Windows e macOS | Editor no navegador |
 | Edição offline | Sim | Sim | Sim; após instalação e ativação[^offline] | Sim; exige configuração prévia[^offline] |
 | Software livre | Sim; MIT | &#45;&#45;; proprietário | &#45;&#45;; proprietário | &#45;&#45;; proprietário |
 | Equações a partir de LaTeX | Sim; KaTeX | Sim; LaTeX e MathML[^math] | &#45;&#45;; editor com UnicodeMath[^math] | &#45;&#45;; por complemento, como MathType[^math] |
@@ -176,15 +179,15 @@ As funções gerais e a disponibilidade por plataforma estão documentadas nos g
 
 ## O que o Cadenza ainda não oferece
 
-As limitações de formato e colaboração pesam na escolha tanto quanto os recursos de edição. Na versão 0.3.1, não há importação ou exportação de **PPTX**, coedição em tempo real, comentários de revisão ou histórico compartilhado na nuvem. Enviar um `.cadenza` a outra pessoa permite que ela trabalhe numa cópia; isso não equivale a editar o mesmo documento em conjunto.
+As limitações de formato e colaboração pesam na escolha tanto quanto os recursos de edição. Na versão 0.3.3, não há importação ou exportação de **PPTX**, coedição em tempo real, comentários de revisão ou histórico compartilhado na nuvem. Enviar um `.cadenza` a outra pessoa permite que ela trabalhe numa cópia; isso não equivale a editar o mesmo documento em conjunto.
 
 Também não há editor web ou aplicativo móvel, nem gravação integrada da apresentação em vídeo. O HTML exportado pode ser apresentado num navegador, mas não oferece o editor do Cadenza. Para gravar uma aula, é necessário usar uma ferramenta de captura de tela. A câmera ao vivo e o teleprompter do aplicativo não constituem um gravador.
 
 # Privacidade
 
-O **Cadenza** não exige conta para criar, editar, salvar ou apresentar arquivos locais. Os recursos on-line, como download de fontes, busca de mídia e reprodução de vídeos externos, acessam os respectivos serviços quando usados.
+O **Cadenza** não exige conta para criar, editar, salvar ou apresentar arquivos locais. Os recursos on-line, como download de fontes, busca de mídia e reprodução de vídeos externos, acessam os respectivos serviços quando usados. A única exceção é a busca por atualizações: ao abrir, o Cadenza baixa do GitHub um pequeno arquivo com o número da versão mais recente, sem enviar nada sobre você ou suas apresentações. Ela pode ser desligada em **Ajustes > Atualizações**.
 
-As chaves de API ficam no cofre de senhas do sistema: Secret Service no Linux, Acesso às Chaves no macOS e Gerenciador de Credenciais no Windows. Elas não são gravadas nas apresentações.
+As chaves de API ficam no cofre de senhas do sistema: Secret Service no Linux e Gerenciador de Credenciais no Windows. Elas não são gravadas nas apresentações.
 
 # Arquivos
 
@@ -204,7 +207,7 @@ O código do **Cadenza** está no [GitHub](https://github.com/rodolfo-viana/cade
 
 O **Cadenza** é distribuído sob a [licença MIT](https://github.com/rodolfo-viana/cadenza/blob/main/LICENSE). Ele inclui reveal.js, KaTeX, Mermaid, highlight.js, Preact, htm e ícones Lucide, cada um sob a própria licença.
 
-As descrições do Cadenza nesta página seguem o [README](https://github.com/rodolfo-viana/cadenza/blob/main/README.md) e o [histórico da versão 0.3.1](https://github.com/rodolfo-viana/cadenza/blob/main/CHANGELOG.md#031--2026-10-15). As referências abaixo detalham as condições da comparação.
+As descrições do Cadenza nesta página seguem o [README](https://github.com/rodolfo-viana/cadenza/blob/main/README.md) e o [histórico da versão 0.3.3](https://github.com/rodolfo-viana/cadenza/blob/main/CHANGELOG.md#033--2026-10-17). As referências abaixo detalham as condições da comparação.
 
 [^offline]: A Microsoft documenta o [uso offline após instalação e ativação][powerpoint-offline], com reconexão periódica para o Microsoft 365. O Google Slides exige [preparação do acesso offline][google-offline], incluindo Chrome ou Edge e a extensão Google Docs Offline no computador.
 [^math]: O Keynote aceita [LaTeX e MathML][keynote-math]. A Microsoft distingue o LaTeX do Word do [UnicodeMath disponível nos demais aplicativos do Office][powerpoint-math]. No Google Slides, [MathType][google-math] é um complemento de terceiros, com condições próprias de assinatura.
