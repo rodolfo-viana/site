@@ -13,6 +13,7 @@ links = [
     { name = "LinkedIn", icon = "linkedin", url = "https://www.linkedin.com/in/rodolfoviana/" },
     { name = "Lattes", icon = "lattes", url = "https://lattes.cnpq.br/9571452574404221" },
     { name = "ORCID", icon = "orcid", url = "https://orcid.org/0009-0008-1356-5699" },
+    { name = "Google Scholar", icon = "google-scholar", url = "https://scholar.google.com/citations?user=tY2CCz0AAAAJ&hl=en" },
     { name = "E-mail", icon = "email", url = "mailto:eu@rodolfoviana.com.br" },
 ]
 recent = false
