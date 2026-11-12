@@ -51,11 +51,19 @@
   author = {{ "{" }}{% for author in article.authors %}{{ author.family }}, {{ author.given }}{% if not loop.last %} and {% endif %}{% endfor %}{{ "}" }},
   journal = { {{- article.journal -}} },
   title = { {{- article.title -}} },
-  year = { {{- article.year -}} },
-  volume = { {{- article.volume -}} },
-  number = { {{- article.number -}} },
-  pages = { {{- article.pages -}} },
+  year = { {{- article.year -}} }
+  {%- if article.volume %},
+  volume = { {{- article.volume -}} }
+  {%- endif %}
+  {%- if article.number %},
+  number = { {{- article.number -}} }
+  {%- endif %}
+  {%- if article.pages %},
+  pages = { {{- article.pages -}} }
+  {%- endif %}
+  {%- if article.doi %},
   doi = { {{- article.doi -}} }
+  {%- endif %}
 }</pre>
     </article>
     {% endfor %}
