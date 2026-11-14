@@ -27,12 +27,12 @@ Apresentamos uma implementação de Processos Gaussianos com Inferência Variaci
 
 ## Processos Gaussianos
 
-Um GP é uma coleção de variáveis aleatórias, qualquer número finito das quais possui uma distribuição Gaussiana conjunta[^4]. Formalmente, um GP é especificado por sua função de média \\(m(\mathbf{x})\\) e função de covariância \\(k(\mathbf{x}, \mathbf{x'})\\), onde
+Um GP é uma coleção de variáveis aleatórias, qualquer número finito das quais possui uma distribuição Gaussiana conjunta[^4]. Formalmente, um GP é especificado por sua função de média \\(m(\mathbf{x})\\) e função de covariância \\(k(\mathbf{x}, \mathbf{x}^{\prime})\\), onde
 
 \\[
 \begin{aligned}
 m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\\\
-k(\mathbf{x}, \mathbf{x'}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x'}) - m(\mathbf{x'}))].
+k(\mathbf{x}, \mathbf{x}^{\prime}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x}^{\prime}) - m(\mathbf{x}^{\prime}))].
 \end{aligned}
 \\]
 
@@ -40,10 +40,10 @@ Assim, temos \\(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\\) para indicar que a fun�
 
 Tipicamente, assume-se \\(m(\mathbf{x}) = 0\\) por simplicidade. A função kernel determina as propriedades de suavidade e características estruturais das funções amostradas do GP. Neste trabalho, utilizamos o kernel Matérn[^8] com \\(\nu = 1{,}5\\), o que produz funções uma vez diferenciáveis, oferecendo um equilíbrio entre suavidade e flexibilidade. 
 
-Seja \\(r = \parallel\mathbf{x} - \mathbf{x}'\parallel\\) a distância euclidiana entre dois pontos, o kernel Matérn é definido como:
+Seja \\(r = \parallel\mathbf{x} - \mathbf{x}^{\prime}\parallel\\) a distância euclidiana entre dois pontos, o kernel Matérn é definido como:
 
 \\[
-k\_{\text{Matérn}}(\mathbf{x}, \mathbf{x}') = \sigma^2 \left(1 + \frac{\sqrt{3}r}{\ell}\right) \exp\left(-\frac{\sqrt{3}r}{\ell}\right)
+k\_{\text{Matérn}}(\mathbf{x}, \mathbf{x}^{\prime}) = \sigma^2 \left(1 + \frac{\sqrt{3}r}{\ell}\right) \exp\left(-\frac{\sqrt{3}r}{\ell}\right)
 \\]
 
 onde \\(\ell > 0\\) é o comprimento de escala que controla a suavidade da função, e \\(\sigma^2 > 0\\) é a variância de escala que controla a amplitude das variações.
@@ -82,7 +82,7 @@ onde \\(\mathbf{L}\\) é uma matriz triangular inferior. Os parâmetros variacio
 
 # Metodologia
 
-Implementamos um modelo GP variacional cuja arquitetura consiste em: (i) um módulo de média que utiliza uma média constante \\(m(\mathbf{x}) = c\\); (ii) um módulo de covariância baseado em kernel escalonado \\(k(\mathbf{x}, \mathbf{x}') = \sigma^2 k_{\text{Matérn}}(\mathbf{x}, \mathbf{x}')\\); (iii) uma distribuição variacional \\(q(\mathbf{u})\\) parametrizada via decomposição de Cholesky, onde utilizamos todos os \\(N\\) pontos de treinamento como pontos indutores (\\(M = N = 455\\)); e (iv) uma verossimilhança de Bernoulli para classificação binária.
+Implementamos um modelo GP variacional cuja arquitetura consiste em: (i) um módulo de média que utiliza uma média constante \\(m(\mathbf{x}) = c\\); (ii) um módulo de covariância baseado em kernel escalonado \\(k(\mathbf{x}, \mathbf{x}^{\prime}) = \sigma^2 k_{\text{Matérn}}(\mathbf{x}, \mathbf{x}^{\prime})\\); (iii) uma distribuição variacional \\(q(\mathbf{u})\\) parametrizada via decomposição de Cholesky, onde utilizamos todos os \\(N\\) pontos de treinamento como pontos indutores (\\(M = N = 455\\)); e (iv) uma verossimilhança de Bernoulli para classificação binária.
 
 Esta escolha de \\(M = N\\) elimina a aproximação esparsa, resultando em um modelo mais expressivo ao custo de maior complexidade computacional. Para conjuntos de dados maiores, uma estratégia com \\(M \ll N\\) seria necessária para escalabilidade[^9].
 
@@ -134,27 +134,29 @@ a perda logarítmica e o erro de calibração esperado (ECE).
 
 O modelo alcançou excelente desempenho preditivo, com acurácia superior a 96\% e AUC-ROC de 99,34\%, indicando alta capacidade discriminativa. O F1-Score de 97,22\% demonstra equilíbrio entre precisão e sensibilidade. A AUPRC de 99,58\% confirma o desempenho robusto mesmo considerando diferentes limiares de decisão.
 
-<table style="margin: 0 auto; border-collapse: collapse;">
-  <caption style="caption-side: top; font-weight: 600; padding: 8px 0;">
+<table>
+  <caption>
     Resultados do Modelo GP-VI no Wisconsin Breast Cancer
   </caption>
   <thead>
     <tr>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Métrica</th>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Valor</th>
+      <th>Métrica</th>
+      <th>Valor</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Acurácia</td><td style="border: 1px solid #ccc; padding: 8px;">96,49%</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">F1-Score</td><td style="border: 1px solid #ccc; padding: 8px;">97,22%</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">AUC-ROC</td><td style="border: 1px solid #ccc; padding: 8px;">99,34%</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">AUPRC</td><td style="border: 1px solid #ccc; padding: 8px;">99,58%</td></tr>
-    <tr><td colspan="2" style="border: 0; padding: 0;"><hr style="border: none; border-top: 1px solid #ccc; margin: 0;"></td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Escore de Brier</td><td style="border: 1px solid #ccc; padding: 8px;">0,0355</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Perda logarítmica</td><td style="border: 1px solid #ccc; padding: 8px;">0,1397</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">ECE</td><td style="border: 1px solid #ccc; padding: 8px;">0,3771</td></tr>
-    <tr><td colspan="2" style="border: 0; padding: 0;"><hr style="border: none; border-top: 1px solid #ccc; margin: 0;"></td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Tempo de treinamento</td><td style="border: 1px solid #ccc; padding: 8px;">8,19s</td></tr>
+    <tr><td>Acurácia</td><td>96,49%</td></tr>
+    <tr><td>F1-Score</td><td>97,22%</td></tr>
+    <tr><td>AUC-ROC</td><td>99,34%</td></tr>
+    <tr><td>AUPRC</td><td>99,58%</td></tr>
+  </tbody>
+  <tbody>
+    <tr><td>Escore de Brier</td><td>0,0355</td></tr>
+    <tr><td>Perda logarítmica</td><td>0,1397</td></tr>
+    <tr><td>ECE</td><td>0,3771</td></tr>
+  </tbody>
+  <tbody>
+    <tr><td>Tempo de treinamento</td><td>8,19s</td></tr>
   </tbody>
 </table>
 
@@ -162,7 +164,7 @@ O modelo alcançou excelente desempenho preditivo, com acurácia superior a 96\%
 A matriz de confusão revela apenas 4 predições incorretas em 114 amostras de teste.
 
 <figure style="width:60%; height:auto; max-width:60%; display:block; margin: 0 auto;">
-  <img src="./matriz.png" style="border: 5px solid #ef5350; background-color: white">
+  <img src="./matriz.png" style="background-color: white">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Matriz de confusão</figcaption>
 </figure>
 
@@ -178,28 +180,28 @@ A alta precisão do modelo (96,49\% de acurácia) combinada com má calibração
 
 A tabela abaixo apresenta as estatísticas de incerteza preditiva, revelando um padrão aparentemente contra-intuitivo: a incerteza média das predições corretas (\\(1{,}024\pm0{,}156\\)) é ligeiramente superior à das predições incorretas (\\(0{,}915\pm0{,}033\\)).
 
-<table style="margin: 0 auto; border-collapse: collapse;">
-  <caption style="caption-side: top; font-weight: 600; padding: 8px 0;">
+<table>
+  <caption>
     Estatísticas de Incerteza Preditiva
   </caption>
   <thead>
     <tr>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Estatística</th>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Valor</th>
+      <th>Estatística</th>
+      <th>Valor</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Incerteza Média Global</td><td style="border: 1px solid #ccc; padding: 8px;">1,020</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Mediana de Incerteza</td><td style="border: 1px solid #ccc; padding: 8px;">1,004</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Desvio-Padrão de Incerteza</td><td style="border: 1px solid #ccc; padding: 8px;">0,154</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Q1</td><td style="border: 1px solid #ccc; padding: 8px;">0,906</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Q3</td><td style="border: 1px solid #ccc; padding: 8px;">1,134</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">IQR</td><td style="border: 1px solid #ccc; padding: 8px;">0,228</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Incerteza Mínima</td><td style="border: 1px solid #ccc; padding: 8px;">0,736</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Incerteza Máxima</td><td style="border: 1px solid #ccc; padding: 8px;">1,357</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Incerteza Média (Predições Corretas)</td><td style="border: 1px solid #ccc; padding: 8px;">1,024 &plusmn; 0,156</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Incerteza Média (Predições Incorretas)</td><td style="border: 1px solid #ccc; padding: 8px;">0,915 &plusmn; 0,033</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Teste t bicaudal</td><td style="border: 1px solid #ccc; padding: 8px;">t = 1,39, p = 0,168</td></tr>
+    <tr><td>Incerteza Média Global</td><td>1,020</td></tr>
+    <tr><td>Mediana de Incerteza</td><td>1,004</td></tr>
+    <tr><td>Desvio-Padrão de Incerteza</td><td>0,154</td></tr>
+    <tr><td>Q1</td><td>0,906</td></tr>
+    <tr><td>Q3</td><td>1,134</td></tr>
+    <tr><td>IQR</td><td>0,228</td></tr>
+    <tr><td>Incerteza Mínima</td><td>0,736</td></tr>
+    <tr><td>Incerteza Máxima</td><td>1,357</td></tr>
+    <tr><td>Incerteza Média (Predições Corretas)</td><td>1,024 &plusmn; 0,156</td></tr>
+    <tr><td>Incerteza Média (Predições Incorretas)</td><td>0,915 &plusmn; 0,033</td></tr>
+    <tr><td>Teste t bicaudal</td><td>t = 1,39, p = 0,168</td></tr>
   </tbody>
 </table>
 

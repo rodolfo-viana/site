@@ -50,12 +50,12 @@ Esta arquitetura híbrida une o poder das redes neurais na extração de caracte
 
 Um GP é uma família de variáveis aleatórias tal que qualquer subconjunto finito segue uma distribuição gaussiana multivariada[^4] [^5]. Tal propriedade garante exatidão à inferência bayesiana sem a necessidade de recorrer a aproximações numéricas &mdash; difere, por exemplo, de redes neurais bayesianas, que precisam de amostragem Monte Carlo ou métodos variacionais.
 
-Formalmente, um GP é especificado por sua função de média \\(m(\mathbf{x})\\) e função de covariância \\(k(\mathbf{x}, \mathbf{x'})\\), onde
+Formalmente, um GP é especificado por sua função de média \\(m(\mathbf{x})\\) e função de covariância \\(k(\mathbf{x}, \mathbf{x}^{\prime})\\), onde
 
 \\[
 \begin{aligned}
 m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\\\
-k(\mathbf{x}, \mathbf{x'}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x'}) - m(\mathbf{x'}))]
+k(\mathbf{x}, \mathbf{x}^{\prime}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x}^{\prime}) - m(\mathbf{x}^{\prime}))]
 \end{aligned}
 \\]
 
@@ -75,7 +75,7 @@ onde \\(\mathbf{K}\\) é a matriz de covariância entre os pontos de treinamento
 Neste trabalho, para obtermos funções-amostra suaves e isotrópicas, utilizamos a função de base radial para cálculo da covariância, definido como
 
 \\[
-k(\mathbf{x}, \mathbf{x'}) = \sigma_f^2 \exp\left(-\frac{||\mathbf{x} - \mathbf{x'}||^2}{{{2l^2}}}\right)
+k(\mathbf{x}, \mathbf{x}^{\prime}) = \sigma_f^2 \exp\left(-\frac{||\mathbf{x} - \mathbf{x}^{\prime}||^2}{{{2l^2}}}\right)
 \\]
 
 onde \\(\sigma_f^2\\) é a variância do sinal e \\(l\\) é o comprimento de escala, que controla a suavidade da função. Estes hiperparâmetros são otimizados maximizando a log-verossimilhança marginal dos dados de treinamento. A log-verossimilhança marginal é obtida integrando sobre a função latente \\(f\\), resultando em 
@@ -280,7 +280,7 @@ Após a aplicação do método conformal, as coberturas são consistentemente aj
 
 Em relação à largura dos intervalos, observamos que, na maioria dos casos, a predição conformal resultou em intervalos mais estreitos. Isso é uma consequência direta da redução da cobertura para o nível nominal de 90\%. É importante notar que, idealmente, desejamos intervalos de predição que sejam o mais estreitos possível, condicionado a atingir a cobertura desejada. Quanto ao desempenho, vemos que o NE-SVGP supera significativamente o NE-GP nos conjuntos de dados Naval (0,984 contra 0,933) e Concrete (0,877 contra 0,796), além de apresentar desempenho ligeiramente superior no conjunto CCPP (0,945 contra 0,941).
 
-<img src="./combined_models_all_datasets.png" style="border: 5px solid #ef5350; width:100%; height:auto; max-width:100%;">
+<img src="./combined_models_all_datasets.png" style="width:100%; height:auto; max-width:100%;">
 
 A figura, com resultados de execuções na semente 42, ilustra o _trade-off_ entre cobertura e largura dos intervalos. Com NE-GP, em todos os conjuntos de dados, a calibração conformal reduz a cobertura para aproximadamente 90%, enquanto também reduz a largura dos intervalos. O efeito é particularmente pronunciado no conjunto CCPP, onde a largura média é reduzida de 2,64 para 0,76, uma redução de 71,2%, enquanto a cobertura passa de 99,89% para 90,13%. 
 

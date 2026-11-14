@@ -53,9 +53,9 @@ A interseção sobre união, ou IoU, é
 Para uma dupla de máscaras com união não vazia, Dice e IoU estão ligados exatamente por
 
 \\[
-\operatorname{Dice}=\frac{2\operatorname{IoU}}{1 + \operatorname{IoU}},
+\textnormal{Dice}=\frac{2\textnormal{IoU}}{1 + \textnormal{IoU}},
 \qquad
-\operatorname{IoU}=\frac{\operatorname{Dice}}{2 - \operatorname{Dice}}.
+\textnormal{IoU}=\frac{\textnormal{Dice}}{2 - \textnormal{Dice}}.
 \\]
 
 Logo, uma máscara com Dice maior também tem IoU maior. Reportar as duas não fornece duas leituras geométricas independentes; fornece uma transformação monotônica do mesmo conjunto de contagens.[^4] Há uma ressalva: como a transformação é não linear, médias de Dice e de IoU calculadas caso a caso não precisam preservar diferenças ou ordenações depois da agregação. Isso é um efeito do resumo estatístico, não informação espacial nova.
@@ -311,9 +311,9 @@ Meu interesse por bordas também exige cuidado com o que deixo de fora da avalia
 Precisão e sensibilidade separam os dois termos que o Dice combina:
 
 \\[
-\operatorname{Precisão}=\frac{TP}{TP+FP},
+\textnormal{Precisão}=\frac{TP}{TP+FP},
 \qquad
-\operatorname{Sensibilidade}=\frac{TP}{TP+FN}.
+\textnormal{Sensibilidade}=\frac{TP}{TP+FN}.
 \\]
 
 Se perder tecido e incluir fundo têm custos diferentes, essa assimetria deve aparecer no relatório ou numa medida ponderada definida de antemão. O erro relativo de volume com sinal,

@@ -77,7 +77,7 @@ TF-IDF is a statistical measure that evaluates the importance of a term in a doc
 **Term Frequency (TF):**
 
 \\[
-  \text{TF}(t, d) = \frac{f\_{t,d}}{\sum\_{t' \in d} f\_{t',d}}
+  \text{TF}(t, d) = \frac{f\_{t,d}}{\sum\_{t^{\prime} \in d} f\_{t^{\prime},d}}
 \\]
 
 where \\(f\_{t,d}\\) is the raw frequency of term \\(t\\) in document \\(d\\).
@@ -314,7 +314,7 @@ Data collection was performed through Unesp's institutional repository API, impl
 - **Extracted fields:** UUID, handle, title, abstract, publication date, campus, course, authors, advisors, keywords
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./temporal_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./temporal_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Temporal distribution of collected TCCs
   </figcaption>
 </figure>
@@ -399,7 +399,7 @@ The five main institutes/faculties in terms of production were:
 5. **Institute of Geosciences and Exact Sciences:** 1,005 TCCs
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./campus_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./campus_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribution of TCCs across main Unesp campuses
   </figcaption>
 </figure>
@@ -418,7 +418,7 @@ The courses with the highest production were:
 10. **Environmental Engineering:** 377 TCCs
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./course_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./course_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Top 20 courses by number of TCCs produced
   </figcaption>
 </figure>
@@ -643,7 +643,7 @@ The 10 most prevalent topics were:
 Temporal analysis revealed significant patterns in topic evolution throughout the studied period:
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./temporal_heatmap.png" style="border: 5px solid #ef5350;">
+  <img src="./temporal_heatmap.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Heatmap of temporal evolution of top 20 topics
   </figcaption>
 </figure>
@@ -657,7 +657,7 @@ It is also possible to determine emerging and declining topics. Topics identifie
 5. **Topic 187 (Gynecological Cancer):** Growth in cervical cancer research
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./emerging_topics.png" style="border: 5px solid #ef5350;">
+  <img src="./emerging_topics.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Temporal evolution of the 5 most emerging topics
   </figcaption>
 </figure>
@@ -671,7 +671,7 @@ Among topics with a declining trend, suggesting changes in research priorities, 
 5. **Topic 63 (Automotive Engineering):** Decline in suspension simulation studies and SAE projects
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./declining_topics.png" style="border: 5px solid #ef5350;">
+  <img src="./declining_topics.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Temporal evolution of 5 declining topics
   </figcaption>
 </figure>
@@ -681,7 +681,7 @@ Among topics with a declining trend, suggesting changes in research priorities, 
 The chi-square test implemented in the system evaluates independence between campus and topic distribution, allowing identification of regional specializations:
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./geographic_heatmap.png" style="border: 5px solid #ef5350;">
+  <img src="./geographic_heatmap.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Topic distribution across main campuses
   </figcaption>
 </figure>
@@ -729,7 +729,7 @@ Some of the identified specialization patterns are:
 - **Topic 55 (5.9%):** Communication, public, public communication, bauru - public relations and organizational communication
 
 <figure style="width:100%; height:auto; max-width:100%; display:block; margin: 0 auto;">
-  <img src="./campus_topic_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./campus_topic_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Proportional distribution of topics by campus
   </figcaption>
 </figure>

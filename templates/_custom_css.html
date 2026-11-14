@@ -76,12 +76,26 @@
     font-family: inherit;
   }
 
+  .prose img,
   .prose video {
     box-sizing: border-box;
+    border: 1.5px solid var(--primary-color);
+  }
+
+  .prose video {
     display: block;
     width: 100%;
     height: auto;
-    border: 1.5px solid var(--primary-color);
+  }
+
+  .prose caption {
+    caption-side: top;
+    font-weight: 600;
+    padding: 8px 0;
+  }
+
+  .prose tbody + tbody {
+    border-top: 1.5px solid var(--primary-color);
   }
 
   .visually-hidden {

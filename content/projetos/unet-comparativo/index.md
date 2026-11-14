@@ -21,7 +21,7 @@ Neste contexto, a ciência de dados, particularmente o aprendizado de máquina, 
 
 Neste cenário, U-Net se estabelece como o estado-da-arte para tal tarefa através de um esquema codificador-decodificador com *skip connections*[^6].
 
-<img src="./unet.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<img src="./unet.png" style="width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 Suas limitações, porém, motivaram variantes que visam melhorar a fusão de representações e a seletividade de características. Este trabalho realiza comparações sistemáticas sob condições experimentais controladas, comparando cinco arquiteturas na segmentação de pólipos usando o conjunto Kvasir-SEG[^7].
 
@@ -31,7 +31,7 @@ A segmentação automatizada de pólipos evoluiu significativamente desde métod
 
 A introdução de redes totalmente convolucionais (FCN)[^8] revolucionou a segmentação semântica ao eliminar camadas densas finais e permitir predições pixel a pixel. Brandão et al.[^4] adaptaram FCNs para segmentação de pólipos, demonstrando superioridade sobre métodos tradicionais mas ainda enfrentando dificuldades com bordas imprecisas e variações morfológicas. A arquitetura U-Net[^6], com seu paradigma codificador-decodificador e *skip connections*, tornou-se referência para segmentação biomédica ao preservar informação espacial em múltiplas escalas.
 
-<img src="./imagem.gif" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<img src="./imagem.webp" style="width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 Diversas extensões da U-Net têm sido propostas para segmentação de pólipos. Zhou et al.[^9] introduziram conexões densas aninhadas para reduzir lacunas semânticas, enquanto Oktay et al.[^10] incorporaram mecanismos de atenção espacial. Jha et al.[^11] propuseram DoubleU-Net, combinando dois caminhos codificador-decodificador com blocos ASPP (*Atrous Spatial Pyramid Pooling*), alcançando Dice score de 82,3\% no Kvasir-SEG.
 
@@ -52,12 +52,10 @@ Seja \\(x\in\mathbb{R}^{H\times W\times C}\\) uma imagem de entrada e \\(y\in{\{
 A U-Net++ aborda a lacuna semântica da U-Net através de blocos convolucionais aninhados[^9]. Na U-Net, *skip connections* concatenam características semanticamente distantes (baixo nível no codificador, alto nível no decodificador). A U-Net++ resolve isso conectando, de maneira gradual, características através de caminhos densos. Cada nó \\(\mathbf{X}^{i,j}\\) é
 
 \\[
-\begin{aligned}
 \mathbf{X}^{i,j} = \begin{cases}
 \mathcal{H}(\mathbf{X}^{i,j-1}), & j = 0 \\\\
 \mathcal{H}\left(\left[\left[\mathbf{X}^{i,k}\right]\_{k=0}^{j-1}, \mathcal{U}(\mathbf{X}^{i+1,j-1})\right]\right), & j > 0,
 \end{cases}
-\end{aligned}
 \\]
 
 onde \\(i\\) indexa resolução, \\(j\\) densidade de conexões, \\(\mathcal{H}(\cdot)\\) convolução, \\(\mathcal{U}(\cdot)\\) upsampling, \\([[\cdot]]\\) concatenação. Isso reduz progressivamente a lacuna semântica através de transformações sucessivas.
@@ -134,7 +132,7 @@ Todas as arquiteturas mantiveram especificidade superior a 96,8\%, essencial par
 
 A análise do desempenho das arquiteturas nos três contextos distintos (treinamento, validação e teste) apresentada na figura abaixo revela padrões fundamentais sobre o comportamento de generalização dos modelos. Todas as arquiteturas apresentam clara hierarquia de desempenho, confirmando a progressiva dificuldade das tarefas e adequada metodologia.
 
-<img src="./graph.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<img src="./graph.png" style="width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 A U-Net padrão demonstra excelente consistência entre validação e teste, com gap mínimo (\\(\sim\\)1,5 pp.), indicando robusta capacidade de generalização. Sua baixa variabilidade entre sementes, visível nos boxplots compactos, sugere treinamento estável e previsível &mdash; característica desejável para aplicações clínicas onde reprodutibilidade é crítica.
 
@@ -147,7 +145,7 @@ Attention U-Net e U-Net++ padrão mostram gaps ligeiramente maiores entre valida
 A inspeção visual das predições, como mostra a figura abaixo, revela diferenças significativas e clinicamente relevantes entre as arquiteturas, particularmente em casos desafiadores. A análise contempla cinco casos representativos que expõem características distintas de desempenho das arquiteturas.
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./mask_comparison.png" style="border: 5px solid #ef5350;">
+  <img src="./mask_comparison.webp">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Da esquerda para direita: imagem original, <i>ground truth</i>, predições de U-Net, U-Net++, U-Net++ com <i>deep supervision</i>, Attention U-Net, ResU-Net
   </figcaption>
 </figure>

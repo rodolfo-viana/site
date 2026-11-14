@@ -33,7 +33,7 @@ An SSM, in its continuous form, is a linear system mapping an input signal \\(x(
 
 \\[
 \begin{aligned}
-h'(t) &= \mathbf{A}\,h(t) + \mathbf{B}\,x(t) \\\\
+h^{\prime}(t) &= \mathbf{A}\,h(t) + \mathbf{B}\,x(t) \\\\
 y(t) &= \mathbf{C}^\top h(t)
 \end{aligned}
 \\]
@@ -134,7 +134,7 @@ The answer is to let the parameters vary with the input. In the selective SSM &m
 \end{aligned}
 \\]
 
-The matrix \\(\mathbf{A}\\) stays input-independent, but because it is discretized by \\(\Delta\_t\\), the effective transition \\(\bar{\mathbf{A}}\_t = \exp(\Delta\_t \mathbf{A})\\) also comes to depend on the input. In practice \\(\mathbf{A}\\) is kept diagonal and parameterized as \\(\mathbf{A} = -\exp(\mathbf{A}\_{\log})\\), which guarantees negative real eigenvalues and therefore stable, contractive dynamics. The recurrence becomes time-varying:
+The matrix \\(\mathbf{A}\\) stays input-independent, but because it is discretized by \\(\Delta\_t\\), the effective transition \\(\bar{\mathbf{A}}\_t = \exp(\Delta\_t \mathbf{A})\\) also comes to depend on the input. In practice \\(\mathbf{A}\\) is kept diagonal and parameterized as \\(\mathbf{A} = -\exp(\mathbf{A}\_{\mathrm{log}})\\), which guarantees negative real eigenvalues and therefore stable, contractive dynamics. The recurrence becomes time-varying:
 
 \\[
 \begin{aligned}

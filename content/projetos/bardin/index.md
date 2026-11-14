@@ -77,7 +77,7 @@ O TF-IDF é uma medida estatística que avalia a importância de um termo em um 
 **Frequência do Termo (TF):**
 
 \\[
-  \text{TF}(t, d) = \frac{f\_{t,d}}{\sum\_{t' \in d} f\_{t',d}}
+  \text{TF}(t, d) = \frac{f\_{t,d}}{\sum\_{t^{\prime} \in d} f\_{t^{\prime},d}}
 \\]
 
 onde \\(f\_{t,d}\\) é a frequência bruta do termo \\(t\\) no documento \\(d\\).
@@ -314,7 +314,7 @@ A coleta de dados foi realizada através da API do repositório institucional da
 - **Campos extraídos:** UUID, handle, título, resumo, data de publicação, campus, curso, autores, orientadores, palavras-chave
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./temporal_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./temporal_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição temporal dos TCCs coletados
   </figcaption>
 </figure>
@@ -399,7 +399,7 @@ Os cinco principais institutos/faculdades em termos de produção foram:
 5. **Instituto de Geociências e Ciências Exatas:** 1005 TCCs
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./campus_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./campus_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição de TCCs pelos principais campi da Unesp
   </figcaption>
 </figure>
@@ -418,7 +418,7 @@ Os cursos com maior produção foram:
 10. **Engenharia Ambiental:** 377 TCCs
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./course_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./course_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Top 20 cursos por número de TCCs produzidos
   </figcaption>
 </figure>
@@ -643,7 +643,7 @@ Os 10 tópicos mais prevalentes foram:
 A análise temporal revelou padrões significativos de evolução dos tópicos ao longo do período estudado:
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./temporal_heatmap.png" style="border: 5px solid #ef5350;">
+  <img src="./temporal_heatmap.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Heatmap da evolução temporal dos 20 principais tópicos
   </figcaption>
 </figure>
@@ -657,7 +657,7 @@ A análise temporal revelou padrões significativos de evolução dos tópicos a
 5. **Tópico 187 (Câncer Ginecológico):** Crescimento em pesquisas sobre câncer de colo de útero
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./emerging_topics.png" style="border: 5px solid #ef5350;">
+  <img src="./emerging_topics.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Evolução temporal dos 5 tópicos mais emergentes
   </figcaption>
 </figure>
@@ -671,7 +671,7 @@ Entre os tópicos com tendência de declínio, sugerindo mudanças nas prioridad
 5. **Tópico 63 (Engenharia Automotiva):** Declínio em estudos de simulação de suspensão e projetos SAE
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./declining_topics.png" style="border: 5px solid #ef5350;">
+  <img src="./declining_topics.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Evolução temporal dos 5 tópicos declinantes
   </figcaption>
 </figure>
@@ -681,7 +681,7 @@ Entre os tópicos com tendência de declínio, sugerindo mudanças nas prioridad
 O teste qui-quadrado implementado no sistema avalia a independência entre campus e distribuição de tópicos, permitindo identificar especializações regionais:
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./geographic_heatmap.png" style="border: 5px solid #ef5350;">
+  <img src="./geographic_heatmap.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição de tópicos pelos principais campi
   </figcaption>
 </figure>
@@ -729,7 +729,7 @@ Alguns dos padrões de especialização identificados são:
 - **Tópico 55 (5,9%):** Comunicação, público, comunicação público, bauru - relações públicas e comunicação organizacional
 
 <figure style="width:100%; height:auto; max-width:100%; display:block; margin: 0 auto;">
-  <img src="./campus_topic_distribution.png" style="border: 5px solid #ef5350;">
+  <img src="./campus_topic_distribution.png">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Distribuição proporcional de tópicos por campus
   </figcaption>
 </figure>

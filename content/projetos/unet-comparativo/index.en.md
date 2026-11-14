@@ -21,7 +21,7 @@ In this context, data science, particularly machine learning, has much to offer.
 
 In this scenario, U-Net has established itself as the state-of-the-art for such tasks through an encoder-decoder scheme with skip connections[^6].
 
-<img src="./unet.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<img src="./unet.png" style="width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 However, its limitations have motivated variants aimed at improving representation fusion and feature selectivity. This work performs systematic comparisons under controlled experimental conditions, comparing five architectures in polyp segmentation using the Kvasir-SEG dataset[^7].
 
@@ -29,7 +29,7 @@ However, its limitations have motivated variants aimed at improving representati
 
 Automated polyp segmentation has evolved significantly from classical methods to specialized deep architectures. Initial approaches relied on manual features and traditional computer vision techniques. Bernal et al.[^3] proposed WM-DOVA maps combining intensity and shape information, while Tajbakhsh et al.[^5] employed shallow convolutional networks with contextual features for detection in colonoscopy videos.
 
-<img src="./imagem.gif" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<img src="./imagem.webp" style="width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 The introduction of fully convolutional networks (FCN)[^8] revolutionized semantic segmentation by eliminating final dense layers and enabling pixel-by-pixel predictions. Brandão et al.[^4] adapted FCNs for polyp segmentation, demonstrating superiority over traditional methods but still facing difficulties with imprecise edges and morphological variations. The U-Net architecture[^6], with its encoder-decoder paradigm and skip connections, became the reference for biomedical segmentation by preserving spatial information at multiple scales.
 
@@ -52,12 +52,10 @@ Let \\(x\in\mathbb{R}^{H\times W\times C}\\) be an input image and \\(y\in{\{0,1
 U-Net++ addresses the semantic gap of U-Net through nested convolutional blocks[^9]. In U-Net, skip connections concatenate semantically distant features (low level in encoder, high level in decoder). U-Net++ resolves this by gradually connecting features through dense paths. Each node \\(\mathbf{X}^{i,j}\\) is
 
 \\[
-\begin{aligned}
 \mathbf{X}^{i,j} = \begin{cases}
 \mathcal{H}(\mathbf{X}^{i,j-1}), & j = 0 \\\\
 \mathcal{H}\left(\left[\left[\mathbf{X}^{i,k}\right]\_{k=0}^{j-1}, \mathcal{U}(\mathbf{X}^{i+1,j-1})\right]\right), & j > 0,
 \end{cases}
-\end{aligned}
 \\]
 
 where \\(i\\) indexes resolution, \\(j\\) connection density, \\(\mathcal{H}(\cdot)\\) convolution, \\(\mathcal{U}(\cdot)\\) upsampling, \\([[\cdot]]\\) concatenation. This progressively reduces the semantic gap through successive transformations.
@@ -134,7 +132,7 @@ All architectures maintained specificity above 96.8\%, essential for clinical ap
 
 Analysis of architecture performance in the three distinct contexts (training, validation, and test) presented in the figure below reveals fundamental patterns about model generalization behavior. All architectures present a clear performance hierarchy, confirming the progressive task difficulty and adequate methodology.
 
-<img src="./graph.png" style="border: 5px solid #ef5350; width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
+<img src="./graph.png" style="width:75%; height:auto; max-width:75%; display:block; margin: 0 auto;">
 
 Standard U-Net demonstrates excellent consistency between validation and test, with minimal gap (\\(\sim\\)1.5 pp.), indicating robust generalization capability. Its low variability between seeds, visible in compact boxplots, suggests stable and predictable training — a desirable characteristic for clinical applications where reproducibility is critical.
 
@@ -147,7 +145,7 @@ Attention U-Net and standard U-Net++ show slightly larger gaps between validatio
 Visual inspection of predictions, as shown in the figure below, reveals significant and clinically relevant differences between architectures, particularly in challenging cases. The analysis considers five representative cases that expose distinct performance characteristics of the architectures.
 
 <figure style="width:85%; height:auto; max-width:85%; display:block; margin: 0 auto;">
-  <img src="./mask_comparison.png" style="border: 5px solid #ef5350;">
+  <img src="./mask_comparison.webp">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">From left to right: original image, ground truth, predictions from U-Net, U-Net++, U-Net++ with deep supervision, Attention U-Net, ResU-Net
   </figcaption>
 </figure>

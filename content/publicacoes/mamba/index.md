@@ -33,7 +33,7 @@ Um SSM, em sua forma contínua, é um sistema linear que mapeia um sinal de entr
 
 \\[
 \begin{aligned}
-h'(t) &= \mathbf{A}\,h(t) + \mathbf{B}\,x(t) \\\\
+h^{\prime}(t) &= \mathbf{A}\,h(t) + \mathbf{B}\,x(t) \\\\
 y(t) &= \mathbf{C}^\top h(t)
 \end{aligned}
 \\]
@@ -134,7 +134,7 @@ A resposta é deixar os parâmetros variarem com a entrada. No SSM seletivo &mda
 \end{aligned}
 \\]
 
-A matriz \\(\mathbf{A}\\) permanece fixa, mas, por ser discretizada por \\(\Delta\_t\\), a transição efetiva \\(\bar{\mathbf{A}}\_t = \exp(\Delta\_t \mathbf{A})\\) também passa a depender da entrada. Na prática, \\(\mathbf{A}\\) é mantida diagonal e parametrizada como \\(\mathbf{A} = -\exp(\mathbf{A}\_{\log})\\), o que garante autovalores reais negativos e, portanto, dinâmica estável e contrativa. A recorrência torna-se variante no tempo:
+A matriz \\(\mathbf{A}\\) permanece fixa, mas, por ser discretizada por \\(\Delta\_t\\), a transição efetiva \\(\bar{\mathbf{A}}\_t = \exp(\Delta\_t \mathbf{A})\\) também passa a depender da entrada. Na prática, \\(\mathbf{A}\\) é mantida diagonal e parametrizada como \\(\mathbf{A} = -\exp(\mathbf{A}\_{\mathrm{log}})\\), o que garante autovalores reais negativos e, portanto, dinâmica estável e contrativa. A recorrência torna-se variante no tempo:
 
 \\[
 \begin{aligned}

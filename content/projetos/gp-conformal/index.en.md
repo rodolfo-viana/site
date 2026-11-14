@@ -50,12 +50,12 @@ This hybrid architecture combines the power of neural networks in extracting com
 
 A GP is a family of random variables such that any finite subset follows a multivariate Gaussian distribution[^4] [^5]. This property guarantees exactness to Bayesian inference without the need to resort to numerical approximations &mdash; differs, for example, from Bayesian neural networks, which need Monte Carlo sampling or variational methods.
 
-Formally, a GP is specified by its mean function \\(m(\mathbf{x})\\) and covariance function \\(k(\mathbf{x}, \mathbf{x'})\\), where
+Formally, a GP is specified by its mean function \\(m(\mathbf{x})\\) and covariance function \\(k(\mathbf{x}, \mathbf{x}^{\prime})\\), where
 
 \\[
 \begin{aligned}
 m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\\\
-k(\mathbf{x}, \mathbf{x'}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x'}) - m(\mathbf{x'}))]
+k(\mathbf{x}, \mathbf{x}^{\prime}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x}^{\prime}) - m(\mathbf{x}^{\prime}))]
 \end{aligned}
 \\]
 
@@ -75,7 +75,7 @@ where \\(\mathbf{K}\\) is the covariance matrix between training points and \\(\
 In this work, to obtain smooth and isotropic sample functions, we use the radial basis function for covariance calculation, defined as
 
 \\[
-k(\mathbf{x}, \mathbf{x'}) = \sigma_f^2 \exp\left(-\frac{||\mathbf{x} - \mathbf{x'}||^2}{{{2l^2}}}\right)
+k(\mathbf{x}, \mathbf{x}^{\prime}) = \sigma_f^2 \exp\left(-\frac{||\mathbf{x} - \mathbf{x}^{\prime}||^2}{{{2l^2}}}\right)
 \\]
 
 where \\(\sigma_f^2\\) is the signal variance and \\(l\\) is the length scale, which controls function smoothness. These hyperparameters are optimized by maximizing the marginal log-likelihood of the training data. The marginal log-likelihood is obtained by integrating over the latent function \\(f\\), resulting in 
@@ -278,7 +278,7 @@ The table shows that, in the case of NE-GP, raw prediction coverages vary from 9
 
 After applying the conformal method, coverages are consistently adjusted to values close to 90%, which is the desired nominal coverage level. This result confirms the effectiveness of conformal prediction in calibrating prediction intervals to achieve desired coverage, regardless of model or dataset.
 
-<img src="./combined_models_all_datasets.png" style="border: 5px solid #ef5350; width:100%; height:auto; max-width:100%;">
+<img src="./combined_models_all_datasets.png" style="width:100%; height:auto; max-width:100%;">
 
 The figure, with results from executions on seed 42, illustrates the trade-off between coverage and interval width. With NE-GP, across all datasets, conformal calibration reduces coverage to approximately 90%, while also reducing interval width. The effect is particularly pronounced in the CCPP dataset, where mean width is reduced from 2.64 to 0.76, a reduction of 71.2%, while coverage goes from 99.89% to 90.13%.
 

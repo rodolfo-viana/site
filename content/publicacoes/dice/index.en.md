@@ -53,9 +53,9 @@ Intersection over union, or IoU, is
 For a pair of masks with a nonempty union, Dice and IoU are linked exactly by
 
 \\[
-\operatorname{Dice}=\frac{2\operatorname{IoU}}{1+\operatorname{IoU}},
+\textnormal{Dice}=\frac{2\textnormal{IoU}}{1+\textnormal{IoU}},
 \qquad
-\operatorname{IoU}=\frac{\operatorname{Dice}}{2-\operatorname{Dice}}.
+\textnormal{IoU}=\frac{\textnormal{Dice}}{2-\textnormal{Dice}}.
 \\]
 
 A mask with higher Dice therefore also has higher IoU. Reporting both does not provide two independent geometric views; it provides a monotonic transformation of the same counts.[^4] There is one qualification: because the transformation is nonlinear, means of per-case Dice and IoU need not preserve differences or rankings after aggregation. That is an effect of the statistical summary, not new spatial information.
@@ -311,9 +311,9 @@ My interest in boundaries also means I need to be careful about what I leave out
 Precision and recall separate the two terms that Dice combines:
 
 \\[
-\operatorname{Precision}=\frac{TP}{TP+FP},
+\textnormal{Precision}=\frac{TP}{TP+FP},
 \qquad
-\operatorname{Recall}=\frac{TP}{TP+FN}.
+\textnormal{Recall}=\frac{TP}{TP+FN}.
 \\]
 
 If missing tissue and including background have unequal costs, that asymmetry should appear in the report or in a prespecified weighted measure. Signed relative volume error,

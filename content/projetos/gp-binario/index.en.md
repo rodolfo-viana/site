@@ -27,12 +27,12 @@ We present an implementation of Gaussian Processes with Variational Inference (G
 
 ## Gaussian Processes
 
-A GP is a collection of random variables, any finite number of which has a joint Gaussian distribution[^4]. Formally, a GP is specified by its mean function \\(m(\mathbf{x})\\) and covariance function \\(k(\mathbf{x}, \mathbf{x'})\\), where
+A GP is a collection of random variables, any finite number of which has a joint Gaussian distribution[^4]. Formally, a GP is specified by its mean function \\(m(\mathbf{x})\\) and covariance function \\(k(\mathbf{x}, \mathbf{x}^{\prime})\\), where
 
 \\[
 \begin{aligned}
 m(\mathbf{x}) &= \mathbb{E}[f(\mathbf{x})] \\\\
-k(\mathbf{x}, \mathbf{x'}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x'}) - m(\mathbf{x'}))].
+k(\mathbf{x}, \mathbf{x}^{\prime}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))(f(\mathbf{x}^{\prime}) - m(\mathbf{x}^{\prime}))].
 \end{aligned}
 \\]
 
@@ -40,10 +40,10 @@ Thus, we have \\(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\\) to indicate that funct
 
 Typically, \\(m(\mathbf{x}) = 0\\) is assumed for simplicity. The kernel function determines the smoothness properties and structural characteristics of functions sampled from the GP. In this work, we use the Matérn kernel[^8] with \\(\nu = 1{.}5\\), which produces once-differentiable functions, offering a balance between smoothness and flexibility.
 
-Let \\(r = \parallel\mathbf{x} - \mathbf{x}'\parallel\\) be the Euclidean distance between two points, the Matérn kernel is defined as:
+Let \\(r = \parallel\mathbf{x} - \mathbf{x}^{\prime}\parallel\\) be the Euclidean distance between two points, the Matérn kernel is defined as:
 
 \\[
-k\_{\text{Matérn}}(\mathbf{x}, \mathbf{x}') = \sigma^2 \left(1 + \frac{\sqrt{3}r}{\ell}\right) \exp\left(-\frac{\sqrt{3}r}{\ell}\right)
+k\_{\text{Matérn}}(\mathbf{x}, \mathbf{x}^{\prime}) = \sigma^2 \left(1 + \frac{\sqrt{3}r}{\ell}\right) \exp\left(-\frac{\sqrt{3}r}{\ell}\right)
 \\]
 
 where \\(\ell > 0\\) is the length scale that controls the smoothness of the function, and \\(\sigma^2 > 0\\) is the scale variance that controls the amplitude of variations.
@@ -82,7 +82,7 @@ where \\(\mathbf{L}\\) is a lower triangular matrix. The variational parameters 
 
 # Methodology
 
-We implemented a variational GP model whose architecture consists of: (i) a mean module that uses a constant mean \\(m(\mathbf{x}) = c\\); (ii) a covariance module based on scaled kernel \\(k(\mathbf{x}, \mathbf{x}') = \sigma^2 k_{\text{Matérn}}(\mathbf{x}, \mathbf{x}')\\); (iii) a variational distribution \\(q(\mathbf{u})\\) parametrized via Cholesky decomposition, where we use all \\(N\\) training points as inducing points (\\(M = N = 455\\)); and (iv) a Bernoulli likelihood for binary classification.
+We implemented a variational GP model whose architecture consists of: (i) a mean module that uses a constant mean \\(m(\mathbf{x}) = c\\); (ii) a covariance module based on scaled kernel \\(k(\mathbf{x}, \mathbf{x}^{\prime}) = \sigma^2 k_{\text{Matérn}}(\mathbf{x}, \mathbf{x}^{\prime})\\); (iii) a variational distribution \\(q(\mathbf{u})\\) parametrized via Cholesky decomposition, where we use all \\(N\\) training points as inducing points (\\(M = N = 455\\)); and (iv) a Bernoulli likelihood for binary classification.
 
 This choice of \\(M = N\\) eliminates the sparse approximation, resulting in a more expressive model at the cost of greater computational complexity. For larger datasets, a strategy with \\(M \ll N\\) would be necessary for scalability[^9].
 
@@ -134,27 +134,29 @@ log loss, and expected calibration error (ECE).
 
 The model achieved excellent predictive performance, with accuracy above 96% and AUC-ROC of 99.34%, indicating high discriminative capacity. The F1-Score of 97.22% demonstrates balance between precision and sensitivity. The AUPRC of 99.58% confirms robust performance even considering different decision thresholds.
 
-<table style="margin: 0 auto; border-collapse: collapse;">
-  <caption style="caption-side: top; font-weight: 600; padding: 8px 0;">
+<table>
+  <caption>
     GP-VI Model Results on Wisconsin Breast Cancer
   </caption>
   <thead>
     <tr>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Metric</th>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Value</th>
+      <th>Metric</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Accuracy</td><td style="border: 1px solid #ccc; padding: 8px;">96.49%</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">F1-Score</td><td style="border: 1px solid #ccc; padding: 8px;">97.22%</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">AUC-ROC</td><td style="border: 1px solid #ccc; padding: 8px;">99.34%</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">AUPRC</td><td style="border: 1px solid #ccc; padding: 8px;">99.58%</td></tr>
-    <tr><td colspan="2" style="border: 0; padding: 0;"><hr style="border: none; border-top: 1px solid #ccc; margin: 0;"></td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Brier Score</td><td style="border: 1px solid #ccc; padding: 8px;">0.0355</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Log Loss</td><td style="border: 1px solid #ccc; padding: 8px;">0.1397</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">ECE</td><td style="border: 1px solid #ccc; padding: 8px;">0.3771</td></tr>
-    <tr><td colspan="2" style="border: 0; padding: 0;"><hr style="border: none; border-top: 1px solid #ccc; margin: 0;"></td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Training Time</td><td style="border: 1px solid #ccc; padding: 8px;">8.19s</td></tr>
+    <tr><td>Accuracy</td><td>96.49%</td></tr>
+    <tr><td>F1-Score</td><td>97.22%</td></tr>
+    <tr><td>AUC-ROC</td><td>99.34%</td></tr>
+    <tr><td>AUPRC</td><td>99.58%</td></tr>
+  </tbody>
+  <tbody>
+    <tr><td>Brier Score</td><td>0.0355</td></tr>
+    <tr><td>Log Loss</td><td>0.1397</td></tr>
+    <tr><td>ECE</td><td>0.3771</td></tr>
+  </tbody>
+  <tbody>
+    <tr><td>Training Time</td><td>8.19s</td></tr>
   </tbody>
 </table>
 
@@ -162,7 +164,7 @@ The model achieved excellent predictive performance, with accuracy above 96% and
 The confusion matrix reveals only 4 incorrect predictions out of 114 test samples.
 
 <figure style="width:60%; height:auto; max-width:60%; display:block; margin: 0 auto;">
-  <img src="./matriz.png" style="border: 5px solid #ef5350; background-color: white">
+  <img src="./matriz.png" style="background-color: white">
   <figcaption style="margin-top: 1px; font-size: 0.8em; color: #555; line-height:1.5;">Confusion matrix</figcaption>
 </figure>
 
@@ -178,28 +180,28 @@ The model's high precision (96.49% accuracy) combined with poor calibration sugg
 
 The table below presents predictive uncertainty statistics, revealing an apparently counter-intuitive pattern: the average uncertainty of correct predictions (\\(1{.}024\pm0{.}156\\)) is slightly higher than that of incorrect predictions (\\(0{.}915\pm0{.}033\\)).
 
-<table style="margin: 0 auto; border-collapse: collapse;">
-  <caption style="caption-side: top; font-weight: 600; padding: 8px 0;">
+<table>
+  <caption>
     Predictive Uncertainty Statistics
   </caption>
   <thead>
     <tr>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Statistic</th>
-      <th style="border: 1px solid #ccc; padding: 8px; text-align: left;">Value</th>
+      <th>Statistic</th>
+      <th>Value</th>
     </tr>
   </thead>
   <tbody>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Global Mean Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">1.020</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Median Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">1.004</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Uncertainty Standard Deviation</td><td style="border: 1px solid #ccc; padding: 8px;">0.154</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Q1</td><td style="border: 1px solid #ccc; padding: 8px;">0.906</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Q3</td><td style="border: 1px solid #ccc; padding: 8px;">1.134</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">IQR</td><td style="border: 1px solid #ccc; padding: 8px;">0.228</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Minimum Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">0.736</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Maximum Uncertainty</td><td style="border: 1px solid #ccc; padding: 8px;">1.357</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Mean Uncertainty (Correct Predictions)</td><td style="border: 1px solid #ccc; padding: 8px;">1.024 &plusmn; 0.156</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Mean Uncertainty (Incorrect Predictions)</td><td style="border: 1px solid #ccc; padding: 8px;">0.915 &plusmn; 0.033</td></tr>
-    <tr><td style="border: 1px solid #ccc; padding: 8px;">Two-tailed t-test</td><td style="border: 1px solid #ccc; padding: 8px;">t = 1.39, p = 0.168</td></tr>
+    <tr><td>Global Mean Uncertainty</td><td>1.020</td></tr>
+    <tr><td>Median Uncertainty</td><td>1.004</td></tr>
+    <tr><td>Uncertainty Standard Deviation</td><td>0.154</td></tr>
+    <tr><td>Q1</td><td>0.906</td></tr>
+    <tr><td>Q3</td><td>1.134</td></tr>
+    <tr><td>IQR</td><td>0.228</td></tr>
+    <tr><td>Minimum Uncertainty</td><td>0.736</td></tr>
+    <tr><td>Maximum Uncertainty</td><td>1.357</td></tr>
+    <tr><td>Mean Uncertainty (Correct Predictions)</td><td>1.024 &plusmn; 0.156</td></tr>
+    <tr><td>Mean Uncertainty (Incorrect Predictions)</td><td>0.915 &plusmn; 0.033</td></tr>
+    <tr><td>Two-tailed t-test</td><td>t = 1.39, p = 0.168</td></tr>
   </tbody>
 </table>
 
