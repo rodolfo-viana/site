@@ -45,7 +45,7 @@ Despite advances, direct comparisons are hindered by methodological variations: 
 
 U-Net establishes the encoder-decoder paradigm with skip connections for biomedical segmentation[^6]. The encoder captures multi-scale semantic information through successive convolutions and pooling, while skip connections concatenate features from encoder to decoder, preserving spatial details.
 
-Let \\(x\in\mathbb{R}^{H\times W\times C}\\) be an input image and \\(y\in{\{0,1\}}^{H\times W}\\) its binary reference mask. The network implements a mapping \\(f:\mathbb{R}^{H\times W\times C}\rightarrow[0,1]^{H\times W}\\) whose threshold at 0.5 produces \\(\hat{y}\in{\{0,1\}}^{H\times W}\\). At each encoder level \\(l\\), the number of channels (width) follows \\(c\_l = c\_0\cdot 2^{l}\\).
+Let \\(x\in\mathbb{R}^{H\times W\times C}\\) be an input image and \\(y\in{\\{0,1\\}}^{H\times W}\\) its binary reference mask. The network implements a mapping \\(f:\mathbb{R}^{H\times W\times C}\rightarrow[0,1]^{H\times W}\\) whose threshold at 0.5 produces \\(\hat{y}\in{\\{0,1\\}}^{H\times W}\\). At each encoder level \\(l\\), the number of channels (width) follows \\(c\_l = c\_0\cdot 2^{l}\\).
 
 ## U-Net++: Nested Dense Connections
 
@@ -77,10 +77,10 @@ where \\(\sigma\_1\\) and \\(\sigma\_2\\) are ReLU and sigmoid respectively, all
 ResU-Net integrates the U-Net architecture with residual blocks inspired by ResNet[^18], addressing the performance degradation that occurs when training very deep networks[^19]. While standard U-Net uses double convolution blocks, ResU-Net replaces these blocks with residual blocks that implement identity connections. A residual block learns a residual function \\(\mathcal{F}(\mathbf{x})\\) instead of the desired direct mapping \\(\mathcal{H}(\mathbf{x})\\), through the shortcut connection
 
 \\[
-\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W\_i\}) + \mathbf{x},
+\mathbf{y} = \mathcal{F}(\mathbf{x}, \\{W\_i\\}) + \mathbf{x},
 \\]
 
-where \\(\mathbf{x}\\) and \\(\mathbf{y}\\) are input and output vectors, and \\(\mathcal{F}(\mathbf{x}, \{W\_i\})\\) represents the residual transformation to be learned. This architecture facilitates training deeper networks by allowing the model to learn incremental transformations instead of complete mappings, resulting in better gradient propagation and potential for capturing richer representations.
+where \\(\mathbf{x}\\) and \\(\mathbf{y}\\) are input and output vectors, and \\(\mathcal{F}(\mathbf{x}, \\{W\_i\\})\\) represents the residual transformation to be learned. This architecture facilitates training deeper networks by allowing the model to learn incremental transformations instead of complete mappings, resulting in better gradient propagation and potential for capturing richer representations.
 
 # Methodology
 
@@ -90,7 +90,7 @@ Kvasir-SEG[^7] contains 1,000 colonoscopy images with pixel-by-pixel segmentatio
 
 ## Implementation and Training
 
-Our study examines five U-Net variants: standard U-Net (double 3\\(\times\\)3 convolution blocks, batch normalization, ReLU, five levels with \\(\{64, 128, 256, 512, 512\}\\) channels); U-Net++ (nested dense paths, with and without deep supervision); Attention U-Net (with attention gates); ResU-Net (residual blocks with identity connections, five levels with \\(\{64, 128, 256, 512, 512\}\\) channels).
+Our study examines five U-Net variants: standard U-Net (double 3\\(\times\\)3 convolution blocks, batch normalization, ReLU, five levels with \\(\\{64, 128, 256, 512, 512\\}\\) channels); U-Net++ (nested dense paths, with and without deep supervision); Attention U-Net (with attention gates); ResU-Net (residual blocks with identity connections, five levels with \\(\\{64, 128, 256, 512, 512\\}\\) channels).
 
 All models were trained for a maximum of 100 epochs, with batch size 8, using AdamW optimizer (initial learning rate \\(10^{-4}\\), weight decay \\(10^{-5}\\)). Learning rate scheduling used 5 warmup epochs followed by reduction on plateau (factor 0.5, patience 5, minimum rate \\(10^{-6}\\)). The combined loss function is \\(\mathcal{L} = 0{,}4 \mathcal{L}\_{\text{BCE}} + 0{,}6 \mathcal{L}\_{\text{Dice}}\\). Augmentation includes flips, rotation, affine transformations, color jitter, Gaussian blur. Training adopts early stopping monitoring validation Dice score with patience of 10 epochs, stopping when no improvement occurs. To ensure reproducibility, each architecture was trained with three random seeds (42, 123, 456).
 

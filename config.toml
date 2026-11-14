@@ -22,6 +22,7 @@ published = "Publicação:"
 updated = "Atualizado em"
 tags_label = "Tags:"
 toc = "Sumário"
+section_link = "Link para esta seção"
 tags_title = "Tags"
 post_count_one = "post"
 post_count_many = "posts"
@@ -61,6 +62,7 @@ published = "Published:"
 updated = "Updated on"
 tags_label = "Tags:"
 toc = "Table of Contents"
+section_link = "Link to this section"
 tags_title = "Tags"
 post_count_one = "post"
 post_count_many = "posts"
@@ -87,6 +89,7 @@ article_bibtex_copied = "BibTeX copied"
 article_bibtex_error = "Could not copy BibTeX"
 
 [markdown]
+insert_anchor_links = "left"
 render_emoji = false
 external_links_target_blank = true
 external_links_no_follow = false

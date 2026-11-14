@@ -45,7 +45,7 @@ Apesar dos avanços, comparações diretas são dificultadas por variações met
 
 A U-Net estabelece o paradigma codificador-decodificador com *skip connections* para segmentação biomédica[^6]. O codificador captura informação semântica multi-escala através de convoluções e pooling sucessivos, enquanto *skip connections* concatenam características do codificador ao decodificador, preservando detalhes espaciais.
 
-Seja \\(x\in\mathbb{R}^{H\times W\times C}\\) uma imagem de entrada e \\(y\in{\{0,1\}}^{H\times W}\\) sua máscara binária de referência. A rede implementa um mapeamento \\(f:\mathbb{R}^{H\times W\times C}\rightarrow[0,1]^{H\times W}\\) cujo *threshold* em 0,5 produz \\(\hat{y}\in{\{0,1\}}^{H\times W}\\). Em cada nível \\(l\\) do codificador, o número de canais (largura) segue \\(c\_l = c\_0\cdot 2^{l}\\).
+Seja \\(x\in\mathbb{R}^{H\times W\times C}\\) uma imagem de entrada e \\(y\in{\\{0,1\\}}^{H\times W}\\) sua máscara binária de referência. A rede implementa um mapeamento \\(f:\mathbb{R}^{H\times W\times C}\rightarrow[0,1]^{H\times W}\\) cujo *threshold* em 0,5 produz \\(\hat{y}\in{\\{0,1\\}}^{H\times W}\\). Em cada nível \\(l\\) do codificador, o número de canais (largura) segue \\(c\_l = c\_0\cdot 2^{l}\\).
 
 ## U-Net++: Conexões Densas Aninhadas
 
@@ -77,10 +77,10 @@ onde \\(\sigma\_1\\) e \\(\sigma\_2\\) são ReLU e sigmoide, respectivamente, pe
 A ResU-Net integra a arquitetura U-Net com blocos residuais inspirados em ResNet[^18], abordando a degradação de desempenho que ocorre ao treinar redes muito profundas[^19]. Enquanto a U-Net padrão utiliza blocos de convolução dupla, a ResU-Net substitui esses blocos por blocos residuais que implementam conexões de identidade. Um bloco residual aprende uma função residual \\(\mathcal{F}(\mathbf{x})\\) em vez do mapeamento direto desejado \\(\mathcal{H}(\mathbf{x})\\), através da conexão de atalho
 
 \\[
-\mathbf{y} = \mathcal{F}(\mathbf{x}, \{W\_i\}) + \mathbf{x},
+\mathbf{y} = \mathcal{F}(\mathbf{x}, \\{W\_i\\}) + \mathbf{x},
 \\]
 
-onde \\(\mathbf{x}\\) e \\(\mathbf{y}\\) são vetores de entrada e saída, e \\(\mathcal{F}(\mathbf{x}, \{W\_i\})\\) representa a transformação residual a ser aprendida. Esta arquitetura facilita treinamento de redes mais profundas ao permitir que o modelo aprenda transformações incrementais em vez de mapeamentos completos, resultando em melhor propagação de gradientes e potencial para capturar representações mais ricas.
+onde \\(\mathbf{x}\\) e \\(\mathbf{y}\\) são vetores de entrada e saída, e \\(\mathcal{F}(\mathbf{x}, \\{W\_i\\})\\) representa a transformação residual a ser aprendida. Esta arquitetura facilita treinamento de redes mais profundas ao permitir que o modelo aprenda transformações incrementais em vez de mapeamentos completos, resultando em melhor propagação de gradientes e potencial para capturar representações mais ricas.
 
 # Metodologia
 
@@ -90,7 +90,7 @@ O Kvasir-SEG[^7] contém 1.000 imagens de colonoscopia com máscaras de segmenta
 
 ## Implementação e Treinamento
 
-Nosso estudo examina cinco variantes da U-Net: U-Net padrão (blocos de dupla convolução 3\\(\times\\)3, *batch normalization*, ReLU, cinco níveis com \\(\{64, 128, 256, 512, 512\}\\) canais); U-Net++ (caminhos densos aninhados, com e sem supervisão profunda); Attention U-Net (com *attention gates*); ResU-Net (blocos residuais com conexões de identidade, cinco níveis com \\(\{64, 128, 256, 512, 512\}\\) canais).
+Nosso estudo examina cinco variantes da U-Net: U-Net padrão (blocos de dupla convolução 3\\(\times\\)3, *batch normalization*, ReLU, cinco níveis com \\(\\{64, 128, 256, 512, 512\\}\\) canais); U-Net++ (caminhos densos aninhados, com e sem supervisão profunda); Attention U-Net (com *attention gates*); ResU-Net (blocos residuais com conexões de identidade, cinco níveis com \\(\\{64, 128, 256, 512, 512\\}\\) canais).
 
 Todos os modelos foram treinados por no máximo 100 épocas, com *batch size* 8, usando otimizador AdamW (taxa de aprendizado inicial \\(10^{-4}\\), *weight decay* \\(10^{-5}\\)). O agendamento de taxa de aprendizado utilizou 5 épocas de *warmup* seguidas de redução no platô (fator 0,5, paciência 5, taxa mínima \\(10^{-6}\\)). A função de perda combinada é \\(\mathcal{L} = 0{,}4 \mathcal{L}\_{\text{BCE}} + 0{,}6 \mathcal{L}\_{\text{Dice}}\\). Augmentação contém flips, rotação, transformações afins, *color jitter*, desfoque Gaussiano. O treinamento adota *early stopping* monitorando o Dice score de validação com paciência de 10 épocas, interrompendo quando não há melhoria. Para garantir reprodutibilidade, cada arquitetura foi treinada com três sementes aleatórias (42, 123, 456).
 

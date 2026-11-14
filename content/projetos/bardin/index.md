@@ -64,7 +64,7 @@ O processamento de textos em português apresenta desafios específicos relacion
 
 O spaCy implementa um pipeline de processamento linguístico baseado em redes neurais convolucionais (CNN). As principais operações realizadas são:
 
-- **Tokenização:** Segmentação do texto em tokens utilizando regras linguísticas específicas do português e padrões de expressões regulares. Cada documento \\(D\\) é transformado em uma sequência de tokens \\(T = \{t\_1, t\_2, ..., t\_n\}\\).
+- **Tokenização:** Segmentação do texto em tokens utilizando regras linguísticas específicas do português e padrões de expressões regulares. Cada documento \\(D\\) é transformado em uma sequência de tokens \\(T = \\{t\_1, t\_2, ..., t\_n\\}\\).
 
 - **Lematização:** Redução de cada token à sua forma canônica (lema) através de um modelo estatístico treinado. Para cada token \\(t\_i\\), a lematização mapeia \\(\text{lemma}(t\_i) = l\_i\\), onde \\(l\_i\\) representa a forma base da palavra, removendo flexões verbais, plurais e outras variações morfológicas.
 
@@ -85,10 +85,10 @@ onde \\(f\_{t,d}\\) é a frequência bruta do termo \\(t\\) no documento \\(d\\)
 **Frequência Inversa de Documento (IDF):**
 
 \\[
-  \text{IDF}(t, D) = \log\left(\frac{N}{\mid\{d \in D : t \in d\}\mid}\right)
+  \text{IDF}(t, D) = \log\left(\frac{N}{\mid\\{d \in D : t \in d\\}\mid}\right)
 \\]
 
-onde \\(N\\) é o número total de documentos e \\(\mid\{d \in D : t \in d\}\mid\\) é o número de documentos contendo o termo \\(t\\).
+onde \\(N\\) é o número total de documentos e \\(\mid\\{d \in D : t \in d\\}\mid\\) é o número de documentos contendo o termo \\(t\\).
 
 O TF-IDF final, é, portanto, obtido com \\(\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)\\). Esta métrica penaliza termos muito frequentes (como stopwords) e valoriza termos distintivos de documentos específicos.
 

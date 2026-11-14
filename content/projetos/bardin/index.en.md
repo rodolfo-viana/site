@@ -64,7 +64,7 @@ Processing texts in Portuguese presents specific challenges related to the langu
 
 spaCy implements a linguistic processing pipeline based on convolutional neural networks (CNN). The main operations performed are:
 
-- **Tokenization:** Text segmentation into tokens using Portuguese-specific linguistic rules and regular expression patterns. Each document \\(D\\) is transformed into a sequence of tokens \\(T = \{t\_1, t\_2, ..., t\_n\}\\).
+- **Tokenization:** Text segmentation into tokens using Portuguese-specific linguistic rules and regular expression patterns. Each document \\(D\\) is transformed into a sequence of tokens \\(T = \\{t\_1, t\_2, ..., t\_n\\}\\).
 
 - **Lemmatization:** Reduction of each token to its canonical form (lemma) through a trained statistical model. For each token \\(t\_i\\), lemmatization maps \\(\text{lemma}(t\_i) = l\_i\\), where \\(l\_i\\) represents the base form of the word, removing verbal inflections, plurals, and other morphological variations.
 
@@ -85,10 +85,10 @@ where \\(f\_{t,d}\\) is the raw frequency of term \\(t\\) in document \\(d\\).
 **Inverse Document Frequency (IDF):**
 
 \\[
-  \text{IDF}(t, D) = \log\left(\frac{N}{\mid\{d \in D : t \in d\}\mid}\right)
+  \text{IDF}(t, D) = \log\left(\frac{N}{\mid\\{d \in D : t \in d\\}\mid}\right)
 \\]
 
-where \\(N\\) is the total number of documents and \\(\mid\{d \in D : t \in d\}\mid\\) is the number of documents containing term \\(t\\).
+where \\(N\\) is the total number of documents and \\(\mid\\{d \in D : t \in d\\}\mid\\) is the number of documents containing term \\(t\\).
 
 The final TF-IDF is therefore obtained with \\(\text{TF-IDF}(t, d, D) = \text{TF}(t, d) \times \text{IDF}(t, D)\\). This metric penalizes very frequent terms (like stopwords) and values distinctive terms of specific documents.
 

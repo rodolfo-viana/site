@@ -33,7 +33,7 @@ Um SSM, em sua forma contínua, é um sistema linear que mapeia um sinal de entr
 
 \\[
 \begin{aligned}
-h^{\prime}(t) &= \mathbf{A}\,h(t) + \mathbf{B}\,x(t) \\\\
+h^{\prime}(t) &= \mathbf{A}\\,h(t) + \mathbf{B}\\,x(t) \\\\
 y(t) &= \mathbf{C}^\top h(t)
 \end{aligned}
 \\]
@@ -53,7 +53,7 @@ e, assim, a recorrência discreta é transformada em
 
 \\[
 \begin{aligned}
-h\_t &= \bar{\mathbf{A}}\,h\_{t-1} + \bar{\mathbf{B}}\,x\_t \\\\
+h\_t &= \bar{\mathbf{A}}\\,h\_{t-1} + \bar{\mathbf{B}}\\,x\_t \\\\
 y\_t &= \mathbf{C}^\top h\_t
 \end{aligned}
 \\]
@@ -63,7 +63,7 @@ Desde já, vale fazer uma ressalva, pois essa questão volta à tona na seção 
 Existe, nesse contexto, uma dualidade que sustenta toda a literatura sobre SSMs. Se \\(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}\\) são constantes &mdash; isto é, se o sistema é invariante no tempo (LTI, de _linear time-invariant_) &mdash;, então, ao desenrolar a recorrência, podemos ver que \\(y\\) é uma **convolução** de \\(x\\) com um núcleo fixo:
 
 \\[
-y\_t = \sum\_{k=0}^{t} \mathbf{C}^\top \bar{\mathbf{A}}^{k}\,\bar{\mathbf{B}}\;x\_{t-k} \quad\Longleftrightarrow\quad y = \bar{\mathbf{K}} \ast x, \qquad \bar{\mathbf{K}} = (\mathbf{C}^\top\bar{\mathbf{B}}, \mathbf{C}^\top\bar{\mathbf{A}}\bar{\mathbf{B}}, \dots, \mathbf{C}^\top\bar{\mathbf{A}}^{L-1}\bar{\mathbf{B}})
+y\_t = \sum\_{k=0}^{t} \mathbf{C}^\top \bar{\mathbf{A}}^{k}\\,\bar{\mathbf{B}}\\;x\_{t-k} \quad\Longleftrightarrow\quad y = \bar{\mathbf{K}} \ast x, \qquad \bar{\mathbf{K}} = (\mathbf{C}^\top\bar{\mathbf{B}}, \mathbf{C}^\top\bar{\mathbf{A}}\bar{\mathbf{B}}, \dots, \mathbf{C}^\top\bar{\mathbf{A}}^{L-1}\bar{\mathbf{B}})
 \\]
 
 Essa equivalência é a chave do desempenho dos modelos S4[^5]: pode-se **treinar** em modo convolucional, paralelizando ao longo de toda a sequência com a transformada de Fourier, e **inferir** em modo recorrente, gerando um token por vez com estado de tamanho constante. O preço, porém, é que o núcleo \\(\bar{\mathbf{K}}\\) é o mesmo para toda a sequência: o modelo não consegue tratar um token de forma diferente de outro com base em seu conteúdo. É exatamente essa limitação que o Mamba ataca.
@@ -138,7 +138,7 @@ A matriz \\(\mathbf{A}\\) permanece fixa, mas, por ser discretizada por \\(\Delt
 
 \\[
 \begin{aligned}
-h\_t &= \bar{\mathbf{A}}\_t\,h\_{t-1} + \bar{\mathbf{B}}\_t\,x\_t \\\\
+h\_t &= \bar{\mathbf{A}}\_t\\,h\_{t-1} + \bar{\mathbf{B}}\_t\\,x\_t \\\\
 y\_t &= \mathbf{C}\_t^\top h\_t
 \end{aligned}
 \\]
@@ -215,13 +215,13 @@ O segundo artigo[^3], de Dao e Gu, é mais teórico e, em certo sentido, mais am
 O ponto de partida é escrever o SSM não como recorrência, mas como uma única transformação matricial. Desenrolando a recorrência (com \\(\mathbf{A}\_t\\) variante no tempo), cada saída é
 
 \\[
-y\_j = \sum\_{i \le j} \mathbf{C}\_j^\top \bigl(\bar{\mathbf{A}}\_j \bar{\mathbf{A}}\_{j-1}\cdots \bar{\mathbf{A}}\_{i+1}\bigr)\bar{\mathbf{B}}\_i\,x\_i
+y\_j = \sum\_{i \le j} \mathbf{C}\_j^\top \bigl(\bar{\mathbf{A}}\_j \bar{\mathbf{A}}\_{j-1}\cdots \bar{\mathbf{A}}\_{i+1}\bigr)\bar{\mathbf{B}}\_i\\,x\_i
 \\]
 
 ou seja, \\(y = \mathbf{M}x\\), onde \\(\mathbf{M}\\) é a matriz triangular inferior de entradas
 
 \\[
-\mathbf{M}\_{ji} = \mathbf{C}\_j^\top \bar{\mathbf{A}}\_{j:i}\,\bar{\mathbf{B}}\_i, \qquad \bar{\mathbf{A}}\_{j:i} = \prod\_{k=i+1}^{j}\bar{\mathbf{A}}\_k
+\mathbf{M}\_{ji} = \mathbf{C}\_j^\top \bar{\mathbf{A}}\_{j:i}\\,\bar{\mathbf{B}}\_i, \qquad \bar{\mathbf{A}}\_{j:i} = \prod\_{k=i+1}^{j}\bar{\mathbf{A}}\_k
 \\]
 
 Matrizes dessa forma são chamadas **semisseparáveis** (mais precisamente, \\(N\\)-semisseparáveis sequenciais): qualquer submatriz inteiramente contida no triângulo inferior tem posto no máximo \\(N\\). Essa estrutura é o que permite calcular \\(y = \mathbf{M}x\\) em tempo linear, apesar de \\(\mathbf{M}\\) ser uma matriz \\(L \times L\\).
@@ -231,13 +231,13 @@ Matrizes dessa forma são chamadas **semisseparáveis** (mais precisamente, \\(N
 A decisão arquitetural decisiva do Mamba-2 é restringir \\(\mathbf{A}\_t\\) a um **escalar vezes a identidade**, \\(\bar{\mathbf{A}}\_t = a\_t \mathbf{I}\\). Com isso, o produto de transições vira um produto de escalares, e a matriz \\(\mathbf{M}\\) fatora-se de modo notável:
 
 \\[
-\mathbf{M}\_{ji} = \Bigl(\prod\_{k=i+1}^{j} a\_k\Bigr)\,\mathbf{C}\_j^\top \mathbf{B}\_i = \mathbf{L}\_{ji}\,(\mathbf{C}\_j^\top \mathbf{B}\_i)
+\mathbf{M}\_{ji} = \Bigl(\prod\_{k=i+1}^{j} a\_k\Bigr)\\,\mathbf{C}\_j^\top \mathbf{B}\_i = \mathbf{L}\_{ji}\\,(\mathbf{C}\_j^\top \mathbf{B}\_i)
 \\]
 
 onde \\(\mathbf{L}\_{ji} = \prod\_{k=i+1}^{j} a\_k\\) é uma matriz triangular inferior de produtos cumulativos. Em notação compacta,
 
 \\[
-\mathbf{M} = \mathbf{L} \circ (\mathbf{C}\,\mathbf{B}^\top)
+\mathbf{M} = \mathbf{L} \circ (\mathbf{C}\\,\mathbf{B}^\top)
 \\]
 
 onde \\(\circ\\) é o produto de Hadamard. Aqui está a dualidade: \\(\mathbf{C}\mathbf{B}^\top\\) desempenha o papel de \\(\mathbf{Q}\mathbf{K}^\top\\) na atenção, e \\(\mathbf{L}\\) é uma máscara causal &mdash; só que, em vez de uma máscara de zeros e uns, é uma máscara de _decaimento_, cujas entradas são produtos cumulativos de \\(a\_k\\). Calcular \\(y = (\mathbf{L} \circ \mathbf{C}\mathbf{B}^\top)x\\) diretamente é precisamente uma forma de atenção linear mascarada, com custo quadrático em \\(L\\). Calcular a mesma coisa pela recorrência é o SSM, com custo linear. São a mesma função, computada por dois caminhos &mdash; a **dualidade de espaços de estados estruturados** (SSD, de _structured state space duality_).
@@ -384,7 +384,7 @@ print(f"λ=1/2  {np.abs(trapezoidal(x, A, B, delta, np.full(L, 0.5)) - euler).ma
 # λ=1/2  1.50e+00   <- trapezoidal clássica, dinâmica de fato diferente
 ```
 
-O termo em `v_ant` é a convolução de largura dois mencionada adiante: o estado passa a enxergar o par \\((B\_{t-1}x\_{t-1},\, B\_t x\_t)\\), e não apenas o endpoint atual.
+O termo em `v_ant` é a convolução de largura dois mencionada adiante: o estado passa a enxergar o par \\((B\_{t-1}x\_{t-1},\\, B\_t x\_t)\\), e não apenas o endpoint atual.
 
 Há aqui uma ironia que o artigo assume abertamente. A motivação teórica da regra trapezoidal é a precisão de segunda ordem, com erro \\(\mathcal{O}(\Delta\_t^3)\\) em vez de \\(\mathcal{O}(\Delta\_t^2)\\) &mdash; mas essa garantia só vale se \\(\lambda\_t = \tfrac{1}{2} + \mathcal{O}(\Delta\_t)\\), e as ablações do próprio artigo indicam que **não** impor essa restrição funciona melhor na prática. A parametrização padrão, portanto, abre mão da ordem de convergência que motivou a regra, ficando com a expressividade extra.
 

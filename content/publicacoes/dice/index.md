@@ -245,9 +245,9 @@ d(x,S)=\inf\_{y\in S}\lVert x-y\rVert\_2
 a distância do ponto \\(x\\) ao ponto mais próximo da superfície \\(S\\). As duas coleções direcionais,
 
 \\[
-D\_{P\to G}=\{d(p,\partial G):p\in\partial P\},
+D\_{P\to G}=\\{d(p,\partial G):p\in\partial P\\},
 \qquad
-D\_{G\to P}=\{d(g,\partial P):g\in\partial G\},
+D\_{G\to P}=\\{d(g,\partial P):g\in\partial G\\},
 \\]
 
 guardam informação que as contagens de pixels descartam. Diferentes resumos dessas coleções respondem a perguntas diferentes.[^4]
@@ -291,8 +291,8 @@ O Dice de superfície na tolerância \\(\tau\\) pergunta qual fração das duas 
 \\[
 SD\_{\tau}(P,G)=
 \frac{
-A\bigl(\{p\in\partial P:d(p,\partial G)\le\tau\}\bigr)
-{}+A\bigl(\{g\in\partial G:d(g,\partial P)\le\tau\}\bigr)
+A\bigl(\\{p\in\partial P:d(p,\partial G)\le\tau\\}\bigr)
+{}+A\bigl(\\{g\in\partial G:d(g,\partial P)\le\tau\\}\bigr)
 }{A(\partial P)+A(\partial G)}.
 \\]
 

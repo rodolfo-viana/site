@@ -50,13 +50,13 @@ where \\(\ell > 0\\) is the length scale that controls the smoothness of the fun
 
 ## Classification with Gaussian Processes
 
-For binary classification, we model the latent function \\(f(\mathbf{x})\\) as a GP and connect this function to binary observations \\(y \in \{0,1\}\\) through a likelihood function. Using the Bernoulli likelihood[^5]:
+For binary classification, we model the latent function \\(f(\mathbf{x})\\) as a GP and connect this function to binary observations \\(y \in \\{0,1\\}\\) through a likelihood function. Using the Bernoulli likelihood[^5]:
 
 \\[
 p(y \mid \mathbf{x}) = \text{Bernoulli}(\sigma(f(\mathbf{x})))
 \\]
 
-where \\(\sigma(\cdot)\\) is the logistic function. The objective is to compute the posterior distribution \\(p(f \mid \mathcal{D})\\) given the dataset \\(\mathcal{D} = \{(\mathbf{x}\_i, y\_i)\}\_{i=1}^N\\).
+where \\(\sigma(\cdot)\\) is the logistic function. The objective is to compute the posterior distribution \\(p(f \mid \mathcal{D})\\) given the dataset \\(\mathcal{D} = \\{(\mathbf{x}\_i, y\_i)\\}\_{i=1}^N\\).
 
 ## Variational Inference
 
@@ -93,7 +93,7 @@ To ensure numerical stability during training, we use the Cholesky parametrizati
 During inference, for a test point \\(\mathbf{x}\_*\\), we compute the predictive distribution:
 
 \\[
-p(f\_{\*} \mid \mathcal{D}, \mathbf{x}\_{\*}) \approx \int p(f\_{\*} \mid \mathbf{u}) q(\mathbf{u}) \, d\mathbf{u}
+p(f\_{\*} \mid \mathcal{D}, \mathbf{x}\_{\*}) \approx \int p(f\_{\*} \mid \mathbf{u}) q(\mathbf{u}) \\, d\mathbf{u}
 \\]
 
 This is a Gaussian distribution with mean \\(\mu\_\*\\) and variance \\(\sigma\_{\*}^2\\). The probability of the positive class is obtained by propagating this distribution through the likelihood:

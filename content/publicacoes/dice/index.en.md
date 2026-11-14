@@ -245,9 +245,9 @@ d(x,S)=\inf\_{y\in S}\lVert x-y\rVert\_2
 be the distance from point \\(x\\) to the closest point on surface \\(S\\). The two directed collections,
 
 \\[
-D\_{P\to G}=\{d(p,\partial G):p\in\partial P\},
+D\_{P\to G}=\\{d(p,\partial G):p\in\partial P\\},
 \qquad
-D\_{G\to P}=\{d(g,\partial P):g\in\partial G\},
+D\_{G\to P}=\\{d(g,\partial P):g\in\partial G\\},
 \\]
 
 retain information that pixel counts discard. Different summaries of those collections answer different questions.[^4]
@@ -291,8 +291,8 @@ Surface Dice at tolerance \\(\tau\\) asks what fraction of both surfaces lies wi
 \\[
 SD\_{\tau}(P,G)=
 \frac{
-A\bigl(\{p\in\partial P:d(p,\partial G)\le\tau\}\bigr)
-{}+A\bigl(\{g\in\partial G:d(g,\partial P)\le\tau\}\bigr)
+A\bigl(\\{p\in\partial P:d(p,\partial G)\le\tau\\}\bigr)
+{}+A\bigl(\\{g\in\partial G:d(g,\partial P)\le\tau\\}\bigr)
 }{A(\partial P)+A(\partial G)}.
 \\]
 

@@ -33,7 +33,7 @@ An SSM, in its continuous form, is a linear system mapping an input signal \\(x(
 
 \\[
 \begin{aligned}
-h^{\prime}(t) &= \mathbf{A}\,h(t) + \mathbf{B}\,x(t) \\\\
+h^{\prime}(t) &= \mathbf{A}\\,h(t) + \mathbf{B}\\,x(t) \\\\
 y(t) &= \mathbf{C}^\top h(t)
 \end{aligned}
 \\]
@@ -53,7 +53,7 @@ so that the discrete recurrence becomes
 
 \\[
 \begin{aligned}
-h\_t &= \bar{\mathbf{A}}\,h\_{t-1} + \bar{\mathbf{B}}\,x\_t \\\\
+h\_t &= \bar{\mathbf{A}}\\,h\_{t-1} + \bar{\mathbf{B}}\\,x\_t \\\\
 y\_t &= \mathbf{C}^\top h\_t
 \end{aligned}
 \\]
@@ -63,7 +63,7 @@ One caveat worth recording right away, because it resurfaces in the Mamba-3 sect
 There is, here, a duality that underpins the whole SSM literature. If \\(\bar{\mathbf{A}}, \bar{\mathbf{B}}, \mathbf{C}\\) are fixed &mdash; that is, if the system is linear time-invariant (LTI) &mdash; then unrolling the recurrence shows that \\(y\\) is a **convolution** of \\(x\\) with a fixed kernel:
 
 \\[
-y\_t = \sum\_{k=0}^{t} \mathbf{C}^\top \bar{\mathbf{A}}^{k}\,\bar{\mathbf{B}}\;x\_{t-k} \quad\Longleftrightarrow\quad y = \bar{\mathbf{K}} \ast x, \qquad \bar{\mathbf{K}} = (\mathbf{C}^\top\bar{\mathbf{B}}, \mathbf{C}^\top\bar{\mathbf{A}}\bar{\mathbf{B}}, \dots, \mathbf{C}^\top\bar{\mathbf{A}}^{L-1}\bar{\mathbf{B}})
+y\_t = \sum\_{k=0}^{t} \mathbf{C}^\top \bar{\mathbf{A}}^{k}\\,\bar{\mathbf{B}}\\;x\_{t-k} \quad\Longleftrightarrow\quad y = \bar{\mathbf{K}} \ast x, \qquad \bar{\mathbf{K}} = (\mathbf{C}^\top\bar{\mathbf{B}}, \mathbf{C}^\top\bar{\mathbf{A}}\bar{\mathbf{B}}, \dots, \mathbf{C}^\top\bar{\mathbf{A}}^{L-1}\bar{\mathbf{B}})
 \\]
 
 This equivalence is the key to the performance of S4 models[^5]: you can **train** in convolutional mode, parallelizing across the whole sequence with the Fourier transform, and **infer** in recurrent mode, generating one token at a time with constant-size state. The price, however, is that the kernel \\(\bar{\mathbf{K}}\\) is the same for the entire sequence: the model cannot treat one token differently from another based on its content. That is exactly the limitation Mamba attacks.
@@ -138,7 +138,7 @@ The matrix \\(\mathbf{A}\\) stays input-independent, but because it is discretiz
 
 \\[
 \begin{aligned}
-h\_t &= \bar{\mathbf{A}}\_t\,h\_{t-1} + \bar{\mathbf{B}}\_t\,x\_t \\\\
+h\_t &= \bar{\mathbf{A}}\_t\\,h\_{t-1} + \bar{\mathbf{B}}\_t\\,x\_t \\\\
 y\_t &= \mathbf{C}\_t^\top h\_t
 \end{aligned}
 \\]
@@ -215,13 +215,13 @@ The second paper[^3], by Dao and Gu, is more theoretical and, in a sense, more a
 The starting point is to write the SSM not as a recurrence but as a single matrix transformation. Unrolling the recurrence (with time-varying \\(\mathbf{A}\_t\\)), each output is
 
 \\[
-y\_j = \sum\_{i \le j} \mathbf{C}\_j^\top \bigl(\bar{\mathbf{A}}\_j \bar{\mathbf{A}}\_{j-1}\cdots \bar{\mathbf{A}}\_{i+1}\bigr)\bar{\mathbf{B}}\_i\,x\_i
+y\_j = \sum\_{i \le j} \mathbf{C}\_j^\top \bigl(\bar{\mathbf{A}}\_j \bar{\mathbf{A}}\_{j-1}\cdots \bar{\mathbf{A}}\_{i+1}\bigr)\bar{\mathbf{B}}\_i\\,x\_i
 \\]
 
 that is, \\(y = \mathbf{M}x\\), where \\(\mathbf{M}\\) is the lower-triangular matrix with entries
 
 \\[
-\mathbf{M}\_{ji} = \mathbf{C}\_j^\top \bar{\mathbf{A}}\_{j:i}\,\bar{\mathbf{B}}\_i, \qquad \bar{\mathbf{A}}\_{j:i} = \prod\_{k=i+1}^{j}\bar{\mathbf{A}}\_k
+\mathbf{M}\_{ji} = \mathbf{C}\_j^\top \bar{\mathbf{A}}\_{j:i}\\,\bar{\mathbf{B}}\_i, \qquad \bar{\mathbf{A}}\_{j:i} = \prod\_{k=i+1}^{j}\bar{\mathbf{A}}\_k
 \\]
 
 Matrices of this form are called **semiseparable** (more precisely, sequentially \\(N\\)-semiseparable): any submatrix entirely contained in the lower triangle has rank at most \\(N\\). This structure is what allows \\(y = \mathbf{M}x\\) to be computed in linear time, despite \\(\mathbf{M}\\) being an \\(L \times L\\) matrix.
@@ -231,13 +231,13 @@ Matrices of this form are called **semiseparable** (more precisely, sequentially
 Mamba-2's decisive architectural choice is to restrict \\(\mathbf{A}\_t\\) to a **scalar times the identity**, \\(\bar{\mathbf{A}}\_t = a\_t \mathbf{I}\\). With that, the product of transitions becomes a product of scalars, and the matrix \\(\mathbf{M}\\) factors remarkably:
 
 \\[
-\mathbf{M}\_{ji} = \Bigl(\prod\_{k=i+1}^{j} a\_k\Bigr)\,\mathbf{C}\_j^\top \mathbf{B}\_i = \mathbf{L}\_{ji}\,(\mathbf{C}\_j^\top \mathbf{B}\_i)
+\mathbf{M}\_{ji} = \Bigl(\prod\_{k=i+1}^{j} a\_k\Bigr)\\,\mathbf{C}\_j^\top \mathbf{B}\_i = \mathbf{L}\_{ji}\\,(\mathbf{C}\_j^\top \mathbf{B}\_i)
 \\]
 
 where \\(\mathbf{L}\_{ji} = \prod\_{k=i+1}^{j} a\_k\\) is a lower-triangular matrix of cumulative products. In compact notation,
 
 \\[
-\mathbf{M} = \mathbf{L} \circ (\mathbf{C}\,\mathbf{B}^\top)
+\mathbf{M} = \mathbf{L} \circ (\mathbf{C}\\,\mathbf{B}^\top)
 \\]
 
 where \\(\circ\\) is the Hadamard product. Here is the duality: \\(\mathbf{C}\mathbf{B}^\top\\) plays the role of \\(\mathbf{Q}\mathbf{K}^\top\\) in attention, and \\(\mathbf{L}\\) is a causal mask &mdash; except that, instead of a mask of zeros and ones, it is a _decay_ mask whose entries are cumulative products of \\(a\_k\\). Computing \\(y = (\mathbf{L} \circ \mathbf{C}\mathbf{B}^\top)x\\) directly is precisely a form of masked linear attention, quadratic in \\(L\\). Computing the same thing through the recurrence is the SSM, at linear cost. They are the same function computed along two paths &mdash; **structured state space duality** (SSD).
@@ -384,7 +384,7 @@ print(f"λ=1/2  {np.abs(trapezoidal(x, A, B, delta, np.full(L, 0.5)) - euler).ma
 # λ=1/2  1.50e+00   <- classical trapezoidal, genuinely different dynamics
 ```
 
-The `v_prev` term is the width-two convolution mentioned below: the state now sees the pair \\((B\_{t-1}x\_{t-1},\, B\_t x\_t)\\), not just the current endpoint.
+The `v_prev` term is the width-two convolution mentioned below: the state now sees the pair \\((B\_{t-1}x\_{t-1},\\, B\_t x\_t)\\), not just the current endpoint.
 
 There is an irony here that the paper acknowledges openly. The theoretical motivation for the trapezoidal rule is second-order accuracy, with error \\(\mathcal{O}(\Delta\_t^3)\\) instead of \\(\mathcal{O}(\Delta\_t^2)\\) &mdash; but that guarantee only holds if \\(\lambda\_t = \tfrac{1}{2} + \mathcal{O}(\Delta\_t)\\), and the paper's own ablations indicate that **not** enforcing that constraint works better in practice. The default parameterization therefore gives up the convergence order that motivated the rule, keeping the extra expressivity.
 

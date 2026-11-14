@@ -61,7 +61,7 @@ k(\mathbf{x}, \mathbf{x}^{\prime}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))
 
 Thus, we have \\(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\\) to indicate that function \\(f\\) follows a GP with mean function \\(m\\) and covariance function \\(k\\).
 
-In the regression problem, given a training sample \\(\mathcal{D} = \{(\mathbf{x}\_i, y\_i)\}\_{i=1}^{n}\\) and assuming homoscedastic Gaussian noise \\(y\_i = f(\mathbf{x}\_i) + \varepsilon\_i\\), where \\(\varepsilon\_i \sim \mathcal{N}(0, \sigma^2)\\), the posterior for a new point \\(\mathbf{x}\_*\\) is Gaussian with parameters 
+In the regression problem, given a training sample \\(\mathcal{D} = \\{(\mathbf{x}\_i, y\_i)\\}\_{i=1}^{n}\\) and assuming homoscedastic Gaussian noise \\(y\_i = f(\mathbf{x}\_i) + \varepsilon\_i\\), where \\(\varepsilon\_i \sim \mathcal{N}(0, \sigma^2)\\), the posterior for a new point \\(\mathbf{x}\_*\\) is Gaussian with parameters
 
 \\[
 \begin{aligned}
@@ -93,7 +93,7 @@ where \\(\boldsymbol{\theta}\\) are the kernel hyperparameters. This optimizatio
 
 ## Stochastic Variational Gaussian Process
 
-An important limitation of exact GP is that it requires computational complexity of \\(\mathcal{O}(n^3)\\) for training and \\(\mathcal{O}(n^2)\\) for prediction, where \\(n\\) is the number of training points. Stochastic Variational Gaussian Process (SVGP) reduces these costs to \\(\mathcal{O}(nm^{2}+m^{3})\\) and \\(\mathcal{O}(m^{2})\\), respectively, by introducing a set of \\(m\\) inducing points at \\(\mathbf Z=\{\mathbf z_{j}\}_{j=1}^{m}\\), with \\(m\ll n\\)[^12] [^13] [^14] [^15]. These inducing points are latent variables that summarize information from the complete training set.
+An important limitation of exact GP is that it requires computational complexity of \\(\mathcal{O}(n^3)\\) for training and \\(\mathcal{O}(n^2)\\) for prediction, where \\(n\\) is the number of training points. Stochastic Variational Gaussian Process (SVGP) reduces these costs to \\(\mathcal{O}(nm^{2}+m^{3})\\) and \\(\mathcal{O}(m^{2})\\), respectively, by introducing a set of \\(m\\) inducing points at \\(\mathbf Z=\\{\mathbf z_{j}\\}_{j=1}^{m}\\), with \\(m\ll n\\)[^12] [^13] [^14] [^15]. These inducing points are latent variables that summarize information from the complete training set.
 
 In this model, we approximate the posterior distribution \\(p(\mathbf{f} \mid \mathcal{D})\\) by a variational distribution \\(q(\mathbf{f})\\), that is,
 
@@ -106,7 +106,7 @@ where \\(\mathbf{f}\\) are the function values at training points, \\(\mathbf{u}
 Optimization is performed by minimizing the Kullback-Leibler divergence between the variational distribution and the true posterior distribution. The divergence between two continuous distributions with densities \\(p\\) and \\(q\\) is defined as 
 
 \\[
-D_{\mathrm{KL}}(P \mid Q) = \int p(x)\,\ln\!\biggl(\frac{p(x)}{q(x)}\biggr)\,\mathrm{d}x
+D_{\mathrm{KL}}(P \mid Q) = \int p(x)\\,\ln\\!\biggl(\frac{p(x)}{q(x)}\biggr)\\,\mathrm{d}x
 \\] 
 
 Intuitively, \\(D_{\mathrm{KL}}(P \mid Q)\\) measures the excess information required to represent samples from \\(P\\) using an optimal code based on \\(Q\\) instead of an optimal code for \\(P\\) itself. This divergence is always non-negative and is zero only when, for almost all \\(x\\), we have \\(p(x)=q(x)\\).

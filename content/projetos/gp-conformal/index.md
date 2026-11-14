@@ -61,7 +61,7 @@ k(\mathbf{x}, \mathbf{x}^{\prime}) &= \mathbb{E}[(f(\mathbf{x}) - m(\mathbf{x}))
 
 Assim, temos \\(f(\mathbf{x}) \sim \mathcal{GP}(m, k)\\) para indicar que a função \\(f\\) segue um GP com função de média \\(m\\) e função de covariância \\(k\\).
 
-No problema de regressão, dada uma amostra de treinamento \\(\mathcal{D} = \{(\mathbf{x}\_i, y\_i)\}\_{i=1}^{n}\\) e assumindo ruído gaussiano homoscedático \\(y\_i = f(\mathbf{x}\_i) + \varepsilon\_i\\), onde \\(\varepsilon\_i \sim \mathcal{N}(0, \sigma^2)\\), a posteriori para um novo ponto \\(\mathbf{x}\_*\\) é gaussiana com parâmetros 
+No problema de regressão, dada uma amostra de treinamento \\(\mathcal{D} = \\{(\mathbf{x}\_i, y\_i)\\}\_{i=1}^{n}\\) e assumindo ruído gaussiano homoscedático \\(y\_i = f(\mathbf{x}\_i) + \varepsilon\_i\\), onde \\(\varepsilon\_i \sim \mathcal{N}(0, \sigma^2)\\), a posteriori para um novo ponto \\(\mathbf{x}\_*\\) é gaussiana com parâmetros
 
 \\[
 \begin{aligned}
@@ -93,7 +93,7 @@ onde \\(\boldsymbol{\theta}\\) são os hiperparâmetros do kernel. Esta otimiza�
 
 ## Processo Gaussiano Variacional Estocástico
 
-Uma limitação importante do GP exato é que ele exige complexidade computacional de \\(\mathcal{O}(n^3)\\) para treinamento e \\(\mathcal{O}(n^2)\\) para predição, onde \\(n\\) é o número de pontos de treinamento. Processo Gaussiano Variacional Estocástico (SVGP) reduz esses custos para \\(\mathcal{O}(nm^{2}+m^{3})\\) e \\(\mathcal{O}(m^{2})\\), respectivamente, ao introduzir um conjunto de \\(m\\) pontos-indutores em \\(\mathbf Z=\{\mathbf z_{j}\}_{j=1}^{m}\\), com \\(m\ll n\\)[^12] [^13] [^14] [^15]. Estes pontos-indutores são variáveis latentes que resumem as informações do conjunto de treinamento completo.
+Uma limitação importante do GP exato é que ele exige complexidade computacional de \\(\mathcal{O}(n^3)\\) para treinamento e \\(\mathcal{O}(n^2)\\) para predição, onde \\(n\\) é o número de pontos de treinamento. Processo Gaussiano Variacional Estocástico (SVGP) reduz esses custos para \\(\mathcal{O}(nm^{2}+m^{3})\\) e \\(\mathcal{O}(m^{2})\\), respectivamente, ao introduzir um conjunto de \\(m\\) pontos-indutores em \\(\mathbf Z=\\{\mathbf z_{j}\\}_{j=1}^{m}\\), com \\(m\ll n\\)[^12] [^13] [^14] [^15]. Estes pontos-indutores são variáveis latentes que resumem as informações do conjunto de treinamento completo.
 
 Neste modelo, aproximamos a distribuição a posteriori \\(p(\mathbf{f} \mid \mathcal{D})\\) por uma distribuição variacional \\(q(\mathbf{f})\\), isto é,
 
@@ -106,7 +106,7 @@ onde \\(\mathbf{f}\\) são os valores da função nos pontos de treinamento, \\(
 A otimização é realizada minimizando a divergência Kullback-Leibler entre a distribuição variacional e a distribuição a posteriori verdadeira. A divergão entre duas distribuições contínuas de densidade \\(p\\) e \\(q\\) é definida como 
 
 \\[
-D_{\mathrm{KL}}(P \mid Q) = \int p(x)\,\ln\!\biggl(\frac{p(x)}{q(x)}\biggr)\,\mathrm{d}x
+D_{\mathrm{KL}}(P \mid Q) = \int p(x)\\,\ln\\!\biggl(\frac{p(x)}{q(x)}\biggr)\\,\mathrm{d}x
 \\] 
 
 Intuitivamente, \\(D_{\mathrm{KL}}(P \mid Q)\\) mede o excesso de informação exigido para representar amostras de \\(P\\) usando um código ótimo baseado em \\(Q\\) em vez de um código ótimo para \\(P\\) propriamente dito. Essa divergência é sempre não negativa e zera-se somente quando, para quase todo \\(x\\), tem-se \\(p(x)=q(x)\\).

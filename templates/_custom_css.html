@@ -76,6 +76,25 @@
     font-family: inherit;
   }
 
+  /* Use the same spacing at every level, independent of heading font size. */
+  .prose :is(h1, h2, h3, h4, h5, h6)[id] {
+    margin-block: 1.5rem 0.75rem;
+  }
+
+  /* Keep consecutive headings visually connected. */
+  .prose :is(h1, h2, h3, h4, h5, h6)[id]:has(+ :is(h1, h2, h3, h4, h5, h6)[id]) {
+    margin-bottom: 0;
+  }
+
+  .prose :is(h1, h2, h3, h4, h5, h6)[id] + :is(h1, h2, h3, h4, h5, h6)[id] {
+    margin-top: 0.75rem;
+  }
+
+  .prose a.section-anchor {
+    margin-inline-end: 0.45em;
+    border: 0;
+  }
+
   .prose img,
   .prose video {
     box-sizing: border-box;

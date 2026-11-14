@@ -50,13 +50,13 @@ onde \\(\ell > 0\\) é o comprimento de escala que controla a suavidade da funç
 
 ## Classificação com Processos Gaussianos
 
-Para classificação binária, modelamos a função latente \\(f(\mathbf{x})\\) como um GP e conectamos essa função às observações binárias \\(y \in \{0,1\}\\) através de uma função de verossimilhança. Utilizando a verossimilhança de Bernoulli[^5]:
+Para classificação binária, modelamos a função latente \\(f(\mathbf{x})\\) como um GP e conectamos essa função às observações binárias \\(y \in \\{0,1\\}\\) através de uma função de verossimilhança. Utilizando a verossimilhança de Bernoulli[^5]:
 
 \\[
 p(y \mid \mathbf{x}) = \text{Bernoulli}(\sigma(f(\mathbf{x})))
 \\]
 
-onde \\(\sigma(\cdot)\\) é a função logística. O objetivo é computar a distribuição posterior \\(p(f \mid \mathcal{D})\\) dado o conjunto de dados \\(\mathcal{D} = \{(\mathbf{x}\_i, y\_i)\}\_{i=1}^N\\).
+onde \\(\sigma(\cdot)\\) é a função logística. O objetivo é computar a distribuição posterior \\(p(f \mid \mathcal{D})\\) dado o conjunto de dados \\(\mathcal{D} = \\{(\mathbf{x}\_i, y\_i)\\}\_{i=1}^N\\).
 
 ## Inferência Variacional
 
@@ -93,7 +93,7 @@ Para garantir estabilidade numérica durante o treinamento, utilizamos a paramet
 Durante a inferência, para um ponto de teste \\(\mathbf{x}\_*\\), computamos a distribuição preditiva:
 
 \\[
-p(f\_{\*} \mid \mathcal{D}, \mathbf{x}\_{\*}) \approx \int p(f\_{\*} \mid \mathbf{u}) q(\mathbf{u}) \, d\mathbf{u}
+p(f\_{\*} \mid \mathcal{D}, \mathbf{x}\_{\*}) \approx \int p(f\_{\*} \mid \mathbf{u}) q(\mathbf{u}) \\, d\mathbf{u}
 \\]
 
 Esta é uma distribuição Gaussiana com média \\(\mu\_\*\\) e variância \\(\sigma\_{\*}^2\\). A probabilidade da classe positiva é obtida propagando essa distribuição através da verossimilhança:
