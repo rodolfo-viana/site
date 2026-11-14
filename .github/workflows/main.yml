@@ -1,18 +1,53 @@
 name: Build and deploy GH Pages
 
-on: push
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: github-pages
+  cancel-in-progress: false
 
 jobs:
   build:
-    runs-on: ubuntu-latest
-    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-24.04
+    permissions:
+      contents: read
+      pages: read
     steps:
-      - name: checkout
+      - name: Checkout
         uses: actions/checkout@v7
 
-      - name: build_and_deploy
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v6
+
+      - name: Build and check with Zola
         uses: shalzz/zola-deploy-action@v0.22.1
         env:
-          PAGES_BRANCH: gh-pages
-          TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          CNAME: rodolfoviana.com.br
+          BUILD_ONLY: true
+          CHECK_LINKS: true
+          CHECK_FLAGS: --skip-external-links
+
+      - name: Upload site
+        uses: actions/upload-pages-artifact@v5
+        with:
+          path: public
+
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    needs: build
+    runs-on: ubuntu-24.04
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v5

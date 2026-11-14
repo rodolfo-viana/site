@@ -66,7 +66,9 @@ To update the theme:
 
 ## Deployment
 
-Pushing to `main` triggers `.github/workflows/main.yml`. The workflow builds with Zola and deploys `public/` to the `gh-pages` branch with the custom domain from `static/CNAME`.
+Pushing to `main` triggers `.github/workflows/main.yml`. The workflow builds with Zola 0.22.1, checks internal links, and uploads `public/` as a GitHub Pages artifact. A dependent deployment job publishes that artifact directly to the existing site. Both jobs use Ubuntu 24.04, and the GitHub JavaScript actions use Node.js 24.
+
+In the repository's **Settings → Pages**, the publishing source must be **GitHub Actions**. The custom domain remains `rodolfoviana.com.br`, with HTTPS enforced; `static/CNAME` is also included in the generated site. The workflow can be run manually from the Actions tab, and only `main` can deploy. Publishing no longer creates commits on `gh-pages`.
 
 ## Verification checklist
 
