@@ -1,0 +1,15 @@
+[[articles]]
+title = "Paired Decomposition of Lesion-Wise Dice Differences in Glioma MRI Segmentation"
+journal = "IEEE Access"
+date = 2026-11-12
+year = 2026
+volume = "48"
+number = "9"
+#pages = "10192--10206"
+doi = "10.1109/TPAMI.2024.3392013"
+article_url = "https://www.computer.org/csdl/journal/tp/2026/09/10510228/1WxkjCX6GR2"
+pdf_url = "https://www.computer.org/csdl/api/v1/periodical/trans/tp/2026/09/10510228/1WxkjCX6GR2/download-article/pdf"
+authors = [
+    { given = "Rodolfo O.", family = "Viana" },
+    { given = "Wallace", family = "Casaca" },
+]
