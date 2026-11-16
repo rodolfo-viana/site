@@ -1,6 +1,7 @@
 +++
 title = "Résumé"
 template = "page.html"
+description = "Rodolfo Viana's experience in data engineering, artificial intelligence research, and teaching."
 
 [extra]
 lang = "en"
@@ -8,128 +9,82 @@ toc = true
 back_to_top = true
 +++
 
-# Personal Info
-
-Rodolfo Viana<br />
-<!--<span id="age"></span> years old<br />-->
+# Rodolfo Viana
 São Paulo, Brazil<br />
-[LinkedIn](https://www.linkedin.com/in/rodolfoviana/) / [Github](https://github.com/rodolfo-viana) / [Email](mailto:eu@rodolfoviana.com.br)
+[Email](mailto:eu@rodolfoviana.com.br) / [LinkedIn](https://www.linkedin.com/in/rodolfoviana/) / [GitHub](https://github.com/rodolfo-viana) / [Lattes](https://lattes.cnpq.br/9571452574404221) / [ORCID](https://orcid.org/0009-0008-1356-5699)
 
 # Summary
 
-Data Engineer with <span id="working-age"></span>+ years of experience in developing and maintaining ETL pipelines and defining end-to-end data architecture. Experienced in managing and evolving data warehouses across different cloud providers, ensuring data quality, governance, performance, and reliability. Proven leadership in multidisciplinary projects and initiatives, focused on value delivery and scalability. Data Science specialist from ESALQ-USP, currently pursuing a Master's degree in Computer Science at UNESP.
+Senior Data Engineer and M.Sc. student in Computer Science at UNESP, working in data engineering and data science since 2018. Experience in data architecture, ETL pipelines, automation, and cloud data warehouses, including performance and cost optimization, data quality, and mentoring technical teams.
+
+His master's research investigates the reliability of glioma segmentation in magnetic resonance imaging. He develops risk-guided fusion methods and approaches to evaluating deep learning models, focusing on missing or degraded modalities and the interpretation of segmentation metrics. He also has teaching experience in artificial intelligence and programming at undergraduate and postgraduate levels.
 
 # Professional Experience
 
-⟶ Senior Data Engineer @ [Farfetch](https://www.farfetch.com/)<br />
-[August 2021 &mdash; present]
+⟶ Senior Data Engineer @ [Farfetch](https://www.farfetch.com/) / [Stadium Goods](https://www.stadiumgoods.com/)<br />
+[August 2021 — present]
 
-> Responsibilities:
-> 
+> Development and operation of ETL pipelines and automations, supporting more than 200 processes with a focus on data availability, integrity, and efficiency.
+>
+> - Led a data infrastructure optimization project that reduced processing time by **63%**, increased input/output performance (IOPS) by **88%**, and generated **67%** savings in monthly costs.
+> - Mentored and trained more than **10 professionals**, strengthening their technical skills.
+> - Develops web scraping applications and parsers to ingest external data and conducts analyses of data consistency and reliability.
 
-> - Designs and implements ETL pipelines and automations to ensure data availability, integrity, and efficiency, supporting the operation of 200+ processes
-> - Builds applications such as web scrapers and parsers to ingest external data
-> - Conducts in-depth analyses to validate data consistency and reliability
-> - Produces ad hoc studies and reports
-> 
-> Key contributions:
-> 
-> - Led a data infrastructure optimization project that reduced processing time by 63%, increased performance (IOPS) by 88%, and generated 67% savings in monthly costs
-> - Mentored and trained more than 10 professionals, strengthening their technical skills
+⟶ Lecturer @ [Unimar](https://oficial.unimar.br/bacharelado-em-inteligencia-artificial/)<br />
+[January — November 2026]
 
-⟶ Lecturer @ [Universidade de Marília](https://oficial.unimar.br/bacharelado-em-inteligencia-artificial/)<br />
-[January 2026 &mdash; present]
+> Teaching in undergraduate Artificial Intelligence and other IT programs.
+>
+> - Taught "Autonomous Systems and Intelligent Agents" and "Introduction to Artificial Intelligence".
+> - Planned and developed course materials, lectures, assessments, and supporting resources.
 
-> Responsibilities: 
-> 
-> - Teaches "Autonomous Systems and Intelligent Agents" to undergraduate Artificial Intelligence students
-> - Teaches "Introduction to Artificial Intelligence" to students across all IT programs at the institution
-> - Plans and develops course materials, including lectures, assessments, and supporting resources
+⟶ Lecturer @ [IDP](https://idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
+[July 2021 — December 2025]
 
-⟶ Lecturer @ [IDP](https://www.idp.edu.br/techschool/mba-jornalismo-de-dados/)<br />
-[July 2021 &mdash; December 2025]
-
-> Responsibility: 
-> 
-> - Taught "Introduction to Programming with Python" and "Web Scraping" in postgraduate programs, training 100+ professionals
+> Taught "Introduction to Programming with Python" and "Web Scraping" in postgraduate programs, training more than **100 professionals**.
 
 ⟶ Senior Data Scientist @ [Rede Globo](https://redeglobo.globo.com/)<br />
-[December 2018 &mdash; August 2021]
+[December 2018 — August 2021]
 
-> Responsibilities:
-> 
-> - Developed and implemented predictive models &mdash; including classification algorithms and neural networks &mdash; for business intelligence and content personalization
-> - Performed exploratory data analysis and statistical modeling to generate story ideas and inform editorial planning
-> - Led the design and implementation of ETL pipelines and large-scale web scraping processes to ingest external data for analysis
-> 
-> Key contribution:
-> 
-> - Conceived and implemented a system that delivered real-time SARS-CoV-2 statistics to 500+ journalists, expanding news coverage and increasing viewer engagement by 41%
+> Applied data science to journalism, business intelligence, and content personalization.
+>
+> - Conceived and implemented a system that delivered real-time SARS-CoV-2 statistics to more than **500 journalists**, expanding news coverage and increasing viewer engagement by **41%**.
+> - Developed and implemented predictive models, including classification algorithms and neural networks, for business intelligence and content personalization.
+> - Led the development of ETL pipelines and large-scale web scraping processes and conducted exploratory analyses and statistical modeling to support story ideas and editorial planning.
 
 # Education
 
-⟶ M.Sc. in Computer Science @ [Ibilce-Unesp](https://www.ibilce.unesp.br/)<br />
-2025 &mdash; in progress
-- Ongoing research: Enhancing edge detection in U-Net architectures for medical image segmentation
-- Advisor: Prof. Wallace Correa de Oliveira Casaca, PhD
+⟶ M.Sc. in Computer Science @ [IBILCE/UNESP](https://www.ibilce.unesp.br/)<br />
+[2025 — in progress]
 
-⟶ MBA in Data Science and Analytics @ [Esalq-USP](https://www.esalq.usp.br/)<br />
-2022 &mdash; 2023<br />
-- Capstone project: [Anomaly detection in São Paulo state deputies' expenses using K-Means](/en/projetos/alesp-kmeans)
-Advisor: Prof. Ana Julia Righetto, PhD
+> Master's thesis [in progress]: *SCoRe-Glioma: risk-guided fusion for brain tumor segmentation*
+>
+> Advisor: Prof. Wallace Correa de Oliveira Casaca, PhD
+
+⟶ MBA in Data Science and Analytics @ [ESALQ/USP](https://www.esalq.usp.br/)<br />
+[2022 — 2023]
+
+> Capstone project: *[Anomaly detection in São Paulo state deputies' expenses using K-Means](/en/projetos/alesp-kmeans/)*
+>
+> Advisor: Prof. Ana Julia Righetto, PhD
 
 # Technical Skills
 
-- Cloud Platforms
-    > Google Cloud Platform (GCP), AWS, Microsoft Azure
-
-- Data Engineering and Orchestration
-    > Docker, dbt, Databricks, Airflow, Spark, Google Cloud Functions, AWS Lambda, Apache NiFi, Pentaho, Git, Terraform
-
-- Machine Learning and AI
-    > PyTorch, TensorFlow, Statsmodels, PyCaret, scikit-learn
-
-- SQL and Databases
-    > Google BigQuery, Amazon Redshift, Azure Synapse, Snowflake, Microsoft SQL Server, MySQL, PostgreSQL
-
-- Visualization
-    > Looker, Google Data Studio, PowerBI, Tableau
-
-- Programming
-    > Python, SQL, shell scripting
+- **Programming:** Python, SQL, and shell scripting
+- **Data engineering and orchestration:** dbt, Databricks, Airflow, Spark, Google Cloud Functions, AWS Lambda, Apache NiFi, and Pentaho
+- **Machine learning and AI:** PyTorch, TensorFlow, statsmodels, PyCaret, and scikit-learn
+- **Databases and data warehouses:** Google BigQuery, Amazon Redshift, Azure Synapse, Snowflake, MySQL, and PostgreSQL
+- **Cloud platforms:** Google Cloud Platform (GCP), AWS, and Microsoft Azure
+- **Infrastructure and development:** Docker, Git, Terraform, and Jenkins
+- **Visualization:** Metabase, Looker, Power BI, Tableau, and Google Data Studio
 
 # Languages
 
-Portuguese (native), English (fluent)
+Portuguese (native) and English (fluent)
 
 # Interests
 
-- Machine Learning and AI
-    > Computer vision, Scientific Machine Learning, Deep Reinforcement Learning
-
-- Mathematics and Modeling
-    > Bayesian statistics, Gaussian processes, differential-equation-based modeling
-
-- Computer Science
-    > Data structures and algorithms, bio-inspired computing, software engineering for data products
-
-- Domains
-    > AI in healthcare (medical imaging, computer-aided diagnosis), transparency and ethics in AI (accountability, bias, governance)
-
-<script>
-    document.addEventListener("DOMContentLoaded", () => {
-      const today = new Date();
-      // const birthdate = new Date(1981, 2, 17);
-      const start = new Date(2018, 0, 1);
-
-      function yearsSince(d) {
-        let y = today.getFullYear() - d.getFullYear();
-        const m = today.getMonth() - d.getMonth();
-        if (m < 0 || (m === 0 && today.getDate() < d.getDate())) y--;
-        return y;
-      }
-
-      // document.getElementById("age").textContent = yearsSince(birthdate);
-      document.getElementById("working-age").textContent = yearsSince(start);
-    });
-</script>
+- **Machine learning and AI:** computer vision, Scientific Machine Learning, and Deep Reinforcement Learning
+- **Mathematics and modeling:** Bayesian statistics, Gaussian processes, and modeling based on differential equations
+- **Computer science:** data structures and algorithms, bio-inspired computing, and software engineering for data products
+- **Applications and responsibility:** AI in healthcare, including medical imaging and computer-aided diagnosis; transparency, ethics, bias, and governance in AI

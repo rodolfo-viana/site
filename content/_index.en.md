@@ -7,7 +7,7 @@ lang = "en"
 footer = true
 name = "Rodolfo Viana"
 id = "rodolfo-viana"
-bio = "Data engineering, artificial intelligence, and applied research"
+bio = "Artificial intelligence and applied research"
 links = [
     { name = "GitHub", icon = "github", url = "https://github.com/rodolfo-viana" },
     { name = "LinkedIn", icon = "linkedin", url = "https://www.linkedin.com/in/rodolfoviana/" },
