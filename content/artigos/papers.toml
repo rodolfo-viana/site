@@ -1,15 +1,48 @@
 [[articles]]
 title = "Paired Decomposition of Lesion-Wise Dice Differences in Glioma MRI Segmentation"
 journal = "IEEE Access"
-date = 2026-11-12
+date = 2026-12-17
 year = 2026
-volume = "48"
-number = "9"
-#pages = "10192--10206"
+volume = "13"
+#number = "9"
+pages = "18912--18936"
 doi = "10.1109/TPAMI.2024.3392013"
-article_url = "https://www.computer.org/csdl/journal/tp/2026/09/10510228/1WxkjCX6GR2"
-pdf_url = "https://www.computer.org/csdl/api/v1/periodical/trans/tp/2026/09/10510228/1WxkjCX6GR2/download-article/pdf"
+article_url = "https://ieeexplore.ieee.org/document/10849561"
+pdf_url = "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10849561"
 authors = [
     { given = "Rodolfo O.", family = "Viana" },
     { given = "Wallace", family = "Casaca" },
+]
+
+[[articles]]
+title = "From Overlap to Function: Ejection-Fraction Error Bounds for Cardiac Segmentation"
+journal = "IEEE Open Journal of Engineering in Medicine and Biology"
+date = 2027-01-12
+year = 2027
+volume = "48"
+#number = "9"
+pages = "183--192"
+doi = "10.1109/OJEMB.2024.3508472"
+article_url = "https://ieeexplore.ieee.org/document/10770591"
+pdf_url = "https://ieeexplore.ieee.org/stamp/stamp.jsp?tp=&arnumber=10770591"
+authors = [
+    { given = "Rodolfo O.", family = "Viana" },
+    { given = "Wallace", family = "Casaca" },
+    { given = "Leandro A.", family = "Neves" },
+    { given = "Moacir F.", family = "Godoy" },
+]
+
+[[articles]]
+title = "Exacta: Explicit Conventions and Verified Implementations of Segmentation Metrics and Losses"
+journal = "ACM Transactions on Mathematical Software"
+date = 2027-03-21
+year = 2027
+volume = "53"
+issue = "3"
+pages = "183--192"
+doi = "10.1145/3815420"
+article_url = "https://dl.acm.org/doi/10.1145/3815420"
+pdf_url = "https://dl.acm.org/doi/pdf/10.1145/3815420"
+authors = [
+    { given = "Rodolfo O.", family = "Viana" },
 ]
